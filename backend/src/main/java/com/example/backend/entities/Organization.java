@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,9 +15,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Organization {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="organization_id")
-    private Integer id;
+    private UUID id;
     @ManyToOne
     // a single user might be responsible for multiple organization
     @JoinColumn(name="product_owner_id")

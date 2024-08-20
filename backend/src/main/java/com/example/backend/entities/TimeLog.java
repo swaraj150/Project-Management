@@ -16,9 +16,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class TimeLog {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "time_log_id")
-    private Integer id;
+    private UUID id;
     private String description;
 
     @ManyToOne

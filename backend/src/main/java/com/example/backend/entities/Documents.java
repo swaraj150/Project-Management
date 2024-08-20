@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -15,9 +14,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Documents {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="document_id")
-    private Integer id;
+    private UUID id;
     private String fileName;
     private String path;
     @Enumerated(EnumType.STRING)

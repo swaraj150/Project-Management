@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.UUID;
 
 
@@ -16,9 +15,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Technology {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "tech_id")
-    private Integer id;
+    private UUID id;
     private String techName;
     private String version;
 

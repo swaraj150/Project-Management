@@ -17,15 +17,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "_User")
-class User implements UserDetails {
+public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="user_id")
-    private Integer id;
+    private UUID id;
     private String firstName;
     private String lastName;
     private String email;
-    private String userName;
+    private String username;
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -62,7 +62,7 @@ class User implements UserDetails {
      */
     @Override
     public String getUsername() {
-        return userName;
+        return username;
     }
 
     /**

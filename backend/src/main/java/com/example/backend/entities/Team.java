@@ -16,9 +16,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Team {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="team_id")
-    private Integer Id;
+    private UUID Id;
     @ManyToOne
     // bidirectional mapping between teams and organization
     @JoinColumn(name = "organization_id")

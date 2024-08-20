@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -14,9 +15,9 @@ import java.util.List;
 @Table(name="Task")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="task_id")
-    private Integer id;
+    private UUID id;
     private String title;
     private String description;
     private Integer priority;
