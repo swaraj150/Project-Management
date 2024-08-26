@@ -5,6 +5,7 @@ import com.example.server.entities.User;
 import com.example.server.repositories.UserRepository;
 import com.example.server.requests.RegisterRequest;
 import com.example.server.response.AuthResponse;
+import com.example.server.component.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;

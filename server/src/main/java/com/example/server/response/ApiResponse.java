@@ -21,8 +21,8 @@ public class ApiResponse<T> {
         return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null);
     }
 
-    public static <T> ApiResponse<T> error(String message, int status) {
-        return new ApiResponse<>(status, message, null);
+    public static <T> ApiResponse<T> error(String message, HttpStatus status) {
+        return new ApiResponse<>(status.value(), message, null);
     }
 
 
