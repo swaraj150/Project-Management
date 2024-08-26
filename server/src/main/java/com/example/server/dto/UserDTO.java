@@ -22,7 +22,7 @@ public class UserDTO {
 
     public static UserDTO mapToUserDTO(User user) {
         return UserDTO.builder()
-                .name(user.getFirstName() + " " + (user.getLastName()==null?"":user.getLastName()))
+                .name(user.getFirstName() + (user.getLastName()==null?"":" "+user.getLastName()))
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole())

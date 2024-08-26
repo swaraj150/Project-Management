@@ -74,6 +74,7 @@ public class UserService {
         return AuthResponse.builder()
                 .msg("User created successfully")
                 .token(jwtToken)
+                .user(UserDTO.mapToUserDTO(user))
                 .build();
 
     }
@@ -106,6 +107,7 @@ public class UserService {
             return AuthResponse.builder()
                     .msg("Login Successful")
                     .token(jwtToken)
+                    .user(UserDTO.mapToUserDTO((User) user))
                     .build();
 
     }
