@@ -26,7 +26,7 @@ const userApi = {
 
       const res = await publicClient.post(
         userEndpoints.signup,
-        { name, username, email, password }
+        { name, email, password }
       )
 
       return { res }
