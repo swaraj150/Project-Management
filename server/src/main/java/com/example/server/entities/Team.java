@@ -19,6 +19,7 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="team_id")
     private UUID Id;
+    private String name;
     @ManyToOne
     // bidirectional mapping between teams and organization
     @JoinColumn(name = "organization_id")

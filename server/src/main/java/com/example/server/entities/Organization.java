@@ -18,25 +18,20 @@ public class Organization {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="organization_id")
     private UUID id;
-    @ManyToOne
-    // a single user might be responsible for multiple organization
+    private String name;
+    @OneToOne
+    // a single user might be responsible for single organization
     @JoinColumn(name="product_owner_id")
     private User productOwner;
-    @ManyToOne
-    // a single user might be responsible for multiple organization
+    @OneToOne
+    // a single user might be responsible for  single organization
     @JoinColumn(name="project_manager_id")
     private User projectManager;
     @OneToMany(mappedBy = "organization")
     // many teams belong to one organization
     private List<Team> teams;
-    @ManyToMany
-    // many users can be stakeholders for multiple organization
-    @JoinTable(
-            name = "organization_stakeholders",
-            joinColumns = @JoinColumn(name = "organization_id"),
-            inverseJoinColumns = @JoinColumn(name = "stakeholder_id")
-    )
+    @OneToMany(mappedBy = "organization")
+    // many users can be stakeholders for single  organization
     private List<User> stakeholders;
-
     private String code;
 }

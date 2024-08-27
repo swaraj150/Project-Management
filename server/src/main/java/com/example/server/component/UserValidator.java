@@ -1,6 +1,7 @@
-package com.example.server.service;
+package com.example.server.component;
 
 
+import com.example.server.exception.InvalidPasswordException;
 import com.example.server.repositories.UserRepository;
 import com.example.server.requests.RegisterRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class UserValidator {
 
     private void validatePassword(String password) {
         if (password == null || !password.matches(PASSWORD_REGEX)) {
-            throw new IllegalArgumentException("Password does not meet the required criteria");
+            throw new InvalidPasswordException("Password does not meet the required criteria");
         }
     }
 
