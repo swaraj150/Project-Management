@@ -11,8 +11,8 @@ const App = () => {
       <Routes>
         {/* Public Routes */}
         {
-          publicRoutes.map((route) => (
-            <Route path={route.path} element={route.element} />
+          publicRoutes.map((route, index) => (
+            <Route path={route.path} key={index} element={route.element} />
           ))
         }
         {/* Public Routes */}
