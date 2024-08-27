@@ -1,14 +1,23 @@
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import * as Yup from 'yup'
+import { toast } from 'react-toastify'
+
+import userApi from '../../api/modules/user.api'
 
 import GoogleLogo from '../../assets/google-logo.png'
 import GithubLogo from '../../assets/github-logo.png'
 
+import { setUser, setRememberMe } from '../../redux/features/userSlice'
+
 const SigninForm = () => {
-  const [rememberMe, setRememberMe] = useState(false)
+  const dispatch = useDispatch()
+
+  const { user, rememberMe } = useSelector((state) => state.user)
+
   const [hidePassword, setHidePassword] = useState(true)
 
   const signinForm = useFormik({
@@ -35,20 +44,23 @@ const SigninForm = () => {
         .required('Password is required')
     }),
     onSubmit: async (values) => {
-      console.log(values)
+      const { res, err } = await userApi.signin(values)
+
+      if (res) {
+        dispatch(setUser(res))
+        toast.success('Login successful. Welcome back!')
+      }
+
+      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
   })
-
-  const handleEnter = (e) => {
-    if (e.key === 'Enter') signinForm.handleSubmit()
-  }
 
   return (
     <section className='signin-form'>
       <div className='signin-card paper'>
         <h1>Sign In</h1>
         <p className='prompt opacity-5' >Enter email and password to log in to you account.</p>
-        <form onSubmit={signinForm.handleSubmit} onKeyDown={(e) => handleEnter(e)}>
+        <form onSubmit={signinForm.handleSubmit}>
           <div className="input-field">
             <input
               className='paper'
@@ -88,7 +100,7 @@ const SigninForm = () => {
           </div>
           <div className='form-utilities'>
             <div className={rememberMe ? 'remember-me-option active' : 'remember-me-option'}>
-              <div className='switch paper-1 pointer' onClick={() => setRememberMe((prev) => !prev)}>
+              <div className='switch paper-1 pointer' onClick={() => dispatch(setRememberMe(!rememberMe))}>
                 <div className='switch-thumb'></div>
               </div>
               <p className='opacity-5 pointer' onClick={() => setRememberMe((prev) => !prev)}>Remember me</p>

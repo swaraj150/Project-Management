@@ -1,11 +1,17 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import * as Yup from 'yup'
+import { toast } from 'react-toastify'
+
+import userApi from '../../api/modules/user.api'
 
 import GoogleLogo from '../../assets/google-logo.png'
 import GithubLogo from '../../assets/github-logo.png'
+
+import { setUser } from '../../redux/features/userSlice'
 
 const SignupForm = () => {
   const [hidePassword, setHidePassword] = useState(true)
@@ -46,20 +52,23 @@ const SignupForm = () => {
         .required('Confirm password is required')
     }),
     onSubmit: async (values) => {
-      console.log(values)
+      const { res, err } = await userApi.signup(values)
+
+      if (res) {
+        dispatch(setUser(res))
+        toast.success('Registration successful! Welcome aboard.')
+      }
+
+      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
   })
-
-  const handleEnter = (e) => {
-    if (e.key === 'Enter') signinForm.handleSubmit()
-  }
 
   return (
     <section className='signup-form'>
       <div className='signup-card paper'>
         <h1>Sign Up</h1>
         <p className='prompt opacity-5' >Enter following details to create an account.</p>
-        <form onSubmit={signupForm.handleSubmit} onKeyDown={(e) => handleEnter(e)}>
+        <form onSubmit={signupForm.handleSubmit}>
           <div className="name">
             <div className="input-field">
               <input
