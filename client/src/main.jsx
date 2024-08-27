@@ -4,6 +4,8 @@ import { Provider } from 'react-redux'
 
 import App from './App.jsx'
 
+import 'react-toastify/dist/ReactToastify.css'
+
 import './css/index.css'
 import './css/utility.css'
 
@@ -12,7 +14,7 @@ import store from './redux/store.js'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <App />
+        <App />
     </Provider>
   </StrictMode>,
 )
