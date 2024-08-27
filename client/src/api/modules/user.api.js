@@ -20,7 +20,7 @@ const userApi = {
       return { err }
     }
   },
-  signup: async ({ firstname, lastname, username, email, password }) => {
+  signup: async ({ firstname, lastname, email, password }) => {
     try {
       const name = firstname + " " + lastname
 

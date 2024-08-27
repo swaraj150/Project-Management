@@ -21,7 +21,6 @@ const SignupForm = () => {
     initialValues: {
       firstname: '',
       lastname: '',
-      username: '',
       email: '',
       password: '',
       confirmPassword: ''
@@ -33,10 +32,6 @@ const SignupForm = () => {
       lastname: Yup.string()
         .matches(/^[a-zA-Z''-'\s]{1,20}$/, 'Last name can only contain letters, spaces, hyphens, and apostrophes (max 20 characters)')
         .required('Lastname is required'),
-      username: Yup.string()
-        .min(8, 'Username must be at least 8 characters')
-        .matches(/^[a-zA-Z0-9]+$/, 'Username can contain only letters and numbers')
-        .required('Username is required'),
       email: Yup.string()
         .email('Enter a valid email address')
         .required('Email is required'),
@@ -100,21 +95,6 @@ const SignupForm = () => {
                 {signupForm.touched.lastname && signupForm.errors.lastname ? signupForm.errors.lastname : ''}
               </p>
             </div>
-          </div>
-          <div className="input-field">
-            <input
-              className='paper'
-              type='text'
-              name='username'
-              required
-              placeholder='Username'
-              value={signupForm.values.username}
-              onChange={signupForm.handleChange}
-              onBlur={signupForm.handleBlur}
-            />
-            <p className="helper-text">
-              {signupForm.touched.username && signupForm.errors.username ? signupForm.errors.username : ''}
-            </p>
           </div>
           <div className="input-field">
             <input
