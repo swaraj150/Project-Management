@@ -22,20 +22,24 @@ public class Task {
     private String description;
     private Integer priority;
 
-    @ManyToOne
-    // a user can create many tasks
-    @JoinColumn(name="user_id")
-    private User createdBy;
+    @Column(name = "created_by_user_id")
+    private UUID createdBy;
 
-    @ManyToMany
-    // many users may belong to one task and one task may be assigned to one user
-    @JoinTable(
-            name="task_assigned_users",
-            joinColumns=@JoinColumn(name="task_id"),
-            inverseJoinColumns = @JoinColumn(name="user_id")
+//    @ManyToOne
+//    // a user can create many tasks
+//    @JoinColumn(name="user_id")
+//    private User createdBy;
 
-    )
-    private List<User> assignedTo;
+
+//    @ManyToMany
+//    // many users may belong to one task and one task may be assigned to one user
+//    @JoinTable(
+//            name="task_assigned_users",
+//            joinColumns=@JoinColumn(name="task_id"),
+//            inverseJoinColumns = @JoinColumn(name="user_id")
+//
+//    )
+//    private List<User> assignedTo;
 
     private Date createdAt;
     private Integer estimatedHours;
@@ -44,20 +48,24 @@ public class Task {
     private CompletionStatus completionStatus;
 
 
-    @OneToMany(mappedBy = "parentTask")
-    private List<Task> subTasks;
+//    @OneToMany(mappedBy = "parentTask")
+//    private List<Task> subTasks;
     //one Task (parent task) can have many subTasks.
     //The mappedBy = "parentTask" part refers to the field in the Task entity that owns the relationship (the other side of the relationship).
 
+    @Column(name = "parent_task_id")
+    private UUID parentTaskId;
 
-    @ManyToOne
-    //many subtasks can be associated with one parent task.
-    @JoinColumn(name = "parent_task_id")
-    private Task parentTask;
-
-    @ManyToOne
-    //bidirectional mapping between tasks and a project
-    @JoinColumn(name="project_id")
-    private Project project;
+    @Column(name = "project_id")
+    private UUID projectId;
+//    @ManyToOne
+//    //many subtasks can be associated with one parent task.
+//    @JoinColumn(name = "parent_task_id")
+//    private Task parentTask;
+//
+//    @ManyToOne
+//    //bidirectional mapping between tasks and a project
+//    @JoinColumn(name="project_id")
+//    private Project project;
 
 }

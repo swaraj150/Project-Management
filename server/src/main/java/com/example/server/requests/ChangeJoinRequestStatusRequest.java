@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrganizationCreateRequest {
-    private String projectManager;
-    private List<String> stakeholders;
+public class ChangeJoinRequestStatusRequest {
+    private UUID id;
+    private String status;
+
 }

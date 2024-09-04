@@ -14,7 +14,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class TeamCreateRequest {
-    private UUID organizationId;
     private String name;
     private List<String> dev;
     private List<String> qa;

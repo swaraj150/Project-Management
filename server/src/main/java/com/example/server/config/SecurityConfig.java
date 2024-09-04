@@ -29,7 +29,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests((auth)->auth.requestMatchers("/api/v1/users/register","/api/v1/users/login").permitAll().anyRequest().authenticated())
                 .sessionManagement((session)->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .formLogin(form->form.loginPage("/login").permitAll())
+//                .formLogin(form->form.loginPage("/login").permitAll())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 // add oAuth2 config
 //                .addFilterBefore(requestLoggingFilter, BasicAuthenticationFilter.class)

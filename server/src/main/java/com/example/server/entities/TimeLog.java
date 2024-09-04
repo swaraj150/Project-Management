@@ -20,23 +20,30 @@ public class TimeLog {
     private UUID id;
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-//    A user can log time across multiple timelog entries.
-//    Each timelog entry is associated with a single user.
-    private User user;
+    @Column(name="user_id")
+    private UUID user;
+    @Column(name="project_id")
+    private UUID project;
+    @Column(name="task_id")
+    private UUID task;
 
-    @ManyToOne
-    @JoinColumn(name = "task_id")
-//    A task can have multiple time logs associated with it.
-//    Each timelog entry is associated with a single task.
-    private Task task;
-
-    @ManyToOne
-    @JoinColumn(name = "project_id")
-//    A project can have multiple time logs associated with it.
-//    Each timelog entry is associated with a single project.
-    private Project project;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+////    A user can log time across multiple timelog entries.
+////    Each timelog entry is associated with a single user.
+//    private User user;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "task_id")
+////    A task can have multiple time logs associated with it.
+////    Each timelog entry is associated with a single task.
+//    private Task task;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "project_id")
+////    A project can have multiple time logs associated with it.
+////    Each timelog entry is associated with a single project.
+//    private Project project;
 
     private LocalDate date;
     private LocalDateTime startedAt;

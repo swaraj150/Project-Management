@@ -19,7 +19,7 @@ public class UserValidator {
     public void validateRegisterRequest(RegisterRequest registerRequest) {
         validateEmail(registerRequest.getEmail());
         validatePassword(registerRequest.getPassword());
-        validateUsername(registerRequest.getUsername());
+//        validateUsername(registerRequest.getUsername());
 
 
     }

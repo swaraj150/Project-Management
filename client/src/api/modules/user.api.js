@@ -2,9 +2,9 @@ import privateClient from  '../clients/private.client'
 import publicClient from '../clients/public.client'
 
 const userEndpoints = {
-  signin: 'users/signin',
-  signup: 'users/signup ',
-  getInfo: 'users'
+  signin: 'users/login',
+  signup: 'users/register',
+  getInfo: 'users/'
 }
 
 const userApi = {
@@ -26,7 +26,7 @@ const userApi = {
 
       const res = await publicClient.post(
         userEndpoints.signup,
-        { name, username, email, password }
+        { name, email, password }
       )
 
       return { res }

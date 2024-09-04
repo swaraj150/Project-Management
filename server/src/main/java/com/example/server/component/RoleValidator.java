@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class RoleValidator {
-    public void validaterRole(ProjectRole role, User user){
+    public void validateRole(ProjectRole role, User user){
         if(user.getProjectRole()!=role){
-            throw new IllegalRoleException("Role does not match");
+            throw new IllegalRoleException("Roles do not match");
         }
     }
 }

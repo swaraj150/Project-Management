@@ -1,5 +1,6 @@
 package com.example.server.controller;
 
+import com.example.server.component.SecurityUtils;
 import com.example.server.dto.UserDTO;
 import com.example.server.exception.InvalidPasswordException;
 import com.example.server.exception.InvalidTokenException;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("http://localhost:5173")
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
@@ -35,16 +37,13 @@ public class UserController {
 
     private final PasswordResetService passwordResetService;
 
+    private final SecurityUtils securityUtils;
+
     private static final Logger logger= LoggerFactory.getLogger(UserController.class);
 
-    @GetMapping("/")
-    public ResponseEntity<String> sayHello(){
-        logger.info("request sayHello reached");
-        return ResponseEntity.ok("Hello from secure endpoint");
-    }
+
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> registerUser(@RequestBody  RegisterRequest registerRequest) {
-        logger.info("Received register request for: {}", registerRequest.getUsername());
         AuthResponse authResponse = userService.createUser(registerRequest);
         if (authResponse == null) {
             logger.error("AuthResponse is null");
@@ -67,9 +66,9 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(userService.getAllUsers()));
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<ApiResponse<UserDTO>> getUser(@PathVariable @NonNull String username) {
-        UserDTO userDTO = userService.getUser(username);
+    @GetMapping("/")
+    public ResponseEntity<ApiResponse<UserDTO>> getUser() {
+        UserDTO userDTO = userService.getUser(securityUtils.getCurrentUsername());
         return ResponseEntity.ok(ApiResponse.success(userDTO));
     }
 
@@ -91,46 +90,4 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("Project role updated"));
     }
 
-    @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<ApiResponse<?>> handleInvalidTokenException(InvalidTokenException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(ApiResponse.error(e.getMessage()));
-
-    }
-
-    @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<ApiResponse<String>> handleInvalidPasswordException(InvalidPasswordException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(ApiResponse.error(e.getMessage(),HttpStatus.BAD_REQUEST));
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(ApiResponse.error(e.getMessage(),HttpStatus.BAD_REQUEST));
-    }
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ApiResponse<String>> handleBadCredentialsException(BadCredentialsException e) {
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error("Invalid Credentials",HttpStatus.UNAUTHORIZED));
-    }
-
-    @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<ApiResponse<String>> handleDisabledException(DisabledException e) {
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error("User account disabled",HttpStatus.FORBIDDEN));
-    }
-
-
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<String>> handleException(Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("An unexpected error occurred"));
-    }
 }

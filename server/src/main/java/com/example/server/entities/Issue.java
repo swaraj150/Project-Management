@@ -20,20 +20,29 @@ public class Issue {
     private String description;
     private Integer priority;
 
-    @ManyToOne
-    //an issue is raised by one user, but a user can raise many issues.
-    @JoinColumn(name="user_id")
-    private User raisedBy;
+//    @ManyToOne
+//    //an issue is raised by one user, but a user can raise many issues.
+//    @JoinColumn(name="user_id")
+//    private User raisedBy;
+//
+//    @ManyToOne
+//    //an issue is belongs to one project, but a project can have many issues.
+//    @JoinColumn(name="project_id")
+//    private Project belongsToProject;
+//
+//    @ManyToOne
+//    //an issue is belongs to one task, but a task can have many issues.
+//    @JoinColumn(name="task_id")
+//    private Task belongsToTask;
+//
+    @Column(name = "raised_by_user_id")
+    private UUID raisedByUserId;
 
-    @ManyToOne
-    //an issue is belongs to one project, but a project can have many issues.
-    @JoinColumn(name="project_id")
-    private Project belongsToProject;
+    @Column(name = "project_id")
+    private UUID projectId;
 
-    @ManyToOne
-    //an issue is belongs to one task, but a task can have many issues.
-    @JoinColumn(name="task_id")
-    private Task belongsToTask;
+    @Column(name = "task_id")
+    private UUID taskId;
 
     private boolean isResolved;
 

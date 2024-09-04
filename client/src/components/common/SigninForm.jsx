@@ -29,8 +29,8 @@ const SigninForm = () => {
       usernameOrEmail: Yup.string()
         .test(
           'usernameOrEmail', 
-          'Must be a valid email or a username (username should be at least 8 characters long and contain only letters and numbers)', function (value) {
-            const usernameRegex = /^[a-zA-Z0-9]{8,}$/;
+          'Must be a valid email or a username (username should be at least 8 characters long and contain only letters, numbers and underscores)', function (value) {
+            const usernameRegex = /^[a-z0-9_]{8,}$/;
             return usernameRegex.test(value) || Yup.string().email().isValidSync(value);
           }
         )

@@ -15,6 +15,7 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.5",
+    "client": "file:",
     "formik": "^2.4.6",
     "query-string": "^9.1.0",
     "react": "^18.3.1",
