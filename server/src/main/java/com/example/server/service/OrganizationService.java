@@ -4,6 +4,7 @@ import com.example.server.component.RoleValidator;
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.JoinRequestDTO;
 import com.example.server.dto.OrganizationDTO;
+import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
 import com.example.server.exception.OrganizationNotFoundException;
 import com.example.server.exception.UnauthorizedAccessException;
@@ -14,6 +15,7 @@ import com.example.server.repositories.UserRepository;
 import com.example.server.requests.ChangeJoinRequestStatusRequest;
 import com.example.server.requests.OrganizationCreateRequest;
 import com.example.server.requests.OrganizationInitiateRequest;
+import com.example.server.response.OrganizationResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +79,28 @@ public class OrganizationService {
             throw new IllegalArgumentException("Organization not found");
         }
         return orgOptional.get();
+    }
+    public OrganizationResponse loadOrganizationResponse() {
+        OrganizationDTO organizationDTO = loadOrganizationDTOByCurrentUser();
+        List<UserDTO> stakeholders=new ArrayList<>();
+        List<UserDTO> members=new ArrayList<>();
+        List<UUID> ids=userRepository.findStakeholderIdsByOrganizationId(organizationDTO.getId());
+        for(UUID id1:ids){
+            stakeholders.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
+        }List<UUID> ids2=userRepository.findMemberIdsByOrganizationId(organizationDTO.getId());
+        for(UUID id1:ids2){
+            members.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
+        }
+        return OrganizationResponse.builder()
+                .name(organizationDTO.getName())
+                .productOwner(UserDTO.mapToUserDTO(userRepository.findById(organizationDTO.getProductOwnerId())
+                        .orElseThrow(()->new UsernameNotFoundException("User not found"))))
+                .projectManager(UserDTO.mapToUserDTO(userRepository.findById(organizationDTO.getProjectManagerId())
+                        .orElseThrow(()->new UsernameNotFoundException("User not found"))))
+                .stakeholders(stakeholders)
+                .members(members)
+                .code(organizationDTO.getCode())
+                .build();
     }
     public OrganizationDTO loadOrganizationDTOByCurrentUser(){
         String username=securityUtils.getCurrentUsername();

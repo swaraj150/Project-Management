@@ -23,7 +23,7 @@ public class Organization {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "organization_id")
     private UUID id;
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String name;
     @Column(name = "product_owner_id")
     private UUID productOwnerId;

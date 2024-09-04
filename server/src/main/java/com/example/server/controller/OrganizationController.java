@@ -8,6 +8,7 @@ import com.example.server.requests.JoinOrganizationRequest;
 import com.example.server.requests.OrganizationCreateRequest;
 import com.example.server.requests.OrganizationInitiateRequest;
 import com.example.server.response.ApiResponse;
+import com.example.server.response.OrganizationResponse;
 import com.example.server.service.OrganizationService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -53,8 +54,8 @@ public class OrganizationController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<ApiResponse<OrganizationDTO>> loadOrganization(){
-        return ResponseEntity.ok(ApiResponse.success(organizationService.loadOrganization()));
+    public ResponseEntity<ApiResponse<OrganizationResponse>> loadOrganization(){
+        return ResponseEntity.ok(ApiResponse.success(organizationService.loadOrganizationResponse()));
     }
 
 

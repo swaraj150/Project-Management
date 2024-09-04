@@ -1,6 +1,7 @@
 package com.example.server.controller;
 
 import com.example.server.component.SecurityUtils;
+import com.example.server.dto.TeamDTO;
 import com.example.server.entities.ProjectAuthority;
 import com.example.server.entities.User;
 import com.example.server.exception.UnauthorizedAccessException;
@@ -38,7 +39,8 @@ public class TeamController {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        return ResponseEntity.ok(ApiResponse.success(teamService.createTeamDto(teamRepository.findTeamIdByUserId(user.getId()))));
+
+        return ResponseEntity.ok(ApiResponse.success(teamService.loadTeam(user.getId())));
     }
 
 
