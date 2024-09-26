@@ -24,20 +24,30 @@ public class Documents {
 
     @Column(updatable = false)
     private LocalDateTime uploadedAt;
-    @ManyToOne
-    //a doc is uploaded by one user, but a user can upload many docs.
-    @JoinColumn(name="user_id")
-    private User uploadedBy;
+//    @ManyToOne
+//    //a doc is uploaded by one user, but a user can upload many docs.
+//    @JoinColumn(name="user_id")
+//    private User uploadedBy;
 
-    @ManyToOne
-    //a doc belongs to one project, but a project can have many docs.
-    @JoinColumn(name="project_id")
-    private Project belongsToProject;
+    @Column(name="uploaded_by_user_id")
+    private UUID uploadedBy;
 
-    @ManyToOne
-    //a doc belongs to one task, but a task can have many docs.
-    @JoinColumn(name="task_id")
-    private Task belongsToTask;
+//    @ManyToOne
+//    //a doc belongs to one project, but a project can have many docs.
+//    @JoinColumn(name="project_id")
+//    private Project belongsToProject;
+
+    @Column(name="belongs_to_project_id")
+    private UUID belongsToProject;
+
+
+//    @ManyToOne
+//    //a doc belongs to one task, but a task can have many docs.
+//    @JoinColumn(name="task_id")
+//    private Task belongsToTask;
+
+    @Column(name="belongs_to_task_id")
+    private UUID belongsToTask;
 
     @PrePersist
     protected void onUpload() {

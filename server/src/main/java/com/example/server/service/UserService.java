@@ -3,6 +3,7 @@ package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.UserDTO;
+import com.example.server.entities.ProjectAuthority;
 import com.example.server.entities.ProjectRole;
 import com.example.server.entities.Role;
 import com.example.server.entities.User;
@@ -17,6 +18,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,13 +61,17 @@ public class UserService {
 
         User user = new User();
         String[] data = registerRequest.getName().split(" ");
+        boolean islast=data.length>1;
+        String username=data[0]+(islast?"_"+data[1]:"_")+(int)(Math.random() * 9000 +1000) ;
         user.setFirstName(data[0]);
         user.setLastName(data.length == 1 ? null : data[1]);
-        user.setUsername(registerRequest.getUsername());
+        user.setUsername(username);
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setRole(Role.USER);
         user.setProjectRole(ProjectRole.DEFAULT_TEAM_MEMBER);
+        logger.info("user : {}",username);
+        logger.info("has authority: {}",user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_ORGANIZATION));
 
         userRepository.save(user);
         logger.info("User created: {}", user.getUsername());
@@ -126,11 +132,26 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void updateProjectRole(String role,User user){
 
 
+        switch (role) {
+            case "Product Owner" -> user.setProjectRole(ProjectRole.PRODUCT_OWNER);
+            case "Project Manager" -> user.setProjectRole(ProjectRole.PROJECT_MANAGER);
+            case "Developer"->user.setProjectRole(ProjectRole.DEVELOPER);
+            case "QA"->user.setProjectRole(ProjectRole.QA);
+            case "Team Lead"->user.setProjectRole(ProjectRole.TEAM_LEAD);
+            case "Stakeholder"->user.setProjectRole(ProjectRole.STAKEHOLDER);
+        }
+        userRepository.save(user);
+    }
 
+    public void updateProjectRole(ProjectRole role,User user){
 
+        user.setProjectRole(role);
 
+        userRepository.save(user);
+    }
 
 
 

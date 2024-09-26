@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,45 +17,31 @@ import java.util.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "_User")
+@Table(name = "_user")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="user_id")
     private UUID id;
-
     @Column(nullable = false)
     private String firstName;
-
-//    @Column(nullable = false)
     private String lastName;
-
     @Column(unique = true, nullable = false)
     private String email;
     @Column(unique = true, nullable = false)
     private String username;
     @Column(nullable = false)
     private String password;
-
     @Column(columnDefinition = "varchar(10)")
     @Enumerated(EnumType.STRING)
     private Role role;
-
-
     @Column(columnDefinition = "varchar(30)")
     @Enumerated(EnumType.STRING)
     private ProjectRole projectRole;
     private String resetPasswordToken;
     private LocalDateTime resetPasswordTokenExpiry;
-
-    @ManyToOne
-    @JoinColumn(name="organization_id")
-    private Organization organization;
-
-
-
-
-
+    @Column(name = "organization_id")
+    private UUID organizationId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

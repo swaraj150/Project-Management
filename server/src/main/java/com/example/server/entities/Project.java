@@ -25,26 +25,29 @@ public class Project {
     private String description;
     private Integer teamSize;
 
-    @OneToMany(mappedBy = "project")
-    private List<Task> tasks;
+//    @OneToMany(mappedBy = "project")
+//    private List<Task> tasks;
 
     private LocalDate startDate;
     private LocalDate estimatedEndDate;
     private LocalDate endDate;
 
-    @ManyToOne // if organization has multiple projects
-    @JoinColumn(name="organization_id")
-    private Organization organization;
+//    @ManyToOne // if organization has multiple projects
+//    @JoinColumn(name="organization_id")
+//    private Organization organization;
+
+    @Column(name="organization_id")
+    private UUID organizationId;
 
     private BigDecimal budget;// in INR
 
-    @ManyToMany
-    @JoinTable(
-            name="tech_stack",
-            joinColumns = @JoinColumn(name="project_id"),
-            inverseJoinColumns = @JoinColumn(name="tech_id")
-    )
-    private List<Technology> techStack;
+//    @ManyToMany
+//    @JoinTable(
+//            name="tech_stack",
+//            joinColumns = @JoinColumn(name="project_id"),
+//            inverseJoinColumns = @JoinColumn(name="tech_id")
+//    )
+//    private List<Technology> techStack;
 
     @Enumerated(EnumType.STRING)
     private CompletionStatus completionStatus;
