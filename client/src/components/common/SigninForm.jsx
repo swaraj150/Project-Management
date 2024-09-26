@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
@@ -11,18 +11,13 @@ import userApi from '../../api/modules/user.api'
 import GoogleLogo from '../../assets/google-logo.png'
 import GithubLogo from '../../assets/github-logo.png'
 
-import { setUser, setRememberMe } from '../../redux/features/userSlice'
-
-import axios from 'axios'
-
-axios.defaults.withCredentials = true
+import { setUser } from '../../redux/features/userSlice'
 
 const SigninForm = () => {
   const dispatch = useDispatch()
 
-  const { user, rememberMe } = useSelector((state) => state.user)
-
   const [hidePassword, setHidePassword] = useState(true)
+  const [rememberMe, setRememberMe] = useState(false)
 
   const signinForm = useFormik({
     initialValues: {
@@ -32,7 +27,7 @@ const SigninForm = () => {
     validationSchema: Yup.object({
       usernameOrEmail: Yup.string()
         .test(
-          'usernameOrEmail', 
+          'usernameOrEmail',
           'Must be a valid email or a username (username should be at least 8 characters long and contain only letters, numbers and underscores)', function (value) {
             const usernameRegex = /^[a-z0-9_]{8,}$/;
             return usernameRegex.test(value) || Yup.string().email().isValidSync(value);
@@ -48,6 +43,14 @@ const SigninForm = () => {
         .required('Password is required')
     }),
     onSubmit: async (values) => {
+      if (rememberMe) {
+        localStorage.setItem('rememberMe', true)
+        localStorage.setItem('projectMaestroUsername', values.usernameOrEmail)
+      } else {
+        localStorage.removeItem('rememberMe')
+        localStorage.removeItem('projectMaestroUsername')
+      }
+
       const { res, err } = await userApi.signin(values)
 
       if (res) {
@@ -58,6 +61,14 @@ const SigninForm = () => {
       if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
   })
+
+  useEffect(() => {
+    if (localStorage.getItem('rememberMe') != null) setRememberMe(true)
+
+    const savedUsername = localStorage.getItem('projectMaestroUsername')
+
+    if (savedUsername) signinForm.setFieldValue('usernameOrEmail', savedUsername)
+  }, [])
 
   const handleGoogleSignIn = () => {
     window.location.href = import.meta.env.VITE_OAUTH2_GOOGLE
@@ -112,7 +123,7 @@ const SigninForm = () => {
           </div>
           <div className='form-utilities'>
             <div className={rememberMe ? 'remember-me-option active' : 'remember-me-option'}>
-              <div className='switch paper-1 pointer' onClick={() => dispatch(setRememberMe(!rememberMe))}>
+              <div className='switch paper-1 pointer' onClick={() => setRememberMe((prev) => !prev)}>
                 <div className='switch-thumb'></div>
               </div>
               <p className='opacity-5 pointer' onClick={() => setRememberMe((prev) => !prev)}>Remember me</p>
