@@ -62,6 +62,10 @@ const SignupForm = () => {
     window.location.href = import.meta.env.VITE_OAUTH2_GOOGLE
   }
 
+  const handleGithubSignIn = () => {
+    window.location.href = import.meta.env.VITE_OAUTH2_GITHUB
+  }
+
   return (
     <section className='signup-form'>
       <div className='signup-card paper'>
@@ -178,7 +182,7 @@ const SignupForm = () => {
               <img src={GoogleLogo} alt='' />
               <p>Sign up with google</p>
             </div>
-            <div className='option paper pointer'>
+            <div className='option paper pointer' onClick={handleGithubSignIn}>
               <img src={GithubLogo} alt='' />
               <p>Sign up with github</p>
             </div>
