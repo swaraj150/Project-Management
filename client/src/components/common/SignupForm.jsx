@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useFormik } from 'formik'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import * as Yup from 'yup'
 import { toast } from 'react-toastify'
 
@@ -14,6 +13,8 @@ import GithubLogo from '../../assets/github-logo.png'
 import { setUser } from '../../redux/features/userSlice'
 
 const SignupForm = () => {
+  const dispatch = useDispatch()
+
   const [hidePassword, setHidePassword] = useState(true)
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true)
 
@@ -133,8 +134,8 @@ const SignupForm = () => {
               />
               {
                 hidePassword
-                  ? <FontAwesomeIcon className='pointer' icon={faEye} onClick={() => setHidePassword(false)} />
-                  : <FontAwesomeIcon className='pointer' icon={faEyeSlash} onClick={() => setHidePassword(true)} />
+                ? <FaEye className='pointer' onClick={() => setHidePassword(false)} />
+                : <FaEyeSlash className='pointer' onClick={() => setHidePassword(true)} />
               }
             </div>
             <p className="helper-text">
@@ -155,8 +156,8 @@ const SignupForm = () => {
               />
               {
                 hideConfirmPassword
-                  ? <FontAwesomeIcon className='pointer' icon={faEye} onClick={() => setHideConfirmPassword(false)} />
-                  : <FontAwesomeIcon className='pointer' icon={faEyeSlash} onClick={() => setHideConfirmPassword(true)} />
+                ? <FaEye className='pointer' onClick={() => setHideConfirmPassword(false)} />
+                : <FaEyeSlash className='pointer' onClick={() => setHideConfirmPassword(true)} />
               }
             </div>
             <p className="helper-text">

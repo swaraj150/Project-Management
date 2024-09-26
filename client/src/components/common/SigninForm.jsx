@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useFormik } from 'formik'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import * as Yup from 'yup'
 import { toast } from 'react-toastify'
 
@@ -113,8 +112,8 @@ const SigninForm = () => {
               />
               {
                 hidePassword
-                  ? <FontAwesomeIcon className='pointer' icon={faEye} onClick={() => setHidePassword(false)} />
-                  : <FontAwesomeIcon className='pointer' icon={faEyeSlash} onClick={() => setHidePassword(true)} />
+                  ? <FaEye className='pointer' onClick={() => setHidePassword(false)} />
+                  : <FaEyeSlash className='pointer' onClick={() => setHidePassword(true)} />
               }
             </div>
             <p className="helper-text opacity-5">
