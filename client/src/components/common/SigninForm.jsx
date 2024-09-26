@@ -13,6 +13,10 @@ import GithubLogo from '../../assets/github-logo.png'
 
 import { setUser, setRememberMe } from '../../redux/features/userSlice'
 
+import axios from 'axios'
+
+axios.defaults.withCredentials = true
+
 const SigninForm = () => {
   const dispatch = useDispatch()
 
@@ -54,6 +58,13 @@ const SigninForm = () => {
       if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
   })
+
+  const handleGoogleLogin = () => {
+    axios.get('http://localhost:8080/oauth2/authorize/google')
+      .then((res) => {
+        console.log(res)
+      })
+  }
 
   return (
     <section className='signin-form'>
@@ -122,7 +133,7 @@ const SigninForm = () => {
             <hr />
           </div>
           <div className='options'>
-            <div className='option paper pointer'>
+            <div className='option paper pointer' onClick={handleGoogleLogin}>
               <img src={GoogleLogo} alt='' />
               <p>Sign in with google</p>
             </div>
