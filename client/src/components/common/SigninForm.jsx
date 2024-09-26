@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
+import { useGoogleLogin } from '@react-oauth/google'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { toast } from 'react-toastify'
@@ -69,9 +70,10 @@ const SigninForm = () => {
     if (savedUsername) signinForm.setFieldValue('usernameOrEmail', savedUsername)
   }, [])
 
-  const handleGoogleSignIn = () => {
-    window.location.href = import.meta.env.VITE_OAUTH2_GOOGLE
-  }
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: (res) => console.log(res),
+    onError: (err) => toast.error(typeof err === 'string' ? err : 'Google login failed!')
+  })
 
   const handleGithubSignIn = () => {
     window.location.href = import.meta.env.VITE_OAUTH2_GITHUB
@@ -144,7 +146,7 @@ const SigninForm = () => {
             <hr />
           </div>
           <div className='options'>
-            <div className='option paper pointer' onClick={handleGoogleSignIn}>
+            <div className='option paper pointer' onClick={handleGoogleLogin}>
               <img src={GoogleLogo} alt='' />
               <p>Sign in with google</p>
             </div>
