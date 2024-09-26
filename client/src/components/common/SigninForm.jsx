@@ -59,11 +59,8 @@ const SigninForm = () => {
     }
   })
 
-  const handleGoogleLogin = () => {
-    axios.get('http://localhost:8080/oauth2/authorize/google')
-      .then((res) => {
-        console.log(res)
-      })
+  const handleGoogleSignIn = () => {
+    window.location.href = import.meta.env.VITE_OAUTH2_GOOGLE
   }
 
   return (
@@ -133,7 +130,7 @@ const SigninForm = () => {
             <hr />
           </div>
           <div className='options'>
-            <div className='option paper pointer' onClick={handleGoogleLogin}>
+            <div className='option paper pointer' onClick={handleGoogleSignIn}>
               <img src={GoogleLogo} alt='' />
               <p>Sign in with google</p>
             </div>

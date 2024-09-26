@@ -58,6 +58,10 @@ const SignupForm = () => {
     }
   })
 
+  const handleGoogleSignIn = () => {
+    window.location.href = import.meta.env.VITE_OAUTH2_GOOGLE
+  }
+
   return (
     <section className='signup-form'>
       <div className='signup-card paper'>
@@ -170,7 +174,7 @@ const SignupForm = () => {
             <hr />
           </div>
           <div className='options'>
-            <div className='option paper pointer'>
+            <div className='option paper pointer' onClick={handleGoogleSignIn}>
               <img src={GoogleLogo} alt='' />
               <p>Sign up with google</p>
             </div>
