@@ -4,6 +4,8 @@ import publicClient from '../clients/public.client'
 const userEndpoints = {
   signin: 'users/login',
   signup: 'users/register',
+  googleSignin: 'users/google',
+  githubSignin: 'users/github',
   getInfo: 'users/'
 }
 
@@ -28,6 +30,24 @@ const userApi = {
         userEndpoints.signup,
         { name, email, password }
       )
+
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  googleSignin: async ({ accessToken }) => {
+    try {
+      const res = await publicClient.post(userEndpoints.googleSignin, { accessToken })
+
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  githubSignin: async ({ code }) => {
+    try {
+      const res = await publicClient.post(userEndpoints.githubSignin, { code })
 
       return { res }
     } catch (err) {
