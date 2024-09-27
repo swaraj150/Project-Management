@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useGoogleLogin } from '@react-oauth/google'
 import { useFormik } from 'formik'
@@ -11,10 +12,13 @@ import userApi from '../../api/modules/user.api'
 import GoogleLogo from '../../assets/google-logo.png'
 import GithubLogo from '../../assets/github-logo.png'
 
+import AuthOptions from './AuthOptions'
+
 import { setUser } from '../../redux/features/userSlice'
 
 const SignupForm = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const [hidePassword, setHidePassword] = useState(true)
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true)
@@ -59,15 +63,6 @@ const SignupForm = () => {
       if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
   })
-
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: (res) => console.log(res),
-    onError: (err) => toast.error(typeof err === 'string' ? err : 'Google login failed!')
-  })
-
-  const handleGithubSignIn = () => {
-    window.location.href = import.meta.env.VITE_OAUTH2_GITHUB
-  }
 
   return (
     <section className='signup-form'>
@@ -174,23 +169,7 @@ const SignupForm = () => {
             Sign Up
           </button>
         </form>
-        <div className='signup-option'>
-          <div className='divider-text'>
-            <hr />
-            <span className='opacity-5'>Or sign up with</span>
-            <hr />
-          </div>
-          <div className='options'>
-            <div className='option paper pointer' onClick={handleGoogleLogin}>
-              <img src={GoogleLogo} alt='' />
-              <p>Sign up with google</p>
-            </div>
-            <div className='option paper pointer' onClick={handleGithubSignIn}>
-              <img src={GithubLogo} alt='' />
-              <p>Sign up with github</p>
-            </div>
-          </div>
-        </div>
+        <AuthOptions />
         <p>Already have an account? <a href='/sign-in'>Sign In</a></p>
       </div>
     </section>

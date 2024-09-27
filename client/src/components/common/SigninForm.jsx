@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
-import { useGoogleLogin } from '@react-oauth/google'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { toast } from 'react-toastify'
 
 import userApi from '../../api/modules/user.api'
 
-import GoogleLogo from '../../assets/google-logo.png'
-import GithubLogo from '../../assets/github-logo.png'
+import AuthOptions from './AuthOptions'
 
 import { setUser } from '../../redux/features/userSlice'
 
 const SigninForm = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const [hidePassword, setHidePassword] = useState(true)
   const [rememberMe, setRememberMe] = useState(false)
@@ -56,6 +56,7 @@ const SigninForm = () => {
       if (res) {
         dispatch(setUser(res))
         toast.success('Login successful. Welcome back!')
+        navigate('/')
       }
 
       if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
@@ -70,14 +71,30 @@ const SigninForm = () => {
     if (savedUsername) signinForm.setFieldValue('usernameOrEmail', savedUsername)
   }, [])
 
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: (res) => console.log(res),
-    onError: (err) => toast.error(typeof err === 'string' ? err : 'Google login failed!')
-  })
+  
+  useEffect(() => {
+    const queryString = window.location.search
+    const urlParams = new URLSearchParams(queryString)
+    const code = urlParams.get('code')
 
-  const handleGithubSignIn = () => {
-    window.location.href = import.meta.env.VITE_OAUTH2_GITHUB
-  }
+    const githubLogin = async () => {
+      const { res, err } = await userApi.githubSignin({ code })
+
+      if (res) {
+        dispatch(setUser(res))
+        toast.success('Login successful. Welcome back!')
+        navigate('/')
+      }
+
+      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+    }
+    
+    if (code != null) {
+      githubLogin().then(() => {
+        window.history.replaceState({}, document.title, window.location.pathname)
+      })
+    }
+  }, [])
 
   return (
     <section className='signin-form'>
@@ -139,23 +156,7 @@ const SigninForm = () => {
             Sign In
           </button>
         </form>
-        <div className='signin-option'>
-          <div className='divider-text'>
-            <hr />
-            <span className='opacity-5'>Or sign in with</span>
-            <hr />
-          </div>
-          <div className='options'>
-            <div className='option paper pointer' onClick={handleGoogleLogin}>
-              <img src={GoogleLogo} alt='' />
-              <p>Sign in with google</p>
-            </div>
-            <div className='option paper pointer' onClick={handleGithubSignIn}>
-              <img src={GithubLogo} alt='' />
-              <p>Sign in with github</p>
-            </div>
-          </div>
-        </div>
+        <AuthOptions />
         <p>Want to create an account? <a href='/sign-up'>Sign Up</a></p>
       </div>
     </section>
