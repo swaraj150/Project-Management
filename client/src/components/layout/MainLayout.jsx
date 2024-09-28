@@ -21,7 +21,7 @@ const MainLayout = () => {
         toast.success('Login successful. Welcome back!')
       }
 
-      // if (err) navigate('/sign-in')
+      if (err) navigate('/sign-in')
     }
 
     if (user === null) fetchUserDetails()
