@@ -13,7 +13,7 @@ export const userSlice = createSlice({
         if (action.payload.token) localStorage.setItem('token', action.payload.token)
       }
 
-      state.user = action.payload
+      state.user = action.payload.user
     }
   }
 })
