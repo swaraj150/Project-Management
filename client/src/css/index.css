@@ -146,7 +146,8 @@ body {
 }
 
 /* Signin / Signup Page */
-.signin, .signup {
+.signin,
+.signup {
     height: 100vh;
     width: 100%;
     display: flex;
@@ -185,13 +186,15 @@ body {
         }
     }
 
-    .signin-form, .signup-form {
+    .signin-form,
+    .signup-form {
         width: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
 
-        .signin-card, .signup-card {
+        .signin-card,
+        .signup-card {
             width: 70%;
             padding: 3%;
             border-radius: 10px;
@@ -219,7 +222,7 @@ body {
                     display: flex;
                     gap: 3%;
                     align-items: center;
-                    
+
                     input {
                         flex-grow: 1;
                         padding: 5%;
@@ -263,7 +266,7 @@ body {
                     .active {
                         .switch {
                             background-color: var(--primary--100);
-    
+
                             .switch-thumb {
                                 margin-left: 27.5px;
                                 background-color: var(--primary--400);
@@ -293,7 +296,8 @@ body {
                 }
             }
 
-            .signin-option, .signup-option {
+            .signin-option,
+            .signup-option {
                 width: 100%;
                 display: flex;
                 gap: 20px;
@@ -315,7 +319,7 @@ body {
                         margin: 0 10px;
                     }
                 }
-            
+
                 .options {
                     width: 100%;
                     display: flex;
@@ -347,3 +351,140 @@ body {
     }
 }
 
+#homepage {
+    display: flex;
+    height: 100vh;
+    background-color: var(--white-500);
+
+    .main-menu {
+        width: 12%;
+        margin: 1%;
+        padding: 10% 1%;
+        border-radius: 50px;
+        background-color: var(--primary--500);
+        position: relative;
+        transition: all 0.3s ease;
+
+        .menu-collapse {
+            position: absolute;
+            top: 10%;
+            right: -10%;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--secondary--900);
+            border-radius: 50%;
+            background-color: var(--white--500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+                font-size: 1.5rem;
+                color: var(--primary--900);
+            }
+        }
+
+        ul {
+            display: flex;
+            gap: 30px;
+            flex-direction: column;
+            list-style: none;
+            color: var(--white--500);
+
+            .active {
+                width: 110%;
+                padding: 5% 0;
+                color: var(--primary--900);
+                background-color: var(--white--500);
+                border-top-left-radius: 20px;
+                border-bottom-left-radius: 20px;
+                position: relative;
+
+                .top-curve,
+                .bottom-curve {
+                    position: absolute;
+                    left: 0;
+                    width: 100%;
+                    height: 20px;
+                    background-color: var(--white--500);
+                }
+
+                .top-curve {
+                    top: -20px;
+                }
+
+                .bottom-curve {
+                    bottom: -20px;
+                }
+
+                .top-curve::before,
+                .bottom-curve::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: var(--primary--500);
+                }
+
+                .top-curve::before {
+                    border-bottom-right-radius: 20px;
+                }
+
+                .bottom-curve::before {
+                    border-top-right-radius: 20px;
+                }
+
+                span {
+                    font-weight: 700;
+                }
+            }
+
+            li {
+                padding: 1% 5%;
+                display: flex;
+                gap: 15px;
+                align-items: center;
+                justify-content: flex-start;
+
+                svg {
+                    font-size: 1.5rem;
+                }
+            }
+        }
+
+    }
+
+    .collapsed {
+        width: 4% !important;
+        padding: 10% 1%;
+
+        ul {
+            .active {
+                width: 150%;
+                padding: 10px 0;
+                border-top-left-radius: 20px;
+                border-bottom-left-radius: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            li {
+                svg {
+                    /* font-size: 2rem; */
+                    margin: auto;
+                }
+
+                span {
+                    display: none !important;
+                }
+            }
+        }
+
+        .menu-collapse {
+            right: -30%;
+        }
+    }
+}
