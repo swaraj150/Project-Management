@@ -5,12 +5,10 @@ import SignupForm from '../components/common/SignupForm'
 
 const SignupPage = () => {
   return (
-    <main>
-      <section className='signin'>
-        <Welcome />
-        <SignupForm />
-      </section>
-    </main>
+    <section className='signin'>
+      <Welcome />
+      <SignupForm />
+    </section>
   )
 }
 
