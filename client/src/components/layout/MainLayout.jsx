@@ -29,7 +29,7 @@ const MainLayout = () => {
 
   return (
     <>
-      <main>
+      <main className='no-scrollbar'>
         <Outlet />
       </main>
     </>
