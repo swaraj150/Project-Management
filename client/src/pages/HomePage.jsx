@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 
 import MainMenu from '../components/common/MainMenu'
 import DashBoard from '../components/common/DashBoard'
@@ -8,7 +9,7 @@ import Tasks from '../components/common/Tasks'
 import Alerts from '../components/common/Alerts'
 
 const HomePage = () => {
-  const [active, setActive] = useState(0)
+  const { active, collapsed } = useSelector((state) => state.menu)
 
   const menuItems = [
     <DashBoard />,
@@ -20,8 +21,8 @@ const HomePage = () => {
 
   return (
     <section id="homepage">
-      <MainMenu active={active} setActive={setActive} />
-      <section className="content">
+      <MainMenu />
+      <section id="content" className={collapsed ? 'content-spread' : null}>
         {menuItems[active]}
       </section>
     </section>
