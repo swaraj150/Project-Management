@@ -59,3 +59,13 @@
         margin-left: 2%;
     }
 }
+
+.no-scrollbar {
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+.h1 {
+    font-size: var(--mukta--h1---bold);
+    font-weight: 700;
+}
