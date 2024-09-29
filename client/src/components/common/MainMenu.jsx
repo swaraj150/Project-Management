@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { MdDashboard } from 'react-icons/md'
 import { FaBuilding, FaProjectDiagram, FaTasks } from 'react-icons/fa'
 import { IoIosAlert } from 'react-icons/io'
 import { MdLightMode, MdDarkMode, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
 
-const MainMenu = ({ active, setActive }) => {
-  const [collapsed, setCollapsed] = useState(false)
+import { setActive, setCollapsed } from '../../redux/features/menuSlice'
+
+const MainMenu = () => {
+  const dispatch = useDispatch()
+
+  const { active, collapsed } = useSelector((state) => state.menu)
 
   const menuItems = [
     { icon: <MdDashboard />, label: 'Dashboard' },
@@ -17,7 +22,7 @@ const MainMenu = ({ active, setActive }) => {
 
   return (
     <section className={collapsed ? 'main-menu collapsed' : 'main-menu'}>
-      <div className="menu-collapse pointer" onClick={() => setCollapsed((prev) => !prev)}>
+      <div className="menu-collapse pointer" onClick={() => dispatch(setCollapsed(!collapsed))}>
         {
           collapsed ? <MdKeyboardArrowRight /> : <MdKeyboardArrowLeft />
         }
@@ -25,9 +30,9 @@ const MainMenu = ({ active, setActive }) => {
       <ul>
         {
           menuItems?.map((item, index) => (
-            <div className={active === index ? 'active pointer' : 'pointer'} >
+            <div className={active === index ? 'active pointer' : 'pointer'} key={index} >
               <span className='top-curve'></span>
-              <li onClick={() => setActive(index)}>
+              <li onClick={() => dispatch(setActive(index))}>
                 {item.icon}
                 <span>{item.label}</span>
               </li>
