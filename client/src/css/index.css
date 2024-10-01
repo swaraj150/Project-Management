@@ -645,13 +645,21 @@ body {
             }
 
             .home {
+                height: 94vh;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: space-evenly;
+
                 .grid {
                     margin-top: 2%;
                     display: grid;
-                    gap: 20px;
                     grid-template-areas:
+                        'header-1 header-1 header-1'
                         'main main main'
+                        'header-2 header-2 header-2'
                         'stakeholders stakeholders stakeholders'
+                        'header-3 header-3 header-3'
                         'members members members';
 
                     .main,
@@ -663,8 +671,8 @@ body {
                         gap: 20px;
 
                         .profile {
-                            min-width: 30%;
-                            padding: 2%;
+                            min-width: 25%;
+                            padding: 1%;
                             border-radius: 20px;
                             background-color: var(--secondary--50);
                             display: flex;
@@ -672,8 +680,8 @@ body {
                             align-items: center;
 
                             .avatar {
-                                height: 100px;
-                                width: 100px;
+                                height: 80px;
+                                width: 80px;
                                 border-radius: 50%;
                                 background-color: var(--white--100);
                             }
@@ -689,15 +697,29 @@ body {
 
                     .main {
                         grid-area: main;
+                        margin-bottom: 1%;
                     }
 
                     .stakeholders {
                         grid-area: stakeholders;
+                        margin-bottom: 1%;
                     }
 
                     .members {
                         grid-area: members;
                         overflow: auto;
+                    }
+
+                    .header-1 {
+                        grid-area: header-1;
+                    }
+
+                    .header-2 {
+                        grid-area: header-2;
+                    }
+
+                    .header-3 {
+                        grid-area: header-3;
                     }
                 }
             }
