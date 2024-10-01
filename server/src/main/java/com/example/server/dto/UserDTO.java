@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
     private String name;
     private String username;
-    private String email;
+    private Set<String> emails;
 //    private String password;
     private Role role;
     private ProjectRole projectRole;
@@ -24,7 +26,7 @@ public class UserDTO {
         return UserDTO.builder()
                 .name(user.getFirstName() + (user.getLastName()==null?"":" "+user.getLastName()))
                 .username(user.getUsername())
-                .email(user.getEmail())
+                .emails(user.getEmails())
                 .role(user.getRole())
                 .projectRole(user.getProjectRole())
                 .build();

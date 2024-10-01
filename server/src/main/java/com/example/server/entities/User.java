@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import net.minidev.json.annotate.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,11 +28,17 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String firstName;
     private String lastName;
-    @Column(unique = true, nullable = false)
-    private String email;
+
+
+
+    @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name = "user_emails", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "email")
+    private Set<String> emails = new HashSet<>();
+
+
     @Column(unique = true, nullable = false)
     private String username;
-    @Column(nullable = false)
     private String password;
     @Column(columnDefinition = "varchar(10)")
     @Enumerated(EnumType.STRING)
@@ -40,8 +48,16 @@ public class User implements UserDetails {
     private ProjectRole projectRole;
     private String resetPasswordToken;
     private LocalDateTime resetPasswordTokenExpiry;
+
     @Column(name = "organization_id")
     private UUID organizationId;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @CollectionTable(name = "oauth_identities", joinColumns = @JoinColumn(name = "user_id"))
+    @MapKeyColumn(name = "oauth_provider")
+    @Column(name = "oauth_id")
+    private Map<String, String> oauthIdentities = new HashMap<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

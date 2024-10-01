@@ -38,7 +38,8 @@ public class Team {
     private Set<UUID> memberIds = new HashSet<>();
 
 
-
+    @Column(name = "project_id")
+    private UUID projectId;
 //    @ManyToOne
 //    // bidirectional mapping between teams and organization
 //    @JoinColumn(name = "organization_id")

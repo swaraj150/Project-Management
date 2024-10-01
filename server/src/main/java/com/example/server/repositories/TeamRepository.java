@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TeamRepository extends JpaRepository<Team, UUID> {
@@ -22,4 +23,7 @@ public interface TeamRepository extends JpaRepository<Team, UUID> {
     // optimization can be done by only joining it with users within organization
     @Query("select t.id from Team t join t.memberIds u where u = :userId")
     UUID findTeamIdByUserId(@Param("userId") UUID userId);
+
+
+    Optional<Team> findByName(String name);
 }

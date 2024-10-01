@@ -51,7 +51,8 @@ public enum ProjectRole {
             ProjectAuthority.VIEW_PROJECT,
             ProjectAuthority.EDIT_TASKS,
             ProjectAuthority.VIEW_TEAM,
-            ProjectAuthority.VIEW_TASKS
+            ProjectAuthority.VIEW_TASKS,
+            ProjectAuthority.CREATE_TASKS
 
     )),
     QA(EnumSet.of(

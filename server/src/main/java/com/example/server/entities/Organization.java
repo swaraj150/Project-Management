@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import net.minidev.json.annotate.JsonIgnore;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -27,11 +28,14 @@ public class Organization {
     private String name;
     @Column(name = "product_owner_id")
     private UUID productOwnerId;
-    @Column(name = "project_manager_id")
-    private UUID projectManagerId;
+//    @Column(name = "project_manager_id")
+//    private UUID projectManagerId;
     private String code;
-//    In a relational database, it's generally better to avoid storing lists or arrays of IDs directly in a table. This adheres to normalization principles and prevents data redundancy.
-//    Instead, relationships are typically managed through foreign keys in the related tables (e.g., a Team table would have an organization_id column).
+    @ElementCollection
+    @CollectionTable(name = "projects", joinColumns = @JoinColumn(name = "organization_id"))
+    @Column(name = "project_id")
+    private Set<UUID> projects = new HashSet<>();
+
 
 //    @OneToOne
 //    // a single user might be responsible for single organization
@@ -72,4 +76,6 @@ public class Organization {
 //    @ToString.Exclude
 //    @JsonIgnore
 //    private Set<User> members;
+
+
 }

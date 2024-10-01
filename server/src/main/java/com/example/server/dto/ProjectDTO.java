@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,14 +26,15 @@ public class ProjectDTO {
     private UUID id;
     private String title;
     private String description;
-    private Integer teamSize;
-    private List<UUID> tasksIds;
+//    private Integer teamSize;
+    private Set<UUID> tasksIds;
+    private Set<UUID> teams;
     private LocalDate startDate;
     private LocalDate estimatedEndDate;
     private LocalDate endDate;
     private UUID organizationId;
     private BigDecimal budget;// in INR
-    private List<UUID> techStack;
+//    private List<UUID> techStack;
     private CompletionStatus completionStatus;
 
     public static ProjectDTO fromProject(Project project){
@@ -40,7 +42,8 @@ public class ProjectDTO {
                 .id(project.getId())
                 .title(project.getTitle())
                 .description(project.getDescription())
-                .teamSize(project.getTeamSize())
+                .tasksIds(project.getTasks())
+                .teams(project.getTeams())
                 .startDate(project.getStartDate())
                 .estimatedEndDate(project.getEstimatedEndDate())
                 .endDate(project.getEndDate())
@@ -48,7 +51,6 @@ public class ProjectDTO {
                 .budget(project.getBudget())
                 .completionStatus(project.getCompletionStatus())
                 .build();
-        // tech stack and taskIds to be set separately
     }
 
     public Project toProject(){
@@ -56,7 +58,6 @@ public class ProjectDTO {
         project.setId(this.getId());
         project.setTitle(this.getTitle());
         project.setDescription(this.getDescription());
-        project.setTeamSize(this.getTeamSize());
         project.setStartDate(this.getStartDate());
         project.setEstimatedEndDate(this.getEstimatedEndDate());
         project.setEndDate(this.getEndDate());

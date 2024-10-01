@@ -26,13 +26,11 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final UserService userService;
     private final UserRepository userRepository;
-    private final OrganizationService organizationService;
+//    private final OrganizationService organizationService;
     private final SecurityUtils securityUtils;
-    private final RoleValidator roleValidator;
-    private final OrganizationRepository organizationRepository;
 
     public TeamDTO createTeamDto(UUID id){
-        Team team=teamRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Entity not found"));
+        Team team=teamRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Team not found"));
         return TeamDTO.builder()
                 .id(id)
                 .name(team.getName())
@@ -49,7 +47,7 @@ public class TeamService {
         if(!user1.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TEAM)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        OrganizationDTO org=organizationService.createOrganizationDTO(user1.getOrganizationId());
+//        OrganizationDTO org=organizationService.createOrganizationDTO(user1.getOrganizationId());
         User teamLead=userService.loadUser(request.getTeamLead());
         Set<UUID> members=new HashSet<>();
         members.add(teamLead.getId());
@@ -68,7 +66,7 @@ public class TeamService {
         Team team = new Team();
         team.setName(request.getName());
         team.setTeamLeadId(teamLead.getId());
-        team.setOrganizationId(org.getId());
+        team.setOrganizationId(user1.getOrganizationId());
         team.setMemberIds(members);
         teamRepository.save(team);
     }

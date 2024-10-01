@@ -37,26 +37,26 @@ public class ApplicationConfig {
                     throw new IllegalArgumentException("Username or Email cannot be null or empty");
                 }
                 logger.info("Attempting to load user details for username: {}", cred);
-
-
-                Optional<User> optionalUserByUsername=userRepository.findByUsername(cred);
-                Optional<User> optionalUserByEmail=userRepository.findByEmail(cred);
-
-                if(optionalUserByUsername.isEmpty() && optionalUserByEmail.isEmpty()){
-                    logger.warn("User not found: {}",cred);
-                    throw new UsernameNotFoundException("User not found");
+                User user;
+                if(cred.contains("@")){
+                    user=userRepository.findByEmail(cred).orElseThrow(()->new UsernameNotFoundException("user not found"));
                 }
-
-                if (optionalUserByUsername.isPresent() && optionalUserByEmail.isPresent()
-                        && !optionalUserByUsername.get().equals(optionalUserByEmail.get())) {
-                    logger.error("Multiple users found for credential: {}", cred);
-                    throw new BadCredentialsException("Multiple users found for the given credential");
+                else{
+                    user=userRepository.findByUsername(cred).orElseThrow(()->new UsernameNotFoundException("user not found"));
                 }
+//                Optional<User> optionalUserByUsername=userRepository.findByUsername(cred);
 
-
-
-
-                User user=optionalUserByUsername.isEmpty()?optionalUserByEmail.get():optionalUserByUsername.get();
+//                if(optionalUserByUsername.isEmpty() && optionalUserByEmail.isEmpty()){
+//                    logger.warn("User not found: {}",cred);
+//                    throw new UsernameNotFoundException("User not found");
+//                }
+//                if (optionalUserByUsername.isPresent() && optionalUserByEmail.isPresent()
+//                        && !optionalUserByUsername.get().equals(optionalUserByEmail.get())) {
+//                    logger.error("Multiple users found for credential: {}", cred);
+//                    throw new BadCredentialsException("Multiple users found for the given credential");
+//                }
+//
+//                User user= optionalUserByUsername.orElseGet(optionalUserByEmail::get);
 
                 if (!user.isEnabled()) {
                     logger.warn("User found but is disabled: {}", cred);
@@ -103,7 +103,6 @@ public class ApplicationConfig {
             logger.error("Error configuring AuthenticationProvider", e);
             throw new BeanCreationException("Failed to create AuthenticationProvider bean", e);
         }
-
         return authenticationProvider;
     }
     @Bean

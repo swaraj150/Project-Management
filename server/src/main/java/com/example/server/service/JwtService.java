@@ -5,10 +5,13 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +93,7 @@ public class JwtService {
         logger.debug("Generating JWT without extra claims for user: {}", userDetails.getUsername());
         return generateToken(new HashMap<>(), userDetails);
     }
+
     public boolean isTokenValid(String jwt,UserDetails userDetails){
         try {
             logger.info("Validating JWT for user: {}", userDetails.getUsername());
@@ -100,13 +104,36 @@ public class JwtService {
             return false;
         }
     }
-    private boolean isTokenExpired(String jwt){
+    public boolean isTokenExpired(String jwt){
         logger.debug("Checking if the JWT is expired.");
         return extractExpiration(jwt).before(new Date());
     }
-    private Date extractExpiration(String jwt){
+    public Date extractExpiration(String jwt){
         logger.debug("Extracting expiration date from JWT.");
         return extractClaim(jwt, Claims::getExpiration);
+    }
+
+    public String extractToken(HttpServletRequest request) {
+        String token = request.getParameter("token");
+        if (token != null) {
+            return token;
+        }
+
+        final String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwt_token".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 
 }

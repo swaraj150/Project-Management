@@ -20,20 +20,22 @@ public class OrganizationDTO {
     private UUID id;
     private String name;
     private UUID productOwnerId;
-    private UUID projectManagerId;
+//    private UUID projectManagerId;
     private List<UUID> teamIds;
     private List<UUID> stakeholderIds;
     private String code;
     private Set<UUID> joinRequestIds;
     private Set<UUID> memberIds;
-//    private List<JoinRequestDTO> requests;
+    private Set<UUID> projects;
+
+
 
     public static OrganizationDTO fromOrganization(Organization organization) {
         OrganizationDTO dto = new OrganizationDTO();
         dto.setId(organization.getId());
         dto.setName(organization.getName());
         dto.setProductOwnerId(organization.getProductOwnerId());
-        dto.setProjectManagerId(organization.getProjectManagerId());
+//        dto.setProjectManagerId(organization.getProjectManagerId());
         dto.setCode(organization.getCode());
         // Note: You'll need to fetch and set the related entity IDs separately
         return dto;
@@ -44,7 +46,7 @@ public class OrganizationDTO {
         organization.setId(this.id);
         organization.setName(this.name);
         organization.setProductOwnerId(this.productOwnerId);
-        organization.setProjectManagerId(this.projectManagerId);
+//        organization.setProjectManagerId(this.projectManagerId);
         organization.setCode(this.code);
         return organization;
     }

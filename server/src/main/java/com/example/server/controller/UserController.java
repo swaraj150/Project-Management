@@ -10,8 +10,12 @@ import com.example.server.requests.RegisterRequest;
 import com.example.server.requests.ResetPasswordRequest;
 import com.example.server.response.ApiResponse;
 import com.example.server.response.AuthResponse;
+import com.example.server.service.JwtService;
 import com.example.server.service.PasswordResetService;
+import com.example.server.service.TokenBlacklistService;
 import com.example.server.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,6 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,14 +38,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     private final PasswordResetService passwordResetService;
 
     private final SecurityUtils securityUtils;
 
+    private final JwtService jwtService;
+
+    private final TokenBlacklistService tokenBlacklistService;
+
     private static final Logger logger= LoggerFactory.getLogger(UserController.class);
+
+
 
 
     @PostMapping("/register")
@@ -68,7 +79,8 @@ public class UserController {
 
     @GetMapping("/")
     public ResponseEntity<ApiResponse<UserDTO>> getUser() {
-        UserDTO userDTO = userService.getUser(securityUtils.getCurrentUsername());
+        String username=securityUtils.getCurrentUsername();
+        UserDTO userDTO = userService.getUser(username);
         return ResponseEntity.ok(ApiResponse.success(userDTO));
     }
 
@@ -89,5 +101,16 @@ public class UserController {
         userService.updateProjectRole(role);
         return ResponseEntity.ok(ApiResponse.success("Project role updated"));
     }
+
+    @GetMapping("/logout-user")
+    public ResponseEntity<ApiResponse<?>> logout(HttpServletRequest request) {
+        String token=jwtService.extractToken(request);
+        tokenBlacklistService.addToken(token);
+        return ResponseEntity.ok(ApiResponse.success("Logout success"));
+
+
+    }
+
+
 
 }

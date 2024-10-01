@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -23,9 +25,9 @@ public class TaskDTO {
     private Integer priority;
     private UUID createdByUserId;
     private List<UUID> assignedToUserIds;
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private Integer estimatedHours;
-    private Date completedAt;
+    private LocalDateTime completedAt;
     private CompletionStatus completionStatus;
     private List<UUID> subTaskIds;
     private UUID parentTaskId;

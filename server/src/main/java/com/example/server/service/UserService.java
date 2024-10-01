@@ -7,6 +7,7 @@ import com.example.server.entities.ProjectAuthority;
 import com.example.server.entities.ProjectRole;
 import com.example.server.entities.Role;
 import com.example.server.entities.User;
+import com.example.server.exception.AccountConflictException;
 import com.example.server.exception.InvalidPasswordException;
 import com.example.server.repositories.UserRepository;
 import com.example.server.requests.LoginRequest;
@@ -25,10 +26,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,25 +57,27 @@ public class UserService {
         }
         return userOptional.get();
     }
+    public User loadUser(@NonNull UUID id){
+        Optional<User> userOptional=userRepository.findById(id);
+        if(userOptional.isEmpty()){
+            throw new UsernameNotFoundException("User not found");
+        }
+        return userOptional.get();
+    }
 
     @Transactional
     public AuthResponse createUser(RegisterRequest registerRequest) {
         userValidator.validateRegisterRequest(registerRequest);
-
         User user = new User();
         String[] data = registerRequest.getName().split(" ");
-        boolean islast=data.length>1;
-        String username=data[0]+(islast?"_"+data[1]:"_")+(int)(Math.random() * 9000 +1000) ;
+        String username=data[0]+(data.length>1?"_"+data[1]:"_")+(int)(Math.random() * 9000 +1000) ;
         user.setFirstName(data[0]);
         user.setLastName(data.length == 1 ? null : data[1]);
         user.setUsername(username);
-        user.setEmail(registerRequest.getEmail());
+        user.getEmails().add(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setRole(Role.USER);
         user.setProjectRole(ProjectRole.DEFAULT_TEAM_MEMBER);
-        logger.info("user : {}",username);
-        logger.info("has authority: {}",user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_ORGANIZATION));
-
         userRepository.save(user);
         logger.info("User created: {}", user.getUsername());
 
@@ -152,6 +157,8 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+
 
 
 

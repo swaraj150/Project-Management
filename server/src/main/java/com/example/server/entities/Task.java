@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
 @Data
@@ -25,25 +25,14 @@ public class Task {
     @Column(name = "created_by_user_id")
     private UUID createdBy;
 
-//    @ManyToOne
-//    // a user can create many tasks
-//    @JoinColumn(name="user_id")
-//    private User createdBy;
+    @ElementCollection
+    @CollectionTable(name = "assigned_to", joinColumns = @JoinColumn(name = "task_id"))
+    @Column(name = "user_id")
+    private Set<UUID> assignedTo = new HashSet<>();
 
-
-//    @ManyToMany
-//    // many users may belong to one task and one task may be assigned to one user
-//    @JoinTable(
-//            name="task_assigned_users",
-//            joinColumns=@JoinColumn(name="task_id"),
-//            inverseJoinColumns = @JoinColumn(name="user_id")
-//
-//    )
-//    private List<User> assignedTo;
-
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private Integer estimatedHours;
-    private Date completedAt;
+    private LocalDateTime completedAt;
     @Enumerated(EnumType.STRING)
     private CompletionStatus completionStatus;
 
@@ -58,14 +47,6 @@ public class Task {
 
     @Column(name = "project_id")
     private UUID projectId;
-//    @ManyToOne
-//    //many subtasks can be associated with one parent task.
-//    @JoinColumn(name = "parent_task_id")
-//    private Task parentTask;
-//
-//    @ManyToOne
-//    //bidirectional mapping between tasks and a project
-//    @JoinColumn(name="project_id")
-//    private Project project;
+
 
 }
