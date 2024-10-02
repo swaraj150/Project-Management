@@ -32,7 +32,12 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Configuration
@@ -50,22 +55,23 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
+
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((auth)->auth.requestMatchers("/api/v1/users/register","/api/v1/users/login","/oauth2/**", "/login/**","/login").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests((auth)->auth.requestMatchers("/api/v1/users/register","/api/v1/users/google","/api/v1/users/github","/api/v1/users/login","/oauth2/**", "/login/**","/login").permitAll().anyRequest().authenticated())
                 .sessionManagement((session)->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                        .maximumSessions(1)
                 )
                 .authenticationProvider(authenticationProvider)
-                .oauth2Login(oauth2->oauth2
-                        .authorizationEndpoint(authorization->authorization
-                                .authorizationRequestRepository(new HttpSessionOAuth2AuthorizationRequestRepository())
-                        )
-                        .successHandler(customOAuth2SuccessHandler)
-                        .failureHandler(customOAuth2FailureHandler)
-//                        .defaultSuccessUrl("/")
-
-                )
+//                .oauth2Login(oauth2->oauth2
+//                        .authorizationEndpoint(authorization->authorization
+//                                .authorizationRequestRepository(new HttpSessionOAuth2AuthorizationRequestRepository())
+//                        )
+//                        .successHandler(customOAuth2SuccessHandler)
+//                        .failureHandler(customOAuth2FailureHandler)
+////                        .defaultSuccessUrl("/")
+//
+//                )
                 .logout(logout->logout
                         .logoutUrl("/api/v1/users/logout")
                         .logoutSuccessHandler((request,response,authentication)->{
@@ -97,7 +103,20 @@ public class SecurityConfig{
                 )
                 .addFilterBefore(jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Your React app's URL
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 

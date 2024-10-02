@@ -28,8 +28,6 @@ public class Organization {
     private String name;
     @Column(name = "product_owner_id")
     private UUID productOwnerId;
-//    @Column(name = "project_manager_id")
-//    private UUID projectManagerId;
     private String code;
     @ElementCollection
     @CollectionTable(name = "projects", joinColumns = @JoinColumn(name = "organization_id"))

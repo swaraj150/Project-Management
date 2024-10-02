@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AuthResponse {
+    private String status;
     private String msg;
-    private boolean error;
     private String token;
     private UserDTO user;
 }

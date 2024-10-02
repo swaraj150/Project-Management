@@ -8,21 +8,21 @@ import org.springframework.http.HttpStatus;
 @Data
 @Builder
 public class ApiResponse<T> {
-    private final Integer status;
+    private final String status;
     private final String message;
     private final T data;
 
 
     public static <T> ApiResponse<T> success(T data) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Success", data);
+        return new ApiResponse<>("200", "",data);
     }
 
     public static <T> ApiResponse<T> error(String message) {
-        return new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null);
+        return new ApiResponse<>("500", "",null);
     }
 
     public static <T> ApiResponse<T> error(String message, HttpStatus status) {
-        return new ApiResponse<>(status.value(), message, null);
+        return new ApiResponse<>(String.valueOf(status.value()),message, null);
     }
 
 

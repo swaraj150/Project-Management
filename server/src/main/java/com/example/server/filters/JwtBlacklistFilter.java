@@ -26,7 +26,7 @@ public class JwtBlacklistFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token=extractToken(request);
-        logger.info("token extracted");
+//        logger.info("token extracted");
 
         if(token!=null && tokenBlacklistService.isTokenPresent(token)){
 

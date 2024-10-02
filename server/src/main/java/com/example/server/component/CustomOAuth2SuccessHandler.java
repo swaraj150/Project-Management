@@ -53,55 +53,15 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
             }
             response.addHeader("Authorization", "Bearer " + token);
             Cookie jwtCookie =createSecureCookie("jwt_token",token,request.isSecure());
-
             response.addCookie(jwtCookie);
-            getRedirectStrategy().sendRedirect(request, response, "http://localhost/");
+            getRedirectStrategy().sendRedirect(request, response, "http://localhost:5173");
             super.onAuthenticationSuccess(request, response, authentication);
         }
         else {
             throw new OAuth2AuthenticationException("Unexpected authentication type");
         }
     }
-//    public void processOAuthPostLogin(String email, String oauth2ClientName, String oauth2Id, OAuth2User oAuth2User) {
-//        logger.info("entered in processOAuthPostLogin");
-//        Optional<User> optionalUserByOAuth = userRepository.findByOauthIdentity(oauth2ClientName, oauth2Id);
-//
-//        Optional<User>  optionalUserByEmail=userRepository.findByEmail(email);
-//
-//        if(optionalUserByOAuth.isPresent()){
-//            User userByOAuth=optionalUserByOAuth.get();
-//            if (optionalUserByEmail.isPresent() && !optionalUserByEmail.get().getId().equals(userByOAuth.getId())) {
-//                throw new AccountConflictException("This OAuth account is linked to a different email. Please log in with your original account or contact support.");
-//            }
-//            if (!userByOAuth.getEmails().contains(email)) {
-//                userByOAuth.getEmails().add(email);
-//                userRepository.save(userByOAuth);
-//            }
-//        }
-//        else if (optionalUserByEmail.isPresent()) {
-//            User userByEmail=optionalUserByEmail.get();
-//            userByEmail.getOauthIdentities().put(oauth2ClientName, oauth2Id);
-//            userRepository.save(userByEmail);
-//        }
-//        else {
-//            // new user
-//            logger.info("no existing user found, creating new user");
-//            User user = new User();
-//            String name = oAuth2User.getAttribute("name");
-//            assert name != null;
-//            String[] data=name.split(" ");
-//            String username=data[0]+(data.length>1?"_"+data[1]:"_")+(int)(Math.random() * 9000 +1000) ;
-//            user.setFirstName(data[0]);
-//            user.setLastName(data.length == 1 ? null : data[1]);
-//            user.setUsername(username);
-//            user.getEmails().add(email);
-//            user.setRole(Role.USER);
-//            user.setProjectRole(ProjectRole.DEFAULT_TEAM_MEMBER);
-//            user.getOauthIdentities().put(oauth2ClientName,oauth2Id);
-//            userRepository.save(user);
-//            logger.info("user created : {}",user.getUsername());
-//        }
-//    }
+
     @Transactional
     public User processOAuthPostLogin(String email, String oauth2ClientName, String oauth2Id, OAuth2User oAuth2User) {
         logger.info("Processing OAuth post login for email: {}", email);

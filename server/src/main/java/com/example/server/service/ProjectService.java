@@ -30,7 +30,7 @@ public class ProjectService {
     private final TeamRepository teamRepository;
     private final UserService userService;
     private final TeamService teamService;
-    public void createProject(@NonNull CreateProjectRequest request){
+    public ProjectResponse createProject(@NonNull CreateProjectRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_PROJECT)){
             throw new UnauthorizedAccessException("User does not have the required authority");
@@ -51,6 +51,7 @@ public class ProjectService {
         projectRepository.save(project);
         organization.getProjects().add(project.getId());
         organizationRepository.save(organization);
+        return loadProjectResponse(project.getId());
     }
 
     public void addTeam(@NonNull String name){
@@ -88,6 +89,4 @@ public class ProjectService {
                 .teams(teams)
                 .build();
     }
-
-
 }

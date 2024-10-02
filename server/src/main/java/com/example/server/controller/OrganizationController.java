@@ -12,10 +12,13 @@ import com.example.server.response.OrganizationResponse;
 import com.example.server.service.OrganizationService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,6 +28,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrganizationController {
     private final OrganizationService organizationService;
+    private static final Logger logger= LoggerFactory.getLogger(OrganizationController.class);
 
     @PostMapping("/initiate")
     public ResponseEntity<ApiResponse<String>> initiate(@RequestBody @NonNull OrganizationInitiateRequest request){
@@ -33,29 +37,42 @@ public class OrganizationController {
     }
 
 
+//    @PostMapping("/join")
+//    public ResponseEntity<ApiResponse<String>> join(@RequestBody @NonNull JoinOrganizationRequest request){
+//        organizationService.requestToJoinOrganization(request.getCode(),request.getRole());
+//        return ResponseEntity.ok(ApiResponse.success("Request sent successfully"));
+//    }
     @PostMapping("/join")
-    public ResponseEntity<ApiResponse<String>> join(@RequestBody @NonNull JoinOrganizationRequest request){
-        organizationService.requestToJoinOrganization(request.getCode(),request.getRole());
+    public ResponseEntity<ApiResponse<String>> join(@RequestParam @NonNull String code,@RequestParam @NonNull String role){
+        organizationService.requestToJoinOrganization(code,role);
         return ResponseEntity.ok(ApiResponse.success("Request sent successfully"));
     }
 
     @PutMapping("/respond")
-    public ResponseEntity<ApiResponse<String>> acceptRequest(@RequestBody @NonNull ChangeJoinRequestStatusRequest request){
-        organizationService.respondToJoinRequest(request);
-        return ResponseEntity.ok(ApiResponse.success("Request "+request.getStatus()));
+    public ResponseEntity<ApiResponse<String>> acceptRequest(@RequestParam @NonNull UUID id,@RequestParam @NonNull String status){
+        logger.info("id :{}",id);
+        organizationService.respondToJoinRequest(ChangeJoinRequestStatusRequest.builder().id(id).status(status).build());
+        return ResponseEntity.ok(ApiResponse.success("Request "+status));
     }
 
 
 
     @GetMapping("/requests")
-    public ResponseEntity<ApiResponse<Set<JoinRequestDTO>>> loadJoinRequests(){
+    public ResponseEntity<?> loadJoinRequests(){
         Set<JoinRequestDTO> set=organizationService.loadJoinRequest();
-        return ResponseEntity.ok(ApiResponse.success(set));
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("requests",set);
+        return ResponseEntity.ok(h);
     }
 
     @GetMapping("/")
-    public ResponseEntity<ApiResponse<OrganizationResponse>> loadOrganization(){
-        return ResponseEntity.ok(ApiResponse.success(organizationService.loadOrganizationResponse()));
+    public ResponseEntity<?> loadOrganization(){
+        OrganizationResponse response=organizationService.loadOrganizationResponse();
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("organization",response);
+        return ResponseEntity.ok(h);
     }
 
 

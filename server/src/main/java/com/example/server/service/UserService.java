@@ -83,6 +83,7 @@ public class UserService {
 
         String jwtToken = jwtService.generateToken(user);
         return AuthResponse.builder()
+                .status("200")
                 .msg("User created successfully")
                 .token(jwtToken)
                 .user(UserDTO.mapToUserDTO(user))
@@ -107,7 +108,6 @@ public class UserService {
                 logger.warn("Login attempt with null username or password");
                 return AuthResponse.builder()
                         .msg("Username and password are required")
-                        .error(true)
                         .build();
             }
             UsernamePasswordAuthenticationToken authenticationToken=new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword());
@@ -116,6 +116,7 @@ public class UserService {
             var jwtToken=jwtService.generateToken(user);
             logger.info("User {} successfully authenticated", request.getUsername());
             return AuthResponse.builder()
+                    .status("200")
                     .msg("Login Successful")
                     .token(jwtToken)
                     .user(UserDTO.mapToUserDTO((User) user))

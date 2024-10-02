@@ -85,7 +85,7 @@ public class OrganizationService {
     }
     public OrganizationResponse loadOrganizationResponse() {
         OrganizationDTO organizationDTO = loadOrganizationDTOByCurrentUser();
-        Set<UUID> projects=organizationDTO.getProjects();
+//        Set<UUID> projects=organizationDTO.getProjects();
         List<UserDTO> stakeholders=new ArrayList<>();
         List<UserDTO> members=new ArrayList<>();
         List<UUID> ids=organizationDTO.getStakeholderIds();
@@ -96,10 +96,10 @@ public class OrganizationService {
         for(UUID id1:ids2){
             members.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
         }
-        Set<ProjectResponse> projectResponses=new HashSet<>();
-        for(UUID id1:projects){
-            projectResponses.add(projectService.loadProjectResponse(id1));
-        }
+//        Set<ProjectResponse> projectResponses=new HashSet<>();
+//        for(UUID id1:projects){
+//            projectResponses.add(projectService.loadProjectResponse(id1));
+//        }
         return OrganizationResponse.builder()
                 .name(organizationDTO.getName())
                 .productOwner(UserDTO.mapToUserDTO(userRepository.findById(organizationDTO.getProductOwnerId())
@@ -109,7 +109,7 @@ public class OrganizationService {
                 .stakeholders(stakeholders)
                 .members(members)
                 .code(organizationDTO.getCode())
-                .projects(projectResponses)
+//                .projects(projectResponses)
                 .build();
     }
     public OrganizationDTO loadOrganizationDTOByCurrentUser(){

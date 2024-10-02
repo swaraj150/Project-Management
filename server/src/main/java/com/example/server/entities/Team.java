@@ -23,21 +23,15 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "team_id")
     private UUID id;
-
     private String name;
-
     @Column(name = "organization_id")
     private UUID organizationId;
-
     @Column(name = "team_lead_id")
     private UUID teamLeadId;
-
     @ElementCollection
     @CollectionTable(name = "team_members", joinColumns = @JoinColumn(name = "team_id"))
     @Column(name = "user_id")
     private Set<UUID> memberIds = new HashSet<>();
-
-
     @Column(name = "project_id")
     private UUID projectId;
 //    @ManyToOne

@@ -8,6 +8,7 @@ import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.TeamRepository;
 import com.example.server.requests.TeamCreateRequest;
 import com.example.server.response.ApiResponse;
+import com.example.server.response.TeamResponse;
 import com.example.server.service.TeamService;
 import com.example.server.service.UserService;
 import lombok.NonNull;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 @RestController
@@ -28,19 +30,26 @@ public class TeamController {
     private final TeamRepository teamRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<?>> create(@RequestBody @NonNull TeamCreateRequest request){
-        teamService.createTeam(request);
-        return ResponseEntity.ok(ApiResponse.success("Team created successfully"));
+    public ResponseEntity<?> create(@RequestBody @NonNull TeamCreateRequest request){
+        TeamResponse teamResponse=teamService.createTeam(request);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("organization",teamResponse);
+        return ResponseEntity.ok(h);
+//        return ResponseEntity.ok(ApiResponse.success("Team created successfully"));
     }
 
     @GetMapping("/")
-    public ResponseEntity<ApiResponse<?>> load(){
+    public ResponseEntity<?> load(){
         User user=userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-
-        return ResponseEntity.ok(ApiResponse.success(teamService.loadTeam(user.getId())));
+        TeamResponse teamResponse=teamService.loadTeam(teamRepository.findTeamIdByUserId(user.getId()));
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("team",teamResponse);
+        return ResponseEntity.ok(h);
     }
 
 

@@ -42,15 +42,18 @@ public class TeamService {
 
     }
 
-    public void createTeam(@NonNull TeamCreateRequest request){
+    public TeamResponse createTeam(@NonNull TeamCreateRequest request){
         User user1=userService.loadUser(securityUtils.getCurrentUsername());
         if(!user1.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TEAM)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
+        UUID orgId=user1.getOrganizationId();
+//        Organization organization=organizationService.loadOrganization(orgId);
 //        OrganizationDTO org=organizationService.createOrganizationDTO(user1.getOrganizationId());
         User teamLead=userService.loadUser(request.getTeamLead());
         Set<UUID> members=new HashSet<>();
         members.add(teamLead.getId());
+//        members.add(organization.getProductOwnerId());
         for(String user: request.getDev()){
             User dev=userService.loadUser(user);
             userService.updateProjectRole(ProjectRole.DEVELOPER,dev);
@@ -69,10 +72,11 @@ public class TeamService {
         team.setOrganizationId(user1.getOrganizationId());
         team.setMemberIds(members);
         teamRepository.save(team);
+        return loadTeam(team.getId());
     }
 
     public TeamResponse loadTeam(@NonNull UUID id){
-        TeamDTO teamDTO=createTeamDto(teamRepository.findTeamIdByUserId(id));
+        TeamDTO teamDTO=createTeamDto(id);
         List<UserDTO> devs=new ArrayList<>();
         List<UserDTO> testers=new ArrayList<>();
         List<UUID> ids=teamDTO.getDeveloperIds();

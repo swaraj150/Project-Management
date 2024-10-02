@@ -14,73 +14,87 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<ApiResponse<?>> handleInvalidTokenException(InvalidTokenException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(ApiResponse.error(e.getMessage()));
+    public ResponseEntity<?> handleInvalidTokenException(InvalidTokenException e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","400");
+        h.put("error",e.getMessage());
+        return ResponseEntity.ok(h);
+
 
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<ApiResponse<String>> handleInvalidPasswordException(InvalidPasswordException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(ApiResponse.error(e.getMessage(), HttpStatus.BAD_REQUEST));
+    public ResponseEntity<?> handleInvalidPasswordException(InvalidPasswordException e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","400");
+        h.put("error",e.getMessage());
+        return ResponseEntity.ok(h);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity
-                .badRequest()
-                .body(ApiResponse.error(e.getMessage(),HttpStatus.BAD_REQUEST));
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","400");
+        h.put("error",e.getMessage());
+        return ResponseEntity.ok(h);
     }
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ApiResponse<String>> handleBadCredentialsException(BadCredentialsException e) {
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error("Invalid Credentials",HttpStatus.UNAUTHORIZED));
+    public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","401");
+        h.put("error",e.getMessage());
+        return ResponseEntity.ok(h);
     }
 
     @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<ApiResponse<String>> handleDisabledException(DisabledException e) {
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error("User account disabled",HttpStatus.FORBIDDEN));
+    public ResponseEntity<?> handleDisabledException(DisabledException e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","403");
+        h.put("error",e.getMessage());
+        return ResponseEntity.ok(h);
     }
 
     @ExceptionHandler(SecurityException.class)
-    public ResponseEntity<ApiResponse<String>> handleSecurityException(SecurityException e) {
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error("User is not authenticated",HttpStatus.UNAUTHORIZED));
+    public ResponseEntity<?> handleSecurityException(SecurityException e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","401");
+        h.put("error",e.getMessage());
+        return ResponseEntity.ok(h);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<String>> handleException(Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("An unexpected error occurred"));
+    public ResponseEntity<?> handleException(Exception e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","500");
+        h.put("error",e.getMessage());
+        return ResponseEntity.ok(h);
     }
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiResponse<String>> handleEntityNotFoundException(EntityNotFoundException e) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error("Entity not found",HttpStatus.NOT_FOUND));
+    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","404");
+        h.put("error",e.getMessage());
+        return ResponseEntity.ok(h);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ApiResponse<String>> handleUsernameNotFoundException(UsernameNotFoundException e) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error("User not found",HttpStatus.NOT_FOUND));
+    public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","404");
+        h.put("error",e.getMessage());
+        return ResponseEntity.ok(h);
     }
     @ExceptionHandler(UnauthorizedAccessException.class)
-    public ResponseEntity<ApiResponse<String>> handleUnauthorizedAccessException(UnauthorizedAccessException e) {
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error(e.getMessage(),HttpStatus.FORBIDDEN));
+    public ResponseEntity<?> handleUnauthorizedAccessException(UnauthorizedAccessException e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","403");
+        h.put("error",e.getMessage());
+        return ResponseEntity.ok(h);
     }
 
 

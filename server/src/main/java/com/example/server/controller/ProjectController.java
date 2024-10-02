@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 @RestController
@@ -18,13 +19,25 @@ import java.util.UUID;
 public class ProjectController {
     private final ProjectService projectService;
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<?>> create(@RequestBody @NonNull CreateProjectRequest request){
-        projectService.createProject(request);
-        return ResponseEntity.ok(ApiResponse.success("Project created successfully"));
+    public ResponseEntity<?> create(@RequestBody @NonNull CreateProjectRequest request){
+        ProjectResponse projectResponse=projectService.createProject(request);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("project",projectResponse);
+        return ResponseEntity.ok(h);
     }
     @GetMapping("/")
-    public ResponseEntity<ApiResponse<ProjectResponse>> load(@RequestParam UUID id){
-        return ResponseEntity.ok(ApiResponse.success(projectService.loadProjectResponse(id)));
+    public ResponseEntity<?> load(@RequestParam @NonNull UUID id){
+        ProjectResponse projectResponse=projectService.loadProjectResponse(id);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("project",projectResponse);
+        return ResponseEntity.ok(h);
+    }
+    @PutMapping("/add-team")
+    public ResponseEntity<ApiResponse<String>> addTeam(@RequestParam @NonNull String team){
+        projectService.addTeam(team);
+        return ResponseEntity.ok(ApiResponse.success("team added successfully"));
     }
 
 }
