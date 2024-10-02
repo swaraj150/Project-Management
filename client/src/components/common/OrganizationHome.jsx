@@ -13,25 +13,33 @@ const OrganizationHome = () => {
       <div className="grid">
         <h2 className='header-1'>Management</h2>
         <div className="main">
-          <div className="profile paper">
-            <div className="avatar"></div>
-            <div className="info">
-              <strong>{organization.productOwner.name}</strong>
-              <p>{organization.productOwner.projectRole}</p>
-            </div>
-          </div>
-          <div className="profile paper">
-            <div className="avatar"></div>
-            <div className="info">
-              <strong>{organization.projectManager.name}</strong>
-              <p>{organization.projectManager.projectRole}</p>
-            </div>
-          </div>
+          {
+            organization.productOwner ? (
+              <div className="profile paper">
+                <div className="avatar"></div>
+                <div className="info">
+                  <strong>{organization.productOwner.name}</strong>
+                  <p>{organization.productOwner.projectRole}</p>
+                </div>
+              </div>
+            ) : null
+          }
+          {
+            organization.projectManager ? (
+              <div className="profile paper">
+                <div className="avatar"></div>
+                <div className="info">
+                  <strong>{organization.projectManager.name}</strong>
+                  <p>{organization.projectManager.projectRole}</p>
+                </div>
+              </div>
+            ) : null
+          }
         </div>
         <h2 className="header-2">Stakeholders</h2>
         <div className="stakeholders">
           {
-            organization?.stakeholders?.map((item, index) => (
+            organization.stakeholders?.map((item, index) => (
               <div className="profile paper" key={index}>
                 <div className="avatar"></div>
                 <div className="info">
@@ -45,7 +53,7 @@ const OrganizationHome = () => {
         <h2 className="header-3">Members</h2>
         <div className="members no-scrollbar">
           {
-            organization?.members?.map((item, index) => (
+            organization.members?.map((item, index) => (
               <div className="profile paper" key={index}>
                 <div className="avatar"></div>
                 <div className="info">
