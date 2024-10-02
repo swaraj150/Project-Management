@@ -60,7 +60,7 @@ public class OrganizationService {
 
 
 
-    public String initiateOrganization(@NonNull OrganizationInitiateRequest request){
+    public OrganizationResponse initiateOrganization(@NonNull OrganizationInitiateRequest request){
         // request will have the metadata
         // only product owner will be handled in creation
         User productOwner=userService.loadUser(securityUtils.getCurrentUsername());
@@ -73,7 +73,7 @@ public class OrganizationService {
         organizationRepository.save(organization);
         productOwner.setOrganizationId(organization.getId());
         userRepository.save(productOwner);
-        return code;
+        return loadOrganizationResponse();
     }
 
     public Organization loadOrganization(@NonNull UUID id){

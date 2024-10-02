@@ -31,28 +31,34 @@ public class OrganizationController {
     private static final Logger logger= LoggerFactory.getLogger(OrganizationController.class);
 
     @PostMapping("/initiate")
-    public ResponseEntity<ApiResponse<String>> initiate(@RequestBody @NonNull OrganizationInitiateRequest request){
-        String code=organizationService.initiateOrganization(request);
-        return ResponseEntity.ok(ApiResponse.success(code));
+    public ResponseEntity<?> initiate(@RequestBody @NonNull OrganizationInitiateRequest request){
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("organization",organizationService.initiateOrganization(request));
+        return ResponseEntity.ok(h);
     }
-
-
 //    @PostMapping("/join")
 //    public ResponseEntity<ApiResponse<String>> join(@RequestBody @NonNull JoinOrganizationRequest request){
 //        organizationService.requestToJoinOrganization(request.getCode(),request.getRole());
 //        return ResponseEntity.ok(ApiResponse.success("Request sent successfully"));
 //    }
     @PostMapping("/join")
-    public ResponseEntity<ApiResponse<String>> join(@RequestParam @NonNull String code,@RequestParam @NonNull String role){
+    public ResponseEntity<?> join(@RequestParam @NonNull String code,@RequestParam @NonNull String role){
         organizationService.requestToJoinOrganization(code,role);
-        return ResponseEntity.ok(ApiResponse.success("Request sent successfully"));
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("message","request sent");
+        return ResponseEntity.ok(h);
     }
 
     @PutMapping("/respond")
-    public ResponseEntity<ApiResponse<String>> acceptRequest(@RequestParam @NonNull UUID id,@RequestParam @NonNull String status){
+    public ResponseEntity<?> acceptRequest(@RequestParam @NonNull UUID id,@RequestParam @NonNull String status){
         logger.info("id :{}",id);
         organizationService.respondToJoinRequest(ChangeJoinRequestStatusRequest.builder().id(id).status(status).build());
-        return ResponseEntity.ok(ApiResponse.success("Request "+status));
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("message","request accepted");
+        return ResponseEntity.ok(h);
     }
 
 
