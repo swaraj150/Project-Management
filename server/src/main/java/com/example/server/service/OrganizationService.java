@@ -85,7 +85,7 @@ public class OrganizationService {
     }
     public OrganizationResponse loadOrganizationResponse() {
         OrganizationDTO organizationDTO = loadOrganizationDTOByCurrentUser();
-//        Set<UUID> projects=organizationDTO.getProjects();
+        Set<UUID> projects=organizationDTO.getProjects();
         List<UserDTO> stakeholders=new ArrayList<>();
         List<UserDTO> members=new ArrayList<>();
         List<UUID> ids=organizationDTO.getStakeholderIds();
@@ -109,7 +109,7 @@ public class OrganizationService {
                 .stakeholders(stakeholders)
                 .members(members)
                 .code(organizationDTO.getCode())
-//                .projects(projectResponses)
+                .projects(projects)
                 .build();
     }
     public OrganizationDTO loadOrganizationDTOByCurrentUser(){

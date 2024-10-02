@@ -23,6 +23,6 @@ public class OrganizationResponse {
     private List<UserDTO> stakeholders;
     private List<UserDTO> members;
     private String code;
-//    private Set<ProjectResponse> projects;
+    private Set<UUID> projects;
 
 }

@@ -3,6 +3,7 @@ package com.example.server.controller;
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.User;
+import com.example.server.pojo.GitHubUserInfo;
 import com.example.server.pojo.GoogleUserInfo;
 import com.example.server.requests.*;
 import com.example.server.response.ApiResponse;
@@ -17,6 +18,7 @@ import org.hibernate.mapping.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import com.google.api.client.googleapis.auth.oauth2.*;
@@ -35,7 +37,10 @@ import java.util.*;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
-
+    @Value("${GITHUB_CLIENT_ID}")
+    private String GITHUB_CLIENT_ID;
+    @Value("${GITHUB_CLIENT_SECRET}")
+    private String GITHUB_CLIENT_SECRET;
     private final UserService userService;
 
     private final PasswordResetService passwordResetService;
@@ -124,7 +129,7 @@ public class UserController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<?> authenticateGoogle(@RequestBody GoogleOauthRequest googleOauthRequest) throws GeneralSecurityException, IOException {
+    public ResponseEntity<?> authenticateGoogle(@RequestBody OauthRequest googleOauthRequest) throws GeneralSecurityException, IOException {
         logger.info("google oauth access token: {}",googleOauthRequest.getAccessToken());
         String tokenInfoUrl = "https://oauth2.googleapis.com/tokeninfo?access_token=" + googleOauthRequest.getAccessToken();
         ResponseEntity<String> tokenInfoResponse = restTemplate.getForEntity(tokenInfoUrl, String.class);
@@ -159,6 +164,51 @@ public class UserController {
         h.put("user",UserDTO.mapToUserDTO(user));
         return ResponseEntity.ok(h);
     }
+    @PostMapping("/github")
+    public ResponseEntity<?> authenticateGitHub(@RequestBody OauthRequest githubOauthRequest) throws GeneralSecurityException, IOException {
+        String tokenUrl = "https://github.com/login/oauth/access_token";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String requestJson = String.format(
+                "{\"client_id\":\"%s\",\"client_secret\":\"%s\",\"code\":\"%s\"}",
+                GITHUB_CLIENT_ID,
+                GITHUB_CLIENT_SECRET,
+                githubOauthRequest.getAccessToken()
+        );
+
+        HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, request, String.class);
+
+        String[] responseParts = Objects.requireNonNull(response.getBody()).split("&");
+        String accessToken = responseParts[0].split("=")[1];
+
+        String userInfoUrl = "https://api.github.com/user";
+        headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        request = new HttpEntity<>(headers);
+        ResponseEntity<String> userInfoResponse = restTemplate.exchange(
+                userInfoUrl,
+                HttpMethod.GET,
+                request,
+                String.class
+        );
+
+        GitHubUserInfo userInfo = objectMapper.readValue(userInfoResponse.getBody(), GitHubUserInfo.class);
+        String email = userInfo.getEmail();
+        String name = userInfo.getName();
+        String oauth2ClientName = "github";
+        String oauth2Id = String.valueOf(userInfo.getId());
+        User user=oAuth2UserService.processOAuthPostLogin(email,oauth2ClientName,oauth2Id,name);
+        String token = jwtService.generateToken(user);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("token",token);
+        h.put("user",UserDTO.mapToUserDTO(user));
+        return ResponseEntity.ok(h);
+    }
+
 
 
 
