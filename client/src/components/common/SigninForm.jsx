@@ -37,8 +37,8 @@ const SigninForm = () => {
       password: Yup.string()
         .min(8, 'Password must be at least 8 characters')
         .matches(
-          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]+$/,
-          'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (@, $, !, %, *, ?, &, #)'
+          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~!@#$%&*?])[A-Za-z\d~!@#$%&*?]+$/,
+          'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (~, !, @, #, $, %, &, *, ?)'
         )
         .required('Password is required')
     }),
@@ -51,15 +51,22 @@ const SigninForm = () => {
         localStorage.removeItem('projectMaestroUsername')
       }
 
-      const { res, err } = await userApi.signin(values)
+      const { res, err } = await userApi.signin({ 
+        username: values.usernameOrEmail, 
+        password: values.password 
+      })
 
       if (res) {
+        if (res.token) localStorage.setItem('token', res.token)
         dispatch(setUser(res))
         toast.success('Login successful. Welcome back!')
         navigate('/')
       }
 
-      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+      if (err) {
+        localStorage.removeItem('token')
+        toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+      }
     }
   })
 
