@@ -44,8 +44,8 @@ const SignupForm = () => {
       password: Yup.string()
         .min(8, 'Password must be at least 8 characters')
         .matches(
-          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]+$/,
-          'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (@, $, !, %, *, ?, &, #)'
+          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~!@#$%&*?])[A-Za-z\d~!@#$%&*?]+$/,
+          'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (~, !, @, #, $, %, &, *, ?)'
         )
         .required('Password is required'),
       confirmPassword: Yup.string()
@@ -53,14 +53,24 @@ const SignupForm = () => {
         .required('Confirm password is required')
     }),
     onSubmit: async (values) => {
-      const { res, err } = await userApi.signup(values)
+      const { res, err } = await userApi.signup({
+        firstname: values.firstname,
+        lastname: values.lastname,
+        email: values.email,
+        password: values.password
+      })
 
       if (res) {
-        dispatch(setUser(res))
+        if (res.token) localStorage.setItem('token', res.token)
+          dispatch(setUser(res))
         toast.success('Registration successful! Welcome aboard.')
+        navigate('/')
       }
 
-      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+      if (err) {
+        localStorage.removeItem('token')
+        toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+      }
     }
   })
 
@@ -131,8 +141,8 @@ const SignupForm = () => {
               />
               {
                 hidePassword
-                ? <FaEye className='pointer' onClick={() => setHidePassword(false)} />
-                : <FaEyeSlash className='pointer' onClick={() => setHidePassword(true)} />
+                  ? <FaEye className='pointer' onClick={() => setHidePassword(false)} />
+                  : <FaEyeSlash className='pointer' onClick={() => setHidePassword(true)} />
               }
             </div>
             <p className="helper-text">
@@ -153,8 +163,8 @@ const SignupForm = () => {
               />
               {
                 hideConfirmPassword
-                ? <FaEye className='pointer' onClick={() => setHideConfirmPassword(false)} />
-                : <FaEyeSlash className='pointer' onClick={() => setHideConfirmPassword(true)} />
+                  ? <FaEye className='pointer' onClick={() => setHideConfirmPassword(false)} />
+                  : <FaEyeSlash className='pointer' onClick={() => setHideConfirmPassword(true)} />
               }
             </div>
             <p className="helper-text">
