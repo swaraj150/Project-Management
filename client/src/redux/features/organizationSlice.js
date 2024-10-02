@@ -7,7 +7,7 @@ export const organizationSlice = createSlice({
   },
   reducers: {
     setOrganization: (state, action) => {
-      state.organization = action.payload
+      state.organization = action.payload.organization
     }
   }
 })

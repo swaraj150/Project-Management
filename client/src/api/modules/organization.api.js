@@ -1,25 +1,25 @@
 import privateClient from  '../clients/private.client'
 
 const organizationEndpoints = {
-  getInfo: 'organizations/',
   create: 'organizations/initiate',
+  getInfo: 'organizations/',
   join: 'organizations/join',
   search: 'organizations/search'
 }
 
 const organizationApi = {
-  getInfo: async () => {
+  create: async ({ name }) => {
     try {
-      const res = await privateClient.get(organizationEndpoints.getInfo)
+      const res = await privateClient.post(organizationEndpoints.create, { name })
 
       return { res }
     } catch (err) {
       return { err }
     }
   },
-  create: async ({ name }) => {
+  getInfo: async () => {
     try {
-      const res = await privateClient.post(organizationEndpoints.create, { name })
+      const res = await privateClient.get(organizationEndpoints.getInfo)
 
       return { res }
     } catch (err) {
