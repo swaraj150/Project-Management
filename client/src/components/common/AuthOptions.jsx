@@ -1,4 +1,7 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { useGoogleLogin } from '@react-oauth/google'
 
 import userApi from '../../api/modules/user.api'
@@ -9,6 +12,9 @@ import GithubLogo from '../../assets/github-logo.png'
 import { setUser } from '../../redux/features/userSlice'
 
 const AuthOptions = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (oauthRes) => {
       const accessToken = oauthRes.access_token
@@ -16,12 +22,16 @@ const AuthOptions = () => {
       const { res, err } = await userApi.googleSignin({ accessToken })
 
       if (res) {
+        if (res.token) localStorage.setItem('token', res.token)
         dispatch(setUser(res))
         toast.success('Login successful. Welcome back!')
         navigate('/')
       }
 
-      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+      if (err) {
+        localStorage.removeItem('token')
+        toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+      }
     },
     onError: (error) => toast.error(typeof error === 'string' ? error : 'Google login failed!')
   })
