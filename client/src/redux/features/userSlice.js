@@ -3,22 +3,10 @@ import { createSlice } from '@reduxjs/toolkit'
 export const userSlice = createSlice({
   name: 'User',
   initialState: {
-    user: {
-      name: 'testUser',
-      username: 'test_user',
-      email: 'test_user@example.com',
-      role: 'USER',
-      projectRole: 'DEFAULT_TEAM_MEMBER'
-    }
+    user: null
   },
   reducers: {
     setUser: (state, action) => {
-      if (action.payload == null) {
-        localStorage.removeItem('token')
-      } else {
-        if (action.payload.token) localStorage.setItem('token', action.payload.token)
-      }
-
       state.user = action.payload.user
     }
   }
