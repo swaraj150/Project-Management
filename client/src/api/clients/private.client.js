@@ -6,7 +6,13 @@ const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 const privateClient = axios.create({
   baseURL,
   paramsSerializer: {
-    encode: params => queryString.stringify(params)
+    serialize: params => {
+      const searchParams = new URLSearchParams()
+      Object.keys(params).forEach(key => {
+        searchParams.append(key, params[key])
+      })
+      return searchParams.toString()
+    }
   }
 })
 

@@ -6,7 +6,13 @@ const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 const publicClient = axios.create({
   baseURL,
   paramsSerializer: {
-    encode: params => queryString.stringify(params)
+    serialize: params => {
+      const searchParams = new URLSearchParams()
+      Object.keys(params).forEach(key => {
+        searchParams.append(key, params[key])
+      })
+      return searchParams.toString()
+    }
   }
 })
 
@@ -20,9 +26,11 @@ publicClient.interceptors.request.use(async (config) => {
 })
 
 publicClient.interceptors.response.use(async (response) => {
+  console.log(response)
   if (response?.data) return response.data
   return response
 }, (error) => {
+  console.log(error)
   throw error.response.data
 })
 
