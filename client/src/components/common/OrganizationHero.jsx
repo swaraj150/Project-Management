@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { IoMdSearch } from 'react-icons/io'
+import { IoMdSearch, IoIosCreate } from 'react-icons/io'
 import { RxCross2 } from 'react-icons/rx'
+import { MdGroupAdd } from 'react-icons/md'
 import { toast } from 'react-toastify'
 
 import organizationApi from '../../api/modules/organization.api'
@@ -25,7 +26,7 @@ const OrganizationHero = () => {
     const getList = async () => {
       const { res, err } = await organizationApi.search({ query })
 
-      if (res) setList(res)
+      if (res) setList(res.organizations)
 
       if (err) {
         setList([])
@@ -87,6 +88,7 @@ const OrganizationHero = () => {
 
   const handleDiscard = () => {
     setSelected(false)
+    setList([])
     setQuery('')
     setCode('')
   }
@@ -111,6 +113,7 @@ const OrganizationHero = () => {
               className={createDisabled ? 'cta-btn paper' : 'cta-btn pointer paper'}
               onClick={createDisabled ? null : handleNewOrganization}
             >
+              <IoIosCreate />
               Create organization
             </div>
           </div>
@@ -136,11 +139,11 @@ const OrganizationHero = () => {
               </div>
             </div>
             {
-              list.length > 0 && (
+              selected === false && list.length > 0 && (
                 <ul className='list no-scrollbar paper-1'>
                   {
                     list.map((item, index) => (
-                      <li className='pointer' onClick={() => handleQuery(item)}>{item.name}</li>
+                      <li key={index} className='pointer' onClick={() => handleQuery(item)}>{item.name}</li>
                     ))
                   }
                 </ul>
@@ -157,7 +160,10 @@ const OrganizationHero = () => {
             <div
               className={joinDisabled ? 'cta-btn paper' : 'cta-btn pointer paper'}
               onClick={joinDisabled ? null : handleJoinOrganization}
-            >Join organization</div>
+            >
+              <MdGroupAdd />
+              Join organization
+            </div>
           </div>
         </div>
         <img src={OrganizationImg} alt="" />
