@@ -28,7 +28,11 @@ const organizationApi = {
   },
   join: async ({ code }) => {
     try {
-      const res = await privateClient.post(organizationEndpoints.join, { code })
+      const res = await privateClient.post(
+        organizationEndpoints.join, 
+        {},
+        { params: { code } }
+      )
 
       return { res }
     } catch (err) {
@@ -37,7 +41,10 @@ const organizationApi = {
   },
   search: async ({ query }) => {
     try {
-      const res = await privateClient.post(organizationEndpoints.search, { query })
+      const res = await privateClient.get(
+        organizationEndpoints.search, 
+        { params: { key: query } }
+      )
 
       return { res }
     } catch (err) {
