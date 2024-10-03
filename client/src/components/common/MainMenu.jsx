@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { MdDashboard } from 'react-icons/md'
+import { MdDashboard, MdGroups } from 'react-icons/md'
 import { FaBuilding, FaProjectDiagram, FaTasks } from 'react-icons/fa'
 import { IoIosAlert } from 'react-icons/io'
 import { MdLightMode, MdDarkMode, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
@@ -16,8 +16,9 @@ const MainMenu = () => {
     { icon: <MdDashboard />, label: 'Dashboard' },
     { icon: <FaBuilding />, label: 'Organization' },
     { icon: <FaProjectDiagram />, label: 'Projects' },
+    { icon: <MdGroups />, label: 'Teams' },
     { icon: <FaTasks />, label: 'Tasks' },
-    { icon: <IoIosAlert />, label: 'Alerts' }
+    { icon: <IoIosAlert />, label: 'Risks' }
   ]
 
   return (
