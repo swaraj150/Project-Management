@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -178,6 +179,61 @@ public class OrganizationService {
 
     public OrganizationDTO loadOrganization(){
         return loadOrganizationDTOByCurrentUser();
+    }
+
+    public Set<OrganizationResponse> searchByName(@NonNull String prefix) {
+        List<Organization> organizations = organizationRepository.findAll();
+        Set<OrganizationResponse> suggestions = new HashSet<>();
+        String escapedPrefix = prefix.replaceAll("([\\\\^$.|?*+()\\[\\]{}])", "\\\\$1").toLowerCase();
+        Pattern pattern = Pattern.compile("^" + escapedPrefix, Pattern.CASE_INSENSITIVE);
+
+        for (Organization organization : organizations) {
+            if (pattern.matcher(organization.getName()).find()) {
+                logger.info("matched: {}", organization.getName());
+                suggestions.add(loadOrganizationResponse(organization.getId()));
+            }
+        }
+        return suggestions;
+    }
+    //public Set<OrganizationResponse> searchByName(@NonNull String prefix) {
+    //    List<Organization> organizations = organizationRepository.findAll();
+    //    Set<OrganizationResponse> suggestions = new HashSet<>();
+    //    String lowercasePrefix = prefix.toLowerCase();
+    //
+    //    for (Organization organization : organizations) {
+    //        if (organization.getName().toLowerCase().startsWith(lowercasePrefix)) {
+    //            logger.info("matched: {}", organization.getName());
+    //            suggestions.add(loadOrganizationResponse(organization.getId()));
+    //        }
+    //    }
+    //    return suggestions;
+    //}
+    public OrganizationResponse loadOrganizationResponse(UUID id) {
+        OrganizationDTO organizationDTO = createOrganizationDTO(id);
+        List<UserDTO> stakeholders=new ArrayList<>();
+        List<UserDTO> members=new ArrayList<>();
+        List<UUID> ids=organizationDTO.getStakeholderIds();
+        for(UUID id1:ids){
+            stakeholders.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
+        }
+        Set<UUID> ids2=organizationDTO.getMemberIds();
+        for(UUID id1:ids2){
+            members.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
+        }
+//        Set<ProjectResponse> projectResponses=new HashSet<>();
+//        for(UUID id1:projects){
+//            projectResponses.add(projectService.loadProjectResponse(id1));
+//        }
+        return OrganizationResponse.builder()
+                .name(organizationDTO.getName())
+                .productOwner(UserDTO.mapToUserDTO(userRepository.findById(organizationDTO.getProductOwnerId())
+                        .orElseThrow(()->new UsernameNotFoundException("User not found"))))
+//                .projectManager(UserDTO.mapToUserDTO(userRepository.findById(organizationDTO.getProjectManagerId())
+//                        .orElseThrow(()->new UsernameNotFoundException("User not found"))))
+                .stakeholders(stakeholders)
+                .members(members)
+                .code(organizationDTO.getCode())
+                .build();
     }
 
 

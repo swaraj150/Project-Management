@@ -2,12 +2,15 @@ package com.example.server.controller;
 
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.TeamDTO;
+import com.example.server.entities.Organization;
 import com.example.server.entities.ProjectAuthority;
+import com.example.server.entities.Team;
 import com.example.server.entities.User;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.TeamRepository;
 import com.example.server.requests.TeamCreateRequest;
 import com.example.server.response.ApiResponse;
+import com.example.server.response.OrganizationResponse;
 import com.example.server.response.TeamResponse;
 import com.example.server.service.TeamService;
 import com.example.server.service.UserService;
@@ -17,8 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/v1/teams")
@@ -62,6 +65,17 @@ public class TeamController {
         h.put("teams",teamService.loadAllTeamResponses());
         return ResponseEntity.ok(h);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchTeam(@RequestParam @NonNull String key){
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("teams",teamService.searchByName(key));
+        return ResponseEntity.ok(h);
+    }
+
+
+
 
 
 

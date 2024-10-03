@@ -11,6 +11,7 @@ import com.example.server.repositories.OrganizationRepository;
 import com.example.server.repositories.TeamRepository;
 import com.example.server.repositories.UserRepository;
 import com.example.server.requests.TeamCreateRequest;
+import com.example.server.response.OrganizationResponse;
 import com.example.server.response.ProjectResponse;
 import com.example.server.response.TeamResponse;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -108,6 +110,20 @@ public class TeamService {
             teamResponses.add(loadTeam(teamId));
         }
         return teamResponses;
+    }
+
+    public Set<TeamResponse> searchByName(@NonNull String prefix) {
+        List<Team> teams = teamRepository.findAll();
+        Set<TeamResponse> suggestions = new HashSet<>();
+        String escapedPrefix = prefix.replaceAll("([\\\\^$.|?*+()\\[\\]{}])", "\\\\$1").toLowerCase();
+        Pattern pattern = Pattern.compile("^" + escapedPrefix, Pattern.CASE_INSENSITIVE);
+
+        for (Team team : teams) {
+            if (pattern.matcher(team.getName()).find()) {
+                suggestions.add(loadTeam(team.getId()));
+            }
+        }
+        return suggestions;
     }
     
 

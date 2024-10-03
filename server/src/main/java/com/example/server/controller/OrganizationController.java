@@ -81,6 +81,14 @@ public class OrganizationController {
         return ResponseEntity.ok(h);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchOrganization(@RequestParam @NonNull String key){
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("organizations",organizationService.searchByName(key));
+        return ResponseEntity.ok(h);
+    }
+
 
 
 
