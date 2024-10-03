@@ -354,7 +354,6 @@ body {
 #homepage {
     display: flex;
     justify-content: flex-end;
-    height: 100vh;
     background-color: var(--white-500);
 
     .main-menu {
@@ -492,14 +491,13 @@ body {
     }
 
     #content {
-        width: 86%;
+        margin: 2%;
+        width: 82%;
         color: var(--primary--900);
         display: flex;
-        align-items: center;
         justify-content: flex-start;
 
         #dashboard {
-            margin: 2%;
 
             h1 {
                 font-size: var(--mukta--h1---extra-bold);
@@ -508,8 +506,6 @@ body {
 
         #organization {
             width: 100%;
-            height: 92%;
-            margin: 4% 2%;
 
             .hero {
                 display: flex;
@@ -550,6 +546,14 @@ body {
                                 border-radius: 10px;
                                 color: var(--white--500);
                                 background-color: var(--primary--900);
+                                display: flex;
+                                gap: 2%;
+                                align-items: center;
+                                justify-content: center;
+
+                                svg {
+                                    font-size: 1.3rem;
+                                }
                             }
 
                             .searchbar {
@@ -629,10 +633,11 @@ body {
 
 
                 .info-card {
-                    margin: 2% 0;
+                    margin-top: 2%;
                     padding: 2%;
                     border-radius: 10px;
-                    background-color: var(--contrast--50);
+                    color: var(--contrast--500);
+                    background-color: var(--contrast--100);
 
                     h2 {
                         margin-bottom: 1%;
@@ -647,86 +652,250 @@ body {
             .home {
                 height: 94vh;
                 display: flex;
+                gap: 10%;
                 flex-direction: column;
                 align-items: flex-start;
-                justify-content: space-evenly;
+                justify-content: space-between;
 
                 .grid {
-                    margin-top: 2%;
+                    width: 100%;
+                    flex-grow: 1;
                     display: grid;
                     grid-template-areas:
-                        'header-1 header-1 header-1'
-                        'main main main'
-                        'header-2 header-2 header-2'
-                        'stakeholders stakeholders stakeholders'
-                        'header-3 header-3 header-3'
-                        'members members members';
+                        'main'
+                        'stakeholders'
+                        'members';
 
                     .main,
                     .stakeholders,
                     .members {
                         width: 100%;
-                        padding: 1%;
                         display: flex;
-                        gap: 20px;
+                        flex-direction: column;
 
-                        .profile {
-                            min-width: 25%;
+                        .list {
+                            width: 100%;
                             padding: 1%;
-                            border-radius: 20px;
-                            background-color: var(--secondary--50);
                             display: flex;
                             gap: 20px;
-                            align-items: center;
 
-                            .avatar {
-                                height: 80px;
-                                width: 80px;
-                                border-radius: 50%;
-                                background-color: var(--white--100);
-                            }
-
-                            .info {
+                            .profile {
+                                min-width: 25%;
+                                padding: 1%;
+                                border-radius: 20px;
+                                background-color: var(--secondary--50);
                                 display: flex;
-                                gap: 5px;
-                                flex-direction: column;
+                                gap: 20px;
+                                align-items: center;
 
+                                .avatar {
+                                    height: 80px;
+                                    width: 80px;
+                                    border-radius: 50%;
+                                    background-color: var(--white--100);
+                                }
+
+                                .info {
+                                    display: flex;
+                                    gap: 5px;
+                                    flex-direction: column;
+
+                                }
                             }
                         }
                     }
 
                     .main {
                         grid-area: main;
-                        margin-bottom: 1%;
                     }
 
                     .stakeholders {
                         grid-area: stakeholders;
-                        margin-bottom: 1%;
                     }
 
                     .members {
                         grid-area: members;
                         overflow: auto;
                     }
+                }
+            }
+        }
 
-                    .header-1 {
-                        grid-area: header-1;
-                    }
+        #projects {
+            width: 100%;
 
-                    .header-2 {
-                        grid-area: header-2;
-                    }
+            .info {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
 
-                    .header-3 {
-                        grid-area: header-3;
+                h1 {
+                    color: var(--primary--500);
+                }
+
+                .points {
+                    padding: 2%;
+                    display: flex;
+                    gap: 20px;
+                    flex-direction: column;
+
+
+                    .paper {
+                        padding: 1%;
+                        border-radius: 20px;
+                        background-color: var(--secondary--100);
+                        display: flex;
+                        gap: 1%;
+                        align-items: center;
+                        justify-content: center;
+
+                        svg {
+                            font-size: 1.2rem;
+                        }
                     }
+                }
+
+                .cta-btn {
+                    padding: 0.5%;
+                    margin: auto;
+                    width: 40%;
+                    display: flex;
+                    gap: 2%;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--white--500);
+                    background-color: var(--primary--900);
+                    border-radius: 20px;
+                    font-size: 1.2rem;
+                }
+
+                .list {
+                    padding: 2%;
+                    margin-top: 2%;
+                    color: var(--contrast--500);
+                    background-color: var(--contrast--100);
+                    border-radius: 10px;
+
+                    ul {
+                        margin-left: 5%;
+                    }
+                }
+            }
+
+            .home {
+                position: relative;
+
+                .heading {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .cta-btn {
+                        width: 25%;
+                        padding: 1%;
+                        color: var(--white--500);
+                        background-color: var(--primary--900);
+                        border-radius: 20px;
+                        display: flex;
+                        gap: 10px;
+                        align-items: center;
+                        justify-content: center;
+
+                        svg {
+                            font-size: 1.5rem;
+                        }
+                    }
+                }
+
+                .projects-list {
+                    margin-top: 2%;
+
+                    .project-card {
+                        padding: 2%;
+                        border-radius: 20px;
+
+                        .project-title {
+                            margin-bottom: 1%;
+                        }
+
+                        .info-grid {
+                            margin-bottom: 1%;
+                            width: 18%;
+                            color: var(--primary--500);
+                            border-radius: 10px;
+                            display: flex;
+                            gap: 10px;
+                            flex-direction: column;
+
+                            .date,
+                            .budget {
+                                display: flex;
+                                gap: 5%;
+                                align-items: center;
+
+                                svg {
+                                    font-size: 1.3rem;
+                                }
+                            }
+                            
+                        }
+
+                        .teams {
+                            margin-top: 1%;
+
+                            .team-title {
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+
+                                svg {
+                                    font-size: 1.3rem;
+                                }
+                            }
+
+                            .teams-list {
+                                margin-top: 1%;
+                                display: flex;
+                                gap: 1%;
+                                flex-direction: column;
+
+                                .teams-card {
+                                    padding: 1%;
+                                    border-radius: 10px;
+                                }
+                            }
+
+                            .add-team-btn {
+                                width: 30%;
+                                padding: 1%;
+                                margin: 1% auto 0;
+                                color: var(--white--500);
+                                background-color: var(--primary--900);
+                                border-radius: 20px;
+                                display: flex;
+                                gap: 10px;
+                                align-items: center;
+                                justify-content: center;
+
+                                svg {
+                                    font-size: 1.3rem;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .project-form {
+                    z-index: 100;
+                    position: absolute;
+                    background-color: var(--white--500);
+                    transform: translate(-50%, -50%);
                 }
             }
         }
     }
 
     .content-spread {
-        width: 94% !important;
+        width: 90% !important;
     }
 }
