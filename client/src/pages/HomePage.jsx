@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux'
 import MainMenu from '../components/common/MainMenu'
 import DashBoard from '../components/common/DashBoard'
 import Organization from '../components/common/Organization'
+import Teams from '../components/common/Teams'
 import Projects from '../components/common/Projects'
 import Tasks from '../components/common/Tasks'
-import Alerts from '../components/common/Alerts'
+import Risks from '../components/common/Risks'
 
 const HomePage = () => {
   const { active, collapsed } = useSelector((state) => state.menu)
@@ -15,8 +16,9 @@ const HomePage = () => {
     <DashBoard />,
     <Organization />,
     <Projects />,
+    <Teams />,
     <Tasks />,
-    <Alerts />
+    <Risks />
   ]
 
   return (
