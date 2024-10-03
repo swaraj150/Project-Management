@@ -9,9 +9,6 @@ import { toast } from 'react-toastify'
 
 import userApi from '../../api/modules/user.api'
 
-import GoogleLogo from '../../assets/google-logo.png'
-import GithubLogo from '../../assets/github-logo.png'
-
 import AuthOptions from './AuthOptions'
 
 import { setUser } from '../../redux/features/userSlice'
@@ -62,7 +59,7 @@ const SignupForm = () => {
 
       if (res) {
         if (res.token) localStorage.setItem('token', res.token)
-          dispatch(setUser(res))
+        dispatch(setUser(res))
         toast.success('Registration successful! Welcome aboard.')
         navigate('/')
       }
