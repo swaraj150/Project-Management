@@ -19,10 +19,7 @@ import java.util.stream.Collectors;
 public class OrganizationResponse {
     private String name;
     private UserDTO productOwner;
-//    private UserDTO projectManager;
     private List<UserDTO> stakeholders;
     private List<UserDTO> members;
     private String code;
-    private Set<UUID> projects;
-
 }

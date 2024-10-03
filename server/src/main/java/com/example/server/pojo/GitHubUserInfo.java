@@ -15,4 +15,18 @@ public class GitHubUserInfo {
     private String name;
     private String email;
     private String login;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class GitHubEmail {
+        private String email;
+        private boolean primary;
+        private boolean verified;
+        private String visibility;
+
+
+
+    }
 }

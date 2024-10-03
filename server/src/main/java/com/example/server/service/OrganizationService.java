@@ -41,7 +41,6 @@ public class OrganizationService {
     private final UserRepository userRepository;
     private final SecurityUtils securityUtils;
     private final UserService userService;
-    private final ProjectService projectService;
     private static final Logger logger= LoggerFactory.getLogger(OrganizationService.class);
 
 
@@ -85,7 +84,6 @@ public class OrganizationService {
     }
     public OrganizationResponse loadOrganizationResponse() {
         OrganizationDTO organizationDTO = loadOrganizationDTOByCurrentUser();
-        Set<UUID> projects=organizationDTO.getProjects();
         List<UserDTO> stakeholders=new ArrayList<>();
         List<UserDTO> members=new ArrayList<>();
         List<UUID> ids=organizationDTO.getStakeholderIds();
@@ -109,7 +107,6 @@ public class OrganizationService {
                 .stakeholders(stakeholders)
                 .members(members)
                 .code(organizationDTO.getCode())
-                .projects(projects)
                 .build();
     }
     public OrganizationDTO loadOrganizationDTOByCurrentUser(){
@@ -125,6 +122,7 @@ public class OrganizationService {
         JoinRequest request=JoinRequest.builder().userId(user.getId()).organizationId(org.getId()).projectRole(projectRole).requestDate(LocalDateTime.now()).status(RequestStatus.PENDING).build();
         joinRequestRepository.save(request);
     }
+
 
 
     public void respondToJoinRequest(@NonNull ChangeJoinRequestStatusRequest request){

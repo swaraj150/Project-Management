@@ -9,22 +9,26 @@ import com.example.server.requests.*;
 import com.example.server.response.ApiResponse;
 import com.example.server.response.AuthResponse;
 import com.example.server.service.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.json.JsonFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.mapping.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import com.google.api.client.googleapis.auth.oauth2.*;
 import com.google.api.client.json.JsonFactory.*;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -129,7 +133,7 @@ public class UserController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<?> authenticateGoogle(@RequestBody OauthRequest googleOauthRequest) throws GeneralSecurityException, IOException {
+    public ResponseEntity<?> authenticateGoogle(@RequestBody GoogleOauthRequest googleOauthRequest) throws GeneralSecurityException, IOException {
         logger.info("google oauth access token: {}",googleOauthRequest.getAccessToken());
         String tokenInfoUrl = "https://oauth2.googleapis.com/tokeninfo?access_token=" + googleOauthRequest.getAccessToken();
         ResponseEntity<String> tokenInfoResponse = restTemplate.getForEntity(tokenInfoUrl, String.class);
@@ -164,49 +168,150 @@ public class UserController {
         h.put("user",UserDTO.mapToUserDTO(user));
         return ResponseEntity.ok(h);
     }
+//    @PostMapping("/github")
+//    public ResponseEntity<?> authenticateGitHub(@RequestBody OauthRequest githubOauthRequest) throws GeneralSecurityException, IOException {
+//        String tokenUrl = "https://github.com/login/oauth/access_token";
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        String requestJson = String.format(
+//                "{\"client_id\":\"%s\",\"client_secret\":\"%s\",\"code\":\"%s\"}",
+//                GITHUB_CLIENT_ID,
+//                GITHUB_CLIENT_SECRET,
+//                githubOauthRequest.getAccessToken()
+//        );
+//
+//        HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
+//
+//        ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, request, String.class);
+//
+//        String[] responseParts = Objects.requireNonNull(response.getBody()).split("&");
+//        String accessToken = responseParts[0].split("=")[1];
+//
+//        String userInfoUrl = "https://api.github.com/user";
+//        headers = new HttpHeaders();
+//        headers.setBearerAuth(accessToken);
+//        request = new HttpEntity<>(headers);
+//        ResponseEntity<String> userInfoResponse = restTemplate.exchange(
+//                userInfoUrl,
+//                HttpMethod.GET,
+//                request,
+//                String.class
+//        );
+//
+//        GitHubUserInfo userInfo = objectMapper.readValue(userInfoResponse.getBody(), GitHubUserInfo.class);
+//        String email = userInfo.getEmail();
+//        String name = userInfo.getName();
+//        String oauth2ClientName = "github";
+//        String oauth2Id = String.valueOf(userInfo.getId());
+//        User user=oAuth2UserService.processOAuthPostLogin(email,oauth2ClientName,oauth2Id,name);
+//        String token = jwtService.generateToken(user);
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("status","200");
+//        h.put("token",token);
+//        h.put("user",UserDTO.mapToUserDTO(user));
+//        return ResponseEntity.ok(h);
+//    }
     @PostMapping("/github")
-    public ResponseEntity<?> authenticateGitHub(@RequestBody OauthRequest githubOauthRequest) throws GeneralSecurityException, IOException {
+    public ResponseEntity<?> authenticateGitHub(@RequestBody GitHubOauthRequest githubOauthRequest) throws JsonProcessingException {
+        String accessToken = exchangeCodeForToken(githubOauthRequest.getCode());
+        logger.info("accessToken: {}",accessToken);
+        GitHubUserInfo userInfo = fetchUserInfo(accessToken);
+        User user = processUser(userInfo);
+        String token = jwtService.generateToken(user);
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("status", "200");
+        response.put("token", token);
+        response.put("user", UserDTO.mapToUserDTO(user));
+        return ResponseEntity.ok(response);
+
+    }
+
+    private String exchangeCodeForToken(String code) throws OAuth2AuthenticationException {
         String tokenUrl = "https://github.com/login/oauth/access_token";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String requestJson = String.format(
-                "{\"client_id\":\"%s\",\"client_secret\":\"%s\",\"code\":\"%s\"}",
-                GITHUB_CLIENT_ID,
-                GITHUB_CLIENT_SECRET,
-                githubOauthRequest.getAccessToken()
+        Map<String, String> requestBody = Map.of(
+                "client_id", GITHUB_CLIENT_ID,
+                "client_secret", GITHUB_CLIENT_SECRET,
+                "code", code
         );
 
-        HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, request, String.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return extractAccessToken(Objects.requireNonNull(response.getBody()));
+        } else {
+            throw new OAuth2AuthenticationException("Failed to obtain access token");
+        }
+//        try {
+//        } catch (RestClientException e) {
+//            throw new OAuth2AuthenticationException("Error during token exchange", e);
+//        }
+    }
 
-        String[] responseParts = Objects.requireNonNull(response.getBody()).split("&");
-        String accessToken = responseParts[0].split("=")[1];
+    private String extractAccessToken(String responseBody) throws OAuth2AuthenticationException {
+        String[] pairs = responseBody.split("&");
+        for (String pair : pairs) {
+            String[] keyValue = pair.split("=");
+            if (keyValue.length == 2 && "access_token".equals(keyValue[0])) {
+                return keyValue[1];
+            }
+        }
+        throw new OAuth2AuthenticationException("Access token not found in the response");
+    }
 
+    private GitHubUserInfo fetchUserInfo(String accessToken) throws OAuth2AuthenticationException, JsonProcessingException {
         String userInfoUrl = "https://api.github.com/user";
-        headers = new HttpHeaders();
+        String emailUrl = "https://api.github.com/user/emails";
+        HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
-        request = new HttpEntity<>(headers);
+        HttpEntity<String> request = new HttpEntity<>(headers);
         ResponseEntity<String> userInfoResponse = restTemplate.exchange(
                 userInfoUrl,
                 HttpMethod.GET,
                 request,
                 String.class
         );
+        GitHubUserInfo userInfo= objectMapper.readValue(userInfoResponse.getBody(), GitHubUserInfo.class);
+        ResponseEntity<String> emailResponse = restTemplate.exchange(
+                emailUrl,
+                HttpMethod.GET,
+                request,
+                String.class
+        );
+        List<GitHubUserInfo.GitHubEmail> emails = objectMapper.readValue(emailResponse.getBody(),
+                new TypeReference<List<GitHubUserInfo.GitHubEmail>>(){});
 
-        GitHubUserInfo userInfo = objectMapper.readValue(userInfoResponse.getBody(), GitHubUserInfo.class);
+        // Find primary email
+        String primaryEmail = emails.stream()
+                .filter(GitHubUserInfo.GitHubEmail::isPrimary)
+                .findFirst()
+                .map(GitHubUserInfo.GitHubEmail::getEmail)
+                .orElse(null);
+
+        userInfo.setEmail(primaryEmail);
+        return userInfo;
+
+//        try {
+//        } catch (HttpClientErrorException e) {
+//            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+//                throw new HttpClientErrorException();
+//            }
+//            throw new OAuth2AuthenticationException("Error fetching user info", e);
+//        } catch (IOException e) {
+//            throw new OAuth2AuthenticationException("Error parsing user info", e);
+//        }
+    }
+
+    private User processUser(GitHubUserInfo userInfo) {
         String email = userInfo.getEmail();
         String name = userInfo.getName();
         String oauth2ClientName = "github";
         String oauth2Id = String.valueOf(userInfo.getId());
-        User user=oAuth2UserService.processOAuthPostLogin(email,oauth2ClientName,oauth2Id,name);
-        String token = jwtService.generateToken(user);
-        HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
-        h.put("token",token);
-        h.put("user",UserDTO.mapToUserDTO(user));
-        return ResponseEntity.ok(h);
+        return oAuth2UserService.processOAuthPostLogin(email, oauth2ClientName, oauth2Id, name);
     }
 
 

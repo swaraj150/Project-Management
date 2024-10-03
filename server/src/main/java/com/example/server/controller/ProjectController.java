@@ -1,5 +1,8 @@
 package com.example.server.controller;
 
+import com.example.server.entities.ProjectAuthority;
+import com.example.server.entities.User;
+import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.requests.CreateProjectRequest;
 import com.example.server.requests.TeamCreateRequest;
 import com.example.server.response.ApiResponse;
@@ -38,6 +41,17 @@ public class ProjectController {
     public ResponseEntity<ApiResponse<String>> addTeam(@RequestParam @NonNull String team){
         projectService.addTeam(team);
         return ResponseEntity.ok(ApiResponse.success("team added successfully"));
+    }
+    @GetMapping("/getAllProjects")
+    public ResponseEntity<?> getAllTeams(){
+//        User user=userService.loadUser(securityUtils.getCurrentUsername());
+//        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
+//            throw new UnauthorizedAccessException("User does not have the required authority");
+//        }
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("projects",projectService.loadAllProjectResponses());
+        return ResponseEntity.ok(h);
     }
 
 }

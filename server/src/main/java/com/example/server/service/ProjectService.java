@@ -1,6 +1,7 @@
 package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
+import com.example.server.dto.OrganizationDTO;
 import com.example.server.dto.ProjectDTO;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
@@ -27,6 +28,7 @@ public class ProjectService {
     private final SecurityUtils securityUtils;
     private final ProjectRepository projectRepository;
     private final OrganizationRepository organizationRepository;
+    private final OrganizationService organizationService;
     private final TeamRepository teamRepository;
     private final UserService userService;
     private final TeamService teamService;
@@ -63,6 +65,7 @@ public class ProjectService {
         Project project=projectRepository.findByOrganization(user.getOrganizationId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
         project.getTeams().add(team.getId());
         team.setProjectId(project.getId());
+        team.getMemberIds().add(project.getProjectManagerId());
         teamRepository.save(team);
         projectRepository.save(project);
     }
@@ -89,4 +92,17 @@ public class ProjectService {
                 .teams(teams)
                 .build();
     }
+
+    public Set<ProjectResponse> loadAllProjectResponses(){
+        OrganizationDTO organizationDTO = organizationService.loadOrganizationDTOByCurrentUser();
+        Set<ProjectResponse> projectResponses=new HashSet<>();
+        for(UUID id1:organizationDTO.getProjects()){
+            projectResponses.add(loadProjectResponse(id1));
+        }
+        return projectResponses;
+    }
+
+
+
+
 }

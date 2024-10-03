@@ -11,6 +11,7 @@ import com.example.server.repositories.OrganizationRepository;
 import com.example.server.repositories.TeamRepository;
 import com.example.server.repositories.UserRepository;
 import com.example.server.requests.TeamCreateRequest;
+import com.example.server.response.ProjectResponse;
 import com.example.server.response.TeamResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -26,7 +27,7 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final UserService userService;
     private final UserRepository userRepository;
-//    private final OrganizationService organizationService;
+    private final OrganizationService organizationService;
     private final SecurityUtils securityUtils;
 
     public TeamDTO createTeamDto(UUID id){
@@ -49,11 +50,11 @@ public class TeamService {
         }
         UUID orgId=user1.getOrganizationId();
 //        Organization organization=organizationService.loadOrganization(orgId);
-//        OrganizationDTO org=organizationService.createOrganizationDTO(user1.getOrganizationId());
+        OrganizationDTO org=organizationService.createOrganizationDTO(user1.getOrganizationId());
         User teamLead=userService.loadUser(request.getTeamLead());
         Set<UUID> members=new HashSet<>();
         members.add(teamLead.getId());
-//        members.add(organization.getProductOwnerId());
+        members.add(org.getProductOwnerId());
         for(String user: request.getDev()){
             User dev=userService.loadUser(user);
             userService.updateProjectRole(ProjectRole.DEVELOPER,dev);
@@ -96,6 +97,17 @@ public class TeamService {
                 .developers(devs)
                 .testers(testers)
                 .build();
+    }
+
+    public Set<TeamResponse> loadAllTeamResponses(){
+        OrganizationDTO organizationDTO = organizationService.loadOrganizationDTOByCurrentUser();
+        Set<TeamResponse> teamResponses=new HashSet<>();
+        for(UUID memberId:organizationDTO.getMemberIds()){
+            UUID teamId=teamRepository.findTeamIdByUserId(memberId);
+            if(teamId==null) continue;
+            teamResponses.add(loadTeam(teamId));
+        }
+        return teamResponses;
     }
     
 

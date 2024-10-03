@@ -36,7 +36,6 @@ public class TeamController {
         h.put("status","200");
         h.put("organization",teamResponse);
         return ResponseEntity.ok(h);
-//        return ResponseEntity.ok(ApiResponse.success("Team created successfully"));
     }
 
     @GetMapping("/")
@@ -49,6 +48,18 @@ public class TeamController {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","200");
         h.put("team",teamResponse);
+        return ResponseEntity.ok(h);
+    }
+
+    @GetMapping("/getAllTeams")
+    public ResponseEntity<?> getAllTeams(){
+        User user=userService.loadUser(securityUtils.getCurrentUsername());
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("status","200");
+        h.put("teams",teamService.loadAllTeamResponses());
         return ResponseEntity.ok(h);
     }
 
