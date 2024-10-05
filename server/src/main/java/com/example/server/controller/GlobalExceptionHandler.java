@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","400");
         h.put("error",e.getMessage());
-        return ResponseEntity.ok(h);
+        return ResponseEntity.status(400).body(h);
 
 
     }
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","400");
         h.put("error",e.getMessage());
-        return ResponseEntity.ok(h);
+        return ResponseEntity.status(400).body(h);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -41,14 +41,14 @@ public class GlobalExceptionHandler {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","400");
         h.put("error",e.getMessage());
-        return ResponseEntity.ok(h);
+        return ResponseEntity.status(400).body(h);
     }
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException e) {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","401");
         h.put("error",e.getMessage());
-        return ResponseEntity.ok(h);
+        return ResponseEntity.status(401).body(h);
     }
 
     @ExceptionHandler(DisabledException.class)
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","403");
         h.put("error",e.getMessage());
-        return ResponseEntity.ok(h);
+        return ResponseEntity.status(403).body(h);
     }
 
     @ExceptionHandler(SecurityException.class)
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","401");
         h.put("error",e.getMessage());
-        return ResponseEntity.ok(h);
+        return ResponseEntity.status(401).body(h);
     }
 
     @ExceptionHandler(Exception.class)
@@ -72,14 +72,14 @@ public class GlobalExceptionHandler {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","500");
         h.put("error",e.getMessage());
-        return ResponseEntity.ok(h);
+        return ResponseEntity.status(500).body(h);
     }
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e) {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","404");
         h.put("error",e.getMessage());
-        return ResponseEntity.ok(h);
+       return ResponseEntity.status(404).body(h);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -87,14 +87,14 @@ public class GlobalExceptionHandler {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","404");
         h.put("error",e.getMessage());
-        return ResponseEntity.ok(h);
+        return ResponseEntity.status(404).body(h);
     }
     @ExceptionHandler(UnauthorizedAccessException.class)
     public ResponseEntity<?> handleUnauthorizedAccessException(UnauthorizedAccessException e) {
         HashMap<String,Object> h=new HashMap<>();
         h.put("status","403");
         h.put("error",e.getMessage());
-        return ResponseEntity.ok(h);
+        return ResponseEntity.status(403).body(h);
     }
 
 
