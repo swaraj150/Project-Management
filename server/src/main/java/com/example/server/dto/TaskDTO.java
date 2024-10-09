@@ -24,7 +24,7 @@ public class TaskDTO {
     private String description;
     private Integer priority;
     private UUID createdByUserId;
-    private List<UUID> assignedToUserIds;
+    private Set<UUID> assignedToUserIds;
     private LocalDateTime createdAt;
     private Integer estimatedHours;
     private LocalDateTime completedAt;
@@ -46,6 +46,7 @@ public class TaskDTO {
         dto.setCompletionStatus(task.getCompletionStatus());
         dto.setParentTaskId(task.getParentTaskId());
         dto.setProjectId(task.getProjectId());
+        dto.setAssignedToUserIds(task.getAssignedTo());
         //assignedToUserIds and subTaskIds need to be set separately
         return dto;
     }

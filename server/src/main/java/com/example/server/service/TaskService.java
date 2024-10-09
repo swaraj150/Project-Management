@@ -1,6 +1,7 @@
 package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
+import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
 import com.example.server.exception.InvalidStatusException;
 import com.example.server.exception.UnauthorizedAccessException;
@@ -8,6 +9,7 @@ import com.example.server.repositories.ProjectRepository;
 import com.example.server.repositories.TaskRepository;
 import com.example.server.repositories.TeamRepository;
 import com.example.server.requests.CreateTaskRequest;
+import com.example.server.response.TaskResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.security.InvalidKeyException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,7 +31,7 @@ public class TaskService {
     private final UserService userService;
     private final SecurityUtils securityUtils;
 
-    public void createTask(CreateTaskRequest request){
+    public TaskResponse createTask(CreateTaskRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
             throw new UnauthorizedAccessException("User does not have the required authority");
@@ -42,6 +45,7 @@ public class TaskService {
         task.setCreatedBy(user.getId());
         task.setCreatedAt(LocalDateTime.now());
         task.setPriority(request.getPriority());
+        task.setType(TaskType.valueOf(request.getType()));
         task.setEstimatedHours(request.getEstimatedHours());
         task.setParentTaskId(request.getParentTaskId());
         task.setProjectId(team.getProjectId());
@@ -49,35 +53,61 @@ public class TaskService {
         for(String s:request.getAssignedTo()){
             assignedTo.add(userService.loadUser(s).getId());
         }
-
         task.setAssignedTo(assignedTo);
         task.setCompletionStatus(CompletionStatus.PENDING);
         project.getTasks().add(task.getId());
         projectRepository.save(project);
         taskRepository.save(task);
+        return loadTaskResponse(task.getId());
     }
 
-//    public void changeStatus(@NonNull String status){
-//        User user= userService.loadUser(securityUtils.getCurrentUsername());
-//        if(!user.getProjectRole().hasAuthority(ProjectAuthority.EDIT_TASKS)){
-//            throw new UnauthorizedAccessException("User does not have the required authority");
-//        }
-//        Task task=taskRepository.findById(taskRepository.getTaskIdByUser(user.getId()))
-//                .orElseThrow(()->new EntityNotFoundException("Task not found"));
-//        switch (status){
-//            case "Pending" -> task.setCompletionStatus(CompletionStatus.PENDING);
-//            case "In Progress" -> task.setCompletionStatus(CompletionStatus.IN_PROGRESS);
-//            case "Completed" -> {
-//                task.setCompletionStatus(CompletionStatus.COMPLETED);
-//                task.setCompletedAt(LocalDateTime.now());
-//            }
-//            default -> throw new InvalidStatusException("Invalid Status");
-//        }
-//        taskRepository.save(task);
+//    Task findTaskByUser(@NonNull User user){
+//        Optional<Task> task=taskRepository.findByCreatedBy(user.getId());
+//        return task.orElseGet(() -> taskRepository.findByAssignedTo(user.getId()).orElseThrow(() -> new EntityNotFoundException("Task not found")));
 //    }
+
+    public TaskResponse changeStatus(@NonNull String status,@NonNull UUID id){
+        User user= userService.loadUser(securityUtils.getCurrentUsername());
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.EDIT_TASKS)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        // findTaskByUser can be used here to further check if user has any access to task
+        Task task=taskRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Task not found"));
+        switch (status){
+            case "Pending" -> task.setCompletionStatus(CompletionStatus.PENDING);
+            case "In Progress" -> task.setCompletionStatus(CompletionStatus.IN_PROGRESS);
+            case "Completed" -> {
+                task.setCompletionStatus(CompletionStatus.COMPLETED);
+                task.setCompletedAt(LocalDateTime.now());
+            }
+            default -> throw new InvalidStatusException("Invalid Status");
+        }
+        taskRepository.save(task);
+        return loadTaskResponse(task.getId());
+    }
 
     public void addSubTask(CreateTaskRequest request){
         createTask(request);
+    }
+
+    public TaskResponse loadTaskResponse(@NonNull UUID id){
+        Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
+        Set<UserDTO> assignedToUsers=new HashSet<>();
+        for(UUID id1:task.getAssignedTo()){
+            assignedToUsers.add(UserDTO.mapToUserDTO(userService.loadUser(id)));
+        }
+        return TaskResponse.builder()
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .priority(task.getPriority())
+                .type(task.getType())
+                .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
+                .assignedToUsers(assignedToUsers)
+                .createdAt(task.getCreatedAt())
+                .estimatedHours(task.getEstimatedHours())
+                .completedAt(task.getCompletedAt())
+                .completionStatus(task.getCompletionStatus())
+                .build();
     }
 
 

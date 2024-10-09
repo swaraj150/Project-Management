@@ -1,4 +1,5 @@
 package com.example.server.requests;
+import com.example.server.entities.TaskType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class CreateTaskRequest {
     private String title;
     private String description;
     private Integer priority;
+    private String type;
     private Date createdAt;
     private Integer estimatedHours;
     private UUID parentTaskId;

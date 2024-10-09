@@ -142,12 +142,15 @@ public class OrganizationService {
 //            }
             organizationRepository.save(organization);
             user.setOrganizationId(organization.getId());
-            joinRequestRepository.save(joinRequest);
+//            joinRequestRepository.save(joinRequest);
+            joinRequestRepository.delete(joinRequest);
             userRepository.save(user);
         }
         else if(Objects.equals(request.getStatus(),"Rejected")){
             joinRequest.setStatus(RequestStatus.REJECTED);
-            joinRequestRepository.save(joinRequest);
+            joinRequestRepository.delete(joinRequest);
+
+//            joinRequestRepository.save(joinRequest);
         }
         else{
             throw new IllegalArgumentException("invalid request status");
@@ -167,6 +170,7 @@ public class OrganizationService {
         Set<JoinRequestDTO> set=new HashSet<>();
         for(UUID id:joinRequests){
             JoinRequest request=joinRequestService.loadJoinRequest(id);
+            if(request.getStatus()==RequestStatus.APPROVED || request.getStatus()==RequestStatus.REJECTED) continue;
             User user=userRepository.findById(request.getUserId()).orElseThrow(()->new EntityNotFoundException("user not found"));
             Organization organization=loadOrganization(request.getOrganizationId());
             set.add(JoinRequestDTO.builder().id(request.getId()).username(user.getUsername()).organization(organization.getName()).projectRole(request.getProjectRole()).build());
