@@ -145,6 +145,38 @@ body {
     font-family: "Mukta", sans-serif;
 }
 
+/* Not Found Page */
+.not-found {
+    height: 100vh;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary--900);
+
+    .cta {
+        width: 20%;
+        display: flex;
+        gap: 5%;
+        align-items: center;
+        justify-content: center;
+
+        .cta-btn {
+            padding: 3% 10%;
+            border-radius: 15px;
+            border: 1px solid var(--primary--500);
+            user-select: none;
+        }
+
+        :nth-child(2) {
+            color: var(--white--500);
+            background-color: var(--primary--500);
+        }
+    }
+
+}
+
 /* Signin / Signup Page */
 .signin,
 .signup {
@@ -837,7 +869,7 @@ body {
                                     font-size: 1.3rem;
                                 }
                             }
-                            
+
                         }
 
                         .teams {
