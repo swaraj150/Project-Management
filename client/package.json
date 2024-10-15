@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sass:watch:index": "sass --watch src/styles/index.scss:src/styles/index.css --no-source-map",
+    "sass:watch:utility": "sass --watch src/styles/utility.scss:src/styles/utility.css --no-source-map",
+    "sass:watch:animations": "sass --watch src/styles/animations.scss:src/styles/animations.css --no-source-map",
+    "sass:watch": "concurrently \"npm run sass:watch:index\" \"npm run sass:watch:utility\" \"npm run sass:watch:animations\""
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
@@ -29,6 +33,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^9.0.1",
     "eslint": "^9.9.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
