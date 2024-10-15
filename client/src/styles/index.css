@@ -1,0 +1,744 @@
+@import url("https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&display=swap");
+:root {
+  /* Color styles */
+  --black: rgba(0, 0, 0, 1);
+  --white--500: rgba(255, 255, 255, 1);
+  --white--50: rgba(242, 242, 242, 1);
+  --white--100: rgba(230, 230, 230, 1);
+  --white--200: rgba(204, 204, 204, 1);
+  --white--300: rgba(179, 179, 179, 1);
+  --white--400: rgba(153, 153, 153, 1);
+  --white--600: rgba(102, 102, 102, 1);
+  --white--700: rgba(77, 77, 77, 1);
+  --white--800: rgba(51, 51, 51, 1);
+  --white--900: rgba(26, 26, 26, 1);
+  --white--950: rgba(13, 13, 13, 1);
+  --primary--500: rgba(10, 36, 114, 1);
+  --primary--50: rgba(232, 237, 253, 1);
+  --primary--100: rgba(208, 219, 251, 1);
+  --primary--200: rgba(161, 183, 247, 1);
+  --primary--300: rgba(114, 146, 243, 1);
+  --primary--400: rgba(67, 110, 239, 1);
+  --primary--600: rgba(16, 59, 188, 1);
+  --primary--700: rgba(12, 44, 141, 1);
+  --primary--800: rgba(8, 30, 94, 1);
+  --primary--900: rgba(4, 15, 47, 1);
+  --primary--950: rgba(2, 7, 23, 1);
+  --secondary--500: rgba(10, 114, 114, 1);
+  --secondary--50: rgba(232, 253, 253, 1);
+  --secondary--100: rgba(208, 251, 251, 1);
+  --secondary--200: rgba(161, 247, 247, 1);
+  --secondary--300: rgba(114, 243, 243, 1);
+  --secondary--400: rgba(67, 239, 239, 1);
+  --secondary--600: rgba(16, 188, 188, 1);
+  --secondary--700: rgba(12, 141, 141, 1);
+  --secondary--800: rgba(8, 94, 94, 1);
+  --secondary--900: rgba(4, 47, 47, 1);
+  --secondary--950: rgba(2, 23, 23, 1);
+  --contrast--500: rgba(114, 10, 91, 1);
+  --contrast--50: rgba(253, 232, 248, 1);
+  --contrast--100: rgba(251, 208, 242, 1);
+  --contrast--200: rgba(247, 161, 228, 1);
+  --contrast--300: rgba(243, 114, 215, 1);
+  --contrast--400: rgba(239, 67, 201, 1);
+  --contrast--600: rgba(188, 16, 150, 1);
+  --contrast--700: rgba(141, 12, 113, 1);
+  --contrast--800: rgba(94, 8, 75, 1);
+  --contrast--900: rgba(47, 4, 38, 1);
+  --contrast--950: rgba(23, 2, 19, 1);
+  --success: green;
+  --error: red;
+  /* Text-size styles */
+  /* base size: mukta--body---extra-light (16px) */
+  --mukta--body---extra-light: 1rem;
+  --mukta--body---light: 1rem;
+  --mukta--body---regular: 1rem;
+  --mukta--body---medium: 1rem;
+  --mukta--body---semi-bold: 1rem;
+  --mukta--body---bold: 1rem;
+  --mukta--body---extra-bold: 1rem;
+  --mukta--h1---extra-light: 2rem;
+  --mukta--h1---light: 2rem;
+  --mukta--h1---regular: 2rem;
+  --mukta--h1---medium: 2rem;
+  --mukta--h1---semi-bold: 2rem;
+  --mukta--h1---bold: 2rem;
+  --mukta--h1---extra-bold: 2rem;
+  --mukta--h2---extra-light: 1.75rem;
+  --mukta--h2---light: 1.75rem;
+  --mukta--h2---regular: 1.75rem;
+  --mukta--h2---medium: 1.75rem;
+  --mukta--h2---semi-bold: 1.75rem;
+  --mukta--h2---bold: 1.75rem;
+  --mukta--h2---extra-bold: 1.75rem;
+  --mukta--h3---extra-light: 1.5rem;
+  --mukta--h3---light: 1.5rem;
+  --mukta--h3---regular: 1.5rem;
+  --mukta--h3---medium: 1.5rem;
+  --mukta--h3---semi-bold: 1.5rem;
+  --mukta--h3---bold: 1.5rem;
+  --mukta--h3---extra-bold: 1.5rem;
+  --mukta--h4---extra-light: 1.25rem;
+  --mukta--h4---light: 1.25rem;
+  --mukta--h4---regular: 1.25rem;
+  --mukta--h4---medium: 1.25rem;
+  --mukta--h4---semi-bold: 1.25rem;
+  --mukta--h4---bold: 1.25rem;
+  --mukta--h4---extra-bold: 1.25rem;
+  --mukta--h5---extra-light: 1.12rem;
+  --mukta--h5---light: 1.12rem;
+  --mukta--h5---regular: 1.12rem;
+  --mukta--h5---medium: 1.12rem;
+  --mukta--h5---semi-bold: 1.12rem;
+  --mukta--h5---bold: 1.12rem;
+  --mukta--h5---extra-bold: 1.12rem;
+  --mukta--h6---extra-light: 1rem;
+  --mukta--h6---light: 1rem;
+  --mukta--h6---regular: 1rem;
+  --mukta--h6---medium: 1rem;
+  --mukta--h6---semi-bold: 1rem;
+  --mukta--h6---bold: 1rem;
+  --mukta--h6---extra-bold: 1rem;
+  --mukta--captions---extra-light: 0.75rem;
+  --mukta--captions---light: 0.75rem;
+  --mukta--captions---regular: 0.75rem;
+  --mukta--captions---medium: 0.75rem;
+  --mukta--captions---semi-bold: 0.75rem;
+  --mukta--captions---bold: 0.75rem;
+  --mukta--captions---extra-bold: 0.75rem;
+  --mukta--small---extra-light: 0.75rem;
+  --mukta--small---light: 0.75rem;
+  --mukta--small---regular: 0.75rem;
+  --mukta--small---medium: 0.75rem;
+  --mukta--small---semi-bold: 0.75rem;
+  --mukta--small---bold: 0.75rem;
+  --mukta--small---extra-bold: 0.75rem;
+  --mukta--large---extra-light: 3rem;
+  --mukta--large---light: 3rem;
+  --mukta--large---regular: 3rem;
+  --mukta--large---medium: 3rem;
+  --mukta--large---semi-bold: 3rem;
+  --mukta--large---bold: 3rem;
+  --mukta--large---extra-bold: 3rem;
+  --mukta--x-large---extra-light: 4rem;
+  --mukta--x-large---light: 4rem;
+  --mukta--x-large---regular: 4rem;
+  --mukta--x-large---medium: 4rem;
+  --mukta--x-large---semi-bold: 4rem;
+  --mukta--x-large---bold: 4rem;
+  --mukta--x-large---extra-bold: 4rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-size: var(--mukta--body---regular);
+  font-family: "Mukta", sans-serif;
+}
+
+/* Not Found Page */
+#not-found {
+  height: 100vh;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary--900);
+}
+#not-found .cta {
+  width: 20%;
+  display: flex;
+  gap: 5%;
+  align-items: center;
+  justify-content: center;
+}
+#not-found .cta .cta-btn {
+  padding: 3% 10%;
+  border-radius: 15px;
+  border: 1px solid var(--primary--500);
+  user-select: none;
+}
+#not-found .cta :nth-child(2) {
+  color: var(--white--500);
+  background-color: var(--primary--500);
+}
+
+/* Landing Page */
+#landing-page {
+  color: var(--white--500);
+  background-color: var(--primary--900);
+}
+#landing-page header {
+  padding: 1%;
+  display: flex;
+  align-items: center;
+}
+#landing-page header .title {
+  flex-grow: 1;
+  display: flex;
+  gap: 2%;
+  align-items: center;
+}
+#landing-page header .title img {
+  height: 40px;
+}
+#landing-page header .title p {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+#landing-page header .cta {
+  flex-grow: 1;
+  display: flex;
+  gap: 2%;
+  align-items: center;
+  justify-content: flex-end;
+}
+#landing-page header .cta .cta-btn {
+  padding: 1% 3%;
+}
+#landing-page .hero {
+  margin-top: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#landing-page .hero .tagline {
+  font-size: 5rem;
+  line-height: 1;
+}
+#landing-page .hero .subtitle {
+  margin-top: 2%;
+  opacity: 0.5;
+}
+#landing-page .hero .img-container {
+  margin-top: 2%;
+  position: relative;
+  width: 70%;
+  overflow: hidden;
+}
+#landing-page .hero .img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#landing-page .hero .img-container .gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.1), var(--primary--900));
+}
+
+/* Signin / Signup Page */
+.signin,
+.signup {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+}
+.signin .welcome,
+.signup .welcome {
+  width: 50%;
+  display: flex;
+  gap: 3%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(#00114E, #00A9D4);
+}
+.signin .welcome .info,
+.signup .welcome .info {
+  width: 70%;
+  padding: 4%;
+  color: var(--white--500);
+  border-radius: 10px;
+  background-color: #005C90;
+}
+.signin .welcome .info h1,
+.signup .welcome .info h1 {
+  padding-left: 5%;
+  margin-bottom: 3%;
+  border-left: 2px solid var(--white--500);
+  font-size: var(--mukta--large---bold);
+}
+.signin .welcome .info p,
+.signup .welcome .info p {
+  padding-left: 5%;
+}
+.signin .welcome img,
+.signup .welcome img {
+  height: 40%;
+}
+.signin .signin-form,
+.signin .signup-form,
+.signup .signin-form,
+.signup .signup-form {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.signin .signin-form .signin-card,
+.signin .signin-form .signup-card,
+.signin .signup-form .signin-card,
+.signin .signup-form .signup-card,
+.signup .signin-form .signin-card,
+.signup .signin-form .signup-card,
+.signup .signup-form .signin-card,
+.signup .signup-form .signup-card {
+  width: 70%;
+  padding: 3%;
+  border-radius: 10px;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+}
+.signin .signin-form .signin-card h1,
+.signin .signin-form .signup-card h1,
+.signin .signup-form .signin-card h1,
+.signin .signup-form .signup-card h1,
+.signup .signin-form .signin-card h1,
+.signup .signin-form .signup-card h1,
+.signup .signup-form .signin-card h1,
+.signup .signup-form .signup-card h1 {
+  font-size: var(--mukta--h1---regular);
+  font-weight: 500;
+}
+.signin .signin-form .signin-card .prompt,
+.signin .signin-form .signup-card .prompt,
+.signin .signup-form .signin-card .prompt,
+.signin .signup-form .signup-card .prompt,
+.signup .signin-form .signin-card .prompt,
+.signup .signin-form .signup-card .prompt,
+.signup .signup-form .signin-card .prompt,
+.signup .signup-form .signup-card .prompt {
+  text-align: left;
+}
+.signin .signin-form .signin-card form,
+.signin .signin-form .signup-card form,
+.signin .signup-form .signin-card form,
+.signin .signup-form .signup-card form,
+.signup .signin-form .signin-card form,
+.signup .signin-form .signup-card form,
+.signup .signup-form .signin-card form,
+.signup .signup-form .signup-card form {
+  width: 100%;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+}
+.signin .signin-form .signin-card form .name,
+.signin .signin-form .signup-card form .name,
+.signin .signup-form .signin-card form .name,
+.signin .signup-form .signup-card form .name,
+.signup .signin-form .signin-card form .name,
+.signup .signin-form .signup-card form .name,
+.signup .signup-form .signin-card form .name,
+.signup .signup-form .signup-card form .name {
+  width: 100%;
+  display: flex;
+  gap: 3%;
+  align-items: center;
+}
+.signin .signin-form .signin-card form .name input,
+.signin .signin-form .signup-card form .name input,
+.signin .signup-form .signin-card form .name input,
+.signin .signup-form .signup-card form .name input,
+.signup .signin-form .signin-card form .name input,
+.signup .signin-form .signup-card form .name input,
+.signup .signup-form .signin-card form .name input,
+.signup .signup-form .signup-card form .name input {
+  flex-grow: 1;
+  padding: 5%;
+}
+.signin .signin-form .signin-card form .form-utilities,
+.signin .signin-form .signup-card form .form-utilities,
+.signin .signup-form .signin-card form .form-utilities,
+.signin .signup-form .signup-card form .form-utilities,
+.signup .signin-form .signin-card form .form-utilities,
+.signup .signin-form .signup-card form .form-utilities,
+.signup .signup-form .signin-card form .form-utilities,
+.signup .signup-form .signup-card form .form-utilities {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.3s ease, border 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+}
+.signin .signin-form .signin-card form .form-utilities .remember-me-option,
+.signin .signin-form .signup-card form .form-utilities .remember-me-option,
+.signin .signup-form .signin-card form .form-utilities .remember-me-option,
+.signin .signup-form .signup-card form .form-utilities .remember-me-option,
+.signup .signin-form .signin-card form .form-utilities .remember-me-option,
+.signup .signin-form .signup-card form .form-utilities .remember-me-option,
+.signup .signup-form .signin-card form .form-utilities .remember-me-option,
+.signup .signup-form .signup-card form .form-utilities .remember-me-option {
+  flex-grow: 1;
+  display: flex;
+  gap: 2%;
+  align-items: center;
+  justify-content: flex-start;
+}
+.signin .signin-form .signin-card form .form-utilities .remember-me-option .switch,
+.signin .signin-form .signup-card form .form-utilities .remember-me-option .switch,
+.signin .signup-form .signin-card form .form-utilities .remember-me-option .switch,
+.signin .signup-form .signup-card form .form-utilities .remember-me-option .switch,
+.signup .signin-form .signin-card form .form-utilities .remember-me-option .switch,
+.signup .signin-form .signup-card form .form-utilities .remember-me-option .switch,
+.signup .signup-form .signin-card form .form-utilities .remember-me-option .switch,
+.signup .signup-form .signup-card form .form-utilities .remember-me-option .switch {
+  height: 25px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  border-radius: 25px;
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, border 0.3s ease;
+}
+.signin .signin-form .signin-card form .form-utilities .remember-me-option .switch .switch-thumb,
+.signin .signin-form .signup-card form .form-utilities .remember-me-option .switch .switch-thumb,
+.signin .signup-form .signin-card form .form-utilities .remember-me-option .switch .switch-thumb,
+.signin .signup-form .signup-card form .form-utilities .remember-me-option .switch .switch-thumb,
+.signup .signin-form .signin-card form .form-utilities .remember-me-option .switch .switch-thumb,
+.signup .signin-form .signup-card form .form-utilities .remember-me-option .switch .switch-thumb,
+.signup .signup-form .signin-card form .form-utilities .remember-me-option .switch .switch-thumb,
+.signup .signup-form .signup-card form .form-utilities .remember-me-option .switch .switch-thumb {
+  margin-left: 2.5px;
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  background-color: var(--white--500);
+  transition: margin-left 0.3s ease, background-color 0.3s ease;
+}
+.signin .signin-form .signin-card form .form-utilities .active .switch,
+.signin .signin-form .signup-card form .form-utilities .active .switch,
+.signin .signup-form .signin-card form .form-utilities .active .switch,
+.signin .signup-form .signup-card form .form-utilities .active .switch,
+.signup .signin-form .signin-card form .form-utilities .active .switch,
+.signup .signin-form .signup-card form .form-utilities .active .switch,
+.signup .signup-form .signin-card form .form-utilities .active .switch,
+.signup .signup-form .signup-card form .form-utilities .active .switch {
+  background-color: var(--primary--100);
+}
+.signin .signin-form .signin-card form .form-utilities .active .switch .switch-thumb,
+.signin .signin-form .signup-card form .form-utilities .active .switch .switch-thumb,
+.signin .signup-form .signin-card form .form-utilities .active .switch .switch-thumb,
+.signin .signup-form .signup-card form .form-utilities .active .switch .switch-thumb,
+.signup .signin-form .signin-card form .form-utilities .active .switch .switch-thumb,
+.signup .signin-form .signup-card form .form-utilities .active .switch .switch-thumb,
+.signup .signup-form .signin-card form .form-utilities .active .switch .switch-thumb,
+.signup .signup-form .signup-card form .form-utilities .active .switch .switch-thumb {
+  margin-left: 27.5px;
+  background-color: var(--primary--400);
+}
+.signin .signin-form .signin-card form .form-utilities .active p,
+.signin .signin-form .signup-card form .form-utilities .active p,
+.signin .signup-form .signin-card form .form-utilities .active p,
+.signin .signup-form .signup-card form .form-utilities .active p,
+.signup .signin-form .signin-card form .form-utilities .active p,
+.signup .signin-form .signup-card form .form-utilities .active p,
+.signup .signup-form .signin-card form .form-utilities .active p,
+.signup .signup-form .signup-card form .form-utilities .active p {
+  opacity: 1;
+  color: var(--primary--500);
+}
+.signin .signin-form .signin-card form .form-utilities a,
+.signin .signin-form .signup-card form .form-utilities a,
+.signin .signup-form .signin-card form .form-utilities a,
+.signin .signup-form .signup-card form .form-utilities a,
+.signup .signin-form .signin-card form .form-utilities a,
+.signup .signin-form .signup-card form .form-utilities a,
+.signup .signup-form .signin-card form .form-utilities a,
+.signup .signup-form .signup-card form .form-utilities a {
+  text-decoration: none;
+  color: var(--primary--500);
+}
+.signin .signin-form .signin-card form button,
+.signin .signin-form .signup-card form button,
+.signin .signup-form .signin-card form button,
+.signin .signup-form .signup-card form button,
+.signup .signin-form .signin-card form button,
+.signup .signin-form .signup-card form button,
+.signup .signup-form .signin-card form button,
+.signup .signup-form .signup-card form button {
+  font-size: var(--mukta--body---bold);
+  margin-top: 1.5%;
+  padding: 2.5%;
+  border: none;
+  border-radius: 5px;
+  color: var(--white--500);
+  background-color: var(--primary--500);
+}
+.signin .signin-form .signin-card .signin-option,
+.signin .signin-form .signin-card .signup-option,
+.signin .signin-form .signup-card .signin-option,
+.signin .signin-form .signup-card .signup-option,
+.signin .signup-form .signin-card .signin-option,
+.signin .signup-form .signin-card .signup-option,
+.signin .signup-form .signup-card .signin-option,
+.signin .signup-form .signup-card .signup-option,
+.signup .signin-form .signin-card .signin-option,
+.signup .signin-form .signin-card .signup-option,
+.signup .signin-form .signup-card .signin-option,
+.signup .signin-form .signup-card .signup-option,
+.signup .signup-form .signin-card .signin-option,
+.signup .signup-form .signin-card .signup-option,
+.signup .signup-form .signup-card .signin-option,
+.signup .signup-form .signup-card .signup-option {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.signin .signin-form .signin-card .signin-option .divider-text,
+.signin .signin-form .signin-card .signup-option .divider-text,
+.signin .signin-form .signup-card .signin-option .divider-text,
+.signin .signin-form .signup-card .signup-option .divider-text,
+.signin .signup-form .signin-card .signin-option .divider-text,
+.signin .signup-form .signin-card .signup-option .divider-text,
+.signin .signup-form .signup-card .signin-option .divider-text,
+.signin .signup-form .signup-card .signup-option .divider-text,
+.signup .signin-form .signin-card .signin-option .divider-text,
+.signup .signin-form .signin-card .signup-option .divider-text,
+.signup .signin-form .signup-card .signin-option .divider-text,
+.signup .signin-form .signup-card .signup-option .divider-text,
+.signup .signup-form .signin-card .signin-option .divider-text,
+.signup .signup-form .signin-card .signup-option .divider-text,
+.signup .signup-form .signup-card .signin-option .divider-text,
+.signup .signup-form .signup-card .signup-option .divider-text {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.signin .signin-form .signin-card .signin-option .divider-text hr,
+.signin .signin-form .signin-card .signup-option .divider-text hr,
+.signin .signin-form .signup-card .signin-option .divider-text hr,
+.signin .signin-form .signup-card .signup-option .divider-text hr,
+.signin .signup-form .signin-card .signin-option .divider-text hr,
+.signin .signup-form .signin-card .signup-option .divider-text hr,
+.signin .signup-form .signup-card .signin-option .divider-text hr,
+.signin .signup-form .signup-card .signup-option .divider-text hr,
+.signup .signin-form .signin-card .signin-option .divider-text hr,
+.signup .signin-form .signin-card .signup-option .divider-text hr,
+.signup .signin-form .signup-card .signin-option .divider-text hr,
+.signup .signin-form .signup-card .signup-option .divider-text hr,
+.signup .signup-form .signin-card .signin-option .divider-text hr,
+.signup .signup-form .signin-card .signup-option .divider-text hr,
+.signup .signup-form .signup-card .signin-option .divider-text hr,
+.signup .signup-form .signup-card .signup-option .divider-text hr {
+  flex-grow: 1;
+}
+.signin .signin-form .signin-card .signin-option .divider-text span,
+.signin .signin-form .signin-card .signup-option .divider-text span,
+.signin .signin-form .signup-card .signin-option .divider-text span,
+.signin .signin-form .signup-card .signup-option .divider-text span,
+.signin .signup-form .signin-card .signin-option .divider-text span,
+.signin .signup-form .signin-card .signup-option .divider-text span,
+.signin .signup-form .signup-card .signin-option .divider-text span,
+.signin .signup-form .signup-card .signup-option .divider-text span,
+.signup .signin-form .signin-card .signin-option .divider-text span,
+.signup .signin-form .signin-card .signup-option .divider-text span,
+.signup .signin-form .signup-card .signin-option .divider-text span,
+.signup .signin-form .signup-card .signup-option .divider-text span,
+.signup .signup-form .signin-card .signin-option .divider-text span,
+.signup .signup-form .signin-card .signup-option .divider-text span,
+.signup .signup-form .signup-card .signin-option .divider-text span,
+.signup .signup-form .signup-card .signup-option .divider-text span {
+  margin: 0 10px;
+}
+.signin .signin-form .signin-card .signin-option .options,
+.signin .signin-form .signin-card .signup-option .options,
+.signin .signin-form .signup-card .signin-option .options,
+.signin .signin-form .signup-card .signup-option .options,
+.signin .signup-form .signin-card .signin-option .options,
+.signin .signup-form .signin-card .signup-option .options,
+.signin .signup-form .signup-card .signin-option .options,
+.signin .signup-form .signup-card .signup-option .options,
+.signup .signin-form .signin-card .signin-option .options,
+.signup .signin-form .signin-card .signup-option .options,
+.signup .signin-form .signup-card .signin-option .options,
+.signup .signin-form .signup-card .signup-option .options,
+.signup .signup-form .signin-card .signin-option .options,
+.signup .signup-form .signin-card .signup-option .options,
+.signup .signup-form .signup-card .signin-option .options,
+.signup .signup-form .signup-card .signup-option .options {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.signin .signin-form .signin-card .signin-option .options .option,
+.signin .signin-form .signin-card .signup-option .options .option,
+.signin .signin-form .signup-card .signin-option .options .option,
+.signin .signin-form .signup-card .signup-option .options .option,
+.signin .signup-form .signin-card .signin-option .options .option,
+.signin .signup-form .signin-card .signup-option .options .option,
+.signin .signup-form .signup-card .signin-option .options .option,
+.signin .signup-form .signup-card .signup-option .options .option,
+.signup .signin-form .signin-card .signin-option .options .option,
+.signup .signin-form .signin-card .signup-option .options .option,
+.signup .signin-form .signup-card .signin-option .options .option,
+.signup .signin-form .signup-card .signup-option .options .option,
+.signup .signup-form .signin-card .signin-option .options .option,
+.signup .signup-form .signin-card .signup-option .options .option,
+.signup .signup-form .signup-card .signin-option .options .option,
+.signup .signup-form .signup-card .signup-option .options .option {
+  padding: 1%;
+  width: 48%;
+  display: flex;
+  gap: 2%;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 5px;
+}
+.signin .signin-form .signin-card p,
+.signin .signin-form .signup-card p,
+.signin .signup-form .signin-card p,
+.signin .signup-form .signup-card p,
+.signup .signin-form .signin-card p,
+.signup .signin-form .signup-card p,
+.signup .signup-form .signin-card p,
+.signup .signup-form .signup-card p {
+  text-align: center;
+}
+.signin .signin-form .signin-card p a,
+.signin .signin-form .signup-card p a,
+.signin .signup-form .signin-card p a,
+.signin .signup-form .signup-card p a,
+.signup .signin-form .signin-card p a,
+.signup .signin-form .signup-card p a,
+.signup .signup-form .signin-card p a,
+.signup .signup-form .signup-card p a {
+  text-decoration: none;
+  font-weight: bold;
+  color: var(--primary--500);
+}
+
+#homepage {
+  display: flex;
+  justify-content: flex-end;
+  background-color: var(--white-500);
+}
+#homepage .main-menu {
+  height: 98%;
+  width: 12%;
+  padding: 12% 1%;
+  border-radius: 30px;
+  background-color: var(--primary--900);
+  position: fixed;
+  top: 1%;
+  left: 1%;
+  transition: all 0.3s ease;
+}
+#homepage .main-menu .menu-collapse {
+  position: absolute;
+  top: 10%;
+  right: -10%;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--secondary--900);
+  border-radius: 50%;
+  background-color: var(--white--500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#homepage .main-menu .menu-collapse svg {
+  font-size: 1.5rem;
+  color: var(--primary--900);
+}
+#homepage .main-menu ul {
+  display: flex;
+  gap: 30px;
+  flex-direction: column;
+  list-style: none;
+  color: var(--white--500);
+}
+#homepage .main-menu ul .active {
+  width: 110%;
+  padding: 5% 0;
+  color: var(--primary--900);
+  background-color: var(--white--500);
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  position: relative;
+}
+#homepage .main-menu ul .active .top-curve,
+#homepage .main-menu ul .active .bottom-curve {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background-color: var(--white--500);
+}
+#homepage .main-menu ul .active .top-curve {
+  top: -20px;
+}
+#homepage .main-menu ul .active .bottom-curve {
+  bottom: -20px;
+}
+#homepage .main-menu ul .active .top-curve::before,
+#homepage .main-menu ul .active .bottom-curve::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--primary--900);
+}
+#homepage .main-menu ul .active .top-curve::before {
+  border-bottom-right-radius: 20px;
+}
+#homepage .main-menu ul .active .bottom-curve::before {
+  border-top-right-radius: 20px;
+}
+#homepage .main-menu ul .active span {
+  font-weight: 700;
+}
+#homepage .main-menu ul li {
+  padding: 1% 5%;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: flex-start;
+}
+#homepage .main-menu ul li svg {
+  font-size: 1.5rem;
+}
+#homepage .collapsed {
+  width: 4% !important;
+  padding: 12% 1%;
+}
+#homepage .collapsed ul .active {
+  width: 150%;
+  padding: 10px 0;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#homepage .collapsed ul li svg {
+  /* font-size: 2rem; */
+  margin: auto;
+}
+#homepage .collapsed ul li span {
+  display: none !important;
+}
+#homepage .collapsed .menu-collapse {
+  right: -30%;
+}
