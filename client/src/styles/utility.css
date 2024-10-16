@@ -66,8 +66,11 @@
 }
 
 .animated-btn {
+  border: none;
   position: relative;
   overflow: hidden;
+  color: inherit;
+  background-color: inherit;
 }
 .animated-btn span:nth-child(1) {
   position: absolute;
