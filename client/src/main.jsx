@@ -7,8 +7,9 @@ import App from './App.jsx'
 
 import 'react-toastify/dist/ReactToastify.css'
 
-import './css/index.css'
-import './css/utility.css'
+import './styles/index.css'
+import './styles/utility.css'
+import './styles/animations.css'
 
 import store from './redux/store.js'
 
