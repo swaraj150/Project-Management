@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import MainLayout from './components/layout/MainLayout'
 
 import { publicRoutes, privateRoutes } from './routes/Routes'
+import NotFoundPage from './pages/NotFoundPage'
 
 const App = () => {
   return (
@@ -45,6 +46,10 @@ const App = () => {
             }
           </Route>
           {/* Private Routes */}
+
+          {/* Not Found Page */}
+          <Route path="*" element={<NotFoundPage />} />
+          {/* Not Found Page */}
 
         </Routes>
       </BrowserRouter>

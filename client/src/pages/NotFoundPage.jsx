@@ -5,7 +5,7 @@ const NotFoundPage = () => {
   const navigate = useNavigate()
 
   return (
-    <div className="not-found paper">
+    <div id="not-found">
       <h1>404 - Page Not Found</h1>
       <p>Oops! The page you are looking for doesn't exist.</p>
       <div className="cta">
