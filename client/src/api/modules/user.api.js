@@ -6,7 +6,8 @@ const userEndpoints = {
   signup: 'users/register',
   googleSignin: 'users/google',
   githubSignin: 'users/github',
-  getInfo: 'users/'
+  getInfo: 'users',
+  updateProjectRole: 'update-project-role'
 }
 
 const userApi = {
@@ -57,6 +58,15 @@ const userApi = {
   getInfo: async () => {
     try {
       const res = await privateClient.get(userEndpoints.getInfo)
+
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  updateProjectRole: async ({ userId, role }) => {
+    try {
+      const res = await privateClient.get(userEndpoints.updateProjectRole, { userId, role })
 
       return { res }
     } catch (err) {
