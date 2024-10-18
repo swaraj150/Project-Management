@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { MdEdit } from 'react-icons/md'
 import { BsPersonFillX } from 'react-icons/bs'
 
-import { isFixedRole, roleFormatter } from '../../utils/roles.util'
+import { isFixedRole } from '../../utils/organization.utils'
 import RoleChange from './RoleChange'
 
 const Member = ({ member, isAuthorized }) => {
@@ -35,7 +35,7 @@ const Member = ({ member, isAuthorized }) => {
       </div>
       <div className={`cta ${isAuthorized ? 'authorized' : ''}`}>
         <div className="role" style={isAuthorized ? { justifyContent: "center" } : null}>
-          <p className="opacity-5" >{roleFormatter(member.projectRole)}</p>
+          <p className="opacity-5" >{member.projectRole}</p>
           {
             isFixedRole(member.projectRole)
               ? null

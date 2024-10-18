@@ -7,12 +7,12 @@ import userApi from '../../api/modules/user.api'
 
 import { changeMemberRole } from '../../redux/features/organizationSlice'
 
-import { roleFormatter, assignableRoles } from '../../utils/roles.util'
+import { assignableRoles } from '../../utils/organization.utils'
 
 const RoleChange = ({ member, setModalOpen, modalRef }) => {
   const dispatch = useDispatch()
 
-  const [selectedRole, setSelectedRole] = useState(roleFormatter(member.projectRole))
+  const [selectedRole, setSelectedRole] = useState(member.projectRole)
   const [isRequested, setIsRequested] = useState(false)
 
   const handleSubmit = async () => {
@@ -54,9 +54,9 @@ const RoleChange = ({ member, setModalOpen, modalRef }) => {
           <p>{member.name}</p>
         </div>
         {
-          selectedRole !== roleFormatter(member.projectRole) ? (
+          selectedRole !== member.projectRole ? (
             <div className="changed-role">
-              <p className="opacity-5" >{roleFormatter(member.projectRole)}</p>
+              <p className="opacity-5" >{member.projectRole}</p>
               <FaArrowRightLong className="opacity-5" />
               <p>{selectedRole}</p>
             </div>
@@ -64,7 +64,7 @@ const RoleChange = ({ member, setModalOpen, modalRef }) => {
         }
       </div>
       {
-        selectedRole !== roleFormatter(member.projectRole) ? (
+        selectedRole !== member.projectRole ? (
           <div className="cta-buttons">
             <button
               className="pointer paper-1"

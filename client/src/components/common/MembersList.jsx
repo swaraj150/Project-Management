@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import Member from './Member'
 
-import authorizedUtil from '../../utils/authorized.util'
+import { authorizedUser } from '../../utils/organization.utils'
 
 const MembersList = ({ members }) => {
   const { user } = useSelector((state) => state.user)
@@ -11,7 +11,7 @@ const MembersList = ({ members }) => {
   const [isAuthorized, setIsAuthorized] = useState(false)
 
   useEffect(() => {
-    setIsAuthorized(authorizedUtil(user))
+    setIsAuthorized(authorizedUser(user))
   }, [user])
 
   return (
