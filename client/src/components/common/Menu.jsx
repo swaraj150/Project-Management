@@ -5,7 +5,7 @@ import { FaBuilding, FaProjectDiagram, FaTasks } from "react-icons/fa"
 
 import Logo from '../../assets/logo.png'
 
-import { setActive, setCollapsed } from '../../redux/features/menuSlice'
+import { setActive } from '../../redux/features/menuSlice'
 
 const menuItems = [
   {
@@ -33,9 +33,8 @@ const menuItems = [
 const Menu = () => {
   const dispatch = useDispatch()
 
-  const { collapsed } = useSelector((state) => state.menu)
-
   const [selected, setSelected] = useState(0)
+  const [collapsed, setCollapsed] = useState(false)
 
   const handleChange = (index) => {
     setSelected(index)
@@ -44,7 +43,7 @@ const Menu = () => {
 
   return (
     <section id="menu" className={collapsed ? "collapsed" : null} >
-      <div className="collapse-btn pointer" onClick={() => dispatch(setCollapsed(!collapsed))}>
+      <div className="collapse-btn pointer paper-1" onClick={() => setCollapsed((prev) => !prev)}>
         {
           collapsed ? <MdOutlineKeyboardArrowRight /> : <MdOutlineKeyboardArrowLeft />
         }
