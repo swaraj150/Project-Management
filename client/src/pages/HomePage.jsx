@@ -1,30 +1,28 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import MainMenu from '../components/common/MainMenu'
-import DashBoard from '../components/common/DashBoard'
-import Organization from '../components/common/Organization'
-import Teams from '../components/common/Teams'
-import Projects from '../components/common/Projects'
-import Tasks from '../components/common/Tasks'
-import Risks from '../components/common/Risks'
+import Menu from '../components/common/Menu'
+import DashBoard from './DashBoard'
+import Organization from './Organization'
+import Teams from './Teams'
+import Projects from './Projects'
+import Tasks from './Tasks'
 
 const HomePage = () => {
-  const { active, collapsed } = useSelector((state) => state.menu)
+  const { active } = useSelector((state) => state.menu)
 
   const menuItems = [
     <DashBoard />,
     <Organization />,
-    <Projects />,
     <Teams />,
-    <Tasks />,
-    <Risks />
+    <Projects />,
+    <Tasks />
   ]
 
   return (
     <section id="homepage">
-      <MainMenu />
-      <section id="content" className={collapsed ? 'content-spread' : null}>
+      <Menu />
+      <section id="content" className="no-scrollbar">
         {menuItems[active]}
       </section>
     </section>
