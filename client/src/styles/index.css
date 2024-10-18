@@ -634,7 +634,6 @@ main {
 #homepage {
   height: 100%;
   display: flex;
-  gap: 1%;
   align-items: center;
   background-color: var(--white-500);
 }
@@ -646,7 +645,7 @@ main {
   flex-direction: column;
   justify-content: space-between;
   color: var(--white--500);
-  background-color: var(--primary--500);
+  background-color: var(--primary--950);
   position: relative;
 }
 #homepage #menu .collapse-btn {
@@ -667,8 +666,9 @@ main {
 }
 #homepage #menu .menu-title {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   align-items: center;
+  justify-content: center;
 }
 #homepage #menu .menu-title img {
   width: 40px;
@@ -711,6 +711,138 @@ main {
   justify-content: center;
   border-radius: 50% !important;
 }
-#homepage #organization {
+#homepage #content {
   flex-grow: 1;
+  padding: 1% 0;
+  height: 100vh;
+  padding-left: 1%;
+  overflow: auto;
+}
+#homepage #content #organization {
+  height: 100%;
+}
+#homepage #content #organization .title {
+  color: var(--primary--500);
+}
+#homepage #content #organization .members {
+  padding: 2%;
+}
+#homepage #content #organization .members .members-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#homepage #content #organization .members .members-info .heading {
+  display: flex;
+  flex-direction: column;
+}
+#homepage #content #organization .members .members-list {
+  height: 60vh;
+  padding: 1%;
+  list-style: none;
+  overflow: auto;
+}
+#homepage #content #organization .members .members-list li {
+  width: 100%;
+  padding: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#homepage #content #organization .members .members-list li .modal {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  justify-content: center;
+}
+#homepage #content #organization .members .members-list li .modal .cta {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#homepage #content #organization .members .members-list li .modal .cta h3 {
+  color: var(--primary--500);
+}
+#homepage #content #organization .members .members-list li .modal .cta select {
+  width: 30%;
+  outline: none;
+  border: none;
+}
+#homepage #content #organization .members .members-list li .modal .member-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#homepage #content #organization .members .members-list li .modal .member-info .member-details {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+#homepage #content #organization .members .members-list li .modal .member-info .changed-role {
+  color: var(--white--950);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+#homepage #content #organization .members .members-list li .modal .member-info .changed-role :nth-child(3) {
+  color: var(--primary--500);
+}
+#homepage #content #organization .members .members-list li .modal .cta-buttons {
+  padding: 0 5%;
+  display: flex;
+  gap: 10%;
+  align-items: center;
+  justify-content: space-between;
+}
+#homepage #content #organization .members .members-list li .modal .cta-buttons button {
+  flex-grow: 1;
+  outline: none;
+  border: none;
+  padding: 2% 5%;
+  border-radius: 10px;
+}
+#homepage #content #organization .members .members-list li .modal .cta-buttons button:last-child {
+  color: var(--white--500);
+  background-color: var(--primary--400);
+}
+#homepage #content #organization .members .members-list li .member-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#homepage #content #organization .members .members-list li .member-info img {
+  height: 30px;
+  width: 30px;
+  border-radius: 10px;
+}
+#homepage #content #organization .members .members-list li .member-info a {
+  text-decoration: none;
+  color: inherit;
+}
+#homepage #content #organization .members .members-list li .cta {
+  width: 18%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+#homepage #content #organization .members .members-list li .cta .role {
+  width: 80%;
+  padding: 1% 5%;
+  border-radius: 5px;
+  background-color: var(--white--100);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#homepage #content #organization .members .members-list li .authorized {
+  justify-content: space-between !important;
+}
+#homepage #content #organization .members .members-list li .authorized .role {
+  justify-content: space-between !important;
+}
+#homepage #content #organization .members .members-list li:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
