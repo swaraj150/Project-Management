@@ -713,7 +713,7 @@ main {
 }
 #homepage #content {
   flex-grow: 1;
-  padding: 1% 0;
+  padding: 1%;
   height: 100vh;
   padding-left: 1%;
   overflow: auto;
@@ -751,6 +751,7 @@ main {
   justify-content: space-between;
 }
 #homepage #content #organization .members .members-list li .modal {
+  width: 500px;
   display: flex;
   gap: 20px;
   flex-direction: column;
@@ -802,10 +803,11 @@ main {
   border: none;
   padding: 2% 5%;
   border-radius: 10px;
+  background-color: var(--white--100);
 }
 #homepage #content #organization .members .members-list li .modal .cta-buttons button:last-child {
   color: var(--white--500);
-  background-color: var(--primary--400);
+  background-color: var(--primary--900);
 }
 #homepage #content #organization .members .members-list li .member-info {
   display: flex;
@@ -845,4 +847,66 @@ main {
 }
 #homepage #content #organization .members .members-list li:first-child {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+#homepage #content #organization .members .members-list li:hover {
+  transform: scale(1.01);
+}
+#homepage #content #teams {
+  height: 100%;
+}
+#homepage #content #teams .heading {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#homepage #content #teams .heading .cta {
+  width: 40%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+#homepage #content #teams .heading .cta button {
+  border: none;
+  outline: none;
+  padding: 2% 5%;
+  border-radius: 10px;
+  background-color: var(--white--100);
+  font-size: 1rem;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+#homepage #content #teams .heading .cta button:last-child {
+  color: var(--white--500);
+  background-color: var(--primary--900);
+}
+#homepage #content #teams .teams-list {
+  list-style: none;
+  margin-top: 2%;
+  padding: 2%;
+  height: 80vh;
+  overflow: auto;
+}
+#homepage #content #teams .teams-list .team-list-headings {
+  color: var(--white--500);
+  background-color: var(--primary--900);
+  font-weight: 600;
+}
+#homepage #content #teams .teams-list .team-list-headings,
+#homepage #content #teams .teams-list .team-list-info {
+  padding: 1%;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+#homepage #content #teams .teams-list .team-list-headings p,
+#homepage #content #teams .teams-list .team-list-info p {
+  padding: 1%;
+  text-align: center;
+}
+#homepage #content #teams .teams-list .team-list-info:nth-child(odd) {
+  background-color: var(--white--100);
 }
