@@ -19,55 +19,56 @@ const MainLayout = () => {
 
   const { user } = useSelector((state) => state.user)
 
-  useEffect(() => {
-      const fetchUserDetails = async () => {
-      const { res, err } = await userApi.getInfo()
+  // useEffect(() => {
+  //     const fetchUserDetails = async () => {
+  //     const { res, err } = await userApi.getInfo()
 
-      if (res) {
-        dispatch(setUser(res))
-        toast.success('Login successful. Welcome back!')
-      } else {
-        localStorage.removeItem('token')
-        navigate('/sign-in')
-      }
-    }
+  //     if (res) {
+  //       dispatch(setUser(res))
+  //       toast.success('Login successful. Welcome back!')
+  //     } else {
+  //       localStorage.removeItem('token')
+  //       navigate('/sign-in')
+  //     }
+  //   }
 
-    const token = localStorage.getItem('token')
+  //   const token = localStorage.getItem('token')
 
-    if (user == null && token === null) navigate('/sign-in')
-    if (user === null) fetchUserDetails()
-  }, [])
+  //   if (user == null && token === null) navigate('/sign-in')
+  //   if (user === null) fetchUserDetails()
+  // }, [])
 
-  useEffect(() => {
-    const fetchOrganization = async () => {
-      const { res, err } = await organizationApi.getInfo()
+  // useEffect(() => {
+  //   const fetchOrganization = async () => {
+  //     const { res, err } = await organizationApi.getInfo()
 
-      if (res) dispatch(setOrganization(res))
-    }
+  //     if (res) dispatch(setOrganization(res))
+  //   }
 
-    const fetchProjects = async () => {
-      const { res, err } = await projectsApi.getAll()
+  //   const fetchProjects = async () => {
+  //     const { res, err } = await projectsApi.getAll()
 
-      if (res) dispatch(setProjects(res))
-    }
+  //     if (res) dispatch(setProjects(res))
+  //   }
 
-    const fetchTeams = async () => {
-      const { res, err } = await teamsApi.getAll()
+  //   const fetchTeams = async () => {
+  //     const { res, err } = await teamsApi.getAll()
 
-      if (res) dispatch(setTeams(res))
-    }
+  //     if (res) dispatch(setTeams(res))
+  //   }
 
-    if (user) {
-      fetchOrganization()
-      fetchProjects()
-      fetchTeams()
-    }
-  }, [user])
+  //   if (user) {
+  //     fetchOrganization()
+  //     fetchProjects()
+  //     fetchTeams()
+  //   }
+  // }, [user])
 
   return (
     <>
       <main className='no-scrollbar'>
-        { user && <Outlet /> }
+        {/* { user && <Outlet /> } */}
+        <Outlet />
       </main>
     </>
   )
