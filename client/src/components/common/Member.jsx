@@ -1,22 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import { BsPersonFillX } from 'react-icons/bs'
 
-const Member = ({ member, isAuthorized }) => {
-  const modalRef = useRef(null)
+import { roles } from '../../utils/organization.utils'
 
-  const [modalOpen, setModalOpen] = useState(false)
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) setModalOpen(false)
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  })
+const Member = ({ member }) => {
+  const { user } = useSelector((state) => state.user)
 
   return (
     <li>
@@ -28,9 +17,9 @@ const Member = ({ member, isAuthorized }) => {
           </a>
         </p>
       </div>
-      <div className={`cta opacity ${isAuthorized ? 'authorized' : ''}`}>
+      <div className={`cta opacity ${user.projectRole === roles.productOwner ? 'authorized' : ''}`}>
         <p className="role" >{member.projectRole}</p>
-        {isAuthorized ? <BsPersonFillX className="pointer" /> : null}
+        {user.projectRole === roles.productOwner ? <BsPersonFillX className="pointer" /> : null}
       </div>
     </li>
   )
