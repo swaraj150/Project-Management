@@ -13,7 +13,3 @@ export const assignableRoles = [
   roles.developer,
   roles.qa
 ]
-
-export const authorizedUser = (user) => {
-  return user.projectRole === roles.productOwner
-}
