@@ -4,7 +4,9 @@ const organizationEndpoints = {
   create: 'organizations/initiate',
   getInfo: 'organizations/',
   join: 'organizations/join',
-  search: 'organizations/search'
+  search: 'organizations/search',
+  accept: 'organizations/accept',
+  reject: 'organizations/reject'
 }
 
 const organizationApi = {
@@ -44,6 +46,30 @@ const organizationApi = {
       const res = await privateClient.get(
         organizationEndpoints.search, 
         { params: { key: query } }
+      )
+
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  accept: async ({ requestId }) => {
+    try {
+      const res = await privateClient.post(
+        organizationEndpoints.accept,
+        { requestId }
+      )
+
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  reject: async ({ requestId }) => {
+    try {
+      const res = await privateClient.post(
+        organizationEndpoints.reject,
+        { requestId }
       )
 
       return { res }
