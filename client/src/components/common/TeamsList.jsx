@@ -15,20 +15,22 @@ const TeamsList = () => {
   const { teams } = useSelector((state) => state.teams)
 
   return (
-    <div className="teams-list no-scrollbar">
+    <ul className="teams-list">
       <div className="team-list-headings">
         {
           headings.map((heading, index) => (
-            <p>{heading}</p>
+            <p key={index} >{heading}</p>
           ))
         }
       </div>
-      {
-        teams.map((team, index) => (
-          <Team key={index} team={team} />
-        ))
-      }
-    </div>
+      <ul className="team-list-items no-scrollbar">
+        {
+          teams.map((team, index) => (
+            <Team key={index} team={team} />
+          ))
+        }
+      </ul>
+    </ul>
   )
 }
 
