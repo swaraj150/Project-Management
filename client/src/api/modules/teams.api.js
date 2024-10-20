@@ -1,13 +1,26 @@
 import privateClient from  '../clients/private.client'
 
 const teamsEndpoints = {
-  getAll: 'teams/getAllTeams'
+  getAll: 'teams/getAllTeams',
+  create: 'teams/create'
 }
 
 const teamsApi = {
   getAll: async () => {
     try {
       const res = await privateClient.get(teamsEndpoints.getAll)
+
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  create: async ({ name, developers, testers, teamLead }) => {
+    try {
+      const res = await privateClient.post(
+        teamsEndpoints.create,
+        { name, developers, testers, teamLead }
+      )
 
       return { res }
     } catch (err) {
