@@ -5,18 +5,25 @@ import { IoMdAdd } from 'react-icons/io'
 import CreateTeam from '../components/common/CreateTeam'
 import TeamsList from '../components/common/TeamsList'
 
+import { roles } from '../utils/organization.utils'
+
 const Teams = () => {
   const modalRef = useRef(null)
 
+  const { user } = useSelector((state) => state.user)
   const { teams } = useSelector((state) => state.teams)
 
   const [modalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const isSelectElement = event.target.parentElement?.classList.contains('css-tj5bde-Svg')
+      const isIndicatorClick =
+        event.target.classList.contains('css-15lsz6c-indicatorContainer') ||
+        event.target.classList.contains('css-tj5bde-Svg') ||
+        event.target.tagName.toLowerCase() === 'path' ||
+        event.target.closest('.css-15lsz6c-indicatorContainer') !== null
 
-      if (modalRef.current && !modalRef.current.contains(event.target) && !isSelectElement) {
+      if (modalRef.current && !modalRef.current.contains(event.target) && !isIndicatorClick) {
         setModalOpen(false)
       }
     }
@@ -33,10 +40,14 @@ const Teams = () => {
       {modalOpen ? <CreateTeam setModalOpen={setModalOpen} modalRef={modalRef} /> : null}
       <div className="heading">
         <h2 className="title h1">Teams</h2>
-        <button className="cta pointer" onClick={() => setModalOpen(true)}>
-          <IoMdAdd />
-          <p>Create Team</p>
-        </button>
+        {
+          user.projectRole === roles.productOwner || user.projectRole === roles.projectManager ? (
+            <button className="cta pointer" onClick={() => setModalOpen(true)}>
+              <IoMdAdd />
+              <p>Create Team</p>
+            </button>
+          ) : null
+        }
       </div>
       <p className="opacity-7">Teams Count: {teams.length}</p>
       <TeamsList />
