@@ -570,26 +570,51 @@ main {
         #organization {
             height: 100%;
 
-            .title {
-                color: var(--primary--500);
+            .organization-heading {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .title {
+                    color: var(--primary--500);
+                }
+
+                .cta {
+                    width: 20%;
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+
+                    button {
+                        flex-grow: 1;
+                        outline: none;
+                        border: none;
+                        padding: 5%;
+                        border-radius: 10px;
+                        background-color: var(--white--500);
+                        font-size: 1rem;
+                        font-weight: 500;
+                    }
+
+                    .active,
+                    button:hover {
+                        color: var(--white--500);
+                        background-color: var(--primary--900);
+                    }
+                }
             }
 
             .members {
                 padding: 2%;
 
-                .members-info {
+                .heading {
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-
-                    .heading {
-                        display: flex;
-                        flex-direction: column;
-                    }
                 }
 
                 .members-list {
-                    height: 60vh;
+                    height: 64vh;
                     padding: 1%;
                     list-style: none;
                     overflow: auto;
@@ -642,7 +667,7 @@ main {
                                     display: flex;
                                     gap: 10px;
                                     align-items: center;
-    
+
                                     :nth-child(3) {
                                         color: var(--primary--500);
                                     }
@@ -690,20 +715,21 @@ main {
                         }
 
                         .cta {
-                            width: 18%;
+                            width: 15%;
                             display: flex;
                             align-items: center;
                             justify-content: flex-end;
 
                             .role {
                                 width: 80%;
-                                padding: 1% 5%;
+                                padding: 2% 5%;
                                 border-radius: 5px;
                                 background-color: var(--white--100);
                                 text-align: center;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
+                            }
+
+                            svg {
+                                font-size: 1.3rem;
                             }
                         }
 
@@ -722,7 +748,103 @@ main {
 
                     li:hover {
                         transform: scale(1.01);
-                        // box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3), -1px 1px 3px rgba(0, 0, 0, 0.3);
+                    }
+                }
+            }
+
+            .requests {
+                padding: 2%;
+
+                .heading {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+
+                .requests-list {
+                    height: 65vh;
+                    padding: 1%;
+                    list-style: none;
+                    overflow: auto;
+
+                    li {
+                        width: 100%;
+                        padding: 5px;
+                        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .request-info {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+
+                            img {
+                                height: 30px;
+                                width: 30px;
+                                border-radius: 10px;
+                            }
+
+                            a {
+                                text-decoration: none;
+                                color: inherit;
+                            }
+                        }
+
+                        .cta {
+                            width: 35%;
+                            display: flex;
+                            gap: 10px;
+                            align-items: center;
+                            justify-content: flex-end;
+
+                            .role {
+                                padding: 1% 5%;
+                                border-radius: 10px;
+                                background-color: var(--white--100);
+                            }
+
+                            .role {
+                                width: 40%;
+                                text-align: center;
+                            }
+
+                            .cta-button {
+                                padding: 1% 5%;
+                                border-radius: 10px;
+                                color: var(--success);
+                                background-color: rgba($color: green, $alpha: 0.2);
+                                display: flex;
+                                gap: 5px;
+                                align-items: center;
+                            }
+
+                            .cta-button:hover {
+                                background-color: rgba($color: green, $alpha: 0.3);
+                            }
+
+                            .cta-button:last-child {
+                                color: var(--error);
+                                background-color: rgba($color: red, $alpha: 0.2);
+
+                                svg {
+                                    font-size: 1.2rem;
+                                }
+                            }
+
+                            .cta-button:last-child:hover {
+                                background-color: rgba($color: red, $alpha: 0.3);
+                            }
+                        }
+                    }
+
+                    li:first-child {
+                        border-top: 1px solid rgba(0, 0, 0, 0.1);
+                    }
+
+                    li:hover {
+                        transform: scale(1.01);
                     }
                 }
             }
@@ -731,30 +853,56 @@ main {
         #teams {
             height: 100%;
 
-            .heading {
-                width: 100%;
+            .modal {
+                width: 50vw;
                 display: flex;
-                align-items: center;
-                justify-content: space-between;
+                gap: 10px;
+                flex-direction: column;
+
+                .modal-close {
+                    position: absolute;
+                    right: 3%;
+                    top: 5%;
+                    font-size: 1rem;
+                }
+
+                input {
+                    padding: 2%;
+                    width: 100%;
+                    outline: none;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 1rem;
+                }
+
+                .select {
+                    padding: 0.5%;
+                    border-radius: 10px;
+                    border: none;
+
+                    .css-13cymwt-control,
+                    .css-t3ipsp-control {
+                        min-height: 10px;
+                        border: none;
+                        box-shadow: none;
+                    }
+                }
 
                 .cta {
-                    width: 40%;
+                    margin-top: 2%;
+                    width: 100%;
                     display: flex;
-                    gap: 10px;
+                    gap: 5%;
                     align-items: center;
-                    justify-content: flex-end;
 
                     button {
+                        flex-grow: 1;
+                        padding: 1.5%;
                         border: none;
                         outline: none;
-                        padding: 2% 5%;
                         border-radius: 10px;
                         background-color: var(--white--100);
                         font-size: 1rem;
-                        display: flex;
-                        gap: 10px;
-                        align-items: center;
-                        justify-content: center;
                     }
 
                     button:last-child {
@@ -764,23 +912,42 @@ main {
                 }
             }
 
-            .teams-list {
-                list-style: none;
-                margin-top: 2%;
-                padding: 2%;
-                height: 80vh;
-                overflow: auto;
+            .heading {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
 
-                .team-list-headings {
+                .cta {
+                    width: 15%;
+                    border: none;
+                    outline: none;
+                    padding: 0.8%;
+                    border-radius: 10px;
                     color: var(--white--500);
                     background-color: var(--primary--900);
-                    font-weight: 600;
-                }
+                    font-size: 1rem;
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    justify-content: center;
 
-                .team-list-headings,
-                .team-list-info {
-                    padding: 1%;
+                    svg {
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+
+            .teams-list {
+                list-style: none;
+                padding: 2%;
+
+                .team-list-headings {
+                    padding: 0.5%;
                     border-radius: 10px;
+                    color: var(--white--500);
+                    background-color: var(--primary--900);
+                    font-size: 1.2rem;
                     display: grid;
                     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 
@@ -790,8 +957,84 @@ main {
                     }
                 }
 
-                .team-list-info:nth-child(odd) {
-                    background-color: var(--white--100);
+                .team-list-items {
+                    overflow: auto;
+                    margin-top: 1%;
+                    padding: 0 1%;
+                    height: 65vh;
+
+                    .team-list-info {
+                        padding: 0.5%;
+                        border-radius: 10px;
+                        position: relative;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+                        .modal {
+                            height: 50vh;
+                            width: 40vw;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                            justify-content: space-between;
+
+                            .modal-close {
+                                position: absolute;
+                                right: 3%;
+                                top: 6%;
+                                font-size: 1rem;
+                            }
+
+                            a {
+                                text-decoration: none;
+                                color: inherit;
+                            }
+
+                            .team-lead {
+                                width: 100%;
+
+                                .team-lead-details {
+                                    width: 100%;
+                                    display: flex;
+                                    gap: 10px;
+                                    align-items: center;
+                                }
+                            }
+
+                            .developers,
+                            .testers {
+                                width: 100%;
+
+                                .developers-list,
+                                .testers-list {
+                                    list-style: none;
+
+                                    li {
+                                        display: flex;
+                                        gap: 10px;
+                                        align-items: center;
+                                    }
+                                }
+                            }
+                        }
+
+                        .team-list-info-item {
+                            padding: 1%;
+                            text-align: center;
+                        }
+
+                        svg {
+                            position: absolute;
+                            right: 1%;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            font-size: 1.5rem;
+                        }
+                    }
+
+                    .team-list-info:nth-child(even) {
+                        background-color: var(--white--100);
+                    }
                 }
             }
         }
