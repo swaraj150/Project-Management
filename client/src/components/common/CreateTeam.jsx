@@ -30,14 +30,6 @@ const CreateTeam = ({ setModalOpen, modalRef }) => {
     setDisabled(!(name && developers.length > 0 && testers.length > 0 && teamLead))
   }, [name, developers, testers, teamLead])
 
-  const handleCancel = () => {
-    setName('')
-    setDevelopers([])
-    setTesters([])
-    setTeamLead(null)
-    setModalOpen(false)
-  }
-
   const handleCreate = async () => {
     setDisabled(true)
 
@@ -50,7 +42,7 @@ const CreateTeam = ({ setModalOpen, modalRef }) => {
 
     if (res) {
       dispatch(addTeam(res))
-      handleCancel()
+      setModalOpen(false)
       toast.success('Team created successfully!')
     }
 
@@ -128,7 +120,7 @@ const CreateTeam = ({ setModalOpen, modalRef }) => {
         innerRef={modalRef}
       />
       <div className="cta">
-        <button className="pointer paper-1" onClick={handleCancel}>Cancel</button>
+        <button className="pointer paper-1" onClick={() => setModalOpen(false)}>Cancel</button>
         <button className="pointer paper-1" onClick={handleCreate} disabled={disabled}>Create</button>
       </div>
     </div>
