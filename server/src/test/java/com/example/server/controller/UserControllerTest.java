@@ -1,8 +1,8 @@
 package com.example.server.controller;
 
 import com.example.server.dto.UserDTO;
-import com.example.server.entities.ProjectRole;
-import com.example.server.entities.Role;
+import com.example.server.enums.ProjectRole;
+import com.example.server.enums.Role;
 import com.example.server.requests.RegisterRequest;
 import com.example.server.response.AuthResponse;
 import com.example.server.service.UserService;
@@ -13,9 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;

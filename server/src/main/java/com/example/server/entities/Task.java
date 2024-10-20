@@ -1,5 +1,8 @@
 package com.example.server.entities;
 
+import com.example.server.enums.CompletionStatus;
+import com.example.server.enums.Level;
+import com.example.server.enums.TaskType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +24,10 @@ public class Task {
     private String title;
     private String description;
     private Integer priority;
+    @Enumerated(EnumType.STRING)
     private TaskType type;
+    @Enumerated(EnumType.STRING)
+    private Level level;
 
     @Column(name = "created_by_user_id")
     private UUID createdBy;
@@ -36,12 +42,6 @@ public class Task {
     private LocalDateTime completedAt;
     @Enumerated(EnumType.STRING)
     private CompletionStatus completionStatus;
-
-
-//    @OneToMany(mappedBy = "parentTask")
-//    private List<Task> subTasks;
-    //one Task (parent task) can have many subTasks.
-    //The mappedBy = "parentTask" part refers to the field in the Task entity that owns the relationship (the other side of the relationship).
 
     @Column(name = "parent_task_id")
     private UUID parentTaskId;

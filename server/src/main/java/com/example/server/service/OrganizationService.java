@@ -1,23 +1,22 @@
 package com.example.server.service;
 
-import com.example.server.component.RoleValidator;
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.JoinRequestDTO;
 import com.example.server.dto.OrganizationDTO;
-import com.example.server.dto.ProjectDTO;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
-import com.example.server.exception.OrganizationNotFoundException;
+import com.example.server.enums.ProjectAuthority;
+import com.example.server.enums.ProjectRole;
+import com.example.server.enums.RequestStatus;
+import com.example.server.enums.WorkloadLimitType;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.JoinRequestRepository;
 import com.example.server.repositories.OrganizationRepository;
 import com.example.server.repositories.TeamRepository;
 import com.example.server.repositories.UserRepository;
 import com.example.server.requests.ChangeJoinRequestStatusRequest;
-import com.example.server.requests.OrganizationCreateRequest;
 import com.example.server.requests.OrganizationInitiateRequest;
 import com.example.server.response.OrganizationResponse;
-import com.example.server.response.ProjectResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +66,7 @@ public class OrganizationService {
         Organization organization=new Organization();
         organization.setName(request.getName());
         organization.setProductOwnerId(productOwner.getId());
+        organization.setWorkloadLimit(new WorkloadLimit(40, WorkloadLimitType.WEEK));
         String code= UUID.randomUUID().toString().substring(0,7);
         organization.setCode(code);
         organizationRepository.save(organization);

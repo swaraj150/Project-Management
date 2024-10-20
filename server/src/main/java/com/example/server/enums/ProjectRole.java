@@ -1,8 +1,7 @@
-package com.example.server.entities;
+package com.example.server.enums;
 
 import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 

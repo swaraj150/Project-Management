@@ -1,5 +1,6 @@
 package com.example.server.repositories;
 
+import com.example.server.enums.CompletionStatus;
 import com.example.server.entities.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,5 +18,8 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     @Query("SELECT t FROM Task t WHERE :userId MEMBER OF t.assignedTo")
     List<Task> findByAssignedTo(@Param("userId") UUID userId);
+
+    @Query("SELECT t FROM Task t WHERE t.completionStatus = :status AND :userId MEMBER OF t.assignedTo")
+    List<Task> findTasksByStatusAndAssignedTo(@Param("status") CompletionStatus status, @Param("userId") UUID userId);
 
 }
