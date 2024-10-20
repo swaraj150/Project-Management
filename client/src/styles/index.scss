@@ -561,11 +561,9 @@ main {
     }
 
     #content {
-        flex-grow: 1;
+        width: 85%;
         padding: 1%;
         height: 100vh;
-        padding-left: 1%;
-        overflow: auto;
 
         #organization {
             height: 100%;
@@ -617,7 +615,6 @@ main {
                     height: 64vh;
                     padding: 1%;
                     list-style: none;
-                    overflow: auto;
 
                     li {
                         width: 100%;
@@ -765,7 +762,6 @@ main {
                     height: 65vh;
                     padding: 1%;
                     list-style: none;
-                    overflow: auto;
 
                     li {
                         width: 100%;
@@ -958,7 +954,6 @@ main {
                 }
 
                 .team-list-items {
-                    overflow: auto;
                     margin-top: 1%;
                     padding: 0 1%;
                     height: 65vh;
@@ -1038,5 +1033,266 @@ main {
                 }
             }
         }
+
+        #projects {
+            height: 100%;
+
+            .modal {
+                width: 50vw;
+                display: flex;
+                gap: 10px;
+                flex-direction: column;
+
+                .modal-close {
+                    position: absolute;
+                    right: 3%;
+                    top: 5%;
+                    font-size: 1rem;
+                }
+
+                .heading {
+                    width: 95%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .cta {
+                        padding: 0;
+                        margin: 0;
+                        height: 100%;
+                        width: 40%;
+                        background-color: inherit;
+                        
+                        button {
+                            padding: 3%;
+                        }
+                    }
+                }
+
+                input,
+                textarea {
+                    padding: 2%;
+                    width: 100%;
+                    outline: none;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 1rem;
+                }
+
+                .select {
+                    padding: 0.5%;
+                    border-radius: 10px;
+                    border: none;
+
+                    .css-13cymwt-control,
+                    .css-t3ipsp-control {
+                        min-height: 10px;
+                        border: none;
+                        box-shadow: none;
+                    }
+                }
+
+                .cta {
+                    margin-top: 2%;
+                    width: 100%;
+                    display: flex;
+                    gap: 5%;
+                    align-items: center;
+
+                    button {
+                        flex-grow: 1;
+                        padding: 1.5%;
+                        border: none;
+                        outline: none;
+                        border-radius: 10px;
+                        background-color: var(--white--100);
+                        font-size: 1rem;
+                    }
+
+                    button:last-child {
+                        color: var(--white--500);
+                        background-color: var(--primary--900);
+                    }
+                }
+            }
+
+            .heading {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .cta {
+                    width: 15%;
+                    border: none;
+                    outline: none;
+                    padding: 0.8%;
+                    border-radius: 10px;
+                    color: var(--white--500);
+                    background-color: var(--primary--900);
+                    font-size: 1rem;
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    justify-content: center;
+
+                    svg {
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+
+            .projects-list {
+                margin-top: 2%;
+                padding: 2%;
+                height: 70vh;
+                list-style: none;
+                display: flex;
+                row-gap: 5%;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-evenly;
+
+                .project-info {
+                    padding: 1%;
+                    width: 30%;
+                    height: 50%;
+                    border-radius: 10px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+
+                    .modal {
+                        height: 60vh;
+                        width: 50vw;
+                        color: var(--black);
+
+                        .sub-modal {
+                            justify-content: space-evenly;
+                            height: 25vh;
+                            width: 40vw;
+                            z-index: 9999;
+
+                            .modal-close {
+                                top: 8%;
+                            }
+
+                            .select {
+                                padding: 0.5%;
+                                border-radius: 10px;
+                                border: none;
+            
+                                .css-13cymwt-control,
+                                .css-t3ipsp-control {
+                                    min-height: 10px;
+                                    border: none;
+                                    box-shadow: none;
+                                }
+                            }
+                        }
+
+                        .modal-close {
+                            top: 5%;
+                            right: 2.5%;
+                        }
+
+                        .project-manager {
+                            gap: 5px;
+                            flex-direction: column;
+                            align-items: flex-start;
+
+                            .project-manager-details {
+                                gap: 10px;
+                                flex-direction: row;
+                                align-items: center;
+
+                                a {
+                                    text-decoration: none;
+                                    color: inherit;
+                                }
+                            }
+                        }
+
+                        .teams {
+                            .teams-list-headings {
+                                padding: 0.5%;
+                                width: 100%;
+                                display: grid;
+                                grid-template-columns: 1fr 1fr 1fr;
+                                text-align: center;
+                                border-radius: 5px;
+                                color: var(--white--500);
+                                background-color: var(--primary--900);
+                            }
+
+                            ul {
+                                margin-top: 1%;
+                                height: 6vh;
+                                list-style: none;
+
+                                li {
+                                    width: 100%;
+                                    display: grid;
+                                    grid-template-columns: 1fr 1fr 1fr;
+                                    text-align: center;
+                                    border-radius: 5px;
+                                }
+
+                                li:nth-child(even) {
+                                    background-color: var(--white--100);
+                                }
+                            }
+                        }
+                    }
+
+                    .description {
+                        display: inline-block;
+                        width: 100%;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    .date,
+                    .budget {
+                        display: flex;
+                        gap: 10px;
+                        align-items: center;
+                    }
+
+                    .project-manager {
+                        display: flex;
+                        gap: 10px;
+                        align-items: center;
+
+                        img {
+                            height: 30px;
+                            width: 30px;
+                            border-radius: 10px;
+                        }
+
+                        .project-manager-details {
+                            display: flex;
+                            flex-direction: column;
+
+                            a {
+                                text-decoration: none;
+                                color: inherit;
+                                font-size: small;
+                            }
+                        }
+                    }
+                }
+
+                .project-info:nth-child(even) {
+                    color: var(--white--500);
+                    background-color: var(--primary--900);
+                }
+            }
+        }
+    }
+
+    .expanded {
+        width: 95% !important;
     }
 }
