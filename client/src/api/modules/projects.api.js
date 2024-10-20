@@ -3,7 +3,8 @@ import privateClient from  '../clients/private.client'
 const projectsEndpoints = {
   create: 'projects/create',
   getInfo: 'projects',
-  getAll: 'projects/getAllProjects'
+  getAll: 'projects/getAllProjects',
+  addTeam: 'projects/add-team'
 }
 
 const projectsApi = {
@@ -28,6 +29,18 @@ const projectsApi = {
   getAll: async () => {
     try {
       const res = await privateClient.get(projectsEndpoints.getAll)
+
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  addTeam: async ({ projectId, teams }) => {
+    try {
+      const res = await privateClient.put(
+        projectsEndpoints.addTeam,
+        { projectId, teams }
+      )
 
       return { res }
     } catch (err) {
