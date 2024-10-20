@@ -3,35 +3,35 @@ package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.UserDTO;
-import com.example.server.entities.ProjectAuthority;
-import com.example.server.entities.ProjectRole;
-import com.example.server.entities.Role;
+import com.example.server.enums.ProjectAuthority;
+import com.example.server.enums.ProjectRole;
+import com.example.server.enums.Role;
 import com.example.server.entities.User;
-import com.example.server.exception.AccountConflictException;
-import com.example.server.exception.InvalidPasswordException;
+import com.example.server.exception.UnauthorizedAccessException;
+import com.example.server.pojo.GitHubUserInfo;
 import com.example.server.repositories.UserRepository;
+import com.example.server.requests.AddSkillsToUserRequest;
+import com.example.server.requests.ChangeUserRoleRequest;
 import com.example.server.requests.LoginRequest;
 import com.example.server.requests.RegisterRequest;
 import com.example.server.response.AuthResponse;
 import com.example.server.component.UserValidator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.*;
 import org.springframework.security.authentication.*;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,6 +78,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setRole(Role.USER);
         user.setProjectRole(ProjectRole.DEFAULT_TEAM_MEMBER);
+        user.setSkills(new HashSet<>());
+        user.setDomain(new HashSet<>());
         userRepository.save(user);
         logger.info("User created: {}", user.getUsername());
 
@@ -123,19 +125,21 @@ public class UserService {
                     .build();
 
     }
-    // get dev,qa,projectmanager,etc;
-    public void updateProjectRole(String role){
+    public void updateProjectRole(ChangeUserRoleRequest request){
 
-        User user= loadUser(securityUtils.getCurrentUsername());
-        switch (role) {
-            case "Product Owner" -> user.setProjectRole(ProjectRole.PRODUCT_OWNER);
-            case "Project Manager" -> user.setProjectRole(ProjectRole.PROJECT_MANAGER);
-            case "Developer"->user.setProjectRole(ProjectRole.DEVELOPER);
-            case "QA"->user.setProjectRole(ProjectRole.QA);
-            case "Team Lead"->user.setProjectRole(ProjectRole.TEAM_LEAD);
-            case "Stakeholder"->user.setProjectRole(ProjectRole.STAKEHOLDER);
+        User user1= loadUser(securityUtils.getCurrentUsername());
+        if(!user1.getProjectRole().hasAuthority(ProjectAuthority.ACCEPT_MEMBERS)){
+            throw new UnauthorizedAccessException("user does not have required authority");
         }
-        userRepository.save(user);
+        User user2=loadUser(request.getId());
+        String role=request.getRole().toLowerCase();
+        switch (role) {
+            case "project manager" -> user2.setProjectRole(ProjectRole.PROJECT_MANAGER);
+            case "developer"->user2.setProjectRole(ProjectRole.DEVELOPER);
+            case "qa"->user2.setProjectRole(ProjectRole.QA);
+            case "team lead"->user2.setProjectRole(ProjectRole.TEAM_LEAD);
+        }
+        userRepository.save(user2);
     }
 
     public void updateProjectRole(String role,User user){
@@ -153,11 +157,103 @@ public class UserService {
     }
 
     public void updateProjectRole(ProjectRole role,User user){
-
         user.setProjectRole(role);
-
         userRepository.save(user);
     }
+
+    public void addSkills(@NonNull AddSkillsToUserRequest request){
+        User user=loadUser(securityUtils.getCurrentUsername());
+        user.setSkills(request.getSkills());
+        user.setDomain(request.getDomains());
+        userRepository.save(user);
+    }
+
+//    private String exchangeCodeForToken(String code) throws OAuth2AuthenticationException {
+//        String tokenUrl = "https://github.com/login/oauth/access_token";
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        Map<String, String> requestBody = Map.of(
+//                "client_id", GITHUB_CLIENT_ID,
+//                "client_secret", GITHUB_CLIENT_SECRET,
+//                "code", code
+//        );
+//
+//        HttpEntity<Map<String, String>> request = new HttpEntity<>(requestBody, headers);
+//
+//        ResponseEntity<String> response = restTemplate.postForEntity(tokenUrl, request, String.class);
+//        if (response.getStatusCode() == HttpStatus.OK) {
+//            return extractAccessToken(Objects.requireNonNull(response.getBody()));
+//        } else {
+//            throw new OAuth2AuthenticationException("Failed to obtain access token");
+//        }
+////        try {
+////        } catch (RestClientException e) {
+////            throw new OAuth2AuthenticationException("Error during token exchange", e);
+////        }
+//    }
+//
+//    private String extractAccessToken(String responseBody) throws OAuth2AuthenticationException {
+//        String[] pairs = responseBody.split("&");
+//        for (String pair : pairs) {
+//            String[] keyValue = pair.split("=");
+//            if (keyValue.length == 2 && "access_token".equals(keyValue[0])) {
+//                return keyValue[1];
+//            }
+//        }
+//        throw new OAuth2AuthenticationException("Access token not found in the response");
+//    }
+//
+//    private GitHubUserInfo fetchUserInfo(String accessToken) throws OAuth2AuthenticationException, JsonProcessingException {
+//        String userInfoUrl = "https://api.github.com/user";
+//        String emailUrl = "https://api.github.com/user/emails";
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setBearerAuth(accessToken);
+//        HttpEntity<String> request = new HttpEntity<>(headers);
+//        ResponseEntity<String> userInfoResponse = restTemplate.exchange(
+//                userInfoUrl,
+//                HttpMethod.GET,
+//                request,
+//                String.class
+//        );
+//        GitHubUserInfo userInfo= objectMapper.readValue(userInfoResponse.getBody(), GitHubUserInfo.class);
+//        ResponseEntity<String> emailResponse = restTemplate.exchange(
+//                emailUrl,
+//                HttpMethod.GET,
+//                request,
+//                String.class
+//        );
+//        List<GitHubUserInfo.GitHubEmail> emails = objectMapper.readValue(emailResponse.getBody(),
+//                new TypeReference<List<GitHubUserInfo.GitHubEmail>>(){});
+//
+//        // Find primary email
+//        String primaryEmail = emails.stream()
+//                .filter(GitHubUserInfo.GitHubEmail::isPrimary)
+//                .findFirst()
+//                .map(GitHubUserInfo.GitHubEmail::getEmail)
+//                .orElse(null);
+//
+//        userInfo.setEmail(primaryEmail);
+//        return userInfo;
+//
+////        try {
+////        } catch (HttpClientErrorException e) {
+////            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+////                throw new HttpClientErrorException();
+////            }
+////            throw new OAuth2AuthenticationException("Error fetching user info", e);
+////        } catch (IOException e) {
+////            throw new OAuth2AuthenticationException("Error parsing user info", e);
+////        }
+//    }
+//
+//    private User processUser(GitHubUserInfo userInfo) {
+//        String email = userInfo.getEmail();
+//        String name = userInfo.getName();
+//        String oauth2ClientName = "github";
+//        String oauth2Id = String.valueOf(userInfo.getId());
+//        return oAuth2UserService.processOAuthPostLogin(email, oauth2ClientName, oauth2Id, name);
+//    }
 
 
 

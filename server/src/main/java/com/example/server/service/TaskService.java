@@ -3,6 +3,10 @@ package com.example.server.service;
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
+import com.example.server.enums.CompletionStatus;
+import com.example.server.enums.Level;
+import com.example.server.enums.ProjectAuthority;
+import com.example.server.enums.TaskType;
 import com.example.server.exception.InvalidStatusException;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.ProjectRepository;
@@ -15,12 +19,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.security.InvalidKeyException;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +46,7 @@ public class TaskService {
         task.setCreatedAt(LocalDateTime.now());
         task.setPriority(request.getPriority());
         task.setType(TaskType.valueOf(request.getType()));
+        task.setLevel(Level.valueOf(request.getLevel()));
         task.setEstimatedHours(request.getEstimatedHours());
         task.setParentTaskId(request.getParentTaskId());
         task.setProjectId(team.getProjectId());
@@ -109,6 +110,14 @@ public class TaskService {
                 .completionStatus(task.getCompletionStatus())
                 .build();
     }
+
+    public List<Task> getActiveTasksByUser(@NonNull UUID userId){
+        return taskRepository.findTasksByStatusAndAssignedTo(CompletionStatus.IN_PROGRESS,userId);
+    }
+
+
+
+
 
 
 

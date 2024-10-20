@@ -23,7 +23,6 @@ public class TaskController {
     public ResponseEntity<?> create(@RequestBody @NonNull CreateTaskRequest request){
         TaskResponse taskResponse=taskService.createTask(request);
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("task",taskResponse);
         return ResponseEntity.ok(h);
     }
@@ -31,7 +30,6 @@ public class TaskController {
     public ResponseEntity<?> changeStatus(@RequestParam @NonNull UUID id, @RequestParam @NonNull String status){
         TaskResponse taskResponse=taskService.changeStatus(status,id);
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("task",taskResponse);
         return ResponseEntity.ok(h);
     }

@@ -1,13 +1,14 @@
 package com.example.server.entities;
 
+import com.example.server.enums.Level;
+import com.example.server.enums.ProjectAuthority;
+import com.example.server.enums.ProjectRole;
+import com.example.server.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import net.minidev.json.annotate.JsonIgnore;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,15 +29,10 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String firstName;
     private String lastName;
-
-
-
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name = "user_emails", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "email")
     private Set<String> emails = new HashSet<>();
-
-
     @Column(unique = true, nullable = false)
     private String username;
     private String password;
@@ -48,16 +44,18 @@ public class User implements UserDetails {
     private ProjectRole projectRole;
     private String resetPasswordToken;
     private LocalDateTime resetPasswordTokenExpiry;
-
     @Column(name = "organization_id")
     private UUID organizationId;
-
     @ElementCollection(fetch = FetchType.EAGER)
     @ToString.Exclude
     @CollectionTable(name = "oauth_identities", joinColumns = @JoinColumn(name = "user_id"))
     @MapKeyColumn(name = "oauth_provider")
     @Column(name = "oauth_id")
     private Map<String, String> oauthIdentities = new HashMap<>();
+    // these are absolutes (Should not change according to projects)
+    private Set<String> skills;
+    private Set<String> domain;
+    private Integer yearsOfExp;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

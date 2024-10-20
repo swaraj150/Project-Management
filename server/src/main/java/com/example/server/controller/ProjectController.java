@@ -1,10 +1,7 @@
 package com.example.server.controller;
 
-import com.example.server.entities.ProjectAuthority;
-import com.example.server.entities.User;
-import com.example.server.exception.UnauthorizedAccessException;
+import com.example.server.requests.AddTeamsToProjectRequest;
 import com.example.server.requests.CreateProjectRequest;
-import com.example.server.requests.TeamCreateRequest;
 import com.example.server.response.ApiResponse;
 import com.example.server.response.ProjectResponse;
 import com.example.server.service.ProjectService;
@@ -25,15 +22,13 @@ public class ProjectController {
     public ResponseEntity<?> create(@RequestBody @NonNull CreateProjectRequest request){
         ProjectResponse projectResponse=projectService.createProject(request);
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("project",projectResponse);
         return ResponseEntity.ok(h);
     }
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<?> load(@RequestParam @NonNull UUID id){
         ProjectResponse projectResponse=projectService.loadProjectResponse(id);
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("project",projectResponse);
         return ResponseEntity.ok(h);
     }
@@ -42,16 +37,36 @@ public class ProjectController {
         projectService.addTeam(team);
         return ResponseEntity.ok(ApiResponse.success("team added successfully"));
     }
+    @PutMapping("/add-teams")
+    public ResponseEntity<?> addTeams(@RequestBody AddTeamsToProjectRequest request){
+        if(request.getTeamNames()==null){
+            projectService.addTeamsById(request.getTeamsIds());
+        }
+        else if(request.getTeamsIds()==null){
+            projectService.addTeamsByName(request.getTeamNames());
+        }
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("msg","teams added successfully");
+        return ResponseEntity.ok(h);
+    }
     @GetMapping("/getAllProjects")
-    public ResponseEntity<?> getAllTeams(){
+    public ResponseEntity<?> getAllProjects(){
 //        User user=userService.loadUser(securityUtils.getCurrentUsername());
 //        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
 //            throw new UnauthorizedAccessException("User does not have the required authority");
 //        }
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("projects",projectService.loadAllProjectResponses());
         return ResponseEntity.ok(h);
     }
+
+    @GetMapping("/suggest-teams")
+    public ResponseEntity<?> getTeams(@RequestParam @NonNull UUID projectId){
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("teams",projectService.suggestTeams(projectId));
+        return ResponseEntity.ok(h);
+    }
+
+
 
 }

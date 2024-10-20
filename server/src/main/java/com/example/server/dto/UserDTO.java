@@ -1,7 +1,7 @@
 package com.example.server.dto;
 
-import com.example.server.entities.ProjectRole;
-import com.example.server.entities.Role;
+import com.example.server.enums.ProjectRole;
+import com.example.server.enums.Role;
 import com.example.server.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

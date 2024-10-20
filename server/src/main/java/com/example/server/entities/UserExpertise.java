@@ -1,5 +1,6 @@
 package com.example.server.entities;
 
+import com.example.server.enums.Level;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,20 +9,18 @@ import lombok.NoArgsConstructor;
 
 import java.util.Set;
 import java.util.UUID;
-
-
 @Entity
-@Table(name="Technology")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Technology {
+public class UserExpertise {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "tech_id")
+    @Column(name = "expertise_id")
     private UUID id;
-    private Set<String> techName;
-    private Set<String> domain;
+    private UUID userId;
     private UUID projectId;
+    @Enumerated(EnumType.STRING)
+    private Level level;
 }

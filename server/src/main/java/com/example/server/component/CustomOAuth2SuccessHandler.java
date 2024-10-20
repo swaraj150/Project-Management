@@ -1,12 +1,11 @@
 package com.example.server.component;
 
-import com.example.server.entities.ProjectRole;
-import com.example.server.entities.Role;
+import com.example.server.enums.ProjectRole;
+import com.example.server.enums.Role;
 import com.example.server.entities.User;
 import com.example.server.exception.AccountConflictException;
 import com.example.server.repositories.UserRepository;
 import com.example.server.service.JwtService;
-import com.example.server.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,11 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 

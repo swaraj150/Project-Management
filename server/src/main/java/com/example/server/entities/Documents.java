@@ -1,5 +1,6 @@
 package com.example.server.entities;
 
+import com.example.server.enums.FileType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

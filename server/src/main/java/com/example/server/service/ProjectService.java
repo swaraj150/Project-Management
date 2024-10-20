@@ -2,9 +2,11 @@ package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.OrganizationDTO;
-import com.example.server.dto.ProjectDTO;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
+import com.example.server.enums.CompletionStatus;
+import com.example.server.enums.ProjectAuthority;
+import com.example.server.enums.ProjectRole;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.OrganizationRepository;
 import com.example.server.repositories.ProjectRepository;
@@ -18,9 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -40,16 +40,16 @@ public class ProjectService {
         Organization organization=organizationRepository.findById(user.getOrganizationId())
                 .orElseThrow(()->new EntityNotFoundException("Organization not found"));
         Project project=new Project();
-        if(user.getProjectRole()==ProjectRole.PROJECT_MANAGER){
+        if(user.getProjectRole()== ProjectRole.PROJECT_MANAGER){
             project.setProjectManagerId(user.getId());
         }
-        // else add a method addProjectManager
         project.setTitle(request.getTitle());
         project.setDescription(request.getDescription());
         project.setBudget(request.getBudget());
         project.setStartDate(LocalDate.now());
         project.setEstimatedEndDate(request.getEstimatedEndDate());
         project.setOrganizationId(user.getOrganizationId());
+        project.setCompletionStatus(CompletionStatus.PENDING);
         projectRepository.save(project);
         organization.getProjects().add(project.getId());
         organizationRepository.save(organization);
@@ -68,6 +68,37 @@ public class ProjectService {
         team.getMemberIds().add(project.getProjectManagerId());
         teamRepository.save(team);
         projectRepository.save(project);
+    }
+    public void addTeam(@NonNull Team team){
+        User user= userService.loadUser(securityUtils.getCurrentUsername());
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_PROJECT)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        Project project=projectRepository.findByOrganization(user.getOrganizationId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        project.getTeams().add(team.getId());
+        team.setProjectId(project.getId());
+        team.getMemberIds().add(project.getProjectManagerId());
+        teamRepository.save(team);
+        projectRepository.save(project);
+    }
+    public void addTeamsByName(@NonNull List<String> teams){
+        User user= userService.loadUser(securityUtils.getCurrentUsername());
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_PROJECT)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        for(String s:teams){
+            addTeam(s);
+        }
+    }
+    public void addTeamsById(@NonNull List<UUID> teams){
+        User user= userService.loadUser(securityUtils.getCurrentUsername());
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_PROJECT)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        for(UUID s:teams){
+            Team team=teamRepository.findById(s).orElseThrow(()->new EntityNotFoundException("Team not found"));
+            addTeam(team);
+        }
     }
 
     public ProjectResponse loadProjectResponse(@NonNull UUID projectId){
@@ -101,6 +132,14 @@ public class ProjectService {
         }
         return projectResponses;
     }
+
+    public List<Map<String,Object>> suggestTeams(@NonNull UUID projectId){
+        Project project=projectRepository.findById(projectId).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        return teamService.suggestTeams(projectId,project.getTeams());
+    }
+
+
+
 
 
 

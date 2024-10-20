@@ -1,7 +1,7 @@
 package com.example.server.service;
 
 import com.example.server.entities.JoinRequest;
-import com.example.server.entities.ProjectRole;
+import com.example.server.enums.ProjectRole;
 import com.example.server.exception.IllegalRoleException;
 import com.example.server.repositories.JoinRequestRepository;
 import lombok.NonNull;

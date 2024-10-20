@@ -1,7 +1,7 @@
 package com.example.server.service;
 
-import com.example.server.entities.ProjectRole;
-import com.example.server.entities.Role;
+import com.example.server.enums.ProjectRole;
+import com.example.server.enums.Role;
 import com.example.server.entities.User;
 import com.example.server.exception.AccountConflictException;
 import com.example.server.pojo.GoogleUserInfo;
@@ -10,15 +10,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service

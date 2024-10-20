@@ -33,6 +33,12 @@ public class Organization {
     @CollectionTable(name = "projects", joinColumns = @JoinColumn(name = "organization_id"))
     @Column(name = "project_id")
     private Set<UUID> projects = new HashSet<>();
+    @ElementCollection
+    @CollectionTable(name = "teams", joinColumns = @JoinColumn(name = "organization_id"))
+    @Column(name = "team_id")
+    private Set<UUID> teams = new HashSet<>();
+    @Embedded
+    private WorkloadLimit workloadLimit;
 
 
 //    @OneToOne

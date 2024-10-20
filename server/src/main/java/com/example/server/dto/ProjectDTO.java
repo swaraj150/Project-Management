@@ -1,14 +1,10 @@
 package com.example.server.dto;
 
-import com.example.server.entities.CompletionStatus;
+import com.example.server.enums.CompletionStatus;
 import com.example.server.entities.Project;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;

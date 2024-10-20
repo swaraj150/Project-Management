@@ -1,8 +1,8 @@
 package com.example.server.response;
 
 import com.example.server.dto.UserDTO;
-import com.example.server.entities.CompletionStatus;
-import com.example.server.entities.TaskType;
+import com.example.server.enums.CompletionStatus;
+import com.example.server.enums.TaskType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

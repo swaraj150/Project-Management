@@ -33,7 +33,6 @@ public class OrganizationController {
     @PostMapping("/initiate")
     public ResponseEntity<?> initiate(@RequestBody @NonNull OrganizationInitiateRequest request){
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("organization",organizationService.initiateOrganization(request));
         return ResponseEntity.ok(h);
     }
@@ -46,7 +45,6 @@ public class OrganizationController {
     public ResponseEntity<?> join(@RequestParam @NonNull String code,@RequestParam @NonNull String role){
         organizationService.requestToJoinOrganization(code,role);
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("message","request sent");
         return ResponseEntity.ok(h);
     }
@@ -56,7 +54,6 @@ public class OrganizationController {
         logger.info("id :{}",id);
         organizationService.respondToJoinRequest(ChangeJoinRequestStatusRequest.builder().id(id).status(status).build());
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("message","request accepted");
         return ResponseEntity.ok(h);
     }
@@ -67,7 +64,6 @@ public class OrganizationController {
     public ResponseEntity<?> loadJoinRequests(){
         Set<JoinRequestDTO> set=organizationService.loadJoinRequest();
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("requests",set);
         return ResponseEntity.ok(h);
     }
@@ -76,7 +72,6 @@ public class OrganizationController {
     public ResponseEntity<?> loadOrganization(){
         OrganizationResponse response=organizationService.loadOrganizationResponse();
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("organization",response);
         return ResponseEntity.ok(h);
     }
@@ -84,10 +79,11 @@ public class OrganizationController {
     @GetMapping("/search")
     public ResponseEntity<?> searchOrganization(@RequestParam @NonNull String key){
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("organizations",organizationService.searchByName(key));
         return ResponseEntity.ok(h);
     }
+
+
 
 
 
