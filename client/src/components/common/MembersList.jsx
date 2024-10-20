@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import Member from './Member'
 
-const MembersList = ({ members, isAuthorized }) => {
+const MembersList = ({ members }) => {
   const { user } = useSelector((state) => state.user)
 
   return (
@@ -16,7 +16,7 @@ const MembersList = ({ members, isAuthorized }) => {
       <ul className="members-list no-scrollbar">
         {
           members.map((member, index) => (
-            <Member key={index} member={member} isAuthorized={isAuthorized} />
+            <Member key={index} member={member} />
           ))
         }
       </ul>
