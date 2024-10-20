@@ -9,7 +9,7 @@ import Projects from './Projects'
 import Tasks from './Tasks'
 
 const HomePage = () => {
-  const { active } = useSelector((state) => state.menu)
+  const { active, collapsed } = useSelector((state) => state.menu)
 
   const menuItems = [
     <DashBoard />,
@@ -22,7 +22,7 @@ const HomePage = () => {
   return (
     <section id="homepage">
       <Menu />
-      <section id="content" className="no-scrollbar">
+      <section id="content" className={`no-scrollbar ${collapsed ? "expanded" : null}`} >
         {menuItems[active]}
       </section>
     </section>
