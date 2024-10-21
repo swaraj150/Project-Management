@@ -125,13 +125,13 @@ public class OrganizationService {
 
 
 
-    public void respondToJoinRequest(@NonNull ChangeJoinRequestStatusRequest request){
+    public void respondToJoinRequest(@NonNull UUID id,@NonNull String status){
         User user1 = userService.loadUser(securityUtils.getCurrentUsername());
         if (!user1.getProjectRole().hasAuthority(ProjectAuthority.ACCEPT_MEMBERS)) {
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        JoinRequest joinRequest=joinRequestService.loadJoinRequest(request.getId());
-        if(Objects.equals(request.getStatus(), "Approved")){
+        JoinRequest joinRequest=joinRequestService.loadJoinRequest(id);
+        if(Objects.equals(status, "accept")){
             joinRequest.setStatus(RequestStatus.APPROVED);
             User user=userRepository.findById(joinRequest.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
             Organization organization=loadOrganization(joinRequest.getOrganizationId());
@@ -145,7 +145,7 @@ public class OrganizationService {
             joinRequestRepository.delete(joinRequest);
             userRepository.save(user);
         }
-        else if(Objects.equals(request.getStatus(),"Rejected")){
+        else if(Objects.equals(status,"reject")){
             joinRequest.setStatus(RequestStatus.REJECTED);
             joinRequestRepository.delete(joinRequest);
 

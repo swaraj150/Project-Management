@@ -36,25 +36,41 @@ public class OrganizationController {
         h.put("organization",organizationService.initiateOrganization(request));
         return ResponseEntity.ok(h);
     }
-//    @PostMapping("/join")
-//    public ResponseEntity<ApiResponse<String>> join(@RequestBody @NonNull JoinOrganizationRequest request){
-//        organizationService.requestToJoinOrganization(request.getCode(),request.getRole());
-//        return ResponseEntity.ok(ApiResponse.success("Request sent successfully"));
-//    }
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestParam @NonNull String code,@RequestParam @NonNull String role){
-        organizationService.requestToJoinOrganization(code,role);
+    public ResponseEntity<?> join(@RequestBody @NonNull JoinOrganizationRequest request){
+        organizationService.requestToJoinOrganization(request.getCode(),request.getRole());
         HashMap<String,Object> h=new HashMap<>();
         h.put("message","request sent");
         return ResponseEntity.ok(h);
     }
+//    @PostMapping("/join")
+//    public ResponseEntity<?> join(@RequestParam @NonNull String code,@RequestParam @NonNull String role){
+//        organizationService.requestToJoinOrganization(code,role);
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("message","request sent");
+//        return ResponseEntity.ok(h);
+//    }
 
-    @PutMapping("/respond")
-    public ResponseEntity<?> acceptRequest(@RequestParam @NonNull UUID id,@RequestParam @NonNull String status){
-        logger.info("id :{}",id);
-        organizationService.respondToJoinRequest(ChangeJoinRequestStatusRequest.builder().id(id).status(status).build());
+//    @PutMapping("/respond")
+//    public ResponseEntity<?> acceptRequest(@RequestParam @NonNull UUID id,@RequestParam @NonNull String status){
+//        logger.info("id :{}",id);
+//        organizationService.respondToJoinRequest(ChangeJoinRequestStatusRequest.builder().id(id).status(status).build());
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("message","request accepted");
+//        return ResponseEntity.ok(h);
+//    }
+    @PutMapping("/accept")
+    public ResponseEntity<?> acceptRequest(@RequestBody @NonNull ChangeJoinRequestStatusRequest request){
+        organizationService.respondToJoinRequest(request.getId(),"accept");
         HashMap<String,Object> h=new HashMap<>();
         h.put("message","request accepted");
+        return ResponseEntity.ok(h);
+    }
+    @PutMapping("/reject")
+    public ResponseEntity<?> rejectRequest(@RequestBody @NonNull ChangeJoinRequestStatusRequest request){
+        organizationService.respondToJoinRequest(request.getId(),"reject");
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("message","request rejected");
         return ResponseEntity.ok(h);
     }
 
