@@ -23,7 +23,7 @@ const Request = ({ request }) => {
 
     if (res) {
       dispatch(addMember(res))
-      toast.success(`${request.name} has been successfully accepted!`)
+      toast.success(`${request.username} has been successfully accepted!`)
     }
 
     if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
@@ -33,10 +33,10 @@ const Request = ({ request }) => {
     <li>
       <div className="request-info">
         <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
-        <p>{request.name} &nbsp;&nbsp;
-          <a href={`mailto:${request.emails[0]}`} className="opacity-5" >
+        <p>{request.username} &nbsp;&nbsp;
+          {/* <a href={`mailto:${request.emails[0]}`} className="opacity-5" >
             {request.emails[0]}
-          </a>
+          </a> */}
         </p>
       </div>
       <div className="cta">

@@ -3,13 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const userSlice = createSlice({
   name: 'User',
   initialState: {
-    user: {
-      name: "Alice Johnson",
-      username: "alice_johnson",
-      emails: ["alice.johnson@techinnovations.com"],
-      role: "USER",
-      projectRole: "Product Owner"
-    }
+    user: null
   },
   reducers: {
     setUser: (state, action) => {

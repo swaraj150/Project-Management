@@ -6,7 +6,7 @@ const userEndpoints = {
   signup: 'users/register',
   googleSignin: 'users/google',
   githubSignin: 'users/github',
-  getInfo: 'users',
+  getInfo: 'users/',
   updateProjectRole: 'update-project-role'
 }
 

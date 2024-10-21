@@ -1,10 +1,10 @@
 export const roles = {
   projectManager: "Project Manager",
-  productOwner: "Product Owner",
-  teamLead: "Team Lead",
-  developer: "Developer",
+  productOwner: "PRODUCT_OWNER",
+  teamLead: "TEAM_LEAD",
+  developer: "DEVELOPER",
   qa: "QA",
-  stakeholder: "Stakeholder"
+  stakeholder: "STAKEHOLDER"
 }
 
 export const assignableRoles = [

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { RxCross1 } from 'react-icons/rx'
 import { FaRegCalendarAlt, FaRupeeSign } from 'react-icons/fa'
 
-import AddTask from './AddTask'
+// import AddTask from './AddTask'
 import AddTeam from './AddTeam'
 
 import { formatBudget, formatDate } from '../../utils/project.utils'
@@ -22,7 +22,7 @@ const ProjectDetails = ({ project, setModalOpen, modalRef }) => {
   return (
     <div ref={modalRef} className="modal paper">
       {addTeamModalOpen ? <AddTeam project={project} setAddTeamModalOpen={setAddTeamModalOpen} modalRef={modalRef} /> : null}
-      {addTaskModalOpen ? <AddTask project={project} setAddTaskModalOpen={setAddTaskModalOpen} modalRef={modalRef} /> : null}
+      {/* {addTaskModalOpen ? <AddTask project={project} setAddTaskModalOpen={setAddTaskModalOpen} modalRef={modalRef} /> : null} */}
       <RxCross1 className="modal-close pointer" onClick={() => setModalOpen(false)} />
       <div className="heading">
         <h2>{project.title}</h2>

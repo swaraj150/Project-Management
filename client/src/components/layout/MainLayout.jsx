@@ -8,7 +8,7 @@ import projectsApi from '../../api/modules/projects.api'
 import teamsApi from '../../api/modules/teams.api'
 import userApi from '../../api/modules/user.api'
 
-import { setOrganization } from '../../redux/features/organizationSlice'
+import { setOrganization, setRequests } from '../../redux/features/organizationSlice'
 import { setProjects } from '../../redux/features/projectsSlice'
 import { setTeams } from '../../redux/features/teamsSlice'
 import { setUser } from '../../redux/features/userSlice'
@@ -18,57 +18,79 @@ const MainLayout = () => {
   const navigate = useNavigate()
 
   const { user } = useSelector((state) => state.user)
+  const { organization } = useSelector((state) => state.organization)
 
-  // useEffect(() => {
-  //     const fetchUserDetails = async () => {
-  //     const { res, err } = await userApi.getInfo()
+  useEffect(() => {
+      const fetchUserDetails = async () => {
+      const { res, err } = await userApi.getInfo()
 
-  //     if (res) {
-  //       dispatch(setUser(res))
-  //       toast.success('Login successful. Welcome back!')
-  //     } else {
-  //       localStorage.removeItem('token')
-  //       navigate('/sign-in')
-  //     }
-  //   }
+      
 
-  //   const token = localStorage.getItem('token')
+      if (res) {
+        dispatch(setUser(res))
+        toast.success('Login successful. Welcome back!')
+      } 
 
-  //   if (user == null && token === null) navigate('/sign-in')
-  //   if (user === null) fetchUserDetails()
-  // }, [])
+      if(err) {
+        localStorage.removeItem('token')
+        navigate('/sign-in')
+      }
+    }
 
-  // useEffect(() => {
-  //   const fetchOrganization = async () => {
-  //     const { res, err } = await organizationApi.getInfo()
+    const token = localStorage.getItem('token')
 
-  //     if (res) dispatch(setOrganization(res))
-  //   }
+    if (user == null && token === null) navigate('/sign-in')
+    if (user === null) fetchUserDetails()
+  }, [])
 
-  //   const fetchProjects = async () => {
-  //     const { res, err } = await projectsApi.getAll()
+  useEffect(() => {
+    const fetchOrganization = async () => {
+      const { res, err } = await organizationApi.getInfo()
 
-  //     if (res) dispatch(setProjects(res))
-  //   }
+      if (res) dispatch(setOrganization(res))
+      if (err) navigate('/discover')
+    }
+    if (user) {
+      fetchOrganization()
+    }
+  }, [user])
 
-  //   const fetchTeams = async () => {
-  //     const { res, err } = await teamsApi.getAll()
 
-  //     if (res) dispatch(setTeams(res))
-  //   }
+  useEffect(() => {
+    
 
-  //   if (user) {
-  //     fetchOrganization()
-  //     fetchProjects()
-  //     fetchTeams()
-  //   }
-  // }, [user])
+    const fetchProjects = async () => {
+      const { res, err } = await projectsApi.getAll()
+
+      if (res) dispatch(setProjects(res))
+    }
+
+    const fetchTeams = async () => {
+      const { res, err } = await teamsApi.getAll()
+
+      if (res) dispatch(setTeams(res))
+    }
+
+    const fetchRequests = async () => {
+      const { res, err } = await organizationApi.fetchRequests()
+
+      if (res) dispatch(setRequests(res))
+    }
+
+    
+
+    if (organization) {
+      fetchProjects()
+      fetchTeams()
+      fetchRequests()
+    }
+  }, [organization])
 
   return (
     <>
       <main className='no-scrollbar'>
-        {/* { user && <Outlet /> } */}
-        <Outlet />
+        { user && <Outlet /> }
+        {/* <Outlet /> */}
       </main>
     </>
   )

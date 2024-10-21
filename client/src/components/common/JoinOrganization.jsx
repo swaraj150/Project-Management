@@ -54,12 +54,13 @@ const JoinOrganization = ({ setJoinModalOpen, modalRef }) => {
   const handleJoin = async () => {
     setDisabled(true)
 
-    const { res, err } = await organizationApi.join({ code })
+    const { res, err } = await organizationApi.join({ code, role:role.value })
 
     if (res) {
+      console.log(res)
       dispatch(setOrganization(res))
       setJoinModalOpen(false)
-      navigate('/')
+      // navigate('/')
       toast.success('Organization joined successfully!')
     }
 

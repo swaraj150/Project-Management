@@ -11,10 +11,10 @@ const Member = ({ member }) => {
     <li>
       <div className="member-info">
         <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
-        <p>{member.name} &nbsp;&nbsp;
-          <a href={`mailto:${member.emails[0]}`} className="opacity-5" >
+        <p>{member.username} &nbsp;&nbsp;
+          {/* <a href={`mailto:${member.emails[0]}`} className="opacity-5" >
             {member.emails[0]}
-          </a>
+          </a> */}
         </p>
       </div>
       <div className={`cta opacity ${user.projectRole === roles.productOwner ? 'authorized' : ''}`}>

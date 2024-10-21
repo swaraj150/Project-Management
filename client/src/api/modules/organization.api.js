@@ -5,6 +5,7 @@ const organizationEndpoints = {
   getInfo: 'organizations/',
   join: 'organizations/join',
   search: 'organizations/search',
+  fetchRequests:'organizations/requests',
   accept: 'organizations/accept',
   reject: 'organizations/reject'
 }
@@ -28,12 +29,11 @@ const organizationApi = {
       return { err }
     }
   },
-  join: async ({ code }) => {
+  join: async ({ code, role }) => {
     try {
       const res = await privateClient.post(
         organizationEndpoints.join, 
-        {},
-        { params: { code } }
+         { code, role } 
       )
 
       return { res }
@@ -53,11 +53,21 @@ const organizationApi = {
       return { err }
     }
   },
+  fetchRequests:async() => {
+    try {
+      const res= await privateClient.get(
+        organizationEndpoints.fetchRequests,
+      )
+      return {res}
+    } catch (error) {
+      return {err}
+    }
+  },
   accept: async ({ requestId }) => {
     try {
-      const res = await privateClient.post(
+      const res = await privateClient.put(
         organizationEndpoints.accept,
-        { requestId }
+        { id: requestId }
       )
 
       return { res }
@@ -67,9 +77,9 @@ const organizationApi = {
   },
   reject: async ({ requestId }) => {
     try {
-      const res = await privateClient.post(
+      const res = await privateClient.put(
         organizationEndpoints.reject,
-        { requestId }
+          { id: requestId } 
       )
 
       return { res }
