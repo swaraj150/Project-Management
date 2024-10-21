@@ -13,3 +13,9 @@ export const assignableRoles = [
   roles.developer,
   roles.qa
 ]
+
+export const joinableRoles = [
+  roles.developer,
+  roles.qa,
+  roles.stakeholder
+]
