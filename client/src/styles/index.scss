@@ -466,6 +466,157 @@ main {
     }
 }
 
+#discover {
+    margin: 0 auto;
+    width: 70%;
+
+    .modal {
+        height: 40vh;
+        width: 50vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .modal-close {
+            top: 5%;
+            right: 2%;
+        }
+
+        .heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .cta {
+                width: 40%;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+
+                button {
+                    flex-grow: 1;
+                    padding: 3%;
+                    outline: none;
+                    border: none;
+                    border-radius: 10px;
+                    background-color: var(--white--500);
+                }
+
+                .active {
+                    color: var(--white--500);
+                    background-color: var(--primary--900);
+                }
+            }
+        }
+
+        .select {
+            padding: 0.5%;
+            border-radius: 10px;
+            border: none;
+
+            .css-13cymwt-control,
+            .css-t3ipsp-control {
+                min-height: 10px;
+                border: none;
+                box-shadow: none;
+            }
+        }
+
+        input {
+            padding: 2%;
+            outline: none;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .cta-group {
+            width: 100%;
+            display: flex;
+            gap: 5%;
+            align-items: center;
+
+            button {
+                flex-grow: 1;
+                padding: 1.5%;
+                outline: none;
+                border: none;
+                border-radius: 10px;
+                background-color: var(--white--500);
+                font-size: 1rem;
+
+                &:last-child {
+                    color: var(--white--500);
+                    background-color: var(--primary--900);
+                }
+            }
+        }
+    }
+
+    .hero {
+        padding-top: 10%;
+        margin-bottom: 5%;
+        display: flex;
+        flex-direction: column;
+
+        h1 {
+            margin-bottom: 2%;
+        }
+
+        p {
+            width: 80%;
+            margin-bottom: 1%;
+        }
+
+        .cta {
+            width: 50%;
+            display: flex;
+            gap: 5%;
+            align-items: center;
+
+            button {
+                flex-grow: 1;
+                padding: 2%;
+                outline: none;
+                border: none;
+                border-radius: 10px;
+                color: var(--white--500);
+                background-color: var(--primary--900);
+                font-size: 1rem;
+            }
+
+            button:first-child {
+                color: var(--black);
+                background-color: var(--white--500);
+            }
+        }
+    }
+
+    .card {
+        padding: 2%;
+        margin-bottom: 2%;
+        border-radius: 20px;
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+
+        ul {
+            list-style: none;
+
+            li {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+        }
+
+        &:nth-child(even) {
+            color: var(--white--500);
+            background-color: var(--primary--900);
+        }
+    }
+}
+
 #homepage {
     height: 100%;
     display: flex;
@@ -856,7 +1007,6 @@ main {
                 flex-direction: column;
 
                 .modal-close {
-                    position: absolute;
                     right: 3%;
                     top: 5%;
                     font-size: 1rem;
@@ -974,7 +1124,6 @@ main {
                             justify-content: space-between;
 
                             .modal-close {
-                                position: absolute;
                                 right: 3%;
                                 top: 6%;
                                 font-size: 1rem;
@@ -1044,7 +1193,6 @@ main {
                 flex-direction: column;
 
                 .modal-close {
-                    position: absolute;
                     right: 3%;
                     top: 5%;
                     font-size: 1rem;
@@ -1062,7 +1210,7 @@ main {
                         height: 100%;
                         width: 40%;
                         background-color: inherit;
-                        
+
                         button {
                             padding: 3%;
                         }
@@ -1181,7 +1329,7 @@ main {
                                 padding: 0.5%;
                                 border-radius: 10px;
                                 border: none;
-            
+
                                 .css-13cymwt-control,
                                 .css-t3ipsp-control {
                                     min-height: 10px;
