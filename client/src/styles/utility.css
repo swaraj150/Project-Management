@@ -125,3 +125,6 @@
   background-color: var(--white--500);
   z-index: 999;
 }
+.modal .modal-close {
+  position: absolute;
+}
