@@ -26,11 +26,9 @@ publicClient.interceptors.request.use(async (config) => {
 })
 
 publicClient.interceptors.response.use(async (response) => {
-  console.log(response)
   if (response?.data) return response.data
   return response
 }, (error) => {
-  console.log(error)
   throw error.response.data
 })
 
