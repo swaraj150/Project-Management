@@ -57,7 +57,9 @@ public class SecurityConfig{
         return http
 
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((auth)->auth.requestMatchers("/api/v1/users/register","/api/v1/users/google","/api/v1/users/github","/api/v1/users/login","/oauth2/**", "/login/**","/login").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests((auth)-> auth
+                            .requestMatchers("/ws","/chat","/api/v1/users/register","/api/v1/users/google","/api/v1/users/github","/api/v1/users/login","/oauth2/**", "/login/**","/login").permitAll().anyRequest().authenticated()
+                )
                 .sessionManagement((session)->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                        .maximumSessions(1)
@@ -110,7 +112,7 @@ public class SecurityConfig{
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Your React app's URL
+        configuration.setAllowedOrigins(List.of("http://localhost:5173","chrome-extension://cbcbkhdmedgianpaifchdaddpnmgnknn")); // Your React app's URL
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

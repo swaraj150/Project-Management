@@ -96,15 +96,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return authHeader.substring(7);
         }
 
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("jwt_token".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
+//        Cookie[] cookies = request.getCookies();
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if ("jwt_token".equals(cookie.getName())) {
+//                    return cookie.getValue();
+//                }
+//            }
+//        }
 
         return null;
+    }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Make sure to process WebSocket handshake requests
+        String path = request.getRequestURI();
+        return !path.startsWith("/chat");
     }
 }

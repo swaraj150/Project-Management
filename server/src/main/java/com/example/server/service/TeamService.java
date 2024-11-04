@@ -114,6 +114,9 @@ public class TeamService {
                 .testers(testers)
                 .build();
     }
+    public Team loadTeamById(@NonNull UUID id){
+        return teamRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Team not found"));
+    }
 
     public Set<TeamResponse> loadAllTeamResponses(){
         User user=userService.loadUser(securityUtils.getCurrentUsername());

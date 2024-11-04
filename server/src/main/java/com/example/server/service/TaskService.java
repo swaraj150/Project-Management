@@ -1,12 +1,10 @@
 package com.example.server.service;
 
+import com.example.server.component.NotificationEvent;
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
-import com.example.server.enums.CompletionStatus;
-import com.example.server.enums.Level;
-import com.example.server.enums.ProjectAuthority;
-import com.example.server.enums.TaskType;
+import com.example.server.enums.*;
 import com.example.server.exception.InvalidStatusException;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.ProjectRepository;
@@ -30,7 +28,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserService userService;
     private final SecurityUtils securityUtils;
-
+    private final NotificationService notificationService;
     public TaskResponse createTask(CreateTaskRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
@@ -38,7 +36,6 @@ public class TaskService {
         }
         Team team=teamRepository.findById(teamRepository.findTeamIdByUserId(user.getId())).orElseThrow(()->new EntityNotFoundException("Team not found"));
         Project project=projectRepository.findById(team.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
-
         Task task=new Task();
         task.setTitle(request.getTitle());
         task.setDescription((request.getDescription()));
@@ -59,6 +56,12 @@ public class TaskService {
         project.getTasks().add(task.getId());
         projectRepository.save(project);
         taskRepository.save(task);
+        notificationService.createNotification(NotificationEvent.builder()
+                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
+                        .actorId(user.getId())
+                        .userId(new ArrayList<>(task.getAssignedTo()))
+                        .type(NotificationType.TASK_ASSIGNED)
+                        .build());
         return loadTaskResponse(task.getId());
     }
 
@@ -93,17 +96,19 @@ public class TaskService {
 
     public TaskResponse loadTaskResponse(@NonNull UUID id){
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
-        Set<UserDTO> assignedToUsers=new HashSet<>();
-        for(UUID id1:task.getAssignedTo()){
-            assignedToUsers.add(UserDTO.mapToUserDTO(userService.loadUser(id)));
-        }
+//        Set<UserDTO> assignedToUsers=new HashSet<>();
+//        for(UUID id1:task.getAssignedTo()){
+//            User user=userService.loadUser(id);
+//            UserDTO userDTO=UserDTO.mapToUserDTO(user);
+//            assignedToUsers.add(userDTO);
+//        }
         return TaskResponse.builder()
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .priority(task.getPriority())
                 .type(task.getType())
                 .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
-                .assignedToUsers(assignedToUsers)
+//                .assignedToUsers(assignedToUsers)
                 .createdAt(task.getCreatedAt())
                 .estimatedHours(task.getEstimatedHours())
                 .completedAt(task.getCompletedAt())
