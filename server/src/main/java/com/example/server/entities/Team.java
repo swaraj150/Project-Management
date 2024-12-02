@@ -28,7 +28,7 @@ public class Team {
     private UUID organizationId;
     @Column(name = "team_lead_id")
     private UUID teamLeadId;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "team_members", joinColumns = @JoinColumn(name = "team_id"))
     @Column(name = "user_id")
     private Set<UUID> memberIds = new HashSet<>();

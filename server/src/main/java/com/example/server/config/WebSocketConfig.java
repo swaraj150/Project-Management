@@ -44,7 +44,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws","/chat")
+        registry.addEndpoint("/ws","/chat","/task")
                 .setAllowedOrigins("*");
 //                .setHandshakeHandler(new DefaultHandshakeHandler())
 //                .addInterceptors(webSocketHandshakeInterceptor);
@@ -74,7 +74,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 }
                 else {
                     UsernamePasswordAuthenticationToken authentication =(UsernamePasswordAuthenticationToken) accessor.getHeader("simpUser");
+
                     if (authentication != null) {
+                        log.info("authentication : {}",authentication.getPrincipal());
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         accessor.setUser(authentication);
                     }

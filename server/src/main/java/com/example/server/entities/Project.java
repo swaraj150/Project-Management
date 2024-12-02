@@ -41,12 +41,12 @@ public class Project {
     private UUID organizationId;
 
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "teams_assigned", joinColumns = @JoinColumn(name = "project_id"))
     @Column(name = "team_id")
     private Set<UUID> teams = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "tasks", joinColumns = @JoinColumn(name = "project_id"))
     @Column(name = "task_id")
     private Set<UUID> tasks = new HashSet<>();

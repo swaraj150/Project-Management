@@ -58,28 +58,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //            }
 //        }
         if (token != null) {
-            if (Boolean.TRUE.equals(request.getAttribute(JwtBlacklistFilter.BLACKLISTED_TOKEN_ATTRIBUTE))) {
-                logger.warn("Attempt to authenticate with blacklisted token");
-                SecurityContextHolder.clearContext();
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                response.getOutputStream().write("{\"error\": \"Token is blacklisted\"}".getBytes());
-            }else{
-                String username = jwtService.extractUsername(token);
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                    if (jwtService.isTokenValid(token, userDetails)) {
-                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
-                    }
+//            if (Boolean.TRUE.equals(request.getAttribute(JwtBlacklistFilter.BLACKLISTED_TOKEN_ATTRIBUTE))) {
+//                logger.warn("Attempt to authenticate with blacklisted token");
+//                SecurityContextHolder.clearContext();
+//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//                response.getOutputStream().write("{\"error\": \"Token is blacklisted\"}".getBytes());
+            String username = jwtService.extractUsername(token);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-
             }
+
 
         }
         filterChain.doFilter(request,response);
@@ -107,10 +105,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         return null;
     }
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        // Make sure to process WebSocket handshake requests
-        String path = request.getRequestURI();
-        return !path.startsWith("/chat");
-    }
+
 }

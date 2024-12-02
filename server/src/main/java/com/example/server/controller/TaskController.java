@@ -1,10 +1,12 @@
 package com.example.server.controller;
 
+import com.example.server.entities.User;
 import com.example.server.requests.CreateProjectRequest;
 import com.example.server.requests.CreateTaskRequest;
 import com.example.server.response.ProjectResponse;
 import com.example.server.response.TaskResponse;
 import com.example.server.service.TaskService;
+import com.example.server.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,10 @@ import java.util.UUID;
 public class TaskController {
     private final TaskService taskService;
 
+    @GetMapping("/")
+    public ResponseEntity<?> loadTasks(){
+        return ResponseEntity.ok(taskService.getActiveTasksByUser());
+    }
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody @NonNull CreateTaskRequest request){
         TaskResponse taskResponse=taskService.createTask(request);

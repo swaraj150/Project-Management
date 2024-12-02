@@ -57,6 +57,9 @@ public class UserService {
         }
         return userOptional.get();
     }
+    public User loadAuthenticatedUser(){
+        return loadUser(securityUtils.getCurrentUsername());
+    }
     public User loadUser(@NonNull UUID id){
         Optional<User> userOptional=userRepository.findById(id);
         if(userOptional.isEmpty()){

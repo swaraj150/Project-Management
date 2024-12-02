@@ -10,11 +10,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class WebSocketService {
     private final TaskService taskService;
-    private final SimpMessageSendingOperations messagingTemplate;
+//    private final SimpMessageSendingOperations messagingTemplate;
 
-    public void createTask(){
 
-    }
 
 
 }

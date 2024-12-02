@@ -11,6 +11,7 @@ import com.example.server.repositories.ProjectRepository;
 import com.example.server.repositories.TaskRepository;
 import com.example.server.repositories.TeamRepository;
 import com.example.server.requests.CreateTaskRequest;
+import com.example.server.requests.WsTaskRequest;
 import com.example.server.response.TaskResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -56,6 +57,7 @@ public class TaskService {
         project.getTasks().add(task.getId());
         projectRepository.save(project);
         taskRepository.save(task);
+
         notificationService.createNotification(NotificationEvent.builder()
                         .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
                         .actorId(user.getId())
@@ -63,6 +65,45 @@ public class TaskService {
                         .type(NotificationType.TASK_ASSIGNED)
                         .build());
         return loadTaskResponse(task.getId());
+    }
+    public Task createTask(WsTaskRequest request){
+        User user= userService.loadUser(securityUtils.getCurrentUsername());
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        Team team=teamRepository.findById(teamRepository.findTeamIdByUserId(user.getId())).orElseThrow(()->new EntityNotFoundException("Team not found"));
+        Project project=projectRepository.findById(team.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        Task task=new Task();
+        task.setTitle(request.getTitle());
+//        task.setDescription((request.getDescription()));
+        task.setCreatedBy(user.getId());
+        task.setCreatedAt(LocalDateTime.now());
+        task.setPriority(request.getPriority());
+        if(request.getTaskType()!=null) task.setType(TaskType.valueOf(request.getTaskType()));
+        if(request.getLevel()!=null) task.setLevel(Level.valueOf(request.getLevel()));
+        task.setEstimatedHours(request.getEstimatedHours());
+        task.setParentTaskId(request.getParentTaskId());
+        task.setProjectId(team.getProjectId());
+        Set<UUID> assignedTo=new HashSet<>();
+        if(request.getAssignedTo()!=null){
+            for(String s:request.getAssignedTo()){
+                assignedTo.add(userService.loadUser(s).getId());
+            }
+
+        }
+        task.setAssignedTo(assignedTo);
+        task.setCompletionStatus(CompletionStatus.PENDING);
+        project.getTasks().add(task.getId());
+        projectRepository.save(project);
+        taskRepository.save(task);
+//        notificationService.createNotification(NotificationEvent.builder()
+//                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
+//                        .actorId(user.getId())
+//                        .userId(new ArrayList<>(task.getAssignedTo()))
+//                        .type(NotificationType.TASK_ASSIGNED)
+//                        .build());
+//        return loadTaskResponse(task.getId());
+        return task;
     }
 
 //    Task findTaskByUser(@NonNull User user){
@@ -118,6 +159,13 @@ public class TaskService {
 
     public List<Task> getActiveTasksByUser(@NonNull UUID userId){
         return taskRepository.findTasksByStatusAndAssignedTo(CompletionStatus.IN_PROGRESS,userId);
+    }
+    public List<Task> getActiveTasksByUser(){
+        return taskRepository.findTasksByStatusAndAssignedTo(CompletionStatus.PENDING,userService.loadAuthenticatedUser().getId());
+    }
+
+    public Task loadTask(UUID id){
+        return taskRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Task not found"));
     }
 
 

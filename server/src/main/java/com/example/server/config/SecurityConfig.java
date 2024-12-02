@@ -6,7 +6,7 @@ import com.example.server.component.CustomOAuth2SuccessHandler;
 import com.example.server.entities.TokenBlacklist;
 import com.example.server.filters.JwtAuthenticationFilter;
 //import com.example.server.filters.RequestLoggingFilter;
-import com.example.server.filters.JwtBlacklistFilter;
+//import com.example.server.filters.JwtBlacklistFilter;
 import com.example.server.service.CustomOAuth2UserService;
 import com.example.server.service.TokenBlacklistService;
 import jakarta.servlet.http.Cookie;
@@ -46,7 +46,7 @@ import java.util.Objects;
 public class SecurityConfig{
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final JwtBlacklistFilter jwtBlacklistFilter;
+//    private final JwtBlacklistFilter jwtBlacklistFilter;
     private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
     private final CustomOAuth2FailureHandler customOAuth2FailureHandler;
     private final TokenBlacklistService tokenBlacklistService;
@@ -55,10 +55,9 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
-
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth)-> auth
-                            .requestMatchers("/ws","/chat","/api/v1/users/register","/api/v1/users/google","/api/v1/users/github","/api/v1/users/login","/oauth2/**", "/login/**","/login").permitAll().anyRequest().authenticated()
+                            .requestMatchers("/task","/ws","/chat","/api/v1/users/register","/api/v1/users/google","/api/v1/users/github","/api/v1/users/login","/oauth2/**", "/login/**","/login").permitAll().anyRequest().authenticated()
                 )
                 .sessionManagement((session)->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -74,36 +73,36 @@ public class SecurityConfig{
 ////                        .defaultSuccessUrl("/")
 //
 //                )
-                .logout(logout->logout
-                        .logoutUrl("/api/v1/users/logout")
-                        .logoutSuccessHandler((request,response,authentication)->{
-                            logger.info("hit logout");
-                            Authentication authentication1=SecurityContextHolder.getContext().getAuthentication();
-                            SecurityContextHolder.getContext().setAuthentication(null);
-                            SecurityContextHolder.clearContext();
-                            HttpSession session=request.getSession(false);
-                            if (session != null) {
-                                session.invalidate();
-                            }
-                            for(Cookie cookie:request.getCookies()){
-
-                                String cookieName = cookie.getName();
-                                logger.info("cookie name:{}",cookieName);
-                                if(Objects.equals(cookieName, "jwt_token")){
-                                    tokenBlacklistService.addToken(cookie.getValue());
-                                }
-                                Cookie cookieToDelete = new Cookie(cookieName, null);
-                                cookieToDelete.setMaxAge(0);
-                                response.addCookie(cookieToDelete);
-                            }
-                            response.setStatus(HttpStatus.OK.value());
-                            response.getWriter().flush();
-                        })
-                        .invalidateHttpSession(true)
-                        .deleteCookies("jwt_token")
-                        .clearAuthentication(true)
-                )
-                .addFilterBefore(jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class)
+//                .logout(logout->logout
+//                        .logoutUrl("/api/v1/users/logout")
+//                        .logoutSuccessHandler((request,response,authentication)->{
+//                            logger.info("hit logout");
+//                            Authentication authentication1=SecurityContextHolder.getContext().getAuthentication();
+//                            SecurityContextHolder.getContext().setAuthentication(null);
+//                            SecurityContextHolder.clearContext();
+//                            HttpSession session=request.getSession(false);
+//                            if (session != null) {
+//                                session.invalidate();
+//                            }
+//                            for(Cookie cookie:request.getCookies()){
+//
+//                                String cookieName = cookie.getName();
+//                                logger.info("cookie name:{}",cookieName);
+//                                if(Objects.equals(cookieName, "jwt_token")){
+//                                    tokenBlacklistService.addToken(cookie.getValue());
+//                                }
+//                                Cookie cookieToDelete = new Cookie(cookieName, null);
+//                                cookieToDelete.setMaxAge(0);
+//                                response.addCookie(cookieToDelete);
+//                            }
+//                            response.setStatus(HttpStatus.OK.value());
+//                            response.getWriter().flush();
+//                        })
+//                        .invalidateHttpSession(true)
+//                        .deleteCookies("jwt_token")
+//                        .clearAuthentication(true)
+//                )
+//                .addFilterBefore(jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .build();
