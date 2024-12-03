@@ -7,6 +7,9 @@ import Organization from './Organization'
 import Teams from './Teams'
 import Projects from './Projects'
 import Tasks from './Tasks'
+import Kanban from './Kanban'
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const HomePage = () => {
   const { active, collapsed } = useSelector((state) => state.menu)
@@ -16,7 +19,9 @@ const HomePage = () => {
     <Organization />,
     <Teams />,
     <Projects />,
-    <Tasks />
+    <DndProvider backend={HTML5Backend}>
+      <Kanban />
+    </DndProvider>
   ]
 
   return (

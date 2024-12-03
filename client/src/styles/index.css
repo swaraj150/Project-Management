@@ -1461,3 +1461,45 @@ main {
 #homepage .expanded {
   width: 95% !important;
 }
+
+
+#homepage #content #kanban .task-list:hover{
+  background-color: #f0f0f0;
+}
+#homepage #content #kanban .task-list{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  list-style: none;
+  transition: background-color 0.3s;
+}
+
+#homepage #content #kanban .task-list .task {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: grab;
+}
+
+
+#homepage #content #kanban{
+  display: flex;
+  flex-direction: row;
+  justify-content: center; 
+  gap: 2rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+#homepage #content #kanban .kanban-column{
+  flex: 1; 
+  min-width: 250px; 
+  max-width: 300px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

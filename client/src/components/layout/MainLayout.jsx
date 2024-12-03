@@ -20,71 +20,71 @@ const MainLayout = () => {
   const { user } = useSelector((state) => state.user)
   const { organization } = useSelector((state) => state.organization)
 
-  useEffect(() => {
-      const fetchUserDetails = async () => {
-      const { res, err } = await userApi.getInfo()
+  // useEffect(() => {
+  //     const fetchUserDetails = async () => {
+  //     const { res, err } = await userApi.getInfo()
 
       
 
-      if (res) {
-        dispatch(setUser(res))
-        toast.success('Login successful. Welcome back!')
-      } 
+  //     if (res) {
+  //       dispatch(setUser(res))
+  //       toast.success('Login successful. Welcome back!')
+  //     } 
 
-      if(err) {
-        localStorage.removeItem('token')
-        navigate('/sign-in')
-      }
-    }
+  //     if(err) {
+  //       localStorage.removeItem('token')
+  //       navigate('/sign-in')
+  //     }
+  //   }
 
-    const token = localStorage.getItem('token')
+  //   const token = localStorage.getItem('token')
 
-    if (user == null && token === null) navigate('/sign-in')
-    if (user === null) fetchUserDetails()
-  }, [])
+  //   if (user == null && token === null) navigate('/sign-in')
+  //   if (user === null) fetchUserDetails()
+  // }, [])
 
-  useEffect(() => {
-    const fetchOrganization = async () => {
-      const { res, err } = await organizationApi.getInfo()
+  // useEffect(() => {
+  //   const fetchOrganization = async () => {
+  //     const { res, err } = await organizationApi.getInfo()
 
-      if (res) dispatch(setOrganization(res))
-      if (err) navigate('/discover')
-    }
-    if (user) {
-      fetchOrganization()
-    }
-  }, [user])
+  //     if (res) dispatch(setOrganization(res))
+  //     if (err) navigate('/discover')
+  //   }
+  //   if (user) {
+  //     fetchOrganization()
+  //   }
+  // }, [user])
 
 
-  useEffect(() => {
+  // useEffect(() => {
     
 
-    const fetchProjects = async () => {
-      const { res, err } = await projectsApi.getAll()
+  //   const fetchProjects = async () => {
+  //     const { res, err } = await projectsApi.getAll()
 
-      if (res) dispatch(setProjects(res))
-    }
+  //     if (res) dispatch(setProjects(res))
+  //   }
 
-    const fetchTeams = async () => {
-      const { res, err } = await teamsApi.getAll()
+  //   const fetchTeams = async () => {
+  //     const { res, err } = await teamsApi.getAll()
 
-      if (res) dispatch(setTeams(res))
-    }
+  //     if (res) dispatch(setTeams(res))
+  //   }
 
-    const fetchRequests = async () => {
-      const { res, err } = await organizationApi.fetchRequests()
+  //   const fetchRequests = async () => {
+  //     const { res, err } = await organizationApi.fetchRequests()
 
-      if (res) dispatch(setRequests(res))
-    }
+  //     if (res) dispatch(setRequests(res))
+  //   }
 
     
 
-    if (organization) {
-      fetchProjects()
-      fetchTeams()
-      fetchRequests()
-    }
-  }, [organization])
+  //   if (organization) {
+  //     fetchProjects()
+  //     fetchTeams()
+  //     fetchRequests()
+  //   }
+  // }, [organization])
 
   return (
     <>
