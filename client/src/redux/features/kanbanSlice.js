@@ -5,7 +5,7 @@ export const kanbanSlice = createSlice({
     initialState: {
         pending: [
             {
-                "taskId": "0",
+                "taskId": "0skjdnvsf",
                 "title": "Bug Fix - Payment Gateway",
                 "priority": 1,
                 "taskType": "BUG",
@@ -16,7 +16,7 @@ export const kanbanSlice = createSlice({
                 "status": "pending"
             },
             {
-                "taskId": "1",
+                "taskId": "1sfkbvdfb",
                 "title": "UI update1",
                 "priority": 1,
                 "taskType": "DEV",
@@ -27,7 +27,7 @@ export const kanbanSlice = createSlice({
                 "status": "pending"
             },
             {
-                "taskId": "2",
+                "taskId": "2advljnsldv",
                 "title": "UI update2",
                 "priority": 1,
                 "taskType": "DEV",
@@ -40,7 +40,7 @@ export const kanbanSlice = createSlice({
         ],
         in_progress: [
             {
-                "taskId": "3",
+                "taskId": "3kdvkjsfv",
                 "title": "UI update3",
                 "priority": 1,
                 "taskType": "DEV",
@@ -51,7 +51,7 @@ export const kanbanSlice = createSlice({
                 "status": "in_progress"
             },
             {
-                "taskId": "5",
+                "taskId": "5advnvsdv",
                 "title": "UI update4",
                 "priority": 1,
                 "taskType": "DEV",
@@ -64,7 +64,7 @@ export const kanbanSlice = createSlice({
         ],
         completed: [
             {
-                "taskId": "6",
+                "taskId": "6bvksjbv",
                 "title": "UI update5",
                 "priority": 1,
                 "taskType": "DEV",
@@ -82,16 +82,18 @@ export const kanbanSlice = createSlice({
             state[status] = tasks
         },
         moveTask: (state, action) => {
-            const { task, toStatus } = action.payload;
+            const { task, toStatus, targetIndex } = action.payload;
             
             const { currentStatus } = task;
-            console.log("task " + task + " current status " + currentStatus)
-            console.log("Current task ID:", task.taskId);
             state[currentStatus] = state[currentStatus].filter((t) => {
-                console.log("t ID:", t.taskId); 
                 return t.taskId !== task.taskId;
             });
-            state[toStatus].push(task);
+            if (typeof targetIndex === "number" && targetIndex<state[toStatus].length) {
+                state[toStatus].splice(targetIndex, 0, task);
+            } else {
+                state[toStatus].push(task);
+            }
+            // state[toStatus].push(task);
         },
     }
 

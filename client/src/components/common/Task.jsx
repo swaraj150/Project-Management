@@ -1,9 +1,9 @@
 import React from "react"
 import { useDrag } from 'react-dnd';
-const Task = ({ task, status }) => {
+const Task = ({ task, index, status }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "task",
-    item: { ...task, currentStatus: status },
+    item: { ...task, currentStatus: status,index:index },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -12,6 +12,7 @@ const Task = ({ task, status }) => {
     <li
       ref={drag}
       className="task"
+      id={task.taskId}
       style={{
         opacity: isDragging ? 0.5 : 1,
         cursor: "move",
