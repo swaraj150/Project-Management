@@ -10,6 +10,8 @@ import Tasks from './Tasks'
 import Kanban from './Kanban'
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import GanttChart from './GanttChart'
+import GanttTable from '../components/common/GanttTable'
 
 const HomePage = () => {
   const { active, collapsed } = useSelector((state) => state.menu)
@@ -19,9 +21,10 @@ const HomePage = () => {
     <Organization />,
     <Teams />,
     <Projects />,
-    <DndProvider backend={HTML5Backend}>
-      <Kanban />
-    </DndProvider>
+    // <DndProvider backend={HTML5Backend}>
+    //   <Kanban />
+    // </DndProvider>,
+    <GanttChart/>
   ]
 
   return (

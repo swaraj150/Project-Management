@@ -6,7 +6,7 @@ import menuSlice from './features/menuSlice'
 import projectsSlice from './features/projectsSlice'
 import teamsSlice from './features/teamsSlice'
 import kanbanSlice  from './features/kanbanSlice'
-
+import ganttSlice  from './features/ganttSlice'
 const store = configureStore({
   reducer: {
     user: userSlice,
@@ -14,7 +14,8 @@ const store = configureStore({
     menu: menuSlice,
     projects: projectsSlice,
     teams: teamsSlice,
-    kanban: kanbanSlice
+    kanban: kanbanSlice,
+    gantt:ganttSlice
   }
 })
 

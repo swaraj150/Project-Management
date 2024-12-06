@@ -1492,6 +1492,14 @@ main {
   padding: 1rem;
   overflow-x: auto;
 }
+#homepage #content #gantt{
+  display: flex;
+  flex-direction: row;
+  justify-content: center; 
+  gap: 2rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
 
 #homepage #content #kanban .kanban-column{
   flex: 1; 
@@ -1502,4 +1510,51 @@ main {
   border-radius: 5px;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#homepage #content #gantt #gantt-table{
+  text-align: center;
+  border-collapse: collapse;
+}
+#homepage #content #gantt #gantt-table th{
+  background-color: #f9f9f9;
+}
+
+#homepage #content #gantt .resizable-container {
+  display: flex;
+  height: 100vh; /* Adjust based on your layout */
+  overflow: hidden;
+  flex-direction: row;
+  justify-content: center;
+
+}
+
+#homepage #content #gantt .resizer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -5px; /* Extend the active area by 5px on each side */
+  width: 20px; /* Total active width (10px visible + 10px hit area) */
+  height: 100%;
+  background-color: transparent; /* Invisible */
+  cursor: ew-resize; /* Ensure the cursor stays as 'resize' */
+}
+
+/* #homepage #content #gantt .table-container {
+  border-right: 2px solid #ddd;
+} */
+/* 
+.slider-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f9f9f9;
+} */
+
+#homepage #content #gantt .resizer {
+  width: 1px;
+  cursor: ew-resize; 
+  background-color: #ccc;
+  position: relative;
+  z-index: 1;
 }
