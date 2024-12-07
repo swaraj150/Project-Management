@@ -48,6 +48,13 @@ const GanttChart = () => {
     const flatTasks = flattenTasks(tasks);
     const [panelWidth, setPanelWidth] = useState(35);
     const resizerRef = useRef(null);
+    const modes={
+        day:ViewMode.Day,
+        week:ViewMode.Week,
+        month:ViewMode.Month,
+        year:ViewMode.Year,
+    }
+    
     const handleMouseDown = (e) => {
         e.preventDefault();
         const startX = e.clientX;
@@ -79,6 +86,7 @@ const GanttChart = () => {
                 <div style={{ width: `${100-panelWidth}%`, padding: "10px" }}>
                     <Gantt tasks={flatTasks} viewMode={ViewMode.Day} listCellWidth="" />
                 </div>
+                
 
 
             </div>

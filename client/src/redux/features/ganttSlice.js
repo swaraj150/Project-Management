@@ -18,7 +18,8 @@ export const ganttSlice = createSlice({
                         start: new Date(2024, 11, 1),
                         end: new Date(2024, 11, 4),
                         progress: 90,
-                        dependencies:[]
+                        dependencies:[],
+                        status:"in_progress"
                     },
                     {
                         id: "1.2",
@@ -26,9 +27,11 @@ export const ganttSlice = createSlice({
                         start: new Date(2024, 11, 4),
                         end: new Date(2024, 11, 5),
                         progress: 90,
-                        dependencies:[]
+                        dependencies:[],
+                        status:"pending"
                     }
-                ]
+                ],
+                status:"in_progress"
             },
             {
                 id: "2",
@@ -36,7 +39,8 @@ export const ganttSlice = createSlice({
                 start: new Date(2024, 11, 6),
                 end: new Date(2024, 11, 15),
                 progress: 40,
-                dependencies:[]
+                dependencies:[],
+                status:"pending"
             },
         ],
         showTable: true

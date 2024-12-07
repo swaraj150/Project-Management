@@ -1515,6 +1515,12 @@ main {
 #homepage #content #gantt #gantt-table{
   text-align: center;
   border-collapse: collapse;
+  width: 100%;
+}
+#homepage #content #gantt #gantt-table .empty-row td {
+  background: transparent; /* Ensures the row appears empty */
+  height: 20px; /* Adds vertical spacing */
+  border: none; /* Removes borders for the empty row */
 }
 #homepage #content #gantt #gantt-table th{
   background-color: #f9f9f9;
