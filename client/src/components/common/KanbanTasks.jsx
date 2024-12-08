@@ -13,7 +13,6 @@ const KanbanTasks = ({ status }) => {
     accept: "task",
     drop: (draggedTask) => {
       try {
-        // const targetIndex = draggedTask.targetIndex || tasks.length;
         const targetIndex = targetIndices[draggedTask.taskId] ?? tasks.length;
         dispatch(moveTask({ task: draggedTask, toStatus: status, targetIndex }));
         setTargetIndices((prev) => {

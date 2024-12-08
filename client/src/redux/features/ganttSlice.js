@@ -43,7 +43,6 @@ export const ganttSlice = createSlice({
                 status:"pending"
             },
         ],
-        showTable: true
     },
     reducers: {
         changeMode: (state, action) => {
@@ -52,14 +51,16 @@ export const ganttSlice = createSlice({
         },
         addTask: (state, action) => {
             const { task } = action.payload;
-            state[task].push(task);
+            state["tasks"].push(task);
         },
-        changeShowTable: (state) => {
-            state[showTable] = !state[showTable]
+       
+        updateTasks:(state,action)=>{
+            const {tasks}=action.payload;
+            state["tasks"]=tasks;
         }
     }
 });
 
-export const { changeMode, addTask, changeShowTable } = ganttSlice.actions;
+export const { changeMode, addTask,updateTasks } = ganttSlice.actions;
 
 export default ganttSlice.reducer

@@ -4,23 +4,6 @@ import "gantt-task-react/dist/index.css";
 import GanttTable from "../components/common/GanttTable";
 import { useSelector } from "react-redux";
 
-// const tasks = [
-//     {
-//         id: "1",
-//         name: "Design Prototype",
-//         start: new Date(2024, 11, 1),
-//         end: new Date(2024, 11, 5),
-//         progress: 60,
-//     },
-//     {
-//         id: "2",
-//         name: "Development",
-//         start: new Date(2024, 11, 6),
-//         end: new Date(2024, 11, 15),
-//         progress: 40,
-//     },
-// ];
-
 const flattenTasks = (tasks) => {
     const flatTasks = [];
     const processTask = (task, parentId = null) => {
@@ -86,9 +69,6 @@ const GanttChart = () => {
                 <div style={{ width: `${100-panelWidth}%`, padding: "10px" }}>
                     <Gantt tasks={flatTasks} viewMode={ViewMode.Day} listCellWidth="" />
                 </div>
-                
-
-
             </div>
         </section>
     );
