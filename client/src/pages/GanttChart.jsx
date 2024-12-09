@@ -29,7 +29,7 @@ const flattenTasks = (tasks) => {
 const GanttChart = () => {
     const tasks = useSelector((state) => state.gantt["tasks"])
     const flatTasks = flattenTasks(tasks);
-    const [panelWidth, setPanelWidth] = useState(35);
+    const [panelWidth, setPanelWidth] = useState(40);
     const resizerRef = useRef(null);
     const modes={
         day:ViewMode.Day,
@@ -66,7 +66,7 @@ const GanttChart = () => {
                     className="resizer"
                     onMouseDown={handleMouseDown}
                 ></div>
-                <div style={{ width: `${100-panelWidth}%`, padding: "10px" }}>
+                <div style={{ width: `${100-panelWidth}%` }}>
                     <Gantt tasks={flatTasks} viewMode={ViewMode.Day} listCellWidth="" />
                 </div>
             </div>

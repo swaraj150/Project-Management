@@ -24,7 +24,7 @@ const HomePage = () => {
     // <DndProvider backend={HTML5Backend}>
     //   <Kanban />
     // </DndProvider>,
-    <GanttChart/>
+    <Tasks/>
   ]
 
   return (
