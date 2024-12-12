@@ -1,12 +1,34 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Kanban from './Kanban'
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import GanttChart from './GanttChart';
+import { useDispatch, useSelector } from 'react-redux';
+import { connectWebSocket, disonnectWebSocket } from '../utils/websocket.utils';
 const Tasks = () => {
   const [current, setCurrent] = useState(0);
-  const taskItems = [
+  const dispatch = useDispatch();
+  const isConnected = useSelector((state) => state.webSocket.connected);
+  const client = useSelector((state) => state.webSocket.client);
+  const tasks=useSelector((state)=>state.gantt.tasks)
+  useEffect(() => {
+    const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
+    dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token'),tasks))
+    // if(isConnected){
+    //   subscribe(client,'/topic/tasks',tasks);
+    // }
+    return () => {
+      dispatch(disonnectWebSocket(client))
+    }
+  }, [dispatch])
 
+
+
+
+
+
+
+  const taskItems = [
     { name: "Gantt Chart", page: <GanttChart /> },
     {
       name: "Kanban Board",

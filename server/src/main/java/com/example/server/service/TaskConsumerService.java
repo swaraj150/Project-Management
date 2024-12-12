@@ -7,10 +7,12 @@ import com.example.server.enums.Level;
 import com.example.server.enums.WsPublishType;
 import com.example.server.repositories.TaskRepository;
 import com.example.server.requests.WsTaskRequest;
+import com.example.server.response.TaskResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 //import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TaskConsumerService {
     private final BlockingQueue<WsTaskRequest> taskBuffer = new LinkedBlockingQueue<>();
-    private final Map<String, WsTaskRequest> latestTaskMap = new ConcurrentHashMap<>();
+    private final SimpMessageSendingOperations messagingTemplate;
+    //    private final Map<String, WsTaskRequest> latestTaskMap = new ConcurrentHashMap<>();
     private final Map<String, UUID> clientIdMap = new ConcurrentHashMap<>();
     private final TaskRepository taskRepository;
     private final TaskService taskService;
@@ -34,13 +37,7 @@ public class TaskConsumerService {
     private final int BATCH_SIZE = 2;
 
 
-
-    // problem is
-    // payload for new task t1 (no id)
-    // payload for task t1 (no id)
-    // t1 persisted in db
-    // how to know that second payload belong to t1
-//    @KafkaListener(topics = {"CREATE_TASK","UPDATE_TASK","CREATE_SUBTASK","ASSIGN_MEMBERS","UPDATE_STATUS"},groupId = "task-consumers")
+    //    @KafkaListener(topics = {"CREATE_TASK","UPDATE_TASK","CREATE_SUBTASK","ASSIGN_MEMBERS","UPDATE_STATUS"},groupId = "task-consumers")
     public void consumeAndBuffer(WsTaskRequest taskRequest) {
         synchronized (taskBuffer) {
             if (taskRequest == null) {
@@ -49,46 +46,68 @@ public class TaskConsumerService {
             }
 //            UUID taskId = taskRequest.getTaskId();
             String clientTaskId = taskRequest.getClientTaskId();
-            log.info("received taskRequest : {}",clientTaskId);
-
-            if(taskRequest.getPublishType()==WsPublishType.CREATE_TASK){
-                taskBuffer.add(taskRequest);
-                log.info("Added task to buffer: {}", clientTaskId);
-            }
-            else{
-                latestTaskMap.compute(clientTaskId, (key, existingRequest) -> {
-                    if (existingRequest == null ||
-                            taskRequest.getTimestamp().isAfter(existingRequest.getTimestamp())) {
-                        log.info("Updated latestTaskMap with task: {}", clientTaskId);
-                        return taskRequest;
-                    }
-                    return existingRequest;
-                });
-
-            }
-            log.info("Buffer size: {}, Map size: {}", taskBuffer.size(), latestTaskMap.size());
-
-            if (taskBuffer.size() + latestTaskMap.size() >= BATCH_SIZE) {
+            log.info("received taskRequest : {}", clientTaskId);
+            taskBuffer.add(taskRequest);
+            log.info("Added task to buffer: {}", clientTaskId);
+//            if(taskRequest.getPublishType()==WsPublishType.CREATE_TASK){
+//                taskBuffer.add(taskRequest);
+//                log.info("Added task to buffer: {}", clientTaskId);
+//            }
+//            else{
+//                latestTaskMap.compute(clientTaskId, (key, existingRequest) -> {
+//                    if (existingRequest == null ||
+//                            taskRequest.getTimestamp().isAfter(existingRequest.getTimestamp())) {
+//                        log.info("Updated latestTaskMap with task: {}", clientTaskId);
+//                        return taskRequest;
+//                    }
+//                    return existingRequest;
+//                });
+//
+//            }
+            log.info("Buffer size: {}", taskBuffer.size());
+//            log.info("Buffer size: {}, Map size: {}", taskBuffer.size(), latestTaskMap.size());
+            if (taskBuffer.size() >= BATCH_SIZE) {
                 log.info("processing batch");
                 processBatch();
             }
+//            if (taskBuffer.size() + latestTaskMap.size() >= BATCH_SIZE) {
+//                log.info("processing batch");
+//                processBatch();
+//            }
         }
     }
+
     @Scheduled(fixedRate = 5000)
     @Transactional
     public void processBatch() {
         List<WsTaskRequest> batchToProcess = new ArrayList<>();
+        Map<String, WsTaskRequest> uniqueTasks = new HashMap<>();
         try {
+
+
             taskBuffer.drainTo(batchToProcess);
-            batchToProcess.addAll(latestTaskMap.values());
-            latestTaskMap.clear();
+//            batchToProcess.addAll(latestTaskMap.values());
+//            latestTaskMap.clear();
 
             if (batchToProcess.isEmpty()) {
                 return;
             }
             log.debug("Processing batch of {} tasks", batchToProcess.size());
 
+
             List<Task> tasksToSave = new ArrayList<>();
+            List<TaskResponse> tasksToPublish = new ArrayList<>();
+            for (WsTaskRequest request : batchToProcess) {
+                String clientId = request.getClientTaskId();
+                if (uniqueTasks.containsKey(request.getClientTaskId())) {
+                    WsTaskRequest request1 = uniqueTasks.get(clientId);
+                    updateToLatestRequest(request1, request);
+                } else {
+                    uniqueTasks.put(clientId, request);
+                }
+            }
+            batchToProcess.addAll(uniqueTasks.values());
+            batchToProcess.sort(Comparator.comparing(WsTaskRequest::getTimestamp));
 
             for (WsTaskRequest request : batchToProcess) {
                 try {
@@ -103,7 +122,17 @@ public class TaskConsumerService {
 
             if (!tasksToSave.isEmpty()) {
                 taskRepository.saveAll(tasksToSave);
+                for(Task t:tasksToSave){
+                    tasksToPublish.add(taskService.loadTaskResponse(t.getId()));
+                }
                 log.info("Successfully saved batch of {} tasks", tasksToSave.size());
+
+                messagingTemplate.convertAndSend(
+
+                        "/topic/tasks",
+                        tasksToPublish
+
+                );
             }
 
         } catch (Exception e) {
@@ -112,13 +141,16 @@ public class TaskConsumerService {
     }
 
     private Task processTaskRequest(WsTaskRequest request) {
-        if (request.getPublishType() == WsPublishType.CREATE_TASK) {
-            Task task= taskService.createTask(request);
-            clientIdMap.put(request.getClientTaskId(),task.getId());
+        if (request.getTaskId()==null) {
+            Task task = taskService.createTask(request);
+            clientIdMap.put(request.getClientTaskId(), task.getId());
         }
-        UUID taskId=clientIdMap.get(request.getClientTaskId());
-        if(taskId==null){
-           throw new EntityNotFoundException("task does not exist");
+        else{
+            clientIdMap.put(request.getClientTaskId(),request.getTaskId());
+        }
+        UUID taskId = clientIdMap.get(request.getClientTaskId());
+        if (taskId == null) {
+            throw new EntityNotFoundException("task does not exist");
         }
         Task task = taskService.loadTask(taskId);
         if (task == null) {
@@ -128,6 +160,7 @@ public class TaskConsumerService {
         updateTaskFromRequest(task, request);
         return task;
     }
+
     private void updateTaskFromRequest(Task task, WsTaskRequest request) {
         Optional.ofNullable(request.getTitle()).ifPresent(task::setTitle);
         Optional.ofNullable(request.getParentTaskId()).ifPresent(task::setParentTaskId);
@@ -137,7 +170,7 @@ public class TaskConsumerService {
                 .map(Level::valueOf)
                 .ifPresent(task::setLevel);
         Optional.ofNullable(request.getAssignedTo())
-                .map(assignedTo->assignedTo.stream().map(userService::loadUser).map(User::getId).collect(Collectors.toSet()))
+                .map(assignedTo -> assignedTo.stream().map(userService::loadUser).map(User::getId).collect(Collectors.toSet()))
                 .ifPresent(task::setAssignedTo);
         Optional.ofNullable(request.getStatus())
                 .map(CompletionStatus::valueOf)
@@ -145,9 +178,22 @@ public class TaskConsumerService {
 
     }
 
+    private void updateToLatestRequest(WsTaskRequest oldRequest, WsTaskRequest newRequest) {
+
+        newRequest.setTaskType(newRequest.getTaskType() == null ? oldRequest.getTaskType() : newRequest.getTaskType());
+        newRequest.setLevel(newRequest.getLevel() == null ? oldRequest.getLevel() : newRequest.getLevel());
+        newRequest.setPriority(newRequest.getPriority() == null ? oldRequest.getPriority() : newRequest.getPriority());
+        newRequest.setParentTaskId(newRequest.getParentTaskId() == null ? oldRequest.getParentTaskId() : newRequest.getParentTaskId());
+        newRequest.setEstimatedHours(newRequest.getEstimatedHours() == null ? oldRequest.getEstimatedHours() : newRequest.getEstimatedHours());
+        newRequest.setStatus(newRequest.getStatus() == null ? oldRequest.getStatus() : newRequest.getStatus());
+        newRequest.setTitle(newRequest.getTitle() == null ? oldRequest.getTitle() : newRequest.getTitle());
+        newRequest.setPublishType(oldRequest.getPublishType() == WsPublishType.CREATE_TASK ? WsPublishType.CREATE_TASK : newRequest.getPublishType());
+    }
+
 
     public int getBufferSize() {
-        return taskBuffer.size() + latestTaskMap.size();
+        return taskBuffer.size();
+//        return taskBuffer.size() + latestTaskMap.size();
     }
 
     @Scheduled(fixedRate = 60000)

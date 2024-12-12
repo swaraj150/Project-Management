@@ -19,6 +19,7 @@ import java.util.UUID;
 @Builder
 public class TaskResponse {
     private UUID id;
+    private String clientTaskId;
     private String title;
     private String description;
     private Integer priority;
@@ -29,7 +30,7 @@ public class TaskResponse {
     private Integer estimatedHours;
     private LocalDateTime completedAt;
     private CompletionStatus completionStatus;
-    private List<UUID> subTaskIds;
+    private List<TaskResponse> subTasks;
     private UUID parentTaskId;
     private UUID projectId;
 }

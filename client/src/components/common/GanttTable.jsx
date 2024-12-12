@@ -1,18 +1,24 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { updateTasks } from "../../redux/features/ganttSlice";
+import { setTasks } from "../../redux/features/ganttSlice";
+import { addDelta } from "../../redux/features/webSocketSlice";
+import { extractDeltas } from "../../utils/task.utils";
+import { addDeltaAndPublish, publishTasks } from "../../utils/websocket.utils";
 
 
 const GanttTable = () => {
-    const tasks = useSelector((state) => state.gantt["tasks"])
+    const tasks = useSelector((state) => state.gantt["tasks"]);
+    const delta=useSelector((state)=>state.webSocket.deltas);
+    const isConnected = useSelector((state) => state.webSocket.connected);
+    const client = useSelector((state) => state.webSocket.client);
     const [editingCell, setEditingCell] = useState(null);
     const [updatedTasks, setUpdatedTasks] = useState(tasks);
-    const dispatch=useDispatch();
-    const renderTaskRow = (task, level = 0) => (
-        <React.Fragment key={task.id}>
+    const [deltas, setDeltas] = useState([]);
+    const dispatch = useDispatch();
+    const renderTaskRow = (task, level = 0) => {
+        return (<React.Fragment key={task.id}>
             <tr>
-
-                <td>{task.id}</td>
+                <td>{task.index}</td>
                 <td style={{ paddingLeft: `${level * 20}px` }} >{renderCell(task, "name")}</td>
                 <td>{task.start.toDateString()}</td>
                 <td>{task.end.toDateString()}</td>
@@ -22,7 +28,8 @@ const GanttTable = () => {
 
         </React.Fragment>
 
-    );
+        );
+    }
     const renderEmptyRow = () => (
         <React.Fragment>
             <tr className="empty-row">
@@ -41,13 +48,34 @@ const GanttTable = () => {
     )
 
     const handleEdit = (taskId, field, value) => {
+
         const updatedTasksList = updatedTasks.map((task) =>
-            task.id === taskId ? { ...task, [field]: value } : task
+            // task.id === taskId ? { ...task, [field]: value } : task
+            updateTaskFields(taskId, task, field, value)
         );
+        setDeltas(extractDeltas(updatedTasks, updatedTasksList));
         setUpdatedTasks(updatedTasksList);
-        dispatch(updateTasks({ tasks: updatedTasksList }));
+        dispatch(setTasks({ tasks: updatedTasks }));
+
     };
-    
+
+
+    const updateTaskFields = (id, task, field, value) => {
+        if (id === task.id) {
+            return { ...task, [field]: value };
+        }
+
+        if (task.dependencies) {
+            const updatedDependencies = task.dependencies.map((subTask) =>
+                updateTaskFields(id, subTask, field, value)
+            );
+            return { ...task, dependencies: updatedDependencies };
+        }
+
+        return task;
+    };
+
+
 
     const renderCell = (task, field) => {
         const isEditing = editingCell?.taskId == task.id && editingCell.field == field;
@@ -61,6 +89,13 @@ const GanttTable = () => {
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
                         setEditingCell(null);
+                        dispatch(addDeltaAndPublish(deltas[deltas.length - 1],isConnected,client));
+                        setDeltas([])
+                        // publish tasks to websocket
+                        // console.log('delta ',delta);
+                        // if(isConnected){
+                        //     publishTasks(client,delta,'/app/task.handle')
+                        // }
                     }
                 }}
             />

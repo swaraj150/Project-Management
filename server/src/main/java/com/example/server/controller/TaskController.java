@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -37,6 +38,14 @@ public class TaskController {
         TaskResponse taskResponse=taskService.changeStatus(status,id);
         HashMap<String,Object> h=new HashMap<>();
         h.put("task",taskResponse);
+        return ResponseEntity.ok(h);
+    }
+
+    @GetMapping("/fetch")
+    public ResponseEntity<?> fetch(){
+        List<TaskResponse> taskResponses=taskService.getTasksByOrganization();
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("tasks",taskResponses);
         return ResponseEntity.ok(h);
     }
 }

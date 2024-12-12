@@ -16,6 +16,7 @@
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.7",
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.5",
     "client": "file:",
     "formik": "^2.4.6",

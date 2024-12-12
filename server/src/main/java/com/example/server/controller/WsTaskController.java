@@ -31,7 +31,6 @@ public class WsTaskController {
     private final UserService userService;
     @MessageMapping("/task.handle")
     public void handleTasks(WsTaskRequest taskRequest){
-        // process tasks and add them to kafka
         User user=userService.loadAuthenticatedUser();
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)) return;
         taskRequest.setTimestamp(LocalDateTime.now());

@@ -12,6 +12,9 @@ import { setOrganization, setRequests } from '../../redux/features/organizationS
 import { setProjects } from '../../redux/features/projectsSlice'
 import { setTeams } from '../../redux/features/teamsSlice'
 import { setUser } from '../../redux/features/userSlice'
+import taskApi from '../../api/modules/task.api'
+import { setTasks } from '../../redux/features/ganttSlice'
+import { convertTasksFromServer } from '../../utils/task.utils'
 
 const MainLayout = () => {
   const dispatch = useDispatch()
@@ -20,76 +23,91 @@ const MainLayout = () => {
   const { user } = useSelector((state) => state.user)
   const { organization } = useSelector((state) => state.organization)
 
-  // useEffect(() => {
-  //     const fetchUserDetails = async () => {
-  //     const { res, err } = await userApi.getInfo()
-
-      
-
-  //     if (res) {
-  //       dispatch(setUser(res))
-  //       toast.success('Login successful. Welcome back!')
-  //     } 
-
-  //     if(err) {
-  //       localStorage.removeItem('token')
-  //       navigate('/sign-in')
-  //     }
-  //   }
-
-  //   const token = localStorage.getItem('token')
-
-  //   if (user == null && token === null) navigate('/sign-in')
-  //   if (user === null) fetchUserDetails()
-  // }, [])
-
-  // useEffect(() => {
-  //   const fetchOrganization = async () => {
-  //     const { res, err } = await organizationApi.getInfo()
-
-  //     if (res) dispatch(setOrganization(res))
-  //     if (err) navigate('/discover')
-  //   }
-  //   if (user) {
-  //     fetchOrganization()
-  //   }
-  // }, [user])
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const { res, err } = await userApi.getInfo()
 
 
-  // useEffect(() => {
-    
 
-  //   const fetchProjects = async () => {
-  //     const { res, err } = await projectsApi.getAll()
+      if (res) {
+        dispatch(setUser(res))
+        toast.success('Login successful. Welcome back!')
+      }
 
-  //     if (res) dispatch(setProjects(res))
-  //   }
+      if (err) {
+        localStorage.removeItem('token')
+        navigate('/sign-in')
+      }
+    }
 
-  //   const fetchTeams = async () => {
-  //     const { res, err } = await teamsApi.getAll()
+    const token = localStorage.getItem('token')
 
-  //     if (res) dispatch(setTeams(res))
-  //   }
+    if (user == null && token === null) navigate('/sign-in')
+    if (user === null) fetchUserDetails()
+  }, [])
 
-  //   const fetchRequests = async () => {
-  //     const { res, err } = await organizationApi.fetchRequests()
+  useEffect(() => {
+    const fetchOrganization = async () => {
+      const { res, err } = await organizationApi.getInfo()
 
-  //     if (res) dispatch(setRequests(res))
-  //   }
+      if (res) dispatch(setOrganization(res))
+      if (err) navigate('/discover')
+    }
+    if (user) {
+      fetchOrganization()
+    }
+  }, [user])
 
-    
 
-  //   if (organization) {
-  //     fetchProjects()
-  //     fetchTeams()
-  //     fetchRequests()
-  //   }
-  // }, [organization])
+  useEffect(() => {
+
+
+    const fetchProjects = async () => {
+      const { res, err } = await projectsApi.getAll()
+
+      if (res) dispatch(setProjects(res))
+    }
+
+    const fetchTeams = async () => {
+      const { res, err } = await teamsApi.getAll()
+
+      if (res) dispatch(setTeams(res))
+    }
+
+    const fetchRequests = async () => {
+      const { res, err } = await organizationApi.fetchRequests()
+
+      if (res) dispatch(setRequests(res))
+    }
+
+    const fetchTasks = async () => {
+      const { res, err } = await taskApi.fetch()
+      const { tasks } = res;
+      console.log(tasks)
+      if (res && tasks) {
+        dispatch(setTasks({
+          tasks: tasks.map((task,index) => {
+            return convertTasksFromServer(task,index+1);
+          })
+        }))
+      }
+    }
+
+
+
+    if (organization) {
+      fetchProjects()
+      fetchTeams()
+      fetchRequests()
+      fetchTasks()
+
+    }
+  }, [organization])
 
   return (
     <>
       <main className='no-scrollbar'>
-        { user && <Outlet /> }
+        {user && <Outlet />}
         {/* <Outlet /> */}
       </main>
     </>

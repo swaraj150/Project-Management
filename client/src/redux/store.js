@@ -7,6 +7,7 @@ import projectsSlice from './features/projectsSlice'
 import teamsSlice from './features/teamsSlice'
 import kanbanSlice  from './features/kanbanSlice'
 import ganttSlice  from './features/ganttSlice'
+import webSocketSlice  from './features/webSocketSlice'
 const store = configureStore({
   reducer: {
     user: userSlice,
@@ -15,8 +16,10 @@ const store = configureStore({
     projects: projectsSlice,
     teams: teamsSlice,
     kanban: kanbanSlice,
-    gantt:ganttSlice
-  }
+    gantt:ganttSlice,
+    webSocket:webSocketSlice
+  },
+  window:window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 })
 
 export default store

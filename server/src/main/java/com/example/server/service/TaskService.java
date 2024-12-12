@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,9 +55,9 @@ public class TaskService {
         }
         task.setAssignedTo(assignedTo);
         task.setCompletionStatus(CompletionStatus.PENDING);
+        taskRepository.save(task);
         project.getTasks().add(task.getId());
         projectRepository.save(project);
-        taskRepository.save(task);
 
         notificationService.createNotification(NotificationEvent.builder()
                         .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
@@ -93,9 +94,9 @@ public class TaskService {
         }
         task.setAssignedTo(assignedTo);
         task.setCompletionStatus(CompletionStatus.PENDING);
+        taskRepository.save(task);
         project.getTasks().add(task.getId());
         projectRepository.save(project);
-        taskRepository.save(task);
 //        notificationService.createNotification(NotificationEvent.builder()
 //                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
 //                        .actorId(user.getId())
@@ -144,6 +145,7 @@ public class TaskService {
 //            assignedToUsers.add(userDTO);
 //        }
         return TaskResponse.builder()
+                .id(task.getId())
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .priority(task.getPriority())
@@ -154,6 +156,31 @@ public class TaskService {
                 .estimatedHours(task.getEstimatedHours())
                 .completedAt(task.getCompletedAt())
                 .completionStatus(task.getCompletionStatus())
+                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
+                .build();
+    }
+    public TaskResponse loadTaskResponse(@NonNull UUID id,String clientId){
+        Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
+//        Set<UserDTO> assignedToUsers=new HashSet<>();
+//        for(UUID id1:task.getAssignedTo()){
+//            User user=userService.loadUser(id);
+//            UserDTO userDTO=UserDTO.mapToUserDTO(user);
+//            assignedToUsers.add(userDTO);
+//        }
+        return TaskResponse.builder()
+                .id(task.getId())
+                .clientTaskId(clientId)
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .priority(task.getPriority())
+                .type(task.getType())
+                .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
+//                .assignedToUsers(assignedToUsers)
+                .createdAt(task.getCreatedAt())
+                .estimatedHours(task.getEstimatedHours())
+                .completedAt(task.getCompletedAt())
+                .completionStatus(task.getCompletionStatus())
+                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
 
@@ -168,12 +195,24 @@ public class TaskService {
         return taskRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Task not found"));
     }
 
+    public List<UUID> loadSubTasks(@NonNull UUID parentId){
+        return taskRepository.findByParentId(parentId);
+    }
 
+    public List<TaskResponse> getTasksByOrganization(){
+        User user=userService.loadAuthenticatedUser();
+        Project project=projectRepository.findByOrganization(user.getOrganizationId()).orElseThrow(()->new EntityNotFoundException("project not found"));
+        List<TaskResponse> taskResponses=new ArrayList<>();
+        Set<UUID> taskSet=new HashSet<>();
+        for(UUID taskId:project.getTasks()){
+            if(taskSet.contains(taskId)) continue;
+            TaskResponse taskResponse=loadTaskResponse(taskId);
+            for(TaskResponse t:taskResponse.getSubTasks()){
+                taskSet.add(t.getId());
+            }
+            taskResponses.add(taskResponse);
+        }
+        return taskResponses;
 
-
-
-
-
-
-
+    }
 }
