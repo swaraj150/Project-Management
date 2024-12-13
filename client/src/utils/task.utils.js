@@ -1,5 +1,11 @@
-export const convertTasksFromServer = (task, index, level = 0) => {
+import { putId } from "../redux/features/ganttSlice";
+
+export const convertTasksFromServer = (task, index, level = 0, dispatch) => {
     // console.log(index,level)
+    const taskIndex = task.clientTaskId || (index + (level === 0 ? 0 : "." + level));
+    if (dispatch) {
+        dispatch(putId({ id: task.id, index: taskIndex }));
+    }
     return {
         id: task.id,
         index: task.clientTaskId || (index + (level === 0 ? 0 : "." + level)),
@@ -7,40 +13,48 @@ export const convertTasksFromServer = (task, index, level = 0) => {
         start: new Date(2024, 11, 1),
         end: new Date(2024, 11, 5),
         status: task.completionStatus,
-        dependencies: task.subTasks.map((subTask) => convertTasksFromServer(subTask, subTask.clienttaskId || index, ++level)),
+        dependencies: task.subTasks.map((subTask) => convertTasksFromServer(subTask, task.clientTaskId || index, ++level,dispatch)),
         progress: 60
     }
 }
-export const findClientId=(taskId,tasks)=>{
-    let task=tasks.find(task=>task.id===taskId);
-    return task.index || null;
+export const findClientId = (taskId, tasks) => {
+
 }
-export const extractDeltas = (originalTasks, updatedTasks) => {
-    return updatedTasks.reduce((deltas, updatedTask) => {
-        const originalTask = originalTasks.find(task => task.index === updatedTask.index);
+// for now at time t, only one thing changes
+// export const extractDeltas = (originalTasks, updatedTasks) => {
+//     return updatedTasks.reduce((deltas, updatedTask) => {
+//         const originalTask = originalTasks.find(task => task.index === updatedTask.index);
+//         if (!originalTask) {
+//             deltas.push({ index: updatedTask.index, ...updatedTask });
+//         } else {
+//             const changedFields = Object.keys(updatedTask).reduce((changes, key) => {
+//                 if (updatedTask[key] !== originalTask[key]) {
+//                     changes[key] = updatedTask[key];
+//                 }
+//                 return changes;
+//             }, {});
 
-        if (!originalTask) {
-            // New task added
-            deltas.push({ index: updatedTask.index, ...updatedTask });
-        } else {
-            // Compare fields to find changes
-            const changedFields = Object.keys(updatedTask).reduce((changes, key) => {
-                if (updatedTask[key] !== originalTask[key]) {
-                    changes[key] = updatedTask[key];
-                }
-                return changes;
-            }, {});
+//             if (Object.keys(changedFields).length > 0) {
+//                 deltas.push({ id: updatedTask.id, index: updatedTask.index, ...changedFields });
+//             }
+//         }
 
-            if (Object.keys(changedFields).length > 0) {
-                deltas.push({ id: updatedTask.id, index: updatedTask.index, ...changedFields });
-            }
+//         return deltas;
+//     }, []);
+// };
+
+export const extractDelta = (oldTask, newTask) => {
+    const changedFields = Object.keys(newTask).reduce((changes, key) => {
+        if (newTask[key] !== oldTask[key]) {
+            changes[key] = newTask[key];
         }
+        return changes;
+    }, {});
 
-        return deltas;
-    }, []);
-};
-
-
+    if (Object.keys(changedFields).length > 0) {
+        return { id: newTask.id, index: newTask.index, ...changedFields };
+    }
+}
 export const convertTasksToServer = (delta) => {
     return {
         taskId: delta.id || null,
@@ -57,7 +71,30 @@ export const mergeTasks = (newTasks, oldTasks) => {
     const oldTasksMap = new Map(oldTasks.map((task) => [task.id, task]));
     newTasks.forEach((newTask) => {
         oldTasksMap.set(newTask.id, newTask);
-        
+
     });
     return Array.from(oldTasksMap.values());
 }
+
+export const traverseTask = (task, clientId, i) => {
+    if (i >= clientId.length) return task;
+    const index = parseInt(clientId[i], 10);
+    if (typeof (index) == "number") {
+        return traverseTask(task.dependencies[index - 1], clientId, i + 2);
+    }
+}
+
+export const replaceTask = (tasks, targetIndex, newTask) => {
+    return tasks.map((task) => {
+        if (task.index === targetIndex) {
+            return newTask;
+        } else if (task.dependencies && task.dependencies.length > 0) {
+            return {
+                ...task,
+                dependencies: replaceTask(task.dependencies, targetIndex, newTask),
+            };
+        }
+        return task; // Return the task unchanged
+    });
+}
+

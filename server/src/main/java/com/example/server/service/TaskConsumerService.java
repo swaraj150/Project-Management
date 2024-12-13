@@ -96,16 +96,17 @@ public class TaskConsumerService {
 
 
             List<Task> tasksToSave = new ArrayList<>();
-            List<TaskResponse> tasksToPublish = new ArrayList<>();
             for (WsTaskRequest request : batchToProcess) {
                 String clientId = request.getClientTaskId();
                 if (uniqueTasks.containsKey(request.getClientTaskId())) {
-                    WsTaskRequest request1 = uniqueTasks.get(clientId);
-                    updateToLatestRequest(request1, request);
+                    WsTaskRequest oldRequest = uniqueTasks.get(clientId);
+                    updateToLatestRequest(oldRequest, request);
+                    uniqueTasks.put(clientId,request);
                 } else {
                     uniqueTasks.put(clientId, request);
                 }
             }
+            batchToProcess.clear();
             batchToProcess.addAll(uniqueTasks.values());
             batchToProcess.sort(Comparator.comparing(WsTaskRequest::getTimestamp));
 
@@ -122,15 +123,17 @@ public class TaskConsumerService {
 
             if (!tasksToSave.isEmpty()) {
                 taskRepository.saveAll(tasksToSave);
+                List<TaskResponse> taskResponses=new ArrayList<>();
                 for(Task t:tasksToSave){
-                    tasksToPublish.add(taskService.loadTaskResponse(t.getId()));
+                    taskResponses.add(taskService.loadTaskResponse(t.getId()));
                 }
+
                 log.info("Successfully saved batch of {} tasks", tasksToSave.size());
 
                 messagingTemplate.convertAndSend(
 
                         "/topic/tasks",
-                        tasksToPublish
+                        taskResponses
 
                 );
             }

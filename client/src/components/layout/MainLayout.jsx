@@ -13,7 +13,7 @@ import { setProjects } from '../../redux/features/projectsSlice'
 import { setTeams } from '../../redux/features/teamsSlice'
 import { setUser } from '../../redux/features/userSlice'
 import taskApi from '../../api/modules/task.api'
-import { setTasks } from '../../redux/features/ganttSlice'
+import { putId, setTasks } from '../../redux/features/ganttSlice'
 import { convertTasksFromServer } from '../../utils/task.utils'
 
 const MainLayout = () => {
@@ -85,11 +85,11 @@ const MainLayout = () => {
       const { tasks } = res;
       console.log(tasks)
       if (res && tasks) {
-        dispatch(setTasks({
-          tasks: tasks.map((task,index) => {
-            return convertTasksFromServer(task,index+1);
-          })
-        }))
+        const tasks1 = tasks.map((task, index) => {
+          const task1 = convertTasksFromServer(task, index + 1, 0,dispatch);
+          return task1;
+        })
+        dispatch(setTasks({ tasks: tasks1 }))
       }
     }
 

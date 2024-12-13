@@ -1,9 +1,9 @@
 import { addDelta, setClient, setConnected } from '../redux/features/webSocketSlice';
 import { Client } from '@stomp/stompjs';
-import { convertTasksFromServer, convertTasksToServer, findClientId, mergeTasks } from './task.utils';
-import { setTasks } from '../redux/features/ganttSlice';
+import { convertTasksFromServer, convertTasksToServer, findClientId, mergeTasks, traverseTask } from './task.utils';
+import { incrementPointer, replaceTaskInState, setTasks } from '../redux/features/ganttSlice';
 
-export const connectWebSocket = (url, token,oldTasks) => (dispatch) => {
+export const connectWebSocket = (url,token,oldTasks,map,currentPointer) => (dispatch) => {
   const stompClient = new Client({
     brokerURL: url,
     connectHeaders: {
@@ -21,14 +21,23 @@ export const connectWebSocket = (url, token,oldTasks) => (dispatch) => {
           console.log('recieved: ',data);
           // only sending modified tasks from server
           const tasks = data.map((task) => {
-            const clientId=findClientId(task.id,oldTasks);
+            const clientId=map[task.id]||null;
+            if(clientId==null){
+              // newly created parent Task
+              dispatch(incrementPointer());
+              return convertTasksFromServer(task,currentPointer+1,0,dispatch)
+
+            }
             task['clientTaskId']=clientId;
-            return convertTasksFromServer(task, task.clientTaskId)
+            const newTask=convertTasksFromServer(task,null,0,null)
+            dispatch(replaceTaskInState({index:clientId,newTask:newTask}));
+            return newTask;
+
           })
           console.log('tasks: ',tasks)
-          const merged = mergeTasks(tasks, oldTasks)
+          // const merged = mergeTasks(tasks, oldTasks)
           // console.log(merged);
-          dispatch(setTasks({ tasks: merged }))
+          // dispatch(setTasks({ tasks: merged }))
 
         } catch (error) {
           console.error("Error parsing payload:", error);
@@ -72,6 +81,7 @@ export const addDeltaAndPublish = (delta, isConnected, client) => (dispatch, get
 
   if (isConnected) {
     const updatedDeltas = getState().webSocket.deltas; // Access the updated state
+    console.log("deltas: ",updatedDeltas)
     // console.log("Updated Deltas:", updatedDeltas);
     publishTasks(client, convertTasksToServer(updatedDeltas[updatedDeltas.length - 1]), `/app/task.handle`);
     // Publish to WebSocket here

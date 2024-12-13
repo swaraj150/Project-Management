@@ -2,18 +2,18 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { setTasks } from "../../redux/features/ganttSlice";
 import { addDelta } from "../../redux/features/webSocketSlice";
-import { extractDeltas } from "../../utils/task.utils";
+import { extractDelta } from "../../utils/task.utils";
 import { addDeltaAndPublish, publishTasks } from "../../utils/websocket.utils";
 
 
 const GanttTable = () => {
     const tasks = useSelector((state) => state.gantt["tasks"]);
-    const delta=useSelector((state)=>state.webSocket.deltas);
     const isConnected = useSelector((state) => state.webSocket.connected);
     const client = useSelector((state) => state.webSocket.client);
     const [editingCell, setEditingCell] = useState(null);
     const [updatedTasks, setUpdatedTasks] = useState(tasks);
-    const [deltas, setDeltas] = useState([]);
+    const [delta, setDelta] = useState(null);
+    // const [deltas, setDeltas] = useState([]);
     const dispatch = useDispatch();
     const renderTaskRow = (task, level = 0) => {
         return (<React.Fragment key={task.id}>
@@ -49,31 +49,80 @@ const GanttTable = () => {
 
     const handleEdit = (taskId, field, value) => {
 
-        const updatedTasksList = updatedTasks.map((task) =>
-            // task.id === taskId ? { ...task, [field]: value } : task
-            updateTaskFields(taskId, task, field, value)
-        );
-        setDeltas(extractDeltas(updatedTasks, updatedTasksList));
+        let newTask = {};
+        let oldTask = {};
+        const updatedTasksList = updatedTasks.map((task) => {
+            const { updatedTree, updatedNestedTask,oldNestedTask } = updateTaskAndFindNested(taskId, task, field, value);
+
+            // Update `newTask` only when a nested task is found
+            if (updatedNestedTask) {
+                newTask = updatedNestedTask;
+                oldTask=oldNestedTask;
+            }
+
+            return updatedTree;
+        });
+        // setDeltas(extractDeltas(updatedTasks, updatedTasksList));
+        setDelta(extractDelta(oldTask, newTask))
         setUpdatedTasks(updatedTasksList);
         dispatch(setTasks({ tasks: updatedTasks }));
 
     };
+    const updateTaskAndFindNested = (id, task, field, value) => {
+        let updatedNestedTask = null;
+        let oldNestedTask=null
 
-
-    const updateTaskFields = (id, task, field, value) => {
         if (id === task.id) {
-            return { ...task, [field]: value };
+            const oldTask=task;
+            const updatedTask = { ...task, [field]: value };
+            return { updatedTree: updatedTask, updatedNestedTask: updatedTask, oldNestedTask:oldTask };
         }
 
         if (task.dependencies) {
-            const updatedDependencies = task.dependencies.map((subTask) =>
-                updateTaskFields(id, subTask, field, value)
-            );
-            return { ...task, dependencies: updatedDependencies };
+            const updatedDependencies = task.dependencies.map((subTask) => {
+                const result = updateTaskAndFindNested(id, subTask, field, value);
+                if (result.updatedNestedTask) {
+                    updatedNestedTask = result.updatedNestedTask;
+                    oldNestedTask=result.oldNestedTask;
+                }
+                return result.updatedTree;
+            });
+
+            return {
+                updatedTree: { ...task, dependencies: updatedDependencies },
+                updatedNestedTask,
+                oldNestedTask
+            };
         }
 
-        return task;
+        return { updatedTree: task, updatedNestedTask: null,oldNestedTask:null };
     };
+
+
+    // const updateTaskFields = (id, task, field, value) => {
+    //     if (id === task.id) {
+    //         return { ...task, [field]: value };
+    //     }
+
+    //     // if (task.dependencies) {
+    //     //     const updatedDependencies = task.dependencies.map((subTask) =>
+    //     //         updateTaskFields(id, subTask, field, value,newTask)
+    //     //     );
+    //     //     return { ...task, dependencies: updatedDependencies };
+    //     // }
+
+    //     if (task.dependencies) {
+    //         for (let subTask of task.dependencies) {
+    //             const updatedTask = findAndUpdateTask(id, subTask, field, value);
+    //             if (updatedTask) {
+    //                 // Return the updated nested dependency when found
+    //                 return updatedTask;
+    //             }
+    //         }
+    //     }
+
+    //     return task;
+    // };
 
 
 
@@ -89,8 +138,10 @@ const GanttTable = () => {
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
                         setEditingCell(null);
-                        dispatch(addDeltaAndPublish(deltas[deltas.length - 1],isConnected,client));
-                        setDeltas([])
+                        dispatch(addDeltaAndPublish(delta, isConnected, client));
+                        // dispatch(addDeltaAndPublish(deltas[deltas.length - 1],isConnected,client));
+                        // setDeltas([])
+                        setDelta(null)
                         // publish tasks to websocket
                         // console.log('delta ',delta);
                         // if(isConnected){

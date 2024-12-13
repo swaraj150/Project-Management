@@ -11,9 +11,11 @@ const Tasks = () => {
   const isConnected = useSelector((state) => state.webSocket.connected);
   const client = useSelector((state) => state.webSocket.client);
   const tasks=useSelector((state)=>state.gantt.tasks)
+  const taskMap=useSelector((state)=>state.gantt.taskMap);
+
   useEffect(() => {
     const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
-    dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token'),tasks))
+    dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token'),tasks,taskMap))
     // if(isConnected){
     //   subscribe(client,'/topic/tasks',tasks);
     // }

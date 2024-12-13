@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import { replaceTask } from "../../utils/task.utils";
 export const ganttSlice = createSlice({
     name: 'Gantt',
     initialState: {
@@ -43,6 +43,8 @@ export const ganttSlice = createSlice({
             //         status:"pending"
             //     },
         ],
+        taskMap: {},
+        taskPointer: -1
     },
     reducers: {
         changeMode: (state, action) => {
@@ -56,10 +58,24 @@ export const ganttSlice = createSlice({
         setTasks: (state, action) => {
             const { tasks } = action.payload;
             state.tasks = tasks;
-        }
+        },
+        putId: (state, action) => {
+            const { id, index } = action.payload;
+            state.taskMap[id] = index;
+        },
+        incrementPointer: (state, action) => {
+            state.taskPointer++;
+        },
+        replaceTaskInState(state, action) {
+            const { index, newTask } = action.payload;
+            state.tasks = replaceTask(state.tasks, index, newTask);
+        },
+
+
+
     }
 });
 
-export const { changeMode, addTask, setTasks } = ganttSlice.actions;
+export const { changeMode, addTask, setTasks, putId, incrementPointer,replaceTaskInState } = ganttSlice.actions;
 
 export default ganttSlice.reducer
