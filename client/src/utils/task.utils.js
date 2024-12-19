@@ -1,4 +1,4 @@
-import { putId } from "../redux/features/ganttSlice";
+import { putId } from "../redux/features/taskSlice";
 
 export const convertTasksFromServer = (task, index, level = 0, dispatch) => {
     // console.log(index,level)
@@ -19,6 +19,24 @@ export const convertTasksFromServer = (task, index, level = 0, dispatch) => {
 }
 export const findClientId = (taskId, tasks) => {
 
+}
+
+export const findByIndex=(object, targetIndex) =>{
+    if (object.index === targetIndex) {
+      return object;
+    }
+  
+    if (object.dependencies && object.dependencies.length > 0) {
+      for (const dependency of object.dependencies) {
+        const result = findByIndex(dependency, targetIndex);
+        if (result) {
+          return result; 
+        }
+      }
+    }
+  
+    // Return null if not found
+    return null;
 }
 // for now at time t, only one thing changes
 // export const extractDeltas = (originalTasks, updatedTasks) => {

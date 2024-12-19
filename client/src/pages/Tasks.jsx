@@ -10,19 +10,19 @@ const Tasks = () => {
   const dispatch = useDispatch();
   const isConnected = useSelector((state) => state.webSocket.connected);
   const client = useSelector((state) => state.webSocket.client);
-  const tasks=useSelector((state)=>state.gantt.tasks)
-  const taskMap=useSelector((state)=>state.gantt.taskMap);
+  const tasks=useSelector((state)=>state.task.tasks)
+  const taskMap=useSelector((state)=>state.task.taskMap);
 
-  useEffect(() => {
-    const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
-    dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token'),tasks,taskMap))
-    // if(isConnected){
-    //   subscribe(client,'/topic/tasks',tasks);
-    // }
-    return () => {
-      dispatch(disonnectWebSocket(client))
-    }
-  }, [dispatch])
+  // useEffect(() => {
+  //   const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
+  //   // dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token'),tasks,taskMap))
+  //   // if(isConnected){
+  //   //   subscribe(client,'/topic/tasks',tasks);
+  //   // }
+  //   return () => {
+  //     dispatch(disonnectWebSocket(client))
+  //   }
+  // }, [dispatch])
 
 
 

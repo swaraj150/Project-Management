@@ -1520,7 +1520,18 @@ main {
 #homepage #content #gantt #gantt-table .empty-row td {
   background: transparent; /* Ensures the row appears empty */
   height: 20px; /* Adds vertical spacing */
-  border: none; /* Removes borders for the empty row */
+  /* position: relative; */
+  /* right: 92px; */
+
+  /* border: none; Removes borders for the empty row */
+}
+#homepage #content #gantt #gantt-table .empty-row2 td {
+  background: transparent; /* Ensures the row appears empty */
+  height: 20px; /* Adds vertical spacing */
+  /* position: relative; */
+  /* right: 120px; */
+  
+  /* border: none; Removes borders for the empty row */
 }
 #homepage #content #gantt #gantt-table th{
   background-color: #f9f9f9;

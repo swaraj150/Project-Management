@@ -7,37 +7,37 @@ import { useSelector } from "react-redux";
 const flattenTasks = (tasks) => {
     const flatTasks = [];
     const processTask = (task, parentId = null) => {
-      flatTasks.push({
-        id: task.id,
-        name: task.name,
-        start: task.start,
-        end: task.end,
-        progress: task.progress,
-        dependencies: parentId ? [parentId] : [],
-      });
-  
-      if (task.dependencies?.length) {
-        task.dependencies.forEach((subTask) => processTask(subTask, task.id));
-      }
+        flatTasks.push({
+            id: task.id,
+            name: task.name,
+            start: task.start,
+            end: task.end,
+            progress: task.progress,
+            dependencies: parentId ? [parentId] : [],
+        });
+
+        if (task.dependencies?.length) {
+            task.dependencies.forEach((subTask) => processTask(subTask, task.id));
+        }
     };
-  
+
     tasks.forEach((task) => processTask(task));
     return flatTasks;
-  };
-  
+};
+
 
 const GanttChart = () => {
-    const tasks = useSelector((state) => state.gantt["tasks"])
+    const tasks = useSelector((state) => state.task["tasks"])
     const flatTasks = flattenTasks(tasks);
     const [panelWidth, setPanelWidth] = useState(40);
     const resizerRef = useRef(null);
-    const modes={
-        day:ViewMode.Day,
-        week:ViewMode.Week,
-        month:ViewMode.Month,
-        year:ViewMode.Year,
+    const modes = {
+        day: ViewMode.Day,
+        week: ViewMode.Week,
+        month: ViewMode.Month,
+        year: ViewMode.Year,
     }
-    
+
     const handleMouseDown = (e) => {
         e.preventDefault();
         const startX = e.clientX;
@@ -58,17 +58,28 @@ const GanttChart = () => {
     return (
         <section id="gantt">
             <div className="resizable-container">
-                <div className="table-container" style={{ width: `${panelWidth}%` }}>
-                    <GanttTable />
-                </div>
-                <div
-                    ref={resizerRef}
-                    className="resizer"
-                    onMouseDown={handleMouseDown}
-                ></div>
-                <div style={{ width: `${100-panelWidth}%` }}>
-                    <Gantt tasks={flatTasks} viewMode={ViewMode.Day} listCellWidth="" />
-                </div>
+
+                {(flatTasks && flatTasks.length > 0) ? (
+                    <>
+                        <div className="table-container" style={{ width: `${panelWidth}%` }}>
+                            <GanttTable />
+                        </div>
+                        <div
+                            ref={resizerRef}
+                            className="resizer"
+                            onMouseDown={handleMouseDown}
+                        ></div>
+                        <div style={{ width: `${100 - panelWidth}%` }}>
+                            <Gantt tasks={flatTasks} viewMode={ViewMode.Day} listCellWidth="" />
+                        </div>
+                    </>) :
+                    (
+                        <div className="table-container" style={{ width: '100%' }}>
+                            <GanttTable />
+                        </div>
+                    )
+
+                }
             </div>
         </section>
     );

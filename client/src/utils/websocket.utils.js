@@ -1,7 +1,7 @@
 import { addDelta, setClient, setConnected } from '../redux/features/webSocketSlice';
 import { Client } from '@stomp/stompjs';
 import { convertTasksFromServer, convertTasksToServer, findClientId, mergeTasks, traverseTask } from './task.utils';
-import { incrementPointer, replaceTaskInState, setTasks } from '../redux/features/ganttSlice';
+import { incrementPointer, replaceTaskInState, setTasks } from '../redux/features/taskSlice';
 
 export const connectWebSocket = (url,token,oldTasks,map,currentPointer) => (dispatch) => {
   const stompClient = new Client({
