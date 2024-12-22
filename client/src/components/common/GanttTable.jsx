@@ -1,22 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { addTask, incrementPointer, putId, setTasks } from "../../redux/features/taskSlice";
-import { extractDelta, findByIndex } from "../../utils/task.utils";
+import { calculateIndex, extractDelta, findByIndex } from "../../utils/task.utils";
 import { addDeltaAndPublish } from "../../utils/websocket.utils";
+import { setUpdated } from "../../redux/features/webSocketSlice";
 
 
 const GanttTable = () => {
     const tasks = useSelector((state) => state.task.tasks);
     const isConnected = useSelector((state) => state.webSocket.connected);
+    const updated=useSelector((state)=>state.webSocket.updated);
     const client = useSelector((state) => state.webSocket.client);
     const [editingCell, setEditingCell] = useState(null);
     const [updatedTasks, setUpdatedTasks] = useState(tasks);
     const [delta, setDelta] = useState(null);
     const [newTaskName, setNewTaskName] = useState("");
-    const taskPointer = useSelector((state) => state.task.taskPointer);
     const dispatch = useDispatch();
 
-    console.log("tasks: ",updatedTasks)
+    useEffect(()=>{
+        if(updated){
+            setUpdatedTasks(tasks);
+            dispatch(setUpdated())
+        }
+    },[updated,dispatch])
+
 
 
     const renderTaskRow = (task, level = 0) => {
@@ -66,24 +73,24 @@ const GanttTable = () => {
     )
 
 
-    const calculateIndex = (previousIndex) => {
-        if (previousIndex === null) {
-            const index = tasks&&tasks.length>0?tasks.length+1:1;
-            return index;
-        }
-        let t1={};
-        for(let t of updatedTasks){
-            t1=findByIndex(t,previousIndex);
-            if(t1!=null) break;
-        }
-        if(t1.dependencies.length==0){
-            return previousIndex + "." + (1);
-        }
-        const index=t1.dependencies[t1.dependencies.length-1].index;
-        const last=parseInt(index[index.length-1]);
-        return index.substring(0, index.length - 1) + (last + 1);
+    // const calculateIndex = (previousIndex) => {
+    //     if (previousIndex === null) {
+    //         const index = tasks&&tasks.length>0?tasks.length+1:1;
+    //         return {index:index,parentIndex:null};
+    //     }
+    //     let t1={};
+    //     for(let t of updatedTasks){
+    //         t1=findByIndex(t,previousIndex);
+    //         if(t1!=null) break;
+    //     }
+    //     if(t1.dependencies.length==0){
+    //         return {index:previousIndex + "." + (1),parentIndex:t1.index};
+    //     }
+    //     const index=t1.dependencies[t1.dependencies.length-1].index;
+    //     const last=parseInt(index[index.length-1]);
+    //     return {index:index.substring(0, index.length - 1) + (last + 1),parentIndex:t1.index};
         
-    }
+    // }
 
     const handleEdit = (taskId, field, value) => {
         if(taskId===null){
@@ -105,7 +112,8 @@ const GanttTable = () => {
         // setDeltas(extractDeltas(updatedTasks, updatedTasksList));
         setDelta(extractDelta(oldTask, newTask))
         setUpdatedTasks(updatedTasksList);
-        dispatch(setTasks({ tasks: updatedTasks }));
+        console.log("updatedTaskList", updatedTasksList)
+        dispatch(setTasks({ tasks: updatedTasksList }));
 
     };
     const updateTaskAndFindNested = (id, task, field, value) => {
@@ -168,11 +176,11 @@ const GanttTable = () => {
 
    
     const renderCell = (task, field, level,text,parent) => {
-        console.log("task: "+(task?.id)+" text "+(text===null?"cell":text))
-        console.log(editingCell)
+        // console.log("task: "+(task?.id)+" text "+(text===null?"cell":text))
+        // console.log(editingCell)
         const isEditing =  (task===null && editingCell?.taskId==='0' && editingCell?.field===field &&
              (parent===null || (parent!==null && editingCell?.parent===parent))) 
-             || (editingCell?.taskId == task?.id && editingCell?.field == field);
+             || (editingCell?.taskId == task?.index && editingCell?.field == field);
         return isEditing ? (
             <input
                 type="text"
@@ -184,18 +192,20 @@ const GanttTable = () => {
                     if (e.key === "Enter") {
                         setEditingCell(null);
                         if(task===null){
-                            const index=calculateIndex(parent);
+                            const {index,parentIndex}=calculateIndex(parent,updatedTasks);
+                            console.log(index,parentIndex)
                             const newTask={
-                                id:id,
+                                id:index,
                                 index:index,
                                 name:newTaskName,
                                 start:new Date(2024, 11, 1),
                                 end:new Date(2024, 11, 7),
                                 dependencies:[],
-                                progress:0
+                                progress:0,
+                                parentTaskId:parentIndex // add logic in backend 
                             };
                             setNewTaskName("");
-                            console.log(newTask);
+                            console.log("new Task",newTask);
                             if(parent===null){
                                 dispatch(addTask({task:newTask}))
                                 setUpdatedTasks((prevTasks)=>[...prevTasks,newTask]);
@@ -207,20 +217,25 @@ const GanttTable = () => {
                                 dispatch(setTasks({tasks:newUpdatedTasks}))
                             }
                             // dispatch(putId())
-                            // setDelta(newTask);
-                        }
-                        // dispatch(addDeltaAndPublish(delta, isConnected, client));
+                            dispatch(addDeltaAndPublish(newTask, isConnected, client));
 
-                        // dispatch(addDeltaAndPublish(deltas[deltas.length - 1],isConnected,client));
-                        // setDeltas([])
-                        setDelta(null)
+                            setDelta(null);
+                        }
+                        else{
+                            dispatch(addDeltaAndPublish(delta, isConnected, client));
+                            
+                            // dispatch(addDeltaAndPublish(deltas[deltas.length - 1],isConnected,client));
+                            // setDeltas([])
+                            setDelta(null)
+
+                        }
                         
                     }
                 }}
             />
         ) : (
             <span
-                onClick={() => setEditingCell(task?{ taskId: task.id, field }:{taskId:'0',field,parent:parent})} // Enter editing mode on click
+                onClick={() => setEditingCell(task?{ taskId: task.index, field }:{taskId:'0',field,parent:parent})} // Enter editing mode on click
                 style={{ cursor: "pointer" }}
             >
                 {task?task[field]: text}

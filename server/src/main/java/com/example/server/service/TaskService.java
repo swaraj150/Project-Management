@@ -16,6 +16,7 @@ import com.example.server.response.TaskResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -83,7 +84,12 @@ public class TaskService {
         if(request.getTaskType()!=null) task.setType(TaskType.valueOf(request.getTaskType()));
         if(request.getLevel()!=null) task.setLevel(Level.valueOf(request.getLevel()));
         task.setEstimatedHours(request.getEstimatedHours());
-        task.setParentTaskId(request.getParentTaskId());
+        Optional.ofNullable(request.getParentTaskId())
+                .map(UUID::fromString)
+                .ifPresentOrElse(
+                        task::setParentTaskId,
+                        () -> task.setParentTaskId(null)
+                );
         task.setProjectId(team.getProjectId());
         Set<UUID> assignedTo=new HashSet<>();
         if(request.getAssignedTo()!=null){
@@ -156,7 +162,8 @@ public class TaskService {
                 .estimatedHours(task.getEstimatedHours())
                 .completedAt(task.getCompletedAt())
                 .completionStatus(task.getCompletionStatus())
-                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
+                .parentTaskId(task.getParentTaskId())
+//                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
     public TaskResponse loadTaskResponse(@NonNull UUID id,String clientId){
@@ -180,7 +187,8 @@ public class TaskService {
                 .estimatedHours(task.getEstimatedHours())
                 .completedAt(task.getCompletedAt())
                 .completionStatus(task.getCompletionStatus())
-                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
+                .parentTaskId(task.getParentTaskId())
+//                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
 
@@ -203,16 +211,28 @@ public class TaskService {
         User user=userService.loadAuthenticatedUser();
         Project project=projectRepository.findByOrganization(user.getOrganizationId()).orElseThrow(()->new EntityNotFoundException("project not found"));
         List<TaskResponse> taskResponses=new ArrayList<>();
-        Set<UUID> taskSet=new HashSet<>();
         for(UUID taskId:project.getTasks()){
-            if(taskSet.contains(taskId)) continue;
-            TaskResponse taskResponse=loadTaskResponse(taskId);
-            for(TaskResponse t:taskResponse.getSubTasks()){
-                taskSet.add(t.getId());
-            }
+            Task task=loadTask(taskId);
+            if(task.getParentTaskId()!=null) continue;
+            TaskResponse taskResponse=loadNestedTasks(taskId);
             taskResponses.add(taskResponse);
         }
         return taskResponses;
 
+    }
+
+    public TaskResponse loadNestedTasks(UUID taskId){
+        List<UUID> subTasks=loadSubTasks(taskId);
+        TaskResponse taskResponse=loadTaskResponse(taskId);
+        for(UUID id:subTasks){
+            TaskResponse subTask=loadNestedTasks(id);
+            if(subTask!=null){
+                if(taskResponse.getSubTasks()==null){
+                    taskResponse.setSubTasks(new ArrayList<>());
+                }
+                taskResponse.getSubTasks().add((subTask));
+            }
+        }
+        return taskResponse;
     }
 }

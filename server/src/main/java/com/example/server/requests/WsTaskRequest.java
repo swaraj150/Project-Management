@@ -23,7 +23,7 @@ public class WsTaskRequest {
     private String taskType;
     private String level;
     private Integer estimatedHours;
-    private UUID parentTaskId;
+    private String parentTaskId;
     private List<String> assignedTo;
     private String status;
     private LocalDateTime timestamp;

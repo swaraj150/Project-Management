@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name="Project")
@@ -49,7 +47,7 @@ public class Project {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "tasks", joinColumns = @JoinColumn(name = "project_id"))
     @Column(name = "task_id")
-    private Set<UUID> tasks = new HashSet<>();
+    private List<UUID> tasks = new ArrayList<>();
 
     private BigDecimal budget;// in INR
 

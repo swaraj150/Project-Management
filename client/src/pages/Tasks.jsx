@@ -13,16 +13,16 @@ const Tasks = () => {
   const tasks=useSelector((state)=>state.task.tasks)
   const taskMap=useSelector((state)=>state.task.taskMap);
 
-  // useEffect(() => {
-  //   const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
-  //   // dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token'),tasks,taskMap))
-  //   // if(isConnected){
-  //   //   subscribe(client,'/topic/tasks',tasks);
-  //   // }
-  //   return () => {
-  //     dispatch(disonnectWebSocket(client))
-  //   }
-  // }, [dispatch])
+  useEffect(() => {
+    const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
+    dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token')))
+    if(isConnected){
+      subscribe(client,'/topic/tasks',tasks);
+    }
+    return () => {
+      dispatch(disonnectWebSocket(client))
+    }
+  }, [dispatch])
 
 
 

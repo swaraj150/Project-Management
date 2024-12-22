@@ -5,6 +5,7 @@ import com.example.server.entities.Project;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class ProjectDTO {
     private String title;
     private String description;
 //    private Integer teamSize;
-    private Set<UUID> tasksIds;
+    private List<UUID> tasksIds;
     private Set<UUID> teams;
     private LocalDate startDate;
     private LocalDate estimatedEndDate;

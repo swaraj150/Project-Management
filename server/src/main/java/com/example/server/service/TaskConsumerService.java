@@ -95,7 +95,7 @@ public class TaskConsumerService {
             log.debug("Processing batch of {} tasks", batchToProcess.size());
 
 
-            List<Task> tasksToSave = new ArrayList<>();
+            Map<Task,String> tasksToSave = new LinkedHashMap<>();
             for (WsTaskRequest request : batchToProcess) {
                 String clientId = request.getClientTaskId();
                 if (uniqueTasks.containsKey(request.getClientTaskId())) {
@@ -114,7 +114,7 @@ public class TaskConsumerService {
                 try {
                     Task task = processTaskRequest(request);
                     if (task != null) {
-                        tasksToSave.add(task);
+                        tasksToSave.put(task,request.getClientTaskId());
                     }
                 } catch (Exception e) {
                     log.error("Error processing task request: {}", request, e);
@@ -122,10 +122,12 @@ public class TaskConsumerService {
             }
 
             if (!tasksToSave.isEmpty()) {
-                taskRepository.saveAll(tasksToSave);
+                taskRepository.saveAll(tasksToSave.keySet());
                 List<TaskResponse> taskResponses=new ArrayList<>();
-                for(Task t:tasksToSave){
-                    taskResponses.add(taskService.loadTaskResponse(t.getId()));
+                // send whole parent task for now
+                for(Map.Entry<Task,String> t:tasksToSave.entrySet()){
+                    // order mismatch
+                    taskResponses.add(taskService.loadTaskResponse(t.getKey().getId(),t.getValue()));
                 }
 
                 log.info("Successfully saved batch of {} tasks", tasksToSave.size());
@@ -142,31 +144,39 @@ public class TaskConsumerService {
             log.error("Error processing batch", e);
         }
     }
-
+// clientId MAP and pretty much every data structure used here should be persistent
+// since if we restart the application we wont be able to get clientIds and other stuffs
     private Task processTaskRequest(WsTaskRequest request) {
         if (request.getTaskId()==null) {
+            if(request.getParentTaskId()!=null){
+                request.setParentTaskId(clientIdMap.get(request.getParentTaskId()).toString());
+            }
             Task task = taskService.createTask(request);
             clientIdMap.put(request.getClientTaskId(), task.getId());
+            return task;
         }
         else{
             clientIdMap.put(request.getClientTaskId(),request.getTaskId());
+            UUID taskId = clientIdMap.get(request.getClientTaskId());
+            if (taskId == null) {
+                throw new EntityNotFoundException("task does not exist");
+            }
+            Task task = taskService.loadTask(taskId);
+            if (task == null) {
+                log.warn("Task not found with ID: {}", request.getTaskId());
+                return null;
+            }
+            updateTaskFromRequest(task, request);
+            return task;
         }
-        UUID taskId = clientIdMap.get(request.getClientTaskId());
-        if (taskId == null) {
-            throw new EntityNotFoundException("task does not exist");
-        }
-        Task task = taskService.loadTask(taskId);
-        if (task == null) {
-            log.warn("Task not found with ID: {}", request.getTaskId());
-            return null;
-        }
-        updateTaskFromRequest(task, request);
-        return task;
     }
 
     private void updateTaskFromRequest(Task task, WsTaskRequest request) {
         Optional.ofNullable(request.getTitle()).ifPresent(task::setTitle);
-        Optional.ofNullable(request.getParentTaskId()).ifPresent(task::setParentTaskId);
+
+        Optional.ofNullable(request.getParentTaskId())
+                .map(clientIdMap::get)
+                .ifPresent(task::setParentTaskId);
         Optional.ofNullable(request.getPriority()).ifPresent(task::setPriority);
         Optional.ofNullable(request.getEstimatedHours()).ifPresent(task::setEstimatedHours);
         Optional.ofNullable(request.getLevel())

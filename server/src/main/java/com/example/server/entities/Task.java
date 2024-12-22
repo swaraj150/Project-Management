@@ -32,7 +32,7 @@ public class Task {
     @Column(name = "created_by_user_id")
     private UUID createdBy;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "assigned_to", joinColumns = @JoinColumn(name = "task_id"))
     @Column(name = "user_id")
     private Set<UUID> assignedTo = new HashSet<>();

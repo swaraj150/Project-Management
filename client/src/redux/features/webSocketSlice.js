@@ -4,7 +4,8 @@ export const webSocketSlice = createSlice({
     initialState: {
         client: null,
         connected: false,
-        deltas: []
+        deltas: [],
+        updated:false
     },
     reducers: {
         setClient: (state, action) => {
@@ -21,10 +22,14 @@ export const webSocketSlice = createSlice({
         },
         addDelta: (state, action) => {
             state.deltas.push(action.payload);
+        },
+        setUpdated: (state,action)=>{
+            state.updated=!state.updated;
         }
+        
     }
 })
 
-export const { setClient, setConnected, setDeltas, addDelta, mergeDeltas } = webSocketSlice.actions;
+export const { setClient, setConnected, setDeltas, addDelta, mergeDeltas, setUpdated } = webSocketSlice.actions;
 
 export default webSocketSlice.reducer;
