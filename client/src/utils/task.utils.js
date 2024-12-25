@@ -6,15 +6,16 @@ export const convertTasksFromServer = (task, index1, level = 0, dispatch,parentI
     const parentTaskId=parentId;
     level=1;
     if (dispatch) {
-        dispatch(putId({ id: task.id, index: taskIndex }));
+        dispatch(putId({ id: task.id, index: ""+taskIndex }));
     }
     return {
         id: task.id,
-        index: taskIndex,
+        index: ""+taskIndex,
+        taskId:task.id,
         name: task.title,
         start: new Date(2024, 11, 1),
         end: new Date(2024, 11, 5),
-        status: task.completionStatus,
+        status: task.completionStatus?task.completionStatus:'PENDING',
         dependencies: task.subTasks? task.subTasks.map((subTask) => convertTasksFromServer(subTask, taskIndex, level++, dispatch,taskIndex)):[],
         progress: 60,
         parentTaskId: parentTaskId
@@ -140,4 +141,16 @@ export const calculateIndex = (previousIndex, updatedTasks) => {
     const last = parseInt(index[index.length - 1]);
     return { index: index.substring(0, index.length - 1) + (last + 1), parentIndex: t1.index };
 
+}
+
+export const segregateTasks=(tasks,result={pending:[],completed:[],in_progress:[]})=>{
+    tasks.forEach((task)=>{
+        if(task.status=='PENDING') result.pending.push(task);
+        else if(task.status=='COMPLETED') result.completed.push(task);
+        else if(task.status=='IN_PROGRESS') result.in_progress.push(task);
+        if(task.dependencies){
+            segregateTasks(task.dependencies,result);
+        }
+    })
+    return result;
 }

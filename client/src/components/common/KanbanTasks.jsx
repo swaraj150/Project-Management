@@ -3,17 +3,22 @@ import { useSelector, useDispatch } from "react-redux";
 import Task from "./Task";
 import { useDrop } from 'react-dnd';
 import { moveTask } from "../../redux/features/kanbanSlice";
+import { addDeltaAndPublish } from "../../utils/websocket.utils";
 
 
 const KanbanTasks = ({ status }) => {
   const [targetIndices,setTargetIndices]=useState({});
   const tasks = useSelector((state) => state.kanban[status])
+  const client=useSelector((state)=>state.webSocket.client);
+  const isConnected=useSelector((state)=>state.webSocket.connected);
   const dispatch = useDispatch();
   const [{ isOver }, drop] = useDrop({
     accept: "task",
     drop: (draggedTask) => {
       try {
         const targetIndex = targetIndices[draggedTask.taskId] ?? tasks.length;
+        console.log(draggedTask)
+        dispatch(addDeltaAndPublish({id:draggedTask.id,index:draggedTask.index,status:status.toUpperCase()},isConnected,client))
         dispatch(moveTask({ task: draggedTask, toStatus: status, targetIndex }));
         setTargetIndices((prev) => {
           const newState = { ...prev };
@@ -80,7 +85,7 @@ const KanbanTasks = ({ status }) => {
     >
       {
         tasks?.map((task, index) => {
-          return <Task key={task.taskId} task={task} status={status} index={index} />
+          return <Task key={task.taskId} task={task} status={status} kanbanIndex={index} />
         })
       }
     </ul>

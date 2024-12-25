@@ -14,7 +14,9 @@ import { setTeams } from '../../redux/features/teamsSlice'
 import { setUser } from '../../redux/features/userSlice'
 import taskApi from '../../api/modules/task.api'
 import { putId, setTasks } from '../../redux/features/taskSlice'
-import { convertTasksFromServer } from '../../utils/task.utils'
+
+import { convertTasksFromServer, segregateTasks } from '../../utils/task.utils'
+import { setKanbanTasks } from '../../redux/features/kanbanSlice'
 
 const MainLayout = () => {
   const dispatch = useDispatch()
@@ -90,6 +92,10 @@ const MainLayout = () => {
           return task1;
         })
         dispatch(setTasks({ tasks: tasks1 }))
+        const {pending, completed, in_progress} = segregateTasks(tasks1);
+        dispatch(setKanbanTasks({status:'pending',tasks:pending}))
+        dispatch(setKanbanTasks({status:'completed',tasks:completed}))
+        dispatch(setKanbanTasks({status:'in_progress',tasks:in_progress}))
       }
     }
 

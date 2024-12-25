@@ -33,13 +33,13 @@ public class TaskController {
         h.put("task",taskResponse);
         return ResponseEntity.ok(h);
     }
-    @PutMapping("/change-status")
-    public ResponseEntity<?> changeStatus(@RequestParam @NonNull UUID id, @RequestParam @NonNull String status){
-        TaskResponse taskResponse=taskService.changeStatus(status,id);
-        HashMap<String,Object> h=new HashMap<>();
-        h.put("task",taskResponse);
-        return ResponseEntity.ok(h);
-    }
+//    @PutMapping("/change-status")
+//    public ResponseEntity<?> changeStatus(@RequestParam @NonNull UUID id, @RequestParam @NonNull String status){
+//        TaskResponse taskResponse=taskService.changeStatus(status,id);
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("task",taskResponse);
+//        return ResponseEntity.ok(h);
+//    }
 
     @GetMapping("/fetch")
     public ResponseEntity<?> fetch(){
@@ -48,4 +48,6 @@ public class TaskController {
         h.put("tasks",taskResponses);
         return ResponseEntity.ok(h);
     }
+
+
 }

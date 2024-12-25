@@ -83,6 +83,7 @@ public class TaskService {
         task.setPriority(request.getPriority());
         if(request.getTaskType()!=null) task.setType(TaskType.valueOf(request.getTaskType()));
         if(request.getLevel()!=null) task.setLevel(Level.valueOf(request.getLevel()));
+        if(request.getStatus()!=null) changeStatus(request.getStatus().toLowerCase(),task);
         task.setEstimatedHours(request.getEstimatedHours());
         Optional.ofNullable(request.getParentTaskId())
                 .map(UUID::fromString)
@@ -136,6 +137,23 @@ public class TaskService {
         }
         taskRepository.save(task);
         return loadTaskResponse(task.getId());
+    }
+    public void changeStatus(@NonNull String status,@NonNull Task task){
+        User user= userService.loadUser(securityUtils.getCurrentUsername());
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.EDIT_TASKS)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        // findTaskByUser can be used here to further check if user has any access to task
+        switch (status){
+            case "pending" -> task.setCompletionStatus(CompletionStatus.PENDING);
+            case "in_progress" -> task.setCompletionStatus(CompletionStatus.IN_PROGRESS);
+            case "completed" -> {
+                task.setCompletionStatus(CompletionStatus.COMPLETED);
+                task.setCompletedAt(LocalDateTime.now());
+            }
+            default -> throw new InvalidStatusException("Invalid Status");
+        }
+        taskRepository.save(task);
     }
 
     public void addSubTask(CreateTaskRequest request){

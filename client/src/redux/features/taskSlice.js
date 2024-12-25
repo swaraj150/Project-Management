@@ -20,7 +20,8 @@ export const taskSlice = createSlice({
                 //             end: new Date(2024, 11, 4),
                 //             progress: 90,
                 //             dependencies:[],
-                //             status:"in_progress"
+                //             status:"in_progress",
+                //             priority:1
                 //         },
                 //         {
                 //             id: "1.2",
@@ -30,10 +31,12 @@ export const taskSlice = createSlice({
                 //             end: new Date(2024, 11, 5),
                 //             progress: 90,
                 //             dependencies:[],
-                //             status:"pending"
+                //             status:"pending",
+                //             priority:1
                 //         }
                 //     ],
-                //     status:"in_progress"
+                //     status:"in_progress",
+                //     priority:1
                 // },
                 // {
                 //     id: "2",
@@ -43,7 +46,8 @@ export const taskSlice = createSlice({
                 //     end: new Date(2024, 11, 15),
                 //     progress: 40,
                 //     dependencies:[],
-                //     status:"pending"
+                //     status:"pending",
+                //     priority:1
                 // },
         ],
         taskMap: {

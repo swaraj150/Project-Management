@@ -19,14 +19,14 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.Map;
 import java.util.UUID;
+
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 public class WsTaskController {
-    private final SimpMessagingTemplate messagingTemplate;
     private final TaskConsumerService taskConsumerService;
     private final UserService userService;
     @MessageMapping("/task.handle")
@@ -35,6 +35,10 @@ public class WsTaskController {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)) return;
         taskRequest.setTimestamp(LocalDateTime.now());
         taskConsumerService.consumeAndBuffer(taskRequest);
+    }
+    @MessageMapping("/update-clientMap")
+    public void updateClientMap(Map<UUID,String> clientMap){
+        taskConsumerService.consumeClientIdMap(clientMap);
     }
 
 }

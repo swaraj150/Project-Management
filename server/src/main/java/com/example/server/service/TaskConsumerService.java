@@ -216,4 +216,11 @@ public class TaskConsumerService {
             log.warn("Task buffer size is high: {}", currentSize);
         }
     }
+
+    public void consumeClientIdMap(Map<UUID,String> m){
+        for(Map.Entry<UUID,String> e:m.entrySet()){
+            if(clientIdMap.containsKey(e.getValue())) continue;
+            clientIdMap.put(e.getValue(), e.getKey());
+        }
+    }
 }

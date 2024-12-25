@@ -4,7 +4,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import GanttChart from './GanttChart';
 import { useDispatch, useSelector } from 'react-redux';
-import { connectWebSocket, disonnectWebSocket } from '../utils/websocket.utils';
+import { connectWebSocket, disonnectWebSocket, publishTasks } from '../utils/websocket.utils';
 const Tasks = () => {
   const [current, setCurrent] = useState(0);
   const dispatch = useDispatch();
@@ -14,21 +14,17 @@ const Tasks = () => {
   const taskMap=useSelector((state)=>state.task.taskMap);
 
   useEffect(() => {
+   
     const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
-    dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token')))
-    if(isConnected){
-      subscribe(client,'/topic/tasks',tasks);
-    }
-    return () => {
-      dispatch(disonnectWebSocket(client))
-    }
+    dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token')));
+    // if(isConnected){
+      
+    //   subscribe(client,'/topic/tasks',tasks);
+    // }
+    // return () => {
+    //   dispatch(disonnectWebSocket(client))
+    // }
   }, [dispatch])
-
-
-
-
-
-
 
   const taskItems = [
     { name: "Gantt Chart", page: <GanttChart /> },

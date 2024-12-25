@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { addTask, incrementPointer, putId, setTasks } from "../../redux/features/taskSlice";
-import { calculateIndex, extractDelta, findByIndex } from "../../utils/task.utils";
+import { addTask, setTasks } from "../../redux/features/taskSlice";
+import { calculateIndex, extractDelta } from "../../utils/task.utils";
 import { addDeltaAndPublish } from "../../utils/websocket.utils";
 import { setUpdated } from "../../redux/features/webSocketSlice";
 
@@ -197,6 +197,7 @@ const GanttTable = () => {
                             const newTask={
                                 id:index,
                                 index:index,
+                                taskId:index,
                                 name:newTaskName,
                                 start:new Date(2024, 11, 1),
                                 end:new Date(2024, 11, 7),
@@ -213,9 +214,10 @@ const GanttTable = () => {
                             else{
                                 const newUpdatedTasks = updateTaskRecursively(tasks, parent, newTask); // Calculate the new tasks
                                 setUpdatedTasks(newUpdatedTasks)
-                                // setUpdatedTasks((prevTasks)=>updateTaskRecursively(prevTasks,parent,newTask))
                                 dispatch(setTasks({tasks:newUpdatedTasks}))
+                                
                             }
+                            // add new task to kanban board as well
                             // dispatch(putId())
                             dispatch(addDeltaAndPublish(newTask, isConnected, client));
 

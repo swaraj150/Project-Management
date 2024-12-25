@@ -1,9 +1,9 @@
 import React from "react"
 import { useDrag } from 'react-dnd';
-const Task = ({ task, index, status }) => {
+const Task = ({ task, kanbanIndex, status }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "task",
-    item: { ...task, currentStatus: status,index:index },
+    item: { ...task, currentStatus: status,kanbanIndex:kanbanIndex },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -18,8 +18,8 @@ const Task = ({ task, index, status }) => {
         cursor: "move",
       }}
     >
-      <h3>{task.title}</h3>
-      <p>priority:{task.priority}</p>
+      <h3>{task.name}</h3>
+      <p>progress:{task.progress}</p>
       <p>estimated hours {task.estimatedHours}</p>
       <p>level {task.level}</p>
     </li>
