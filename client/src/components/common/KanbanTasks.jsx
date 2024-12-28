@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Task from "./Task";
 import { useDrop } from 'react-dnd';
 import { moveTask } from "../../redux/features/kanbanSlice";
 import { addDeltaAndPublish } from "../../utils/websocket.utils";
+import KanbanTask from "./KanbanTask";
 
 
 const KanbanTasks = ({ status }) => {
@@ -85,7 +85,7 @@ const KanbanTasks = ({ status }) => {
     >
       {
         tasks?.map((task, index) => {
-          return <Task key={task.taskId} task={task} status={status} kanbanIndex={index} />
+          return <KanbanTask key={task.taskId} task={task} status={status} kanbanIndex={index} />
         })
       }
     </ul>

@@ -188,6 +188,8 @@ public class TaskConsumerService {
         Optional.ofNullable(request.getStatus())
                 .map(CompletionStatus::valueOf)
                 .ifPresent(task::setCompletionStatus);
+        Optional.ofNullable(request.getStartDate()).ifPresent(task::setStartDate);
+        Optional.ofNullable(request.getEndDate()).ifPresent(task::setEndDate);
 
     }
 
@@ -201,6 +203,8 @@ public class TaskConsumerService {
         newRequest.setStatus(newRequest.getStatus() == null ? oldRequest.getStatus() : newRequest.getStatus());
         newRequest.setTitle(newRequest.getTitle() == null ? oldRequest.getTitle() : newRequest.getTitle());
         newRequest.setPublishType(oldRequest.getPublishType() == WsPublishType.CREATE_TASK ? WsPublishType.CREATE_TASK : newRequest.getPublishType());
+        newRequest.setStartDate(newRequest.getStartDate()==null?oldRequest.getStartDate():newRequest.getStartDate());
+        newRequest.setEndDate(newRequest.getEndDate()==null?oldRequest.getEndDate():newRequest.getEndDate());
     }
 
 

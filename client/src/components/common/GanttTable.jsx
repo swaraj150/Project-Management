@@ -4,6 +4,7 @@ import { addTask, setTasks } from "../../redux/features/taskSlice";
 import { calculateIndex, extractDelta } from "../../utils/task.utils";
 import { addDeltaAndPublish } from "../../utils/websocket.utils";
 import { setUpdated } from "../../redux/features/webSocketSlice";
+import Task from "./Task";
 
 
 const GanttTable = () => {
@@ -16,7 +17,7 @@ const GanttTable = () => {
     const [delta, setDelta] = useState(null);
     const [newTaskName, setNewTaskName] = useState("");
     const dispatch = useDispatch();
-
+    const [openTask,setOpenTask]=useState(false);
     useEffect(()=>{
         if(updated){
             setUpdatedTasks(tasks);
@@ -30,7 +31,10 @@ const GanttTable = () => {
         return (<React.Fragment key={task.id}>
             <tr>
                 <td>{task.index}</td>
-                <td style={{ paddingLeft: `${level * 20}px` }} >{renderCell(task, "name")}</td>
+                <td id='table-name-row' style={{ paddingLeft: `${level * 20}px` }} >
+                    {renderCell(task, "name")}
+                    <button onClick={handleTaskModal}>view task</button>
+                </td>
                 <td>{task.start.toDateString()}</td>
                 <td>{task.end.toDateString()}</td>
                 <td>{renderCell(task, "progress")}%</td>
@@ -39,6 +43,11 @@ const GanttTable = () => {
             {task.dependencies.map((dependency) => renderTaskRow(dependency, level + 1))}
         </React.Fragment>
         );
+    }
+
+    const handleTaskModal=()=>{
+        setOpenTask((p)=>!p);
+        
     }
 
 
@@ -73,25 +82,6 @@ const GanttTable = () => {
     )
 
 
-    // const calculateIndex = (previousIndex) => {
-    //     if (previousIndex === null) {
-    //         const index = tasks&&tasks.length>0?tasks.length+1:1;
-    //         return {index:index,parentIndex:null};
-    //     }
-    //     let t1={};
-    //     for(let t of updatedTasks){
-    //         t1=findByIndex(t,previousIndex);
-    //         if(t1!=null) break;
-    //     }
-    //     if(t1.dependencies.length==0){
-    //         return {index:previousIndex + "." + (1),parentIndex:t1.index};
-    //     }
-    //     const index=t1.dependencies[t1.dependencies.length-1].index;
-    //     const last=parseInt(index[index.length-1]);
-    //     return {index:index.substring(0, index.length - 1) + (last + 1),parentIndex:t1.index};
-        
-    // }
-
     const handleEdit = (taskId, field, value) => {
         if(taskId===null){
             setNewTaskName(value)
@@ -109,7 +99,6 @@ const GanttTable = () => {
 
             return updatedTree;
         });
-        // setDeltas(extractDeltas(updatedTasks, updatedTasksList));
         setDelta(extractDelta(oldTask, newTask))
         setUpdatedTasks(updatedTasksList);
         console.log("updatedTaskList", updatedTasksList)
@@ -144,40 +133,8 @@ const GanttTable = () => {
         }
 
         return { updatedTree: task, updatedNestedTask: null, oldNestedTask: null };
-    };
-
-
-    // const updateTaskFields = (id, task, field, value) => {
-    //     if (id === task.id) {
-    //         return { ...task, [field]: value };
-    //     }
-
-    //     // if (task.dependencies) {
-    //     //     const updatedDependencies = task.dependencies.map((subTask) =>
-    //     //         updateTaskFields(id, subTask, field, value,newTask)
-    //     //     );
-    //     //     return { ...task, dependencies: updatedDependencies };
-    //     // }
-
-    //     if (task.dependencies) {
-    //         for (let subTask of task.dependencies) {
-    //             const updatedTask = findAndUpdateTask(id, subTask, field, value);
-    //             if (updatedTask) {
-    //                 // Return the updated nested dependency when found
-    //                 return updatedTask;
-    //             }
-    //         }
-    //     }
-
-    //     return task;
-    // };
-
-
-
-   
+    };   
     const renderCell = (task, field, level,text,parent) => {
-        // console.log("task: "+(task?.id)+" text "+(text===null?"cell":text))
-        // console.log(editingCell)
         const isEditing =  (task===null && editingCell?.taskId==='0' && editingCell?.field===field &&
              (parent===null || (parent!==null && editingCell?.parent===parent))) 
              || (editingCell?.taskId == task?.index && editingCell?.field == field);
@@ -217,17 +174,11 @@ const GanttTable = () => {
                                 dispatch(setTasks({tasks:newUpdatedTasks}))
                                 
                             }
-                            // add new task to kanban board as well
-                            // dispatch(putId())
                             dispatch(addDeltaAndPublish(newTask, isConnected, client));
-
                             setDelta(null);
                         }
                         else{
                             dispatch(addDeltaAndPublish(delta, isConnected, client));
-                            
-                            // dispatch(addDeltaAndPublish(deltas[deltas.length - 1],isConnected,client));
-                            // setDeltas([])
                             setDelta(null)
 
                         }
@@ -237,7 +188,8 @@ const GanttTable = () => {
             />
         ) : (
             <span
-                onClick={() => setEditingCell(task?{ taskId: task.index, field }:{taskId:'0',field,parent:parent})} // Enter editing mode on click
+                onClick={() => setEditingCell(task?{ taskId: task.index, field }:{taskId:'0',field,parent:parent})}
+                
                 style={{ cursor: "pointer" }}
             >
                 {task?task[field]: text}
@@ -284,12 +236,13 @@ const GanttTable = () => {
                     {renderEmptyRow(false)}
                     {(updatedTasks && updatedTasks.length > 0) ? updatedTasks.map((task, index) => (
                         <React.Fragment key={index}>
-                            {renderRow(task)} {/* Render the task row */}
+                            {renderRow(task)}
                             {index === updatedTasks.length - 1 ? renderEmptyRow(true, 0) : ''} {/* Render the empty row */}
                         </React.Fragment>
                     )) : renderEmptyRow(true, 0)}
                 </tbody>
             </table>
+            {openTask && <Task isOpen={openTask}/>}
         </div>
 
 

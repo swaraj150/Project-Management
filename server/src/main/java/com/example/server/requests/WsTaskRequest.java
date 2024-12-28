@@ -17,6 +17,7 @@ import java.util.UUID;
 public class WsTaskRequest {
     private UUID taskId;
     private String clientTaskId;
+    private String description;
     private WsPublishType publishType;
     private String title;
     private Integer priority;
@@ -27,5 +28,8 @@ public class WsTaskRequest {
     private List<String> assignedTo;
     private String status;
     private LocalDateTime timestamp;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private String projectId;
 
 }

@@ -28,7 +28,8 @@ public class Task {
     private TaskType type;
     @Enumerated(EnumType.STRING)
     private Level level;
-
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     @Column(name = "created_by_user_id")
     private UUID createdBy;
 

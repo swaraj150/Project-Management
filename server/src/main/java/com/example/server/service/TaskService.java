@@ -50,6 +50,8 @@ public class TaskService {
         task.setEstimatedHours(request.getEstimatedHours());
         task.setParentTaskId(request.getParentTaskId());
         task.setProjectId(team.getProjectId());
+        task.setStartDate(request.getStartDate());
+        task.setEndDate(request.getEndDate());
         Set<UUID> assignedTo=new HashSet<>();
         for(String s:request.getAssignedTo()){
             assignedTo.add(userService.loadUser(s).getId());
@@ -76,22 +78,48 @@ public class TaskService {
         Team team=teamRepository.findById(teamRepository.findTeamIdByUserId(user.getId())).orElseThrow(()->new EntityNotFoundException("Team not found"));
         Project project=projectRepository.findById(team.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
         Task task=new Task();
-        task.setTitle(request.getTitle());
+        Optional.ofNullable(request.getTitle())
+                        .ifPresent(task::setTitle);
+        Optional.ofNullable(request.getDescription())
+                .ifPresent(task::setDescription);
 //        task.setDescription((request.getDescription()));
         task.setCreatedBy(user.getId());
         task.setCreatedAt(LocalDateTime.now());
-        task.setPriority(request.getPriority());
-        if(request.getTaskType()!=null) task.setType(TaskType.valueOf(request.getTaskType()));
-        if(request.getLevel()!=null) task.setLevel(Level.valueOf(request.getLevel()));
-        if(request.getStatus()!=null) changeStatus(request.getStatus().toLowerCase(),task);
-        task.setEstimatedHours(request.getEstimatedHours());
+        Optional.ofNullable(request.getTaskType())
+                .map(String::toUpperCase)
+                .map(TaskType::valueOf)
+                .ifPresent(task::setType);
+
+        Optional.ofNullable(request.getPriority())
+                .ifPresent(task::setPriority);
+
+        Optional.ofNullable(request.getLevel())
+                .map(Level::valueOf)
+                .ifPresent(task::setLevel);
+        Optional.ofNullable(request.getStatus())
+                .map(String::toUpperCase)
+                .map(CompletionStatus::valueOf)
+                .ifPresentOrElse(task::setCompletionStatus,()->task.setCompletionStatus(CompletionStatus.PENDING));
+
+        Optional.ofNullable(request.getStartDate())
+                .ifPresent(task::setStartDate);
+
+        Optional.ofNullable(request.getEndDate())
+                .ifPresent(task::setEndDate);
+
+        Optional.ofNullable(request.getEstimatedHours())
+                .ifPresent(task::setEstimatedHours);
+
         Optional.ofNullable(request.getParentTaskId())
                 .map(UUID::fromString)
                 .ifPresentOrElse(
                         task::setParentTaskId,
                         () -> task.setParentTaskId(null)
                 );
-        task.setProjectId(team.getProjectId());
+        Optional.ofNullable(request.getProjectId())
+                .map(UUID::fromString)
+                .ifPresent(task::setProjectId);
+
         Set<UUID> assignedTo=new HashSet<>();
         if(request.getAssignedTo()!=null){
             for(String s:request.getAssignedTo()){
@@ -100,7 +128,6 @@ public class TaskService {
 
         }
         task.setAssignedTo(assignedTo);
-        task.setCompletionStatus(CompletionStatus.PENDING);
         taskRepository.save(task);
         project.getTasks().add(task.getId());
         projectRepository.save(project);
@@ -179,6 +206,8 @@ public class TaskService {
                 .createdAt(task.getCreatedAt())
                 .estimatedHours(task.getEstimatedHours())
                 .completedAt(task.getCompletedAt())
+                .startDate(task.getStartDate())
+                .endDate(task.getEndDate())
                 .completionStatus(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
@@ -204,6 +233,8 @@ public class TaskService {
                 .createdAt(task.getCreatedAt())
                 .estimatedHours(task.getEstimatedHours())
                 .completedAt(task.getCompletedAt())
+                .startDate(task.getStartDate())
+                .endDate(task.getEndDate())
                 .completionStatus(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))

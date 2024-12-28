@@ -1517,6 +1517,12 @@ main {
   border-collapse: collapse;
   width: 100%;
 }
+
+#homepage #content #gantt #gantt-table #table-name-row button{
+  margin-left: 4%;
+  margin-right: 2%;
+}
+
 #homepage #content #gantt #gantt-table .empty-row td {
   background: transparent; /* Ensures the row appears empty */
   height: 20px; /* Adds vertical spacing */
@@ -1574,4 +1580,154 @@ main {
   background-color: #ccc;
   position: relative;
   z-index: 1;
+}
+
+/* 
+#homepage #content .task-modal{
+  background-color:  var(--white--50);
+  width: 50%;
+  height:70vh;
+  padding: 6vh;
+  
+  
+} */
+
+
+/* #homepage #content .task-container {
+  width: 857px;
+  height: 75vh;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  right: -100%;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  z-index: 1000;
+} */
+
+#homepage #content .task-container .task-header {
+  margin-bottom: 20px;
+}
+
+#homepage #content .task-container .task-header .task-path {
+  font-size: 12px;
+  color: #888;
+}
+
+#homepage #content .task-container .task-header .task-title {
+  margin: 5px 0;
+}
+
+#homepage #content .task-container .task-header .task-creator {
+  font-size: 14px;
+  color: #555;
+}
+
+#homepage #content .task-container .task-progress {
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+  margin-bottom: 2%;
+  margin-top: 2%;
+
+}
+
+#homepage #content .task-container .task-progress .progress-bar-container {
+  width: 20%;
+  height: 3.5vh;
+  background: #ddd;
+  border-radius: 5px;
+  position: relative;
+  margin-right: 4%;
+}
+
+#homepage #content .task-container .task-progress .progress-bar-container .progress-bar {
+  height: 3.5vh;
+  background: #4caf50;
+  border-radius: 5px;
+}
+
+#homepage #content .task-container .task-progress .progress-percentage{
+  margin-right: 4%;
+}
+#homepage #content .task-container .task-progress .task-status{
+  margin-right: 4%;
+}
+#homepage #content .task-container .task-progress .task-priority{
+  margin-right: 30%;
+}
+/* #homepage #content .task-container .task-progress .logged-time{
+  
+} */
+
+#homepage #content .task-container .task-actions {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+#homepage #content .task-container .task-actions .btn-add-assignee {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-right: 11%;
+  margin-left: 2%;
+}
+#homepage #content .task-container .task-actions .btn-attach-files {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-right: 7%;
+}
+#homepage #content .task-container .task-actions .btn-add-dependency {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-right: 30%;
+}
+#homepage #content .task-container .task-actions .btn-log-time {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+
+
+#homepage #content .task-container .task-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  /* margin-bottom: 20px; */
+  margin: 2%;
+  margin-bottom: 4%;
+
+}
+
+#homepage #content .task-container .task-details .task-date,
+#homepage #content .task-container .task-details .task-meta,
+#homepage #content .task-container .task-details .task-deadline {
+  flex: 1;
+}
+
+#homepage #content .task-container textarea.task-description {
+  width: 100%;
+  height: 100px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  /* margin-bottom: 20px; */
+  resize: none;
 }

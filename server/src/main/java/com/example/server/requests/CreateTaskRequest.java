@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -22,5 +23,7 @@ public class CreateTaskRequest {
     private Integer estimatedHours;
     private UUID parentTaskId;
     private List<String> assignedTo;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
 }

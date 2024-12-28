@@ -33,4 +33,6 @@ public class TaskResponse {
     private List<TaskResponse> subTasks;
     private UUID parentTaskId;
     private UUID projectId;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 }
