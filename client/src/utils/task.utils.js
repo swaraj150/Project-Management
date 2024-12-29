@@ -21,9 +21,6 @@ export const convertTasksFromServer = (task, index1, level = 0, dispatch,parentI
         parentTaskId: parentTaskId
     }
 }
-export const findClientId = (taskId, tasks) => {
-
-}
 
 export const findByIndex = (object, targetIndex) => {
     if (object.index === targetIndex || object.id === targetIndex) {
@@ -154,3 +151,50 @@ export const segregateTasks=(tasks,result={pending:[],completed:[],in_progress:[
     })
     return result;
 }
+
+
+export const formatDate = (date) => {
+    if (!date) return "";
+    const parsedDate = new Date(date);
+    const year = parsedDate.getFullYear();
+    const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(parsedDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+};
+export const formatTime = (date) => {
+    if (!date) return ""; 
+    const parsedDate = new Date(date);
+    const hours = String(parsedDate.getHours()).padStart(2, "0");
+    const minutes = String(parsedDate.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+};
+
+export const updateTaskAndFindNested = (id, task, field, value) => {
+    let updatedNestedTask = null;
+    let oldNestedTask = null
+
+    if (id === task.id) {
+        const oldTask = task;
+        const updatedTask = { ...task, [field]: value };
+        return { updatedTree: updatedTask, updatedNestedTask: updatedTask, oldNestedTask: oldTask };
+    }
+
+    if (task.dependencies) {
+        const updatedDependencies = task.dependencies.map((subTask) => {
+            const result = updateTaskAndFindNested(id, subTask, field, value);
+            if (result.updatedNestedTask) {
+                updatedNestedTask = result.updatedNestedTask;
+                oldNestedTask = result.oldNestedTask;
+            }
+            return result.updatedTree;
+        });
+
+        return {
+            updatedTree: { ...task, dependencies: updatedDependencies },
+            updatedNestedTask,
+            oldNestedTask
+        };
+    }
+
+    return { updatedTree: task, updatedNestedTask: null, oldNestedTask: null };
+};

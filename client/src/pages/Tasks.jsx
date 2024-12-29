@@ -5,27 +5,24 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import GanttChart from './GanttChart';
 import { useDispatch, useSelector } from 'react-redux';
 import { connectWebSocket, disonnectWebSocket, publishTasks } from '../utils/websocket.utils';
-import Task from '../components/common/Task';
+// import Task from '../components/common/Task';
 const Tasks = () => {
   const [current, setCurrent] = useState(0);
   const dispatch = useDispatch();
-  const isConnected = useSelector((state) => state.webSocket.connected);
-  const client = useSelector((state) => state.webSocket.client);
-  const tasks=useSelector((state)=>state.task.tasks)
-  const taskMap=useSelector((state)=>state.task.taskMap);
 
-  // useEffect(() => {
+
+  useEffect(() => {
    
-  //   const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
-  //   dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token')));
-  //   // if(isConnected){
+    const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
+    dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token')));
+    // if(isConnected){
       
-  //   //   subscribe(client,'/topic/tasks',tasks);
-  //   // }
-  //   // return () => {
-  //   //   dispatch(disonnectWebSocket(client))
-  //   // }
-  // }, [dispatch])
+    //   subscribe(client,'/topic/tasks',tasks);
+    // }
+    // return () => {
+    //   dispatch(disonnectWebSocket(client))
+    // }
+  }, [dispatch])
 
   const taskItems = [
     { name: "Gantt Chart", page: <GanttChart /> },

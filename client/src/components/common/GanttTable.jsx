@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { addTask, setTasks } from "../../redux/features/taskSlice";
-import { calculateIndex, extractDelta } from "../../utils/task.utils";
+import { calculateIndex, extractDelta, updateTaskAndFindNested } from "../../utils/task.utils";
 import { addDeltaAndPublish } from "../../utils/websocket.utils";
 import { setUpdated } from "../../redux/features/webSocketSlice";
 import Task from "./Task";
 
-
 const GanttTable = () => {
     const tasks = useSelector((state) => state.task.tasks);
     const isConnected = useSelector((state) => state.webSocket.connected);
-    const updated=useSelector((state)=>state.webSocket.updated);
+    const updated = useSelector((state) => state.webSocket.updated);
     const client = useSelector((state) => state.webSocket.client);
     const [editingCell, setEditingCell] = useState(null);
     const [updatedTasks, setUpdatedTasks] = useState(tasks);
     const [delta, setDelta] = useState(null);
     const [newTaskName, setNewTaskName] = useState("");
     const dispatch = useDispatch();
-    const [openTask,setOpenTask]=useState(false);
-    useEffect(()=>{
-        if(updated){
+    const [openTask, setOpenTask] = useState({ flag: false, task: null });
+    useEffect(() => {
+        if (updated) {
             setUpdatedTasks(tasks);
             dispatch(setUpdated())
         }
-    },[updated,dispatch])
+    }, [updated, dispatch])
 
 
 
@@ -33,35 +32,39 @@ const GanttTable = () => {
                 <td>{task.index}</td>
                 <td id='table-name-row' style={{ paddingLeft: `${level * 20}px` }} >
                     {renderCell(task, "name")}
-                    <button onClick={handleTaskModal}>view task</button>
+                    <button onClick={()=>handleTaskModal(task)}>view task</button>
                 </td>
                 <td>{task.start.toDateString()}</td>
                 <td>{task.end.toDateString()}</td>
                 <td>{renderCell(task, "progress")}%</td>
             </tr>
-            {level>0?renderEmptyRow(true,level,task.index):""}
+            {level > 0 ? renderEmptyRow(true, level, task.index) : ""}
             {task.dependencies.map((dependency) => renderTaskRow(dependency, level + 1))}
         </React.Fragment>
         );
     }
 
-    const handleTaskModal=()=>{
-        setOpenTask((p)=>!p);
-        
+    const handleTaskModal = (task) => {
+        setOpenTask((prevState) => ({
+            flag: !prevState.flag,
+            task: prevState.flag ? null : task
+        }));
+
     }
 
 
-    const renderEmptyRow = (flag = true, level,parent) => (
+    const renderEmptyRow = (flag = true, level, parent) => (
         flag ? (level > 0) ? (
             <React.Fragment>
                 <tr className="empty-row2">
-                    <td colSpan="5" >{renderCell(null,'subTask',1,'Add new dependency for '+parent,parent)}</td>
+
+                    <td colSpan="5" >{renderCell(null, 'subTask', 1, 'Add new dependency for ' + parent, parent)}</td>
                 </tr>
             </React.Fragment>
         ) : (
             <React.Fragment>
                 <tr className="empty-row2">
-                    <td colSpan="5" >{renderCell(null,'task',0,'Add new Task',null)}</td>
+                    <td colSpan="5" >{renderCell(null, 'task', 0, 'Add new Task', null)}</td>
                 </tr>
             </React.Fragment>
         ) : (
@@ -77,20 +80,20 @@ const GanttTable = () => {
     const renderRow = (task) => (
         <React.Fragment >
             {renderTaskRow(task)}
-            {renderEmptyRow(true, 1,task.index)}
+            {renderEmptyRow(true, 1, task.index)}
         </React.Fragment>
     )
 
 
-    const handleEdit = (taskId, field, value) => {
-        if(taskId===null){
+    const handleEdit = (task, field, value,parent) => {
+        if (task === null) {
             setNewTaskName(value)
             return;
         }
         let newTask = {};
         let oldTask = {};
-        const updatedTasksList = updatedTasks.map((task) => {
-            const { updatedTree, updatedNestedTask, oldNestedTask } = updateTaskAndFindNested(taskId, task, field, value);
+        const updatedTasksList = updatedTasks.map((task1) => {
+            const { updatedTree, updatedNestedTask, oldNestedTask } = updateTaskAndFindNested(task.id, task1, field, value);
 
             if (updatedNestedTask) {
                 newTask = updatedNestedTask;
@@ -103,48 +106,47 @@ const GanttTable = () => {
         setUpdatedTasks(updatedTasksList);
         console.log("updatedTaskList", updatedTasksList)
         dispatch(setTasks({ tasks: updatedTasksList }));
-
     };
-    const updateTaskAndFindNested = (id, task, field, value) => {
-        let updatedNestedTask = null;
-        let oldNestedTask = null
+    // const updateTaskAndFindNested = (id, task, field, value) => {
+    //     let updatedNestedTask = null;
+    //     let oldNestedTask = null
 
-        if (id === task.id) {
-            const oldTask = task;
-            const updatedTask = { ...task, [field]: value };
-            return { updatedTree: updatedTask, updatedNestedTask: updatedTask, oldNestedTask: oldTask };
-        }
+    //     if (id === task.id) {
+    //         const oldTask = task;
+    //         const updatedTask = { ...task, [field]: value };
+    //         return { updatedTree: updatedTask, updatedNestedTask: updatedTask, oldNestedTask: oldTask };
+    //     }
 
-        if (task.dependencies) {
-            const updatedDependencies = task.dependencies.map((subTask) => {
-                const result = updateTaskAndFindNested(id, subTask, field, value);
-                if (result.updatedNestedTask) {
-                    updatedNestedTask = result.updatedNestedTask;
-                    oldNestedTask = result.oldNestedTask;
-                }
-                return result.updatedTree;
-            });
+    //     if (task.dependencies) {
+    //         const updatedDependencies = task.dependencies.map((subTask) => {
+    //             const result = updateTaskAndFindNested(id, subTask, field, value);
+    //             if (result.updatedNestedTask) {
+    //                 updatedNestedTask = result.updatedNestedTask;
+    //                 oldNestedTask = result.oldNestedTask;
+    //             }
+    //             return result.updatedTree;
+    //         });
 
-            return {
-                updatedTree: { ...task, dependencies: updatedDependencies },
-                updatedNestedTask,
-                oldNestedTask
-            };
-        }
+    //         return {
+    //             updatedTree: { ...task, dependencies: updatedDependencies },
+    //             updatedNestedTask,
+    //             oldNestedTask
+    //         };
+    //     }
 
-        return { updatedTree: task, updatedNestedTask: null, oldNestedTask: null };
-    };   
-    const renderCell = (task, field, level,text,parent) => {
-        const isEditing =  (task===null && editingCell?.taskId==='0' && editingCell?.field===field &&
-             (parent===null || (parent!==null && editingCell?.parent===parent))) 
-             || (editingCell?.taskId == task?.index && editingCell?.field == field);
+    //     return { updatedTree: task, updatedNestedTask: null, oldNestedTask: null };
+    // };
+    const renderCell = (task, field, level, text, parent) => {
+        const isEditing = (task === null && editingCell?.taskId === '0' && editingCell?.field === field &&
+            (parent === null || (parent !== null && editingCell?.parent === parent)))
+            || (editingCell?.taskId == task?.index && editingCell?.field == field);
         return isEditing ? (
             <input
                 type="text"
-                value={task?task[field]:newTaskName}
+                value={task ? task[field] : newTaskName}
                 autoFocus
                 onBlur={() => setEditingCell(null)}
-                onChange={(e) => handleEdit(task?task.id:null, field, e.target.value)}
+                onChange={(e) => handleEdit(task ? task : null, field, e.target.value)}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
                         setEditingCell(null);
@@ -188,11 +190,11 @@ const GanttTable = () => {
             />
         ) : (
             <span
-                onClick={() => setEditingCell(task?{ taskId: task.index, field }:{taskId:'0',field,parent:parent})}
-                
+                onClick={() => setEditingCell(task ? { taskId: task.index, field } : { taskId: '0', field, parent: parent })}
+
                 style={{ cursor: "pointer" }}
             >
-                {task?task[field]: text}
+                {task ? task[field] : text}
             </span>
         );
     }
@@ -214,7 +216,6 @@ const GanttTable = () => {
     };
 
     return (
-
         <div
             style={{
                 overflowX: "auto",
@@ -242,13 +243,8 @@ const GanttTable = () => {
                     )) : renderEmptyRow(true, 0)}
                 </tbody>
             </table>
-            {openTask && <Task isOpen={openTask}/>}
+            {openTask.flag && <Task isOpen={openTask} tasks={updatedTasks}/>}
         </div>
-
-
-
-
-
     )
 }
 export default GanttTable

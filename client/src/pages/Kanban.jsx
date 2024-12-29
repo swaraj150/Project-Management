@@ -13,12 +13,12 @@ const Kanban = () => {
         { label: "In Progress", status: "in_progress" },
         { label: "Completed", status: "completed" },
     ];
-    // useEffect(() => {
-    //     const { pending, completed, in_progress } = segregateTasks(tasks);
-    //     dispatch(setKanbanTasks({ status: 'pending', tasks: pending }))
-    //     dispatch(setKanbanTasks({ status: 'completed', tasks: completed }))
-    //     dispatch(setKanbanTasks({ status: 'in_progress', tasks: in_progress }))
-    // }, [dispatch, tasks])
+    useEffect(() => {
+        const { pending, completed, in_progress } = segregateTasks(tasks);
+        dispatch(setKanbanTasks({ status: 'pending', tasks: pending }))
+        dispatch(setKanbanTasks({ status: 'completed', tasks: completed }))
+        dispatch(setKanbanTasks({ status: 'in_progress', tasks: in_progress }))
+    }, [dispatch, tasks])
     return (
         <section id="kanban">
             {statuses.map(({ label, status }) => (
