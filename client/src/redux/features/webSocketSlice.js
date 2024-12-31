@@ -24,7 +24,8 @@ export const webSocketSlice = createSlice({
             state.deltas.push(action.payload);
         },
         setUpdated: (state,action)=>{
-            state.updated=!state.updated;
+            const flag=state.updated;
+            state.updated=!flag
         }
         
     }

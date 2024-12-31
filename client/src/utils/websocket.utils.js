@@ -86,7 +86,7 @@ export const addDeltaAndPublish = (delta, isConnected, client) => (dispatch, get
 
   if (isConnected) {
     const updatedDeltas = getState().webSocket.deltas; // Access the updated state
-    console.log("deltas: ",updatedDeltas)
+    // console.log("deltas: ",updatedDeltas)
     // console.log("Updated Deltas:", updatedDeltas);
     publishTasks(client, convertTasksToServer(updatedDeltas[updatedDeltas.length - 1]), `/app/task.handle`);
     // Publish to WebSocket here

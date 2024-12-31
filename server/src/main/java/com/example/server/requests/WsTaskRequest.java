@@ -23,7 +23,7 @@ public class WsTaskRequest {
     private Integer priority;
     private String taskType;
     private String level;
-    private Integer estimatedHours;
+    private String estimatedHours;
     private String parentTaskId;
     private List<String> assignedTo;
     private String status;

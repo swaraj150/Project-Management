@@ -148,8 +148,7 @@ public class TeamService {
         Team team=teamRepository.findById(teamId).orElseThrow(()->new EntityNotFoundException("Team not found"));
         int res=0;
         for(UUID id:team.getMemberIds()){
-            User user=userService.loadUser(id);
-
+//            User user=userService.loadUser(id);
             int total=0;
             List<Task> taskList=taskService.getActiveTasksByUser(id);
             for(Task t:taskList){
@@ -160,7 +159,6 @@ public class TeamService {
         return res;
     }
     // calculate total workload per team
-
     private Integer calculateTotalTeamWorkload(@NonNull UUID teamId){
         // currently calculating every individual's workload without considering collective effort.
         Team team=teamRepository.findById(teamId).orElseThrow(()->new EntityNotFoundException("Team not found"));

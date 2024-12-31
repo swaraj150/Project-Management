@@ -10,8 +10,8 @@ const flattenTasks = (tasks) => {
         flatTasks.push({
             id: task.id,
             name: task.name,
-            start: task.start,
-            end: task.end,
+            start: new Date(task.start),
+            end: new Date(task.end),
             progress: task.progress,
             dependencies: parentId ? [parentId] : [],
         });

@@ -3,7 +3,8 @@ import privateClient from "../clients/private.client"
 const taskEndpoints={
     fetch:'tasks/fetch',
     create:'tasks/create',
-    update:'tasks/update'
+    update:'tasks/update',
+    fetchByProject:'tasks/project'
 }
 
 
@@ -28,7 +29,19 @@ const taskApi={
         } catch (error) {
             return {error}
         }
+    },
+    fetchByProject:async(projectId)=>{
+        try{
+            const res=await privateClient.get(
+                taskEndpoints.fetchByProject,
+                { params: { projectId } }
+            )
+            return {res}
+        }catch (error) {
+            return {error}
+        }
     }
+    
 }
 
 export default taskApi;

@@ -6,6 +6,7 @@ import { FaBuilding, FaProjectDiagram, FaTasks } from "react-icons/fa"
 import Logo from '../../assets/logo.png'
 
 import { setActive, setCollapsed } from '../../redux/features/menuSlice'
+import { toggleProjectTaskModal } from '../../redux/features/taskSlice'
 
 const menuItems = [
   {
@@ -58,7 +59,13 @@ const Menu = () => {
       <ul className="menu-items">
         {
           menuItems.map((item, index) => (
-            <li key={index} className={selected === index ? "active pointer paper" : "pointer" } onClick={() => handleChange(index)}>
+            <li key={index} className={selected === index ? "active pointer paper" : "pointer" } 
+            onClick={() => {
+              handleChange(index)
+              if(index==4){
+                dispatch(toggleProjectTaskModal());
+              }
+            }}>
               {item.icon} {collapsed ? null : item.name}
             </li>
           ))

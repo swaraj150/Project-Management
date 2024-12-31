@@ -1634,7 +1634,7 @@ main {
 
 }
 
-#homepage #content .task-container .task-progress .progress-bar-container {
+/* #homepage #content .task-container .task-progress .progress-bar-container {
   width: 20%;
   height: 3.5vh;
   background: #ddd;
@@ -1647,6 +1647,25 @@ main {
   height: 3.5vh;
   background: #4caf50;
   border-radius: 5px;
+} */
+#homepage #content .task-container .task-progress .progress-bar-container {
+  width: 20%;
+  height: 3.5vh;
+  background: #ddd;
+  border-radius: 5px;
+  position: relative;
+  margin-right: 4%;
+  overflow: hidden;
+}
+
+#homepage #content .task-container .task-progress .progress-bar-container .progress-bar {
+  height: 3.5vh;
+  background: #4caf50;
+  border-radius: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
 #homepage #content .task-container .task-progress .progress-percentage{
@@ -1737,3 +1756,6 @@ main {
   /* margin-bottom: 20px; */
   resize: none;
 }
+
+
+/* #homepage #content .project-tasks-container . */

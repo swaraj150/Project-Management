@@ -108,6 +108,7 @@ public class TaskService {
                 .ifPresent(task::setEndDate);
 
         Optional.ofNullable(request.getEstimatedHours())
+                .map(Integer::valueOf)
                 .ifPresent(task::setEstimatedHours);
 
         Optional.ofNullable(request.getParentTaskId())
@@ -268,6 +269,22 @@ public class TaskService {
         }
         return taskResponses;
 
+    }
+
+    public List<TaskResponse> getTasksByProject(@NonNull UUID projectId){
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_PROJECT)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        Project project=projectRepository.findById(projectId).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        List<TaskResponse> taskResponses=new ArrayList<>();
+        for(UUID taskId:project.getTasks()){
+            Task task=loadTask(taskId);
+            if(task.getParentTaskId()!=null) continue;
+            TaskResponse taskResponse=loadNestedTasks(taskId);
+            taskResponses.add(taskResponse);
+        }
+        return taskResponses;
     }
 
     public TaskResponse loadNestedTasks(UUID taskId){

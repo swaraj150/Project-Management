@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { addTask, setTasks } from "../../redux/features/taskSlice";
-import { calculateIndex, extractDelta, updateTaskAndFindNested } from "../../utils/task.utils";
+import { addTask, setTasks, toggleTaskModal } from "../../redux/features/taskSlice";
+import { calculateIndex, extractDelta, formatDate, updateTaskAndFindNested } from "../../utils/task.utils";
 import { addDeltaAndPublish } from "../../utils/websocket.utils";
 import { setUpdated } from "../../redux/features/webSocketSlice";
 import Task from "./Task";
 
 const GanttTable = () => {
+    
     const tasks = useSelector((state) => state.task.tasks);
     const isConnected = useSelector((state) => state.webSocket.connected);
     const updated = useSelector((state) => state.webSocket.updated);
@@ -16,7 +17,8 @@ const GanttTable = () => {
     const [delta, setDelta] = useState(null);
     const [newTaskName, setNewTaskName] = useState("");
     const dispatch = useDispatch();
-    const [openTask, setOpenTask] = useState({ flag: false, task: null });
+    const [isHovered, setIsHovered] = useState(null);
+    const taskModal = useSelector((state) => state.task.taskModal);
     useEffect(() => {
         if (updated) {
             setUpdatedTasks(tasks);
@@ -30,12 +32,24 @@ const GanttTable = () => {
         return (<React.Fragment key={task.id}>
             <tr>
                 <td>{task.index}</td>
-                <td id='table-name-row' style={{ paddingLeft: `${level * 20}px` }} >
+                <td id='table-name-row' 
+                    onMouseEnter={() => setIsHovered(task.index)}
+                    onMouseLeave={() => setIsHovered(null)}
+                >
                     {renderCell(task, "name")}
-                    <button onClick={()=>handleTaskModal(task)}>view task</button>
+                    {isHovered!=null && isHovered == task.index &&
+                        <button
+                            style={{
+                                backgroundColor: 'var(--white--100)',
+                                color: 'black',
+                                padding: '2%',
+                                borderRadius: '5px',
+                                cursor: 'pointer',
+                            }}
+                            onClick={() => handleTaskModal(task)}>View</button>}
                 </td>
-                <td>{task.start.toDateString()}</td>
-                <td>{task.end.toDateString()}</td>
+                <td>{formatDate(task.start, true)}</td>
+                <td>{formatDate(task.end, true)}</td>
                 <td>{renderCell(task, "progress")}%</td>
             </tr>
             {level > 0 ? renderEmptyRow(true, level, task.index) : ""}
@@ -45,11 +59,7 @@ const GanttTable = () => {
     }
 
     const handleTaskModal = (task) => {
-        setOpenTask((prevState) => ({
-            flag: !prevState.flag,
-            task: prevState.flag ? null : task
-        }));
-
+        dispatch(toggleTaskModal({ task: task }));
     }
 
 
@@ -85,7 +95,7 @@ const GanttTable = () => {
     )
 
 
-    const handleEdit = (task, field, value,parent) => {
+    const handleEdit = (task, field, value, parent) => {
         if (task === null) {
             setNewTaskName(value)
             return;
@@ -107,35 +117,6 @@ const GanttTable = () => {
         console.log("updatedTaskList", updatedTasksList)
         dispatch(setTasks({ tasks: updatedTasksList }));
     };
-    // const updateTaskAndFindNested = (id, task, field, value) => {
-    //     let updatedNestedTask = null;
-    //     let oldNestedTask = null
-
-    //     if (id === task.id) {
-    //         const oldTask = task;
-    //         const updatedTask = { ...task, [field]: value };
-    //         return { updatedTree: updatedTask, updatedNestedTask: updatedTask, oldNestedTask: oldTask };
-    //     }
-
-    //     if (task.dependencies) {
-    //         const updatedDependencies = task.dependencies.map((subTask) => {
-    //             const result = updateTaskAndFindNested(id, subTask, field, value);
-    //             if (result.updatedNestedTask) {
-    //                 updatedNestedTask = result.updatedNestedTask;
-    //                 oldNestedTask = result.oldNestedTask;
-    //             }
-    //             return result.updatedTree;
-    //         });
-
-    //         return {
-    //             updatedTree: { ...task, dependencies: updatedDependencies },
-    //             updatedNestedTask,
-    //             oldNestedTask
-    //         };
-    //     }
-
-    //     return { updatedTree: task, updatedNestedTask: null, oldNestedTask: null };
-    // };
     const renderCell = (task, field, level, text, parent) => {
         const isEditing = (task === null && editingCell?.taskId === '0' && editingCell?.field === field &&
             (parent === null || (parent !== null && editingCell?.parent === parent)))
@@ -150,41 +131,41 @@ const GanttTable = () => {
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
                         setEditingCell(null);
-                        if(task===null){
-                            const {index,parentIndex}=calculateIndex(parent,updatedTasks);
-                            console.log(index,parentIndex)
-                            const newTask={
-                                id:index,
-                                index:index,
-                                taskId:index,
-                                name:newTaskName,
-                                start:new Date(2024, 11, 1),
-                                end:new Date(2024, 11, 7),
-                                dependencies:[],
-                                progress:0,
-                                parentTaskId:parentIndex // add logic in backend 
+                        if (task === null) {
+                            const { index, parentIndex } = calculateIndex(parent, updatedTasks);
+                            console.log(index, parentIndex)
+                            const newTask = {
+                                id: index,
+                                index: index,
+                                taskId: index,
+                                name: newTaskName,
+                                start: new Date(2024, 11, 1),
+                                end: new Date(2024, 11, 7),
+                                dependencies: [],
+                                progress: 0,
+                                parentTaskId: parentIndex // add logic in backend 
                             };
                             setNewTaskName("");
-                            console.log("new Task",newTask);
-                            if(parent===null){
-                                dispatch(addTask({task:newTask}))
-                                setUpdatedTasks((prevTasks)=>[...prevTasks,newTask]);
+                            console.log("new Task", newTask);
+                            if (parent === null) {
+                                dispatch(addTask({ task: newTask }))
+                                setUpdatedTasks((prevTasks) => [...prevTasks, newTask]);
                             }
-                            else{
+                            else {
                                 const newUpdatedTasks = updateTaskRecursively(tasks, parent, newTask); // Calculate the new tasks
                                 setUpdatedTasks(newUpdatedTasks)
-                                dispatch(setTasks({tasks:newUpdatedTasks}))
-                                
+                                dispatch(setTasks({ tasks: newUpdatedTasks }))
+
                             }
                             dispatch(addDeltaAndPublish(newTask, isConnected, client));
                             setDelta(null);
                         }
-                        else{
+                        else {
                             dispatch(addDeltaAndPublish(delta, isConnected, client));
                             setDelta(null)
 
                         }
-                        
+
                     }
                 }}
             />
@@ -243,7 +224,7 @@ const GanttTable = () => {
                     )) : renderEmptyRow(true, 0)}
                 </tbody>
             </table>
-            {openTask.flag && <Task isOpen={openTask} tasks={updatedTasks}/>}
+            {(taskModal.flag) && <Task tasks={updatedTasks} />}
         </div>
     )
 }

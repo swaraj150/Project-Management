@@ -15,10 +15,7 @@ const Tasks = () => {
    
     const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
     dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token')));
-    // if(isConnected){
-      
-    //   subscribe(client,'/topic/tasks',tasks);
-    // }
+   
     // return () => {
     //   dispatch(disonnectWebSocket(client))
     // }

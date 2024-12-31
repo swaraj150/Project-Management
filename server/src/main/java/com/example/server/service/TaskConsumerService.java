@@ -178,7 +178,9 @@ public class TaskConsumerService {
                 .map(clientIdMap::get)
                 .ifPresent(task::setParentTaskId);
         Optional.ofNullable(request.getPriority()).ifPresent(task::setPriority);
-        Optional.ofNullable(request.getEstimatedHours()).ifPresent(task::setEstimatedHours);
+        Optional.ofNullable(request.getEstimatedHours())
+                .map(Integer::valueOf)
+                .ifPresent(task::setEstimatedHours);
         Optional.ofNullable(request.getLevel())
                 .map(Level::valueOf)
                 .ifPresent(task::setLevel);

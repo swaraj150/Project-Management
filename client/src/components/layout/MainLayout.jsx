@@ -15,7 +15,7 @@ import { setUser } from '../../redux/features/userSlice'
 import taskApi from '../../api/modules/task.api'
 import { putId, setTasks } from '../../redux/features/taskSlice'
 
-import { convertTasksFromServer, segregateTasks } from '../../utils/task.utils'
+import { convertTasksFromServer, segregateTasks, setupTasks } from '../../utils/task.utils'
 import { setKanbanTasks } from '../../redux/features/kanbanSlice'
 
 const MainLayout = () => {
@@ -24,6 +24,7 @@ const MainLayout = () => {
 
   const { user } = useSelector((state) => state.user)
   const { organization } = useSelector((state) => state.organization)
+  const { projects } = useSelector((state) => state.projects);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -82,22 +83,7 @@ const MainLayout = () => {
       if (res) dispatch(setRequests(res))
     }
 
-    const fetchTasks = async () => {
-      const { res, err } = await taskApi.fetch()
-      const { tasks } = res;
-      console.log(tasks)
-      if (res && tasks) {
-        const tasks1 = tasks.map((task, index) => {
-          const task1 = convertTasksFromServer(task, index + 1, 0,dispatch,null);
-          return task1;
-        })
-        dispatch(setTasks({ tasks: tasks1 }))
-        const {pending, completed, in_progress} = segregateTasks(tasks1);
-        dispatch(setKanbanTasks({status:'pending',tasks:pending}))
-        dispatch(setKanbanTasks({status:'completed',tasks:completed}))
-        dispatch(setKanbanTasks({status:'in_progress',tasks:in_progress}))
-      }
-    }
+
 
 
 
@@ -105,10 +91,25 @@ const MainLayout = () => {
       fetchProjects()
       fetchTeams()
       fetchRequests()
-      fetchTasks()
-
     }
+
+
   }, [organization])
+
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const { res, err } = await taskApi.fetchByProject(projects[0].id)
+      const { tasks } = res;
+      console.log("tasks", tasks)
+      if (res && tasks) {
+        setupTasks(tasks,dispatch);
+      }
+    }
+    if (projects) {
+      fetchTasks();
+    }
+  }, [projects])
 
   return (
     <>
