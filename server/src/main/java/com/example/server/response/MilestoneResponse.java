@@ -24,7 +24,7 @@ public class MilestoneResponse {
     private Set<TaskResponse> dependencies = new HashSet<>();
     private LocalDateTime achievedAt;
     private LocalDateTime createdAt;
-    private UUID taskId;
+    private UUID parentTaskId;
     private UserDTO createdBy;
 
 }

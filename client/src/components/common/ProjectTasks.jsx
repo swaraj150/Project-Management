@@ -99,13 +99,13 @@ const ProjectTasks = () => {
               <td style={cellStyle}
               onClick={()=>{
                 fetchTasksByProject(project.id,dispatch,project)
-                
+                dispatch(toggleProjectTaskModal())
                 // dispatch(setUpdated())
               }}
 
               >
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                  <span>{project.title}</span>
+                  <span style={{cursor: "pointer"}}>{project.title}</span>
 
                 </div>
               </td>

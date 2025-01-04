@@ -7,7 +7,7 @@ import { setUpdated } from "../../redux/features/webSocketSlice";
 import Task from "./Task";
 
 const GanttTable = () => {
-    
+
     const tasks = useSelector((state) => state.task.tasks);
     const isConnected = useSelector((state) => state.webSocket.connected);
     const updated = useSelector((state) => state.webSocket.updated);
@@ -32,12 +32,12 @@ const GanttTable = () => {
         return (<React.Fragment key={task.id}>
             <tr>
                 <td>{task.index}</td>
-                <td id='table-name-row' 
+                <td id='table-name-row'
                     onMouseEnter={() => setIsHovered(task.index)}
                     onMouseLeave={() => setIsHovered(null)}
                 >
                     {renderCell(task, "name")}
-                    {isHovered!=null && isHovered == task.index &&
+                    {isHovered != null && isHovered == task.index &&
                         <button
                             style={{
                                 backgroundColor: 'var(--white--100)',
@@ -67,14 +67,21 @@ const GanttTable = () => {
         flag ? (level > 0) ? (
             <React.Fragment>
                 <tr className="empty-row2">
+                    <td colSpan="5"  >
+                        <div style={{ display: "flex", flexDirection: "row", gap: "10px",alignItems:'center',justifyContent:'center' }}>
+                            {renderCell(null, 'subTask', 1, 'Add new dependency for ' + parent, parent, "TASK")}
 
-                    <td colSpan="5" >{renderCell(null, 'subTask', 1, 'Add new dependency for ' + parent, parent)}</td>
+                            {renderCell(null, 'milestone', 1, 'Add new milestone', parent, "MILESTONE")}
+                        </div>
+                    </td>
+
+
                 </tr>
             </React.Fragment>
         ) : (
             <React.Fragment>
                 <tr className="empty-row2">
-                    <td colSpan="5" >{renderCell(null, 'task', 0, 'Add new Task', null)}</td>
+                    <td colSpan="5" >{renderCell(null, 'task', 0, 'Add new Task', null, "TASK")}</td>
                 </tr>
             </React.Fragment>
         ) : (
@@ -117,7 +124,7 @@ const GanttTable = () => {
         console.log("updatedTaskList", updatedTasksList)
         dispatch(setTasks({ tasks: updatedTasksList }));
     };
-    const renderCell = (task, field, level, text, parent) => {
+    const renderCell = (task, field, level, text, parent, type = null) => {
         const isEditing = (task === null && editingCell?.taskId === '0' && editingCell?.field === field &&
             (parent === null || (parent !== null && editingCell?.parent === parent)))
             || (editingCell?.taskId == task?.index && editingCell?.field == field);
@@ -143,7 +150,8 @@ const GanttTable = () => {
                                 end: new Date(2024, 11, 7),
                                 dependencies: [],
                                 progress: 0,
-                                parentTaskId: parentIndex // add logic in backend 
+                                parentTaskId: parentIndex,// add logic in backend 
+                                task_type: type
                             };
                             setNewTaskName("");
                             console.log("new Task", newTask);
@@ -173,7 +181,7 @@ const GanttTable = () => {
             <span
                 onClick={() => setEditingCell(task ? { taskId: task.index, field } : { taskId: '0', field, parent: parent })}
 
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer",color:!task?"var(--primary--600)":"black" }}
             >
                 {task ? task[field] : text}
             </span>

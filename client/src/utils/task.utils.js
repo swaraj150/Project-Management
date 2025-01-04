@@ -2,33 +2,7 @@ import taskApi from "../api/modules/task.api";
 import { setKanbanTasks } from "../redux/features/kanbanSlice";
 import { putId, setCurrentProject, setTasks } from "../redux/features/taskSlice";
 import { setUpdated } from "../redux/features/webSocketSlice";
-// {
-//     "tasks": [
-//         {
-//             "id": "e0ceb908-ad6f-4454-8ba7-997ef44a2425",
-//             "clientTaskId": null,
-//             "title": "task11",
-//             "description": null,
-//             "priority": null,
-//             "type": null,
-//             "createdByUser": {
-//                 "name": "Alice Brown",
-//                 "username": "Alice_Brown6565",
-//                 "emails": [
-//                     "alice.brown@example.com"
-//                 ],
-//                 "role": "USER",
-//                 "projectRole": "TEAM_LEAD"
-//             },
-//             "assignedToUsers": null,
-//             "createdAt": "2024-12-22T12:35:46.331084",
-//             "estimatedHours": null,
-//             "completedAt": null,
-//             "completionStatus": "IN_PROGRESS",
-//             "subTasks": [
-//                
-// }
-export const convertTasksFromServer = (task, index1, level = 0, dispatch, parentId,isMilestone=false) => {
+export const convertTasksFromServer = (task, index1, level = 0, dispatch, parentId, isMilestone = false) => {
     // console.log(index,level)
     const taskIndex = task.clientTaskId || (index1 + (level === 0 ? 0 : "." + level));
     const parentTaskId = parentId;
@@ -54,7 +28,7 @@ export const convertTasksFromServer = (task, index1, level = 0, dispatch, parent
         assigned_to: task.assignedToUsers,
         priority: task.priority,
         completed_at: task.completedAt,
-        isMilestone:isMilestone
+        task_type: task.type
     }
 }
 
@@ -118,7 +92,7 @@ export const convertTasksToServer = (delta) => {
         title: delta.name || null,
         description: delta.description || null,
         priority: delta.priority || null,
-        taskType: delta.taskType || null,
+        taskType: delta.task_type || null,
         status: delta.status || null,
         parentTaskId: delta.parentTaskId || null,
         estimatedHours: delta.estimated_hours || null,
@@ -246,7 +220,9 @@ export const updateTaskAndFindNested = (id, task, field, value) => {
 
     return { updatedTree: task, updatedNestedTask: null, oldNestedTask: null };
 };
-export const setupTasks = (tasks,dispatch) => {
+export const setupTasks = (tasks, dispatch) => {
+    // const milestonePointerRef = { value: 0 };
+    // const result = addMilestones(tasks, milestones, milestonePointerRef);
     const tasks1 = tasks.map((task, index) => {
         const task1 = convertTasksFromServer(task, index + 1, 0, dispatch, null);
         return task1;
@@ -259,10 +235,36 @@ export const setupTasks = (tasks,dispatch) => {
     dispatch(setUpdated())
 }
 
-export const fetchTasksByProject = async (projectId,dispatch,project) => {
+
+const addMilestones = (tasks, milestones, milestonePointerRef) => {
+    const newList = [];
+
+    tasks.forEach((task) => {
+        if (
+            milestonePointerRef.value < milestones.length &&
+            task.id === milestones[milestonePointerRef.value].taskId
+        ) {
+            newList.push(task);
+            newList.push(milestones[milestonePointerRef.value]);
+            milestonePointerRef.value++;
+        } else {
+            if (task.subTasks && task.subTasks.length > 0) {
+                task.subTasks = addMilestones(
+                    task.subTasks,
+                    milestones,
+                    milestonePointerRef
+                );
+            }
+            newList.push(task);
+        }
+    });
+
+    return newList;
+};
+export const fetchTasksByProject = async (projectId, dispatch, project) => {
     const { res, err } = await taskApi.fetchByProject(projectId);
-    if(res && res.tasks){
-        setupTasks(res.tasks,dispatch);
+    if (res && res.tasks) {
+        setupTasks(res.tasks, dispatch);
     }
     dispatch(setCurrentProject(project));
 }

@@ -13,7 +13,9 @@ const flattenTasks = (tasks) => {
             start: new Date(task.start),
             end: new Date(task.end),
             progress: task.progress,
-            dependencies: parentId ? [parentId] : [],
+            dependencies: [],
+            type:(task.task_type==null?"task":"milestone").toLowerCase(),
+            
         });
 
         if (task.dependencies?.length) {

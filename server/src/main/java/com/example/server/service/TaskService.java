@@ -105,7 +105,7 @@ public class TaskService {
                 .ifPresent(task::setStartDate);
 
         Optional.ofNullable(request.getEndDate())
-                .ifPresent(task::setEndDate);
+                .ifPresent(task::setEndDate); // achieved at
 
         Optional.ofNullable(request.getEstimatedHours())
                 .map(Integer::valueOf)
@@ -120,6 +120,7 @@ public class TaskService {
         Optional.ofNullable(request.getProjectId())
                 .map(UUID::fromString)
                 .ifPresent(task::setProjectId);
+
 
         Set<UUID> assignedTo=new HashSet<>();
         if(request.getAssignedTo()!=null){

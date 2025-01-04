@@ -6,8 +6,8 @@ import { useSelector } from 'react-redux';
 
 
 const Dashboard = () => {
-  const taskStatusData=useSelector((state)=>state.metrics.taskStatusData);
-  const timeLogData=useSelector((state)=>state.metrics.timeLogData);
+  // const taskStatusData=useSelector((state)=>state.metrics.taskStatusData);
+  // const timeLogData=useSelector((state)=>state.metrics.timeLogData);
   const sampleData1 = [
     { name: "Group A", value: 400 },
     { name: "Group B", value: 300 },
@@ -55,7 +55,7 @@ const Dashboard = () => {
       >
         <h2>Pie Chart 1</h2>
         <ReusablePieChart
-          data={taskStatusData}
+          data={sampleData1}
           dataKey="value"
           nameKey="name"
           colors={["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]}
@@ -97,9 +97,9 @@ const Dashboard = () => {
       >
         <h2>Bar Chart Example</h2>
         <ReusableBarChart
-          data={timeLogData}
+          data={sampleBarData}
           xKey="category"
-          barDataKeys={"value"}
+          barDataKeys={["value1","value2"]}
           colors={["#8884d8", "#82ca9d"]}
           width={500}
           height={300}

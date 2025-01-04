@@ -1,12 +1,12 @@
 package com.example.server.service;
 
-import com.example.server.entities.Milestone;
+//import com.example.server.entities.Milestone;
 import com.example.server.entities.Task;
 import com.example.server.entities.User;
 import com.example.server.enums.CompletionStatus;
 import com.example.server.enums.Level;
 import com.example.server.enums.WsPublishType;
-import com.example.server.repositories.MilestoneRepository;
+//import com.example.server.repositories.MilestoneRepository;
 import com.example.server.repositories.TaskRepository;
 import com.example.server.requests.WsTaskRequest;
 import com.example.server.response.MilestoneResponse;
@@ -36,8 +36,8 @@ public class TaskConsumerService {
     private final TaskRepository taskRepository;
     private final TaskService taskService;
     private final UserService userService;
-    private final MilestoneService milestoneService;
-    private final MilestoneRepository milestoneRepository;
+//    private final MilestoneService milestoneService;
+//    private final MilestoneRepository milestoneRepository;
     private final int BATCH_SIZE = 2;
 
 
@@ -76,7 +76,7 @@ public class TaskConsumerService {
 
 
             Map<Task,String> tasksToSave = new LinkedHashMap<>();
-            Map<Milestone,String> milestonesToSave = new LinkedHashMap<>();
+//            Map<Milestone,String> milestonesToSave = new LinkedHashMap<>();
             for (WsTaskRequest request : batchToProcess) {
                 String clientId = request.getClientTaskId();
                 if (uniqueTasks.containsKey(request.getClientTaskId())) {
@@ -93,17 +93,17 @@ public class TaskConsumerService {
 
             for (WsTaskRequest request : batchToProcess) {
                 try {
-                    if(!request.isMilestone()){
-                        Task task = processTaskRequest(request);
-                        if (task != null) {
-                            tasksToSave.put(task,request.getClientTaskId());
-                        }
-                    }else{
-                        Milestone milestone=processMilestoneRequest(request);
-                        if(milestone!=null){
-                            milestonesToSave.put(milestone,request.getClientTaskId()+" "+request.getParentTaskId());
-                        }
+                    Task task = processTaskRequest(request);
+                    if (task != null) {
+                        tasksToSave.put(task,request.getClientTaskId());
                     }
+//                    if(!request.isMilestone()){
+//                    }else{
+//                        Milestone milestone=processMilestoneRequest(request);
+//                        if(milestone!=null){
+//                            milestonesToSave.put(milestone,request.getClientTaskId());
+//                        }
+//                    }
                 } catch (Exception e) {
                     log.error("Error processing task request: {}", request, e);
                 }
@@ -128,25 +128,25 @@ public class TaskConsumerService {
                 );
             }
 
-            if (!milestonesToSave.isEmpty()) {
-                milestoneRepository.saveAll(milestonesToSave.keySet());
-                List<MilestoneResponse> milestoneResponses=new ArrayList<>();
-                // send whole parent task for now
-                for(Map.Entry<Milestone,String> t:milestonesToSave.entrySet()){
-                    MilestoneResponse response=milestoneService.loadResponse(t.getKey());
-                    response.setClientTaskId(t.getValue());
-                    milestoneResponses.add(response);
-                }
-
-                log.info("Successfully saved batch of {} tasks", tasksToSave.size());
-
-                messagingTemplate.convertAndSend(
-
-                        "/topic/milestone",
-                        milestoneResponses
-
-                );
-            }
+//            if (!milestonesToSave.isEmpty()) {
+//                milestoneRepository.saveAll(milestonesToSave.keySet());
+//                List<MilestoneResponse> milestoneResponses=new ArrayList<>();
+//                // send whole parent task for now
+//                for(Map.Entry<Milestone,String> t:milestonesToSave.entrySet()){
+//                    MilestoneResponse response=milestoneService.loadResponse(t.getKey());
+//                    response.setClientTaskId(t.getValue());
+//                    milestoneResponses.add(response);
+//                }
+//
+//                log.info("Successfully saved batch of {} tasks", tasksToSave.size());
+//
+//                messagingTemplate.convertAndSend(
+//
+//                        "/topic/milestone",
+//                        milestoneResponses
+//
+//                );
+//            }
 
 
         } catch (Exception e) {
@@ -179,28 +179,28 @@ public class TaskConsumerService {
             return task;
         }
     }
-    private Milestone processMilestoneRequest(WsTaskRequest request) {
-        if (request.getMilestoneId()==null) {
-
-            Milestone milestone = milestoneService.create(request);
-            clientIdMap.put(request.getClientTaskId(), milestone.getId());
-            return milestone;
-        }
-        else{
-            clientIdMap.put(request.getClientTaskId(),request.getTaskId());
-            UUID milestoneId = request.getMilestoneId();
-            if (milestoneId == null) {
-                throw new EntityNotFoundException("task does not exist");
-            }
-            Milestone milestone = milestoneService.load(milestoneId);
-            if (milestone == null) {
-                log.warn("milestone not found with ID: {}", request.getMilestoneId());
-                return null;
-            }
-            updateMilestoneFromRequest(milestone, request);
-            return milestone;
-        }
-    }
+//    private Milestone processMilestoneRequest(WsTaskRequest request) {
+//        if (request.getMilestoneId()==null) {
+//
+//            Milestone milestone = milestoneService.create(request);
+//            clientIdMap.put(request.getClientTaskId(), milestone.getId());
+//            return milestone;
+//        }
+//        else{
+//            clientIdMap.put(request.getClientTaskId(),request.getTaskId());
+//            UUID milestoneId = request.getMilestoneId();
+//            if (milestoneId == null) {
+//                throw new EntityNotFoundException("task does not exist");
+//            }
+//            Milestone milestone = milestoneService.load(milestoneId);
+//            if (milestone == null) {
+//                log.warn("milestone not found with ID: {}", request.getMilestoneId());
+//                return null;
+//            }
+//            updateMilestoneFromRequest(milestone, request);
+//            return milestone;
+//        }
+//    }
 
     private void updateTaskFromRequest(Task task, WsTaskRequest request) {
         Optional.ofNullable(request.getTitle()).ifPresent(task::setTitle);
@@ -225,15 +225,15 @@ public class TaskConsumerService {
         Optional.ofNullable(request.getEndDate()).ifPresent(task::setEndDate);
 
     }
-    private void updateMilestoneFromRequest(Milestone milestone, WsTaskRequest request) {
-        Optional.ofNullable(request.getTitle()).ifPresent(milestone::setTitle);
-        Optional.ofNullable(request.getDate()).ifPresent(milestone::setDate);
-        Optional.ofNullable(request.getAchievedAt()).ifPresent(milestone::setAchievedAt);
-        Optional.ofNullable(request.getStatus())
-                .map(CompletionStatus::valueOf)
-                .ifPresent(milestone::setCompletionStatus);
-
-    }
+//    private void updateMilestoneFromRequest(Milestone milestone, WsTaskRequest request) {
+//        Optional.ofNullable(request.getTitle()).ifPresent(milestone::setTitle);
+//        Optional.ofNullable(request.getDate()).ifPresent(milestone::setDate);
+//        Optional.ofNullable(request.getAchievedAt()).ifPresent(milestone::setAchievedAt);
+//        Optional.ofNullable(request.getStatus())
+//                .map(CompletionStatus::valueOf)
+//                .ifPresent(milestone::setCompletionStatus);
+//
+//    }
 
     private void updateToLatestRequest(WsTaskRequest oldRequest, WsTaskRequest newRequest) {
 

@@ -15,7 +15,7 @@ const Tasks = () => {
   useEffect(() => {
    
     const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
-    // dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token')));
+    dispatch(connectWebSocket(webSocketUrl+'/task', localStorage.getItem('token')));
    
     // return () => {
     //   dispatch(disonnectWebSocket(client))

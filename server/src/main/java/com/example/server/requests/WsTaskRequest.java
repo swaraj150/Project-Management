@@ -35,5 +35,6 @@ public class WsTaskRequest {
     private LocalDateTime date;
     private LocalDateTime achievedAt;
     private boolean isMilestone;
+//    private UUID prevTaskId;
 
 }
