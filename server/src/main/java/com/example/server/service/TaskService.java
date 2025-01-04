@@ -301,4 +301,31 @@ public class TaskService {
         }
         return taskResponse;
     }
+    
+
+
+    public Integer getNoOfTasksWithStatus(CompletionStatus completionStatus){
+        User user=userService.loadUser(securityUtils.getCurrentUsername());
+        return taskRepository.getTaskCountByStatusWithinProject(completionStatus,user.getOrganizationId());
+    }
+    public Integer getNoOfTasksWithStatus(CompletionStatus completionStatus,UUID projectId){
+        return taskRepository.getTaskCountByStatus(completionStatus,projectId);
+    }
+
+    public Integer getTaskCount(UUID projectId){
+        return taskRepository.getTaskCountWithinProject(projectId);
+    }
+
+    public Double getTaskPercentage(CompletionStatus completionStatus,UUID projectId){
+        return (getNoOfTasksWithStatus(completionStatus,projectId)/getTaskCount(projectId).doubleValue())*100;
+    }
+
+    public Integer getTotalEstimatedTime(){
+        User user=userService.loadUser(securityUtils.getCurrentUsername());
+        return taskRepository.getEstimatedHours(user.getOrganizationId());
+    }
+    public Integer getTotalEstimatedTime(UUID projectID){
+        return taskRepository.getEstimatedHours(projectID);
+    }
+
 }

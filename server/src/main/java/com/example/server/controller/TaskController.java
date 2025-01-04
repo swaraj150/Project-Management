@@ -3,8 +3,10 @@ package com.example.server.controller;
 import com.example.server.entities.User;
 import com.example.server.requests.CreateProjectRequest;
 import com.example.server.requests.CreateTaskRequest;
+import com.example.server.response.MilestoneResponse;
 import com.example.server.response.ProjectResponse;
 import com.example.server.response.TaskResponse;
+import com.example.server.service.MilestoneService;
 import com.example.server.service.TaskService;
 import com.example.server.service.UserService;
 import lombok.NonNull;
@@ -21,6 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
+    private final MilestoneService milestoneService;
 
     @GetMapping("/")
     public ResponseEntity<?> loadTasks(){
@@ -44,6 +47,7 @@ public class TaskController {
     @GetMapping("/fetch")
     public ResponseEntity<?> fetch(){
         List<TaskResponse> taskResponses=taskService.getTasksByOrganization();
+
         HashMap<String,Object> h=new HashMap<>();
         h.put("tasks",taskResponses);
         return ResponseEntity.ok(h);
@@ -51,10 +55,16 @@ public class TaskController {
     @GetMapping("/project")
     public ResponseEntity<?> fetchByProject(@RequestParam @NonNull UUID projectId){
         List<TaskResponse> taskResponses=taskService.getTasksByProject(projectId);
+        List<MilestoneResponse> milestoneResponses=milestoneService.loadByProject(projectId);
         HashMap<String,Object> h=new HashMap<>();
         h.put("tasks",taskResponses);
         return ResponseEntity.ok(h);
     }
+
+
+
+
+
 
 
 }

@@ -14,6 +14,7 @@ import com.example.server.repositories.TeamRepository;
 import com.example.server.repositories.UserExpertiseRepository;
 import com.example.server.repositories.UserRepository;
 import com.example.server.requests.TeamCreateRequest;
+import com.example.server.response.TaskResponse;
 import com.example.server.response.TeamResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -118,6 +119,7 @@ public class TeamService {
         return teamRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Team not found"));
     }
 
+
     public Set<TeamResponse> loadAllTeamResponses(){
         User user=userService.loadUser(securityUtils.getCurrentUsername());
         Organization organization=organizationService.loadOrganization(user.getOrganizationId());
@@ -171,7 +173,7 @@ public class TeamService {
         }
         return res;
     }
-    // get user expertise
+    // get team expertise
     private Level calculateTeamExpertise(@NonNull UUID teamId,@NonNull UUID projectId){
         Team team=teamRepository.findById(teamId).orElseThrow(()->new EntityNotFoundException("Team not found"));
         int beginners=0,intermediates=0,experts=0;
@@ -216,13 +218,13 @@ public class TeamService {
     }
 
 
-        public List<Map<String,Object>> suggestTeams(@NonNull UUID projectId,@NonNull Set<UUID> teams){
+    public List<Map<String,Object>> suggestTeams(@NonNull UUID projectId, @NonNull Set<UUID> teams){
         User user=userService.loadUser(securityUtils.getCurrentUsername());
         Organization organization=organizationService.loadOrganization(user.getOrganizationId());
         List<Map<String,Object>> teamScores=new ArrayList<>();
         for(UUID teamId:teams){
             Map<String,Object> m=new HashMap<>();
-            m.put("id",teamId);
+            m.put("team",loadTeam(teamId));
             m.put("score",calculateTeamScore(teamId,projectId,organization.getWorkloadLimit().getLimit()));
             teamScores.add(m);
         }

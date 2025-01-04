@@ -13,10 +13,11 @@ import { setProjects } from '../../redux/features/projectsSlice'
 import { setTeams } from '../../redux/features/teamsSlice'
 import { setUser } from '../../redux/features/userSlice'
 import taskApi from '../../api/modules/task.api'
-import { putId, setTasks } from '../../redux/features/taskSlice'
+import { setCurrentProject } from '../../redux/features/taskSlice'
+import metricApi from '../../api/modules/metrics.api'
+import { setTaskStatusData, setTimeLogData } from '../../redux/features/metricsSlice'
 
-import { convertTasksFromServer, segregateTasks, setupTasks } from '../../utils/task.utils'
-import { setKanbanTasks } from '../../redux/features/kanbanSlice'
+
 
 const MainLayout = () => {
   const dispatch = useDispatch()
@@ -26,90 +27,109 @@ const MainLayout = () => {
   const { organization } = useSelector((state) => state.organization)
   const { projects } = useSelector((state) => state.projects);
 
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const { res, err } = await userApi.getInfo()
+  // useEffect(() => {
+  //   const fetchUserDetails = async () => {
+  //     const { res, err } = await userApi.getInfo()
 
 
 
-      if (res) {
-        dispatch(setUser(res))
-        toast.success('Login successful. Welcome back!')
-      }
+  //     if (res) {
+  //       dispatch(setUser(res))
+  //       toast.success('Login successful. Welcome back!')
+  //     }
 
-      if (err) {
-        localStorage.removeItem('token')
-        navigate('/sign-in')
-      }
-    }
+  //     if (err) {
+  //       localStorage.removeItem('token')
+  //       navigate('/sign-in')
+  //     }
+  //   }
 
-    const token = localStorage.getItem('token')
+  //   const token = localStorage.getItem('token')
 
-    if (user == null && token === null) navigate('/sign-in')
-    if (user === null) fetchUserDetails()
-  }, [])
+  //   if (user == null && token === null) navigate('/sign-in')
+  //   if (user === null) fetchUserDetails()
+  // }, [])
 
-  useEffect(() => {
-    const fetchOrganization = async () => {
-      const { res, err } = await organizationApi.getInfo()
+  // useEffect(() => {
+  //   const fetchOrganization = async () => {
+  //     const { res, err } = await organizationApi.getInfo()
 
-      if (res) dispatch(setOrganization(res))
-      if (err) navigate('/discover')
-    }
-    if (user) {
-      fetchOrganization()
-    }
-  }, [user])
-
-
-  useEffect(() => {
+  //     if (res) dispatch(setOrganization(res))
+  //     if (err) navigate('/discover')
+  //   }
+  //   if (user) {
+  //     fetchOrganization()
+  //   }
+  // }, [user])
 
 
-    const fetchProjects = async () => {
-      const { res, err } = await projectsApi.getAll()
-
-      if (res) dispatch(setProjects(res))
-    }
-
-    const fetchTeams = async () => {
-      const { res, err } = await teamsApi.getAll()
-
-      if (res) dispatch(setTeams(res))
-    }
-
-    const fetchRequests = async () => {
-      const { res, err } = await organizationApi.fetchRequests()
-
-      if (res) dispatch(setRequests(res))
-    }
+  // useEffect(() => {
 
 
+  //   const fetchProjects = async () => {
+  //     const { res, err } = await projectsApi.getAll()
+
+  //     if (res) dispatch(setProjects(res))
+  //   }
+
+  //   const fetchTeams = async () => {
+  //     const { res, err } = await teamsApi.getAll()
+
+  //     if (res) dispatch(setTeams(res))
+  //   }
+
+  //   const fetchRequests = async () => {
+  //     const { res, err } = await organizationApi.fetchRequests()
+
+  //     if (res) dispatch(setRequests(res))
+  //   }
 
 
 
-    if (organization) {
-      fetchProjects()
-      fetchTeams()
-      fetchRequests()
-    }
 
 
-  }, [organization])
+  //   if (organization) {
+  //     fetchProjects()
+  //     fetchTeams()
+  //     fetchRequests()
+  //   }
 
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const { res, err } = await taskApi.fetchByProject(projects[0].id)
-      const { tasks } = res;
-      console.log("tasks", tasks)
-      if (res && tasks) {
-        setupTasks(tasks,dispatch);
-      }
-    }
-    if (projects) {
-      fetchTasks();
-    }
-  }, [projects])
+  // }, [organization])
+
+
+  // useEffect(() => {
+  //   const fetchTasks = async () => {
+  //     const { res, err } = await taskApi.fetchByProject(projects[0].id)
+  //     const { tasks } = res;
+  //     console.log("tasks", tasks)
+  //     if (res && tasks) {
+  //       setupTasks(tasks,dispatch);
+  //       dispatch(setCurrentProject(projects[0]))
+  //     }
+
+  //   }
+  //   const fetchMetrics=async()=>{
+  //     const {res,err} =await metricApi.load(projects[0].id)
+  //     const taskStatusData={
+  //       name:"Pending Tasks",value:res[pendingTasks],
+  //       name:"In Progress Tasks",value:res[in_progressTasks],
+  //       name:"Completed Tasks",value:res[completedTasks],
+  //     };
+  //     const timeLogData={
+  //       category:"Total Timelogs",value:res[timeLogs],
+  //       category:"Estimated Time",value:res[estimatedTime],
+  //     };
+
+  //     dispatch(setTimeLogData(timeLogData))
+  //     dispatch(setTaskStatusData(taskStatusData))
+      
+  //   }
+  //   if (projects) {
+  //     fetchTasks();
+  //     // fetchMetrics();
+  //   }
+  // }, [projects])
 
   return (
     <>

@@ -8,6 +8,7 @@ import teamsSlice from './features/teamsSlice'
 import kanbanSlice  from './features/kanbanSlice'
 import taskSlice  from './features/taskSlice'
 import webSocketSlice  from './features/webSocketSlice'
+import metricsSlice from './features/metricsSlice'
 const store = configureStore({
   reducer: {
     user: userSlice,
@@ -17,7 +18,8 @@ const store = configureStore({
     teams: teamsSlice,
     kanban: kanbanSlice,
     task:taskSlice,
-    webSocket:webSocketSlice
+    webSocket:webSocketSlice,
+    metrics:metricsSlice,
   },
   window:window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 })

@@ -5,6 +5,7 @@ import com.example.server.entities.ChatMessage;
 import com.example.server.entities.User;
 import com.example.server.enums.ProjectAuthority;
 import com.example.server.enums.WsPublishType;
+import com.example.server.requests.WsMilestoneRequest;
 import com.example.server.requests.WsTaskRequest;
 import com.example.server.service.NotificationService;
 import com.example.server.service.TaskConsumerService;
@@ -36,6 +37,7 @@ public class WsTaskController {
         taskRequest.setTimestamp(LocalDateTime.now());
         taskConsumerService.consumeAndBuffer(taskRequest);
     }
+
     @MessageMapping("/update-clientMap")
     public void updateClientMap(Map<UUID,String> clientMap){
         taskConsumerService.consumeClientIdMap(clientMap);

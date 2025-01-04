@@ -4,62 +4,61 @@ export const taskSlice = createSlice({
     name: 'Task',
     initialState: {
         tasks: [
-            //     {
-            //         id: "1",
-            //         index:"1",
-            //         name: "Design Prototype",
-            //         start: new Date(2024, 11, 1),
-            //         end: new Date(2024, 11, 5),
-            //         progress: 60,
-            //         dependencies: [
-            //             {
-            //                 id: "1.1",
-            //                 index:"1.1",
-            //                 name: "design",
-            //                 start: new Date(2024, 11, 1),
-            //                 end: new Date(2024, 11, 4),
-            //                 progress: 90,
-            //                 dependencies:[],
-            //                 status:"in_progress",
-            //                 priority:1
-            //             },
-            //             {
-            //                 id: "1.2",
-            //                 index:"1.2",
-            //                 name: "test",
-            //                 start: new Date(2024, 11, 4),
-            //                 end: new Date(2024, 11, 5),
-            //                 progress: 90,
-            //                 dependencies:[],
-            //                 status:"pending",
-            //                 priority:1
-            //             }
-            //         ],
-            //         status:"in_progress",
-            //         priority:1
-            //    },
-            //     {
-            //         id: "2",
-            //         index:"2",
-            //         name: "Development",
-            //         start: new Date(2024, 11, 6),
-            //         end: new Date(2024, 11, 15),
-            //         progress: 40,
-            //         dependencies:[],
-            //         status:"pending",
-            //         priority:1
-            //     },
+                {
+                    id: "1",
+                    index:"1",
+                    name: "Design Prototype",
+                    start: new Date(2024, 11, 1),
+                    end: new Date(2024, 11, 5),
+                    progress: 60,
+                    dependencies: [
+                        {
+                            id: "1.1",
+                            index:"1.1",
+                            name: "design",
+                            start: new Date(2024, 11, 1),
+                            end: new Date(2024, 11, 4),
+                            progress: 90,
+                            dependencies:[],
+                            status:"in_progress",
+                            priority:1
+                        },
+                        {
+                            id: "1.2",
+                            index:"1.2",
+                            name: "test",
+                            start: new Date(2024, 11, 4),
+                            end: new Date(2024, 11, 5),
+                            progress: 90,
+                            dependencies:[],
+                            status:"pending",
+                            priority:1
+                        }
+                    ],
+                    status:"in_progress",
+                    priority:1,
+                    
+               },
+                {
+                    id: "2",
+                    index:"2",
+                    name: "Development",
+                    start: new Date(2024, 11, 6),
+                    end: new Date(2024, 11, 15),
+                    progress: 40,
+                    dependencies:[],
+                    status:"pending",
+                    priority:1
+                },
         ], 
         taskMap: {
-            // "1":"1",
-            // "1.1":"1.1",
-            // "1.2":"1.2",
-            // "2":"2",
+            
         },
         taskPointer: 0,
         taskModal:{flag:false,task:null},
         projectTaskModal:false,
-        currentProject:null
+        currentProject:null,
+        
     },
     reducers: {
         

@@ -1,6 +1,6 @@
 import { addDelta, setClient, setConnected, setDeltas, setUpdated } from '../redux/features/webSocketSlice';
 import { Client } from '@stomp/stompjs';
-import { calculateIndex, convertTasksFromServer, convertTasksToServer, findByIndex } from './task.utils';
+import { calculateIndex, convertMileStonesFromServer, convertTasksFromServer, convertTasksToServer, findByIndex } from './task.utils';
 import { replaceTaskInState } from '../redux/features/taskSlice';
 
 export const connectWebSocket = (url,token) => (dispatch,getState) => {
@@ -38,6 +38,28 @@ export const connectWebSocket = (url,token) => (dispatch,getState) => {
           
           dispatch(setUpdated());
           console.log('tasks: ',tasks) 
+ 
+        } catch (error) {
+          console.error("Error parsing payload:", error);
+        }
+      })
+
+      stompClient.subscribe('/topic/milestones', (payload) => {
+        try {
+          const data = JSON.parse(payload.body);
+          dispatch(setDeltas([]));
+          console.log('recieved: ',data);
+          // only sending modified tasks from server
+          const milestones = data.map((milestone) => {
+            const parentId=getState().task.taskMap(milestone.taskId)
+            const newMilestone=convertTasksFromServer(milestone,null,0,dispatch,parentId,true)
+            dispatch(replaceTaskInState({index:newMilestone.index,newTask:newMilestone}));
+            return newMilestone;
+          })
+
+          
+          dispatch(setUpdated());
+          console.log('milestones: ',milestones) 
  
         } catch (error) {
           console.error("Error parsing payload:", error);

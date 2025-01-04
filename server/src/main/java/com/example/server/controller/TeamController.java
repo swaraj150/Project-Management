@@ -1,12 +1,14 @@
 package com.example.server.controller;
 
 import com.example.server.component.SecurityUtils;
+import com.example.server.entities.Project;
 import com.example.server.enums.ProjectAuthority;
 import com.example.server.entities.User;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.TeamRepository;
 import com.example.server.requests.TeamCreateRequest;
 import com.example.server.response.TeamResponse;
+import com.example.server.service.ProjectService;
 import com.example.server.service.TeamService;
 import com.example.server.service.UserService;
 import lombok.NonNull;
@@ -23,6 +25,7 @@ public class TeamController {
     private final TeamService teamService;
     private final UserService userService;
     private final SecurityUtils securityUtils;
+    private final ProjectService projectService;
     private final TeamRepository teamRepository;
 
     @PostMapping("/create")
@@ -60,6 +63,13 @@ public class TeamController {
     public ResponseEntity<?> searchTeam(@RequestParam @NonNull String key){
         HashMap<String,Object> h=new HashMap<>();
         h.put("teams",teamService.searchByName(key));
+        return ResponseEntity.ok(h);
+    }
+
+    @GetMapping("/suggest/project") // suggest teams based on project workload
+    public ResponseEntity<?> suggest(@RequestParam @NonNull UUID projectId){
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("teams",projectService.suggestTeams(projectId));
         return ResponseEntity.ok(h);
     }
 

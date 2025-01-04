@@ -28,7 +28,7 @@ import { setUpdated } from "../redux/features/webSocketSlice";
 //             "subTasks": [
 //                
 // }
-export const convertTasksFromServer = (task, index1, level = 0, dispatch, parentId) => {
+export const convertTasksFromServer = (task, index1, level = 0, dispatch, parentId,isMilestone=false) => {
     // console.log(index,level)
     const taskIndex = task.clientTaskId || (index1 + (level === 0 ? 0 : "." + level));
     const parentTaskId = parentId;
@@ -53,9 +53,11 @@ export const convertTasksFromServer = (task, index1, level = 0, dispatch, parent
         estimated_hours: task.estimatedHours,
         assigned_to: task.assignedToUsers,
         priority: task.priority,
-        completed_at: task.completedAt
+        completed_at: task.completedAt,
+        isMilestone:isMilestone
     }
 }
+
 
 export const findByIndex = (object, targetIndex) => {
     if (object.index === targetIndex || object.id === targetIndex) {

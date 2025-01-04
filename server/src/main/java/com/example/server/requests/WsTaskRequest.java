@@ -16,6 +16,7 @@ import java.util.UUID;
 @Builder
 public class WsTaskRequest {
     private UUID taskId;
+    private UUID milestoneId;
     private String clientTaskId;
     private String description;
     private WsPublishType publishType;
@@ -31,5 +32,8 @@ public class WsTaskRequest {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String projectId;
+    private LocalDateTime date;
+    private LocalDateTime achievedAt;
+    private boolean isMilestone;
 
 }

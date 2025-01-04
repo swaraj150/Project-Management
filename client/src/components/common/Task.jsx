@@ -5,6 +5,7 @@ import { addDeltaAndPublish } from '../../utils/websocket.utils';
 import EditField from './EditField';
 import { setTasks, toggleTaskModal } from '../../redux/features/taskSlice';
 import { setUpdated } from '../../redux/features/webSocketSlice';
+import AssigneeList from './AssigneeList';
 
 const Task = ({ isOpen, tasks }) => {
     // console.log(tasks)
@@ -14,6 +15,13 @@ const Task = ({ isOpen, tasks }) => {
     const isConnected = useSelector((state) => state.webSocket.connected);
     const client = useSelector((state) => state.webSocket.client);
     const [task, setTask] = useState(taskModal.task);
+    const [showAssigneeList, setShowAssigneeList] = useState(false);
+    const handleAddAssignee = () => {
+        setShowAssigneeList((p)=>!p); // Show the AssigneeList
+    };
+    const onClose=()=>{
+        setShowAssigneeList(false);
+    }
     const handleEdit = (currentTask, field, value) => {
         setTask({ ...task, [field]: value })
         let newTask = {};
@@ -90,7 +98,7 @@ const Task = ({ isOpen, tasks }) => {
                 </h2>
 
                 {/* <h2 className="task-title">{isOpen.task?.name}</h2> */}
-                <p className="task-creator">Creator: {task.created_by.name}, {formatDate(task.created_at)}</p>
+                <p className="task-creator">Creator: {task.created_by?.name}, {formatDate(task.created_at)}</p>
             </div>
 
             <hr />
@@ -132,12 +140,12 @@ const Task = ({ isOpen, tasks }) => {
 
 
             <div className="task-actions">
-                <button className="btn-add-assignee">Add assignee</button>
+                <button className="btn-add-assignee" onClick={handleAddAssignee}>Add assignee</button>
                 <button className="btn-attach-files">Attach files</button>
                 <button className="btn-add-dependency">Add dependency</button>
                 <button className="btn-log-time">Log time</button>
             </div>
-
+            {showAssigneeList && <AssigneeList onClose={onClose}/>}
             <hr />
 
             <div className="task-details">

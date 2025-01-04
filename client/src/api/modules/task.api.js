@@ -34,7 +34,7 @@ const taskApi={
         try{
             const res=await privateClient.get(
                 taskEndpoints.fetchByProject,
-                { params: { projectId } }
+                { params: { projectId } } // works
             )
             return {res}
         }catch (error) {
