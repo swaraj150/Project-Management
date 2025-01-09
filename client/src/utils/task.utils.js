@@ -19,7 +19,8 @@ export const convertTasksFromServer = (task, index1, level = 0, dispatch, parent
         start: task.startDate,
         end: task.endDate,
         status: task.completionStatus ? task.completionStatus : 'PENDING',
-        dependencies: task.subTasks ? task.subTasks.map((subTask) => convertTasksFromServer(subTask, taskIndex, level++, dispatch, taskIndex)) : [],
+        subtasks: task.subTasks ? task.subTasks.map((subTask) => convertTasksFromServer(subTask, taskIndex, level++, dispatch, taskIndex)) : [],
+        dependencies:[],
         progress: 60,
         parentTaskId: parentTaskId,
         created_by: task.createdByUser,
@@ -38,8 +39,8 @@ export const findByIndex = (object, targetIndex) => {
         return object;
     }
 
-    if (object.dependencies && object.dependencies.length > 0) {
-        for (const dependency of object.dependencies) {
+    if (object.subtasks && object.subtasks.length > 0) {
+        for (const dependency of object.subtasks) {
             const result = findByIndex(dependency, targetIndex);
             if (result) {
                 return result;
@@ -98,6 +99,9 @@ export const convertTasksToServer = (delta) => {
         estimatedHours: delta.estimated_hours || null,
         startDate: delta.start || null,
         endDate: delta.end || null,
+        toTaskId:delta.to_task_id||null,
+        lag:delta.lag||null,
+        dependencyType:delta.dependency_type||null
     }
 }
 
@@ -121,12 +125,12 @@ export const traverseTask = (task, clientId, i) => {
 export const replaceTask = (tasks, targetIndex, newTask) => {
     return tasks.map((task) => {
         if (task.index == targetIndex) {
-            return { ...newTask, dependencies: task.dependencies };
+            return { ...newTask, subtasks: task.subtasks };
             // return {...task,id:newTask.id,parentTaskId:newTask.parentTaskId};
-        } else if (task.dependencies && task.dependencies.length > 0) {
+        } else if (task.subtasks && task.subtasks.length > 0) {
             return {
                 ...task,
-                dependencies: replaceTask(task.dependencies, targetIndex, newTask),
+                subtasks: replaceTask(task.subtasks, targetIndex, newTask),
             };
         }
         return task;
@@ -145,10 +149,10 @@ export const calculateIndex = (previousIndex, updatedTasks) => {
         if (t1 != null) break;
     }
 
-    if (t1.dependencies == undefined || t1.dependencies == [] || t1.dependencies.length == 0) {
+    if (t1.subtasks == undefined || t1.subtasks == [] || t1.subtasks.length == 0) {
         return { index: t1.index + "." + (1), parentIndex: t1.index };
     }
-    const index = t1.dependencies[t1.dependencies.length - 1].index;
+    const index = t1.subtasks[t1.subtasks.length - 1].index;
     const last = parseInt(index[index.length - 1]);
     return { index: index.substring(0, index.length - 1) + (last + 1), parentIndex: t1.index };
 
@@ -159,8 +163,8 @@ export const segregateTasks = (tasks, result = { pending: [], completed: [], in_
         if (task.status == 'PENDING') result.pending.push(task);
         else if (task.status == 'COMPLETED') result.completed.push(task);
         else if (task.status == 'IN_PROGRESS') result.in_progress.push(task);
-        if (task.dependencies) {
-            segregateTasks(task.dependencies, result);
+        if (task.subtasks) {
+            segregateTasks(task.subtasks, result);
         }
     })
     return result;
@@ -201,8 +205,8 @@ export const updateTaskAndFindNested = (id, task, field, value) => {
         return { updatedTree: updatedTask, updatedNestedTask: updatedTask, oldNestedTask: oldTask };
     }
 
-    if (task.dependencies) {
-        const updatedDependencies = task.dependencies.map((subTask) => {
+    if (task.subtasks) {
+        const updatedDependencies = task.subtasks.map((subTask) => {
             const result = updateTaskAndFindNested(id, subTask, field, value);
             if (result.updatedNestedTask) {
                 updatedNestedTask = result.updatedNestedTask;
@@ -212,7 +216,7 @@ export const updateTaskAndFindNested = (id, task, field, value) => {
         });
 
         return {
-            updatedTree: { ...task, dependencies: updatedDependencies },
+            updatedTree: { ...task, subtasks: updatedDependencies },
             updatedNestedTask,
             oldNestedTask
         };
@@ -261,10 +265,26 @@ const addMilestones = (tasks, milestones, milestonePointerRef) => {
 
     return newList;
 };
+export const createTaskList = (tasks,newList) => {
+
+    tasks.forEach((task) => {
+        newList.push(task);
+        if(task.subtasks && task.subtasks.length>0){
+            createTaskList(task.subtasks,newList);
+        }
+    });
+};
 export const fetchTasksByProject = async (projectId, dispatch, project) => {
     const { res, err } = await taskApi.fetchByProject(projectId);
     if (res && res.tasks) {
         setupTasks(res.tasks, dispatch);
     }
     dispatch(setCurrentProject(project));
+}
+
+export const dependency_types={
+    FINISH_TO_START:"0",
+    START_TO_START:"1",
+    FINISH_TO_FINISH:"2",
+    START_TO_FINISH:"3",
 }

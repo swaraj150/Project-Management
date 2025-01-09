@@ -16,6 +16,7 @@ import taskApi from '../../api/modules/task.api'
 import { setCurrentProject } from '../../redux/features/taskSlice'
 import metricApi from '../../api/modules/metrics.api'
 import { setTaskStatusData, setTimeLogData } from '../../redux/features/metricsSlice'
+import { setupTasks } from '../../utils/task.utils'
 
 
 

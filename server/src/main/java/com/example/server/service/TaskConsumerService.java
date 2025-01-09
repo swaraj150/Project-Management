@@ -1,15 +1,16 @@
 package com.example.server.service;
 
-//import com.example.server.entities.Milestone;
+import com.example.server.entities.Dependency;
 import com.example.server.entities.Task;
 import com.example.server.entities.User;
 import com.example.server.enums.CompletionStatus;
+import com.example.server.enums.DependencyType;
 import com.example.server.enums.Level;
 import com.example.server.enums.WsPublishType;
-//import com.example.server.repositories.MilestoneRepository;
+import com.example.server.exception.InvalidDependencyException;
+import com.example.server.repositories.DependencyRepository;
 import com.example.server.repositories.TaskRepository;
 import com.example.server.requests.WsTaskRequest;
-import com.example.server.response.MilestoneResponse;
 import com.example.server.response.TaskResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,9 +37,9 @@ public class TaskConsumerService {
     private final Map<String, UUID> clientIdMap = new ConcurrentHashMap<>();
     private final TaskRepository taskRepository;
     private final TaskService taskService;
+    private final DependencyRepository dependencyRepository;
     private final UserService userService;
-//    private final MilestoneService milestoneService;
-//    private final MilestoneRepository milestoneRepository;
+
     private final int BATCH_SIZE = 2;
 
 
@@ -76,7 +78,6 @@ public class TaskConsumerService {
 
 
             Map<Task,String> tasksToSave = new LinkedHashMap<>();
-//            Map<Milestone,String> milestonesToSave = new LinkedHashMap<>();
             for (WsTaskRequest request : batchToProcess) {
                 String clientId = request.getClientTaskId();
                 if (uniqueTasks.containsKey(request.getClientTaskId())) {
@@ -97,13 +98,6 @@ public class TaskConsumerService {
                     if (task != null) {
                         tasksToSave.put(task,request.getClientTaskId());
                     }
-//                    if(!request.isMilestone()){
-//                    }else{
-//                        Milestone milestone=processMilestoneRequest(request);
-//                        if(milestone!=null){
-//                            milestonesToSave.put(milestone,request.getClientTaskId());
-//                        }
-//                    }
                 } catch (Exception e) {
                     log.error("Error processing task request: {}", request, e);
                 }
@@ -127,27 +121,6 @@ public class TaskConsumerService {
 
                 );
             }
-
-//            if (!milestonesToSave.isEmpty()) {
-//                milestoneRepository.saveAll(milestonesToSave.keySet());
-//                List<MilestoneResponse> milestoneResponses=new ArrayList<>();
-//                // send whole parent task for now
-//                for(Map.Entry<Milestone,String> t:milestonesToSave.entrySet()){
-//                    MilestoneResponse response=milestoneService.loadResponse(t.getKey());
-//                    response.setClientTaskId(t.getValue());
-//                    milestoneResponses.add(response);
-//                }
-//
-//                log.info("Successfully saved batch of {} tasks", tasksToSave.size());
-//
-//                messagingTemplate.convertAndSend(
-//
-//                        "/topic/milestone",
-//                        milestoneResponses
-//
-//                );
-//            }
-
 
         } catch (Exception e) {
             log.error("Error processing batch", e);
@@ -179,28 +152,7 @@ public class TaskConsumerService {
             return task;
         }
     }
-//    private Milestone processMilestoneRequest(WsTaskRequest request) {
-//        if (request.getMilestoneId()==null) {
-//
-//            Milestone milestone = milestoneService.create(request);
-//            clientIdMap.put(request.getClientTaskId(), milestone.getId());
-//            return milestone;
-//        }
-//        else{
-//            clientIdMap.put(request.getClientTaskId(),request.getTaskId());
-//            UUID milestoneId = request.getMilestoneId();
-//            if (milestoneId == null) {
-//                throw new EntityNotFoundException("task does not exist");
-//            }
-//            Milestone milestone = milestoneService.load(milestoneId);
-//            if (milestone == null) {
-//                log.warn("milestone not found with ID: {}", request.getMilestoneId());
-//                return null;
-//            }
-//            updateMilestoneFromRequest(milestone, request);
-//            return milestone;
-//        }
-//    }
+
 
     private void updateTaskFromRequest(Task task, WsTaskRequest request) {
         Optional.ofNullable(request.getTitle()).ifPresent(task::setTitle);
@@ -218,22 +170,27 @@ public class TaskConsumerService {
         Optional.ofNullable(request.getAssignedTo())
                 .map(assignedTo -> assignedTo.stream().map(userService::loadUser).map(User::getId).collect(Collectors.toSet()))
                 .ifPresent(task::setAssignedTo);
-        Optional.ofNullable(request.getStatus())
-                .map(CompletionStatus::valueOf)
-                .ifPresent(task::setCompletionStatus);
+
+
+        if(request.getStatus()!=null){
+            taskService.changeStatus(request.getStatus(),task);
+        }
         Optional.ofNullable(request.getStartDate()).ifPresent(task::setStartDate);
         Optional.ofNullable(request.getEndDate()).ifPresent(task::setEndDate);
-
+        if (request.getToTaskId() != null && request.getDependencyType() != null) {
+//            boolean isValid= taskService.validateDependency(task.getId(),request.getDependentTaskId(),DependencyType.valueOf(request.getDependencyType()));
+//            if(!isValid) {
+//                log.error("{} dependency between {} and {} is invalid", request.getDependencyType(), task.getId(), request.getDependentTaskId());
+//                throw new InvalidDependencyException("Invalid dependency");
+//            }
+            Dependency dependency= Dependency.builder()
+                    .fromTaskId(task.getId())
+                    .toTaskId(request.getToTaskId())
+                    .lag(request.getLag())
+                    .build();
+            dependencyRepository.save(dependency);
+        }
     }
-//    private void updateMilestoneFromRequest(Milestone milestone, WsTaskRequest request) {
-//        Optional.ofNullable(request.getTitle()).ifPresent(milestone::setTitle);
-//        Optional.ofNullable(request.getDate()).ifPresent(milestone::setDate);
-//        Optional.ofNullable(request.getAchievedAt()).ifPresent(milestone::setAchievedAt);
-//        Optional.ofNullable(request.getStatus())
-//                .map(CompletionStatus::valueOf)
-//                .ifPresent(milestone::setCompletionStatus);
-//
-//    }
 
     private void updateToLatestRequest(WsTaskRequest oldRequest, WsTaskRequest newRequest) {
 
@@ -250,12 +207,12 @@ public class TaskConsumerService {
         newRequest.setDate(newRequest.getDate()==null?oldRequest.getDate():newRequest.getDate());
         newRequest.setAchievedAt(newRequest.getAchievedAt()==null?oldRequest.getAchievedAt():newRequest.getAchievedAt());
         newRequest.setTaskId(newRequest.getTaskId()==null?oldRequest.getTaskId():newRequest.getTaskId());
+        newRequest.setDependencyType(newRequest.getDependencyType()==null? oldRequest.getDependencyType(): newRequest.getDependencyType());
     }
 
 
     public int getBufferSize() {
         return taskBuffer.size();
-//        return taskBuffer.size() + latestTaskMap.size();
     }
 
     @Scheduled(fixedRate = 60000)
@@ -272,4 +229,27 @@ public class TaskConsumerService {
             clientIdMap.put(e.getValue(), e.getKey());
         }
     }
+
+    public void handleDependency(UUID fromTaskId, UUID toTaskId, String dependencyType, Integer lag, LocalDateTime triggerAt){
+        Optional<Dependency> optionalDependency=dependencyRepository.doesExist(fromTaskId,toTaskId,DependencyType.valueOf(dependencyType));
+        if(optionalDependency.isEmpty()){
+            Dependency dependency= Dependency.builder()
+                    .fromTaskId(fromTaskId)
+                    .toTaskId(toTaskId)
+                    .dependencyType(DependencyType.valueOf(dependencyType))
+                    .lag(lag)
+                    .build();
+            dependencyRepository.save(dependency);
+            return;
+        }
+
+        Dependency dependency=optionalDependency.get();
+        if(lag==null || lag==0){
+            taskService.triggerStatusUpdates(toTaskId,DependencyType.valueOf(dependencyType));
+        }else{
+            dependency.setTriggerAt(triggerAt);
+        }
+    }
+
+
 }

@@ -53,7 +53,7 @@ const GanttTable = () => {
                 <td>{renderCell(task, "progress")}%</td>
             </tr>
             {level > 0 ? renderEmptyRow(true, level, task.index) : ""}
-            {task.dependencies.map((dependency) => renderTaskRow(dependency, level + 1))}
+            {task.subtasks.map((subtask) => renderTaskRow(subtask, level + 1))}
         </React.Fragment>
         );
     }
@@ -68,8 +68,8 @@ const GanttTable = () => {
             <React.Fragment>
                 <tr className="empty-row2">
                     <td colSpan="5"  >
-                        <div style={{ display: "flex", flexDirection: "row", gap: "10px",alignItems:'center',justifyContent:'center' }}>
-                            {renderCell(null, 'subTask', 1, 'Add new dependency for ' + parent, parent, "TASK")}
+                        <div style={{ display: "flex", flexDirection: "row", gap: "10px", alignItems: 'center', justifyContent: 'center' }}>
+                            {renderCell(null, 'subTask', 1, 'Add new subtask for ' + parent, parent, "TASK")}
 
                             {renderCell(null, 'milestone', 1, 'Add new milestone', parent, "MILESTONE")}
                         </div>
@@ -81,7 +81,14 @@ const GanttTable = () => {
         ) : (
             <React.Fragment>
                 <tr className="empty-row2">
-                    <td colSpan="5" >{renderCell(null, 'task', 0, 'Add new Task', null, "TASK")}</td>
+                    <td colSpan="5" >
+                        <div style={{ display: "flex", flexDirection: "row", gap: "10px", alignItems: 'center', justifyContent: 'center' }}>
+                            {renderCell(null, 'task', 0, 'Add new Task', null, "TASK")}
+
+                            {renderCell(null, 'milestone', 1, 'Add new milestone', parent, "MILESTONE")}
+                        </div>
+
+                    </td>
                 </tr>
             </React.Fragment>
         ) : (
@@ -148,7 +155,7 @@ const GanttTable = () => {
                                 name: newTaskName,
                                 start: new Date(2024, 11, 1),
                                 end: new Date(2024, 11, 7),
-                                dependencies: [],
+                                subtasks: [],
                                 progress: 0,
                                 parentTaskId: parentIndex,// add logic in backend 
                                 task_type: type
@@ -165,11 +172,13 @@ const GanttTable = () => {
                                 dispatch(setTasks({ tasks: newUpdatedTasks }))
 
                             }
-                            dispatch(addDeltaAndPublish(newTask, isConnected, client));
+                            addDeltaAndPublish(newTask, isConnected, client)
+                            // dispatch(addDeltaAndPublish(newTask, isConnected, client)); 
                             setDelta(null);
                         }
                         else {
-                            dispatch(addDeltaAndPublish(delta, isConnected, client));
+                            addDeltaAndPublish(delta, isConnected, client)
+                            // dispatch(addDeltaAndPublish(delta, isConnected, client)); 
                             setDelta(null)
 
                         }
@@ -181,7 +190,7 @@ const GanttTable = () => {
             <span
                 onClick={() => setEditingCell(task ? { taskId: task.index, field } : { taskId: '0', field, parent: parent })}
 
-                style={{ cursor: "pointer",color:!task?"var(--primary--600)":"black" }}
+                style={{ cursor: "pointer", color: !task ? "var(--primary--600)" : "black" }}
             >
                 {task ? task[field] : text}
             </span>
@@ -192,12 +201,12 @@ const GanttTable = () => {
             if (task.index === parentIndex) {
                 return {
                     ...task,
-                    dependencies: [...(task.dependencies || []), newTask],
+                    subtasks: [...(task.subtasks || []), newTask],
                 };
-            } else if (task.dependencies && task.dependencies.length > 0) {
+            } else if (task.subtasks && task.subtasks.length > 0) {
                 return {
                     ...task,
-                    dependencies: updateTaskRecursively(task.dependencies, parentIndex, newTask),
+                    subtasks: updateTaskRecursively(task.subtasks, parentIndex, newTask),
                 };
             }
             return task;

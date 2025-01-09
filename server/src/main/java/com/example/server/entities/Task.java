@@ -38,10 +38,11 @@ public class Task {
     @Column(name = "user_id")
     private Set<UUID> assignedTo = new HashSet<>();
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "dependencies", joinColumns = @JoinColumn(name = "task_id"))
-    @Column(name = "dependent_task_id")
-    private Set<UUID> dependencies = new HashSet<>();
+
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @CollectionTable(name = "dependencies", joinColumns = @JoinColumn(name = "task_id"))
+//    @Column(name = "dependency_id")
+//    private List<UUID> dependencies = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private Integer estimatedHours;

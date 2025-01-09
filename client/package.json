@@ -20,6 +20,7 @@
     "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.5",
     "client": "file:",
+    "dhtmlx-gantt": "^9.0.3",
     "formik": "^2.4.6",
     "gantt-task-react": "^0.3.9",
     "query-string": "^9.1.0",

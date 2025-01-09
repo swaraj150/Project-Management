@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { extractDelta, formatDate, formatTime, updateDate, updateTaskAndFindNested } from '../../utils/task.utils';
+import React, { useEffect, useState } from 'react';
+import { createTaskList, extractDelta, formatDate, formatTime, updateDate, updateTaskAndFindNested } from '../../utils/task.utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { addDeltaAndPublish } from '../../utils/websocket.utils';
 import EditField from './EditField';
 import { setTasks, toggleTaskModal } from '../../redux/features/taskSlice';
 import { setUpdated } from '../../redux/features/webSocketSlice';
 import AssigneeList from './AssigneeList';
+import DependencyList from './DependencyList';
 
 const Task = ({ isOpen, tasks }) => {
-    // console.log(tasks)
 
     const dispatch = useDispatch();
     const taskModal = useSelector((state) => state.task.taskModal);
@@ -16,11 +16,47 @@ const Task = ({ isOpen, tasks }) => {
     const client = useSelector((state) => state.webSocket.client);
     const [task, setTask] = useState(taskModal.task);
     const [showAssigneeList, setShowAssigneeList] = useState(false);
+    const [showDependencyList, setShowDependencyList] = useState(false);
+    const [taskList, setTaskList] = useState([]);
+
+
+    useEffect(() => {
+        let l1 = [];
+        createTaskList(tasks, l1);
+        l1 = l1.filter(
+            (prevDependency) => !task?.dependencies.some(
+                (currentDependency) => currentDependency.id === (prevDependency.id || currentDependency===task.id)
+            )
+        );
+        // console.log(l1);
+
+        setTaskList(l1);
+
+
+    }, [tasks])
+
+    useEffect(() => {
+        setTaskList((p) => {
+            return p.filter(
+                (prevDependency) => !task?.dependencies.some(
+                    (currentDependency) => currentDependency.id === prevDependency.id
+                )
+            );
+        });
+    }, [task?.dependencies])
+
     const handleAddAssignee = () => {
-        setShowAssigneeList((p)=>!p); // Show the AssigneeList
+        setShowAssigneeList((p) => !p);
     };
-    const onClose=()=>{
+
+    const onCloseAssignee = () => {
         setShowAssigneeList(false);
+    }
+    const handleDependencyList = () => {
+        setShowDependencyList((p) => !p);
+    };
+    const onCloseDependencyList = () => {
+        setShowDependencyList(false);
     }
     const handleEdit = (currentTask, field, value) => {
         setTask({ ...task, [field]: value })
@@ -36,12 +72,17 @@ const Task = ({ isOpen, tasks }) => {
 
             return updatedTree;
         });
-        let delta = extractDelta(oldTask, newTask)
-        if(field=='start'){
-            delta.start=updateDate(currentTask.start,value);
+        // let delta = extractDelta(oldTask, newTask)
+        const delta = {
+            id: currentTask.id,
+            index: currentTask.index,
+            field: value
         }
-        if(field=='end'){
-            delta.end=updateDate(currentTask.end,value);
+        if (field == 'start') {
+            delta.start = updateDate(currentTask.start, value);
+        }
+        if (field == 'end') {
+            delta.end = updateDate(currentTask.end, value);
         }
         console.log("delta", delta)
         dispatch(setTasks({ tasks: updatedTasksList }));
@@ -49,8 +90,6 @@ const Task = ({ isOpen, tasks }) => {
         dispatch(setUpdated())
 
     };
-
-
 
 
 
@@ -142,17 +181,21 @@ const Task = ({ isOpen, tasks }) => {
             <div className="task-actions">
                 <button className="btn-add-assignee" onClick={handleAddAssignee}>Add assignee</button>
                 <button className="btn-attach-files">Attach files</button>
-                <button className="btn-add-dependency">Add dependency</button>
+                <button className="btn-add-dependency" onClick={handleDependencyList}>Add dependency</button>
                 <button className="btn-log-time">Log time</button>
             </div>
-            {showAssigneeList && <AssigneeList onClose={onClose}/>}
+            {showAssigneeList && <AssigneeList onClose={onCloseAssignee} />}
+            {showDependencyList && <DependencyList onClose={onCloseDependencyList} currentTask={{ id: task.id, index: task.index,start:task.start,end:task.end }} taskList={taskList||[]} />}
             <hr />
 
             <div className="task-details">
                 <div className="task-date">
                     <label>Start date:</label>
                     <div className='task-inputs'>
-                        <input type="date" defaultValue={formatDate(task?.start)} onChange={(e)=>handleEdit(task,"start",e.target.value)}/>
+                        <input type="date" defaultValue={formatDate(task?.start)}
+                            onChange={(e) => setTask({ ...task, ["start"]: e.target.value })}
+                            onBlur={(e) => handleEdit(task, "start", e.target.value)}
+                        />
                         <input type="time" defaultValue={formatTime(task?.start)} />
 
                     </div>
@@ -160,7 +203,11 @@ const Task = ({ isOpen, tasks }) => {
                 <div className="task-date">
                     <label>End date:</label>
                     <div className='task-inputs'>
-                        <input type="date" defaultValue={formatDate(task?.end)} onChange={(e)=>handleEdit(task,"end",e.target.value)}/>
+                        <input type="date" defaultValue={formatDate(task?.end)}
+                            onChange={(e) => setTask({ ...task, ["end"]: e.target.value })}
+                            onBlur={(e) => handleEdit(task, "end", e.target.value)}
+
+                        />
                         <input type="time" defaultValue={formatTime(task?.end)} />
                     </div>
 

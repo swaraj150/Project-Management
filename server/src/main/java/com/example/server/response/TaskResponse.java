@@ -1,6 +1,7 @@
 package com.example.server.response;
 
 import com.example.server.dto.UserDTO;
+import com.example.server.entities.Dependency;
 import com.example.server.enums.CompletionStatus;
 import com.example.server.enums.TaskType;
 import lombok.AllArgsConstructor;
@@ -35,4 +36,5 @@ public class TaskResponse {
     private UUID projectId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private List<Dependency> dependencies;
 }

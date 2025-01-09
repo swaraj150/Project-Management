@@ -3,7 +3,6 @@ package com.example.server.controller;
 import com.example.server.entities.User;
 import com.example.server.requests.CreateProjectRequest;
 import com.example.server.requests.CreateTaskRequest;
-import com.example.server.response.MilestoneResponse;
 import com.example.server.response.ProjectResponse;
 import com.example.server.response.TaskResponse;
 //import com.example.server.service.MilestoneService;

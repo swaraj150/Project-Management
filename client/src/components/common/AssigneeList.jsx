@@ -81,7 +81,7 @@ const AssigneeList = ({onClose}) => {
       </div>
 
       <div>
-        {filteredTeams.map((team) => (
+        {filteredTeams?.map((team) => (
           <div
             key={team.id}
             style={{

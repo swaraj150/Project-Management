@@ -5,8 +5,10 @@ import com.example.server.component.SecurityUtils;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
 import com.example.server.enums.*;
+import com.example.server.exception.InvalidDependencyException;
 import com.example.server.exception.InvalidStatusException;
 import com.example.server.exception.UnauthorizedAccessException;
+import com.example.server.repositories.DependencyRepository;
 import com.example.server.repositories.ProjectRepository;
 import com.example.server.repositories.TaskRepository;
 import com.example.server.repositories.TeamRepository;
@@ -16,6 +18,7 @@ import com.example.server.response.TaskResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TaskService {
     private final ProjectRepository projectRepository;
     private final TeamRepository teamRepository;
@@ -32,6 +36,8 @@ public class TaskService {
     private final UserService userService;
     private final SecurityUtils securityUtils;
     private final NotificationService notificationService;
+    private final DependencyRepository dependencyRepository;
+
     public TaskResponse createTask(CreateTaskRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
@@ -182,6 +188,16 @@ public class TaskService {
             }
             default -> throw new InvalidStatusException("Invalid Status");
         }
+        // check if this change affects any dependees or dependents
+
+//        List<Dependency> dependenciesList=task.getDependencies();
+//        for(Dependency dependency:dependenciesList){
+//            if(!validateDependency(task.getId(),dependency.getDependentTaskId(),dependency.getDependencyType())){
+//                log.error("{} dependency between {} and {} is invalid", dependency.getDependencyType(), task.getId(), dependency.getDependentTaskId());
+//                throw new InvalidDependencyException("Invalid dependency");
+//            }
+//        }
+
         taskRepository.save(task);
     }
 
@@ -212,6 +228,7 @@ public class TaskService {
                 .endDate(task.getEndDate())
                 .completionStatus(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
+//                .dependencies(task.getDependencies())
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
@@ -239,6 +256,7 @@ public class TaskService {
                 .endDate(task.getEndDate())
                 .completionStatus(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
+//                .dependencies(task.getDependencies())
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
@@ -327,6 +345,93 @@ public class TaskService {
     }
     public Integer getTotalEstimatedTime(UUID projectID){
         return taskRepository.getEstimatedHours(projectID);
+    }
+
+//    Finish-to-Start (FS): Task B cannot start until Task A is completed (most common).
+//    Start-to-Start (SS): Task B cannot start until Task A starts.
+//    Finish-to-Finish (FF): Task B cannot finish until Task A finishes.
+//    Start-to-Finish (SF): Task B cannot finish until Task A starts (least common).
+//If you want to enforce dependency validation dynamically during the task lifecycle, you need:
+//
+//    Real-Time Validation Hook:
+//    Validate dependencies every time a task's status changes. For instance, when a task is moved from PENDING to IN_PROGRESS or COMPLETED.
+//
+//    State Transition Rules:
+//    Define and enforce valid state transitions for tasks based on dependency types. For example:
+//    For FINISH_TO_START, Task B can only transition to IN_PROGRESS after Task A transitions to COMPLETED.
+//
+//    Triggers or Event Listeners:
+//    Implement triggers or listeners in the backend to monitor task updates.
+//    Whenever a task's status is updated, check dependencies and reject the update if it violates the rules.
+//
+//    Enhanced Validation Logic:
+//    The method should not only validate the initial state but also consider the transitions and actively monitor tasks.
+
+
+    public boolean validateDependency(UUID fromTaskId,UUID toTaskId,DependencyType dependencyType){
+
+        if (!taskRepository.existsById(fromTaskId) || !taskRepository.existsById(toTaskId)) {
+            log.error("One of the tasks with id : {} and {} do not exist",fromTaskId,toTaskId);
+            throw new EntityNotFoundException("One or both tasks do not exist");
+        }
+        if(!dependencyRepository.doesExist(fromTaskId,toTaskId,dependencyType).isPresent()){
+            log.error("Dependency from id : {} to {} does not exist",fromTaskId,toTaskId);
+            throw new EntityNotFoundException("Dependency does not exist");
+        }
+        CompletionStatus taskStatus=taskRepository.getCompletionStatus(fromTaskId);
+        CompletionStatus dependentStatus=taskRepository.getCompletionStatus(toTaskId);
+        switch (dependencyType){
+            case FINISH_TO_START -> {
+                // task - fs -> dependent task
+                if((taskStatus==CompletionStatus.PENDING || taskStatus==CompletionStatus.IN_PROGRESS) && dependentStatus!=CompletionStatus.PENDING){
+                    return false;
+                }
+            }
+            case FINISH_TO_FINISH -> {
+                // task - ff -> dependent task
+                if((taskStatus==CompletionStatus.PENDING || taskStatus==CompletionStatus.IN_PROGRESS) && (dependentStatus==CompletionStatus.COMPLETED)){
+                    return false;
+                }
+
+            }case START_TO_FINISH -> {
+                // task - sf -> dependent task
+                if(taskStatus==CompletionStatus.PENDING && dependentStatus==CompletionStatus.COMPLETED){
+                    return false;
+                }
+            }case START_TO_START -> {
+                // task - ss -> dependent task
+                if(taskStatus==CompletionStatus.PENDING && dependentStatus!=CompletionStatus.PENDING){
+                    return false;
+                }
+            }
+            default -> {
+                log.error("Invalid dependency type :{}",dependencyType);
+                throw new IllegalArgumentException("Invalid DependencyType");
+            }
+        }
+        return true;
+    }
+
+    public void triggerStatusUpdates(UUID toTaskId,DependencyType dependencyType){
+        Task task=loadTask(toTaskId);
+        switch (dependencyType){
+            case FINISH_TO_START,START_TO_START -> {
+                if(task.getCompletionStatus()==CompletionStatus.PENDING){
+                    task.setCompletionStatus(CompletionStatus.IN_PROGRESS);
+                }
+            }
+            case START_TO_FINISH, FINISH_TO_FINISH -> {
+                if(task.getCompletionStatus()==CompletionStatus.IN_PROGRESS){
+                    task.setCompletionStatus(CompletionStatus.COMPLETED);
+                }
+            }
+            default -> {
+                log.error("Invalid dependency type :{}",dependencyType);
+                throw new IllegalArgumentException("Invalid DependencyType");
+            }
+        }
+
+        taskRepository.save(task);
     }
 
 }

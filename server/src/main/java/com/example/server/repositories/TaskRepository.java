@@ -26,6 +26,9 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     @Query("select t.id from Task t where t.parentTaskId=:id")
     List<UUID> findByParentId(@Param("id") UUID id);
 
+    @Query("select t.completionStatus from Task t where t.id=:taskId")
+    CompletionStatus getCompletionStatus(@Param("taskId") UUID id);
+
     @Query("select count(t) from Task t join Project p on t.projectId = p.id where t.completionStatus=:status and p.organizationId = :organizationId")
     Integer getTaskCountByStatus(@Param(("status")) CompletionStatus status,@Param("organizationId") UUID id);
     @Query("select count(t) from Task t where t.projectId = :projectId ")
