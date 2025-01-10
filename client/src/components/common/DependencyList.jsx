@@ -8,7 +8,8 @@ import { setUpdated } from "../../redux/features/webSocketSlice";
 const DependencyList = ({ onClose, currentTask, taskList }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const tasksState = useSelector((state) => state.task.tasks);
-    const [lag, setLag] = useState(0);
+    const [dependency, setDependency] = useState(null);
+
     // const tasks = [
     //     { id: '1',index:"1", name: 'Task 1' },
     //     { id: '2',index:"2", name: 'Task 2' },
@@ -21,42 +22,43 @@ const DependencyList = ({ onClose, currentTask, taskList }) => {
         task.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const addDependency = (type, toTask) => {
+    const addDependency = (toTask) => {
+        console.log(dependency)
+        
         const delta = {
             id: currentTask.id,
             index: currentTask.index,
             to_task_id: toTask.id,
-            dependency_type: type,
-            lag: lag
+            dependency_type: dependency.type,
+            lag: !dependency.lag?0:dependency.lag
         };
+        const lag=parseInt(delta.lag);
         const toTaskStart = new Date(toTask.start);
         const toTaskEnd = new Date(toTask.end);
         const currentTaskStart = new Date(currentTask.start);
         const currentTaskEnd = new Date(currentTask.end);
         const toTaskDuration = toTaskEnd - toTaskStart;
-        const temp=new Date(toTaskDuration)
-        switch (type) {
+        const day=1000*60*60*24;
+        switch (dependency.type) {
             // lag=0
             case 'FINISH_TO_FINISH': {
-                delta.start = new Date(currentTaskEnd.getTime() - toTaskDuration - 1000*60*60*24).toISOString().slice(0, -1);
-                delta.end = currentTaskEnd.toISOString().slice(0, -1);
-                console.log(new Date(delta.end))
-                console.log(currentTaskEnd)
+                delta.start = new Date(currentTaskEnd.getTime() - toTaskDuration - (lag+1)*day).toISOString().slice(0, -1);
+                delta.end=new Date(currentTaskEnd.getTime()+(lag)*day).toISOString().slice(0,-1);
                 break;
             }
             case 'FINISH_TO_START': {
-                delta.start = currentTaskEnd.toISOString().slice(0, -1);
-                delta.end = new Date(currentTaskEnd.getTime() + toTaskDuration + 1000*60*60*24).toISOString().slice(0, -1);
+                delta.start = new Date(currentTaskEnd.getTime()+(lag)*day).toISOString().slice(0,-1);
+                delta.end = new Date(currentTaskEnd.getTime() + toTaskDuration + (lag+1)*day).toISOString().slice(0, -1);
                 break;
             }
             case 'START_TO_START': {
-                delta.start = currentTaskStart.toISOString().slice(0, -1);
-                delta.end = new Date(currentTaskStart.getTime() + toTaskDuration + 1000*60*60*24).toISOString().slice(0, -1);
+                delta.start = new Date(currentTaskStart.getTime()+(lag)*day).toISOString().slice(0,-1);
+                delta.end = new Date(currentTaskStart.getTime() + toTaskDuration + (lag+1)*day).toISOString().slice(0, -1);
                 break;
             }
             case 'START_TO_FINISH': {
-                delta.start = new Date(currentTaskStart.getTime() - toTaskDuration - 1000*60*60*24).toISOString().slice(0, -1);
-                delta.end = currentTaskStart.toISOString().slice(0, -1);
+                delta.start = new Date(currentTaskStart.getTime() - toTaskDuration - (lag+1)*day).toISOString().slice(0, -1);
+                delta.end = new Date(currentTaskStart.getTime()+(lag)*day).toISOString().slice(0,-1);
                 break;
             }
             default:
@@ -69,9 +71,11 @@ const DependencyList = ({ onClose, currentTask, taskList }) => {
             end: delta.end
         };
         console.log(delta);
-        const updatedTasks = addDependencyGlobally(toTask, type, tasksState, lag);
+        const updatedTasks = addDependencyGlobally(toTask, dependency.type, tasksState, dependency.lag);
         dispatch(setTasks({ tasks: updatedTasks }));
         dispatch(setUpdated())
+        setDependency(null);
+        onClose();
         
         // addDeltaAndPublish(delta,isConnected,client);
     }
@@ -203,10 +207,10 @@ const DependencyList = ({ onClose, currentTask, taskList }) => {
                                     {task.name}
                                 </span>
                                 <div style={{ display: "flex", gap: "10px" }}>
-                                    <button onClick={() => addDependency("FINISH_TO_FINISH", task)} style={{ ...buttonStyle, backgroundColor: "#e0f7fa" }}>Finish-To-Finish</button>
-                                    <button onClick={() => addDependency("START_TO_FINISH", task)} style={{ ...buttonStyle, backgroundColor: "#e3f2fd" }}>Start-To-Finish</button>
-                                    <button onClick={() => addDependency("FINISH_TO_START", task)} style={{ ...buttonStyle, backgroundColor: "#e8f5e9" }}>Finish-To-Start</button>
-                                    <button onClick={() => addDependency("START_TO_START", task)} style={{ ...buttonStyle, backgroundColor: "#fff3e0" }}>Start-To-Start</button>
+                                    <button onClick={() => setDependency({...dependency,type:"FINISH_TO_FINISH"})} style={{ ...buttonStyle, backgroundColor: "#e0f7fa" }}>Finish-To-Finish</button>
+                                    <button onClick={() => setDependency({...dependency,type:"START_TO_FINISH"})} style={{ ...buttonStyle, backgroundColor: "#e3f2fd" }}>Start-To-Finish</button>
+                                    <button onClick={() => setDependency({...dependency,type:"FINISH_TO_START"})} style={{ ...buttonStyle, backgroundColor: "#e8f5e9" }}>Finish-To-Start</button>
+                                    <button onClick={() => setDependency({...dependency,type:"START_TO_START"})} style={{ ...buttonStyle, backgroundColor: "#fff3e0" }}>Start-To-Start</button>
 
                                     <label
                                         htmlFor={`lag-${task.id}`}
@@ -222,8 +226,8 @@ const DependencyList = ({ onClose, currentTask, taskList }) => {
                                         id={`lag-${task.id}`}
                                         type="number"
                                         min="0"
-                                        onBlur={(e) => setLag(e.target.value)}
-                                        // onChange={()}
+                                        onBlur={(e) => setDependency({...dependency,lag:e.target.value})}
+                                        onChange={(e) => setDependency({...dependency,lag:e.target.value})}
                                         style={{
                                             width: "80px",
                                             padding: "8px",
@@ -233,6 +237,7 @@ const DependencyList = ({ onClose, currentTask, taskList }) => {
                                             backgroundColor: "#fff",
                                         }}
                                     />
+                                    <button onClick={()=>addDependency(task)} style={{ ...buttonStyle, backgroundColor: "var(--primary--200)" }}>Save</button>
                                 </div>
                             </div>
                             {/* <div
