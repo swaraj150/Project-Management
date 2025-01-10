@@ -22,9 +22,7 @@ const DependencyList = ({ onClose, currentTask, taskList }) => {
         task.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const addDependency = (toTask) => {
-        console.log(dependency)
-        
+    const addDependency = (toTask) => {        
         const delta = {
             id: currentTask.id,
             index: currentTask.index,

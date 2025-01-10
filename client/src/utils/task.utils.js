@@ -195,13 +195,22 @@ export const formatTime = (date) => {
     return `${hours}:${minutes}`;
 };
 
-export const updateTaskAndFindNested = (id, task, field, value) => {
+export const updateTaskAndFindNested = (id, task, field, value,delta=null) => {
     let updatedNestedTask = null;
     let oldNestedTask = null
 
     if (id === task.id) {
         const oldTask = task;
-        const updatedTask = { ...task, [field]: value };
+        if(delta!=null){
+
+        }
+        let updatedTask;
+        if(delta!=null){
+            updatedTask={...task,...delta};
+        }
+        else{
+            updatedTask = { ...task, [field]: value };
+        }
         return { updatedTree: updatedTask, updatedNestedTask: updatedTask, oldNestedTask: oldTask };
     }
 

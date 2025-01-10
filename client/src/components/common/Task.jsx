@@ -25,7 +25,7 @@ const Task = ({ isOpen, tasks }) => {
         createTaskList(tasks, l1);
         l1 = l1.filter(
             (prevDependency) => !task?.dependencies.some(
-                (currentDependency) => currentDependency.id === (prevDependency.id || currentDependency===task.id)
+                (currentDependency) => currentDependency.id === (prevDependency.id || currentDependency === task.id)
             )
         );
         // console.log(l1);
@@ -60,24 +60,37 @@ const Task = ({ isOpen, tasks }) => {
     }
     const handleEdit = (currentTask, field, value) => {
         setTask({ ...task, [field]: value })
-        let newTask = {};
-        let oldTask = {};
-        const updatedTasksList = tasks.map((task1) => {
-            const { updatedTree, updatedNestedTask, oldNestedTask } = updateTaskAndFindNested(currentTask.id, task1, field, value);
-
-            if (updatedNestedTask) {
-                newTask = updatedNestedTask;
-                oldTask = oldNestedTask;
-            }
-
-            return updatedTree;
-        });
-        // let delta = extractDelta(oldTask, newTask)
         const delta = {
             id: currentTask.id,
             index: currentTask.index,
             field: value
         }
+        if (field == 'status') {
+            if (value == "PENDING") {
+                setTask({ ...task, progress: 0 })
+                delta.progress = 0
+            }
+            else if (value == "COMPLETED") {
+                setTask({ ...task, progress: 100 })
+                delta.progress = 100
+            }
+        }
+        const excludeFields = ["id", "index"];
+        const deltaToSend = Object.keys(delta)
+            .filter((key) => !excludeFields.includes(key))
+            .reduce((acc, key) => {
+                acc[key] = delta[key];
+                return acc;
+            }, {});
+        
+
+        const updatedTasksList = tasks.map((task1) => {
+            const { updatedTree, updatedNestedTask, oldNestedTask } = updateTaskAndFindNested(currentTask.id, task1, field, value,deltaToSend);
+
+            return updatedTree;
+        });
+        // let delta = extractDelta(oldTask, newTask)
+
         if (field == 'start') {
             delta.start = updateDate(currentTask.start, value);
         }
@@ -142,15 +155,7 @@ const Task = ({ isOpen, tasks }) => {
 
             <hr />
 
-            {/* <div className="task-progress">
-                <div className="progress-bar-container">
-                    <div className="progress-bar" style={{ width: `${task?.progress}%` }}></div>
-                </div>
-                <span className="progress-percentage">{task?.progress}</span>
-                <span className="task-status">{task?.status}</span>
-                <span className="task-priority">MEDIUM</span>
-                <span className="logged-time">Logged time: 40m</span>
-            </div> */}
+
             <div className="task-progress">
                 <div className="progress-bar-container">
                     <div className="progress-bar" style={{ width: `${task?.progress}%` }}></div>
@@ -172,8 +177,43 @@ const Task = ({ isOpen, tasks }) => {
                     />
                 </div>
                 <span className="progress-percentage">{task?.progress}%</span>
-                <span className="task-status">{task?.status}</span>
-                <span className="task-priority">MEDIUM</span>
+                <label>
+                    Status:
+                    <select
+                        className="custom-dropdown"
+                        value={task?.status}
+                        // onChange={()=>handleEdit(task,"status",e.target.value)}
+                        onChange={(e) => {
+                            setTask({ ...task, status: e.target.value })
+                            handleEdit(task, "status", e.target.value)
+                        }
+                        }
+                    >
+                        <option value="PENDING">Pending</option>
+                        <option value="IN_PROGRESS">In Progress</option>
+                        <option value="COMPLETED">Completed</option>
+                    </select>
+                </label>
+                {/* <span className="task-status">{task?.status}</span> */}
+                <label
+                    style={{
+                        marginLeft: "7%"
+                    }}
+                >
+                    Level:
+                    <select
+                        className="custom-dropdown2"
+                        value={task?.level}
+                        onChange={() => handleEdit(task, "status", e.target.value)}
+
+                    // onChange={(e)=>setTask({...task,status:e.target.value})}
+                    >
+                        <option value="BEGINNER">Beginner</option>
+                        <option value="INTERMEDIATE">Intermediate</option>
+                        <option value="EXPERT">Expert</option>
+                    </select>
+                </label>
+                {/* <span className="task-priority">MEDIUM</span> */}
                 <span className="logged-time">Logged time: 40m</span>
             </div>
 
@@ -185,7 +225,7 @@ const Task = ({ isOpen, tasks }) => {
                 <button className="btn-log-time">Log time</button>
             </div>
             {showAssigneeList && <AssigneeList onClose={onCloseAssignee} />}
-            {showDependencyList && <DependencyList onClose={onCloseDependencyList} currentTask={{ id: task.id, index: task.index,start:task.start,end:task.end }} taskList={taskList||[]} />}
+            {showDependencyList && <DependencyList onClose={onCloseDependencyList} currentTask={{ id: task.id, index: task.index, start: task.start, end: task.end }} taskList={taskList || []} />}
             <hr />
 
             <div className="task-details">
