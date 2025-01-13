@@ -59,12 +59,20 @@ const Task = ({ isOpen, tasks }) => {
         setShowDependencyList(false);
     }
     const handleEdit = (currentTask, field, value) => {
-        setTask({ ...task, [field]: value })
+        const currentStatus=currentTask.status
+        if (currentStatus === 'COMPLETED') {
+            console.warn(`Task is already completed. No further updates allowed.`);
+            return;
+        }
+        setTask({ ...currentTask, [field]: value })
         const delta = {
-            id: currentTask.id,
-            index: currentTask.index,
+            // id: currentTask.id,
+            // index: currentTask.index,
             field: value
         }
+
+        // effect should propagate through subsequent dependencies
+        const dependencies_delta = [];
         if (field == 'status') {
             if (value == "PENDING") {
                 setTask({ ...task, progress: 0 })
@@ -74,18 +82,20 @@ const Task = ({ isOpen, tasks }) => {
                 setTask({ ...task, progress: 100 })
                 delta.progress = 100
             }
+
+            const dependencies = currentTask.dependencies
+            
+            for (const dependency of dependencies) {
+                // for now, i am not changing states in ui first (will add this, once optimization is found)
+               
+
+            }
         }
-        const excludeFields = ["id", "index"];
-        const deltaToSend = Object.keys(delta)
-            .filter((key) => !excludeFields.includes(key))
-            .reduce((acc, key) => {
-                acc[key] = delta[key];
-                return acc;
-            }, {});
-        
+
+
 
         const updatedTasksList = tasks.map((task1) => {
-            const { updatedTree, updatedNestedTask, oldNestedTask } = updateTaskAndFindNested(currentTask.id, task1, field, value,deltaToSend);
+            const { updatedTree, updatedNestedTask, oldNestedTask } = updateTaskAndFindNested(currentTask.id, task1, field, value, delta);
 
             return updatedTree;
         });
@@ -97,9 +107,14 @@ const Task = ({ isOpen, tasks }) => {
         if (field == 'end') {
             delta.end = updateDate(currentTask.end, value);
         }
+        delta.id = currentTask.id
+        delta.index = currentTask.index
         console.log("delta", delta)
         dispatch(setTasks({ tasks: updatedTasksList }));
         dispatch(addDeltaAndPublish(delta, isConnected, client));
+        for(const deltas in dependencies_delta){
+            dispatch(addDeltaAndPublish(deltas, isConnected, client));
+        }
         dispatch(setUpdated())
 
     };

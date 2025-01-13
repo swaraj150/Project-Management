@@ -20,7 +20,7 @@ export const convertTasksFromServer = (task, index1, level = 0, dispatch, parent
         end: task.endDate,
         status: task.completionStatus ? task.completionStatus : 'PENDING',
         subtasks: task.subTasks ? task.subTasks.map((subTask) => convertTasksFromServer(subTask, taskIndex, level++, dispatch, taskIndex)) : [],
-        dependencies:[],
+        dependencies: [],
         progress: 60,
         parentTaskId: parentTaskId,
         created_by: task.createdByUser,
@@ -99,9 +99,10 @@ export const convertTasksToServer = (delta) => {
         estimatedHours: delta.estimated_hours || null,
         startDate: delta.start || null,
         endDate: delta.end || null,
-        toTaskId:delta.to_task_id||null,
-        lag:delta.lag||null,
-        dependencyType:delta.dependency_type||null
+        toTaskId: delta.to_task_id || null,
+        lag: delta.lag || null,
+        dependencyType: delta.dependency_type || null,
+        triggerAt: delta.triggerAt || null
     }
 }
 
@@ -195,20 +196,20 @@ export const formatTime = (date) => {
     return `${hours}:${minutes}`;
 };
 
-export const updateTaskAndFindNested = (id, task, field, value,delta=null) => {
+export const updateTaskAndFindNested = (id, task, field, value, delta = null) => {
     let updatedNestedTask = null;
     let oldNestedTask = null
 
     if (id === task.id) {
         const oldTask = task;
-        if(delta!=null){
+        if (delta != null) {
 
         }
         let updatedTask;
-        if(delta!=null){
-            updatedTask={...task,...delta};
+        if (delta != null) {
+            updatedTask = { ...task, ...delta };
         }
-        else{
+        else {
             updatedTask = { ...task, [field]: value };
         }
         return { updatedTree: updatedTask, updatedNestedTask: updatedTask, oldNestedTask: oldTask };
@@ -274,12 +275,12 @@ const addMilestones = (tasks, milestones, milestonePointerRef) => {
 
     return newList;
 };
-export const createTaskList = (tasks,newList) => {
+export const createTaskList = (tasks, newList) => {
 
     tasks.forEach((task) => {
         newList.push(task);
-        if(task.subtasks && task.subtasks.length>0){
-            createTaskList(task.subtasks,newList);
+        if (task.subtasks && task.subtasks.length > 0) {
+            createTaskList(task.subtasks, newList);
         }
     });
 };
@@ -291,9 +292,73 @@ export const fetchTasksByProject = async (projectId, dispatch, project) => {
     dispatch(setCurrentProject(project));
 }
 
-export const dependency_types={
-    FINISH_TO_START:"0",
-    START_TO_START:"1",
-    FINISH_TO_FINISH:"2",
-    START_TO_FINISH:"3",
+export const dependency_types = {
+    FINISH_TO_START: "0",
+    START_TO_START: "1",
+    FINISH_TO_FINISH: "2",
+    START_TO_FINISH: "3",
 }
+
+const updateDependenciesStatus = (tasks, taskId, value, dependencies_delta, visited = new Set()) => {
+    if (visited.has(taskId)) return; // Prevent infinite recursion
+    visited.add(taskId);
+
+    tasks.forEach((task) => {
+        if (task.id === taskId) {
+            const { dependencies } = task;
+
+            if (!dependencies || dependencies.length === 0) {
+                return;
+            }
+
+            for (const dependency of dependencies) {
+                const { type, lag, id: dependentTaskId, index } = dependency;
+
+                let newStatus = computeNewStatus(type, value, task.completionStatus);
+
+                const triggerAt = lag > 0
+                    ? new Date(Date.now() + lag * (1000 * 60 * 60 * 24)).toISOString()
+                    : null;
+
+                dependencies_delta.push({
+                    id: dependentTaskId,
+                    index,
+                    status: newStatus,
+                    triggerAt,
+                });
+
+                // propagate to dependent tasks
+                const dependentTask = tasks.find((t) => t.id === dependentTaskId);
+                if (dependentTask) {
+                    updateDependenciesStatus(tasks, dependentTask.id, newStatus, dependencies_delta, visited);
+                }
+            }
+        }
+
+        if (task.subtasks && task.subtasks.length > 0) {
+            updateDependenciesStatus(task.subtasks, taskId, value, dependencies_delta, visited);
+        }
+    });
+};
+
+    
+const computeNewStatus = (type, value, currentStatus) => {
+    switch (type) {
+        case "FINISH_TO_START":
+            return value === 'COMPLETED' ? "IN_PROGRESS" : "PENDING";
+        case "FINISH_TO_FINISH":
+            return value === 'COMPLETED' && currentStatus === 'IN_PROGRESS' ? "COMPLETED" : currentStatus;
+        case "START_TO_START":
+            return value === 'IN_PROGRESS' ? "IN_PROGRESS" : value;
+        case "START_TO_FINISH":
+            if (value === 'IN_PROGRESS' && currentStatus === 'IN_PROGRESS') {
+                return "COMPLETED";
+            } else if (value === 'IN_PROGRESS' && currentStatus === 'PENDING') {
+                return "IN_PROGRESS";
+            }
+            return currentStatus;
+        default:
+            console.warn(`Unknown dependency type: ${type}`);
+            return currentStatus;
+    }
+};
