@@ -2,6 +2,8 @@ package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.UserDTO;
+import com.example.server.entities.Project;
+import com.example.server.entities.Task;
 import com.example.server.entities.TimeLog;
 import com.example.server.entities.User;
 import com.example.server.enums.ProjectAuthority;
@@ -75,6 +77,17 @@ public class TimeLogService {
         User user=userService.loadAuthenticatedUser();
         return timeLogRepository.getTimeLogCount(user.getOrganizationId());
     }
+
+
+    public void deleteTimeLog(UUID timeLogId){
+        // delete task from project
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.DELETE_TIMELOG)){
+            throw new UnauthorizedAccessException("User doesn't have required authority");
+        }
+        timeLogRepository.deleteById(timeLogId);
+    }
+
 
 
 }

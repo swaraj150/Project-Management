@@ -1,7 +1,6 @@
 package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
-import com.example.server.dto.OrganizationDTO;
 import com.example.server.dto.TeamDTO;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
@@ -14,7 +13,6 @@ import com.example.server.repositories.TeamRepository;
 import com.example.server.repositories.UserExpertiseRepository;
 import com.example.server.repositories.UserRepository;
 import com.example.server.requests.TeamCreateRequest;
-import com.example.server.response.TaskResponse;
 import com.example.server.response.TeamResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
@@ -90,10 +88,10 @@ public class TeamService {
         teamRepository.save(team);
         organization.getTeams().add(team.getId());
         organizationRepository.save(organization);
-        return loadTeam(team.getId());
+        return loadTeamResponse(team.getId());
     }
 
-    public TeamResponse loadTeam(@NonNull UUID id){
+    public TeamResponse loadTeamResponse(@NonNull UUID id){
         TeamDTO teamDTO=createTeamDto(id);
         List<UserDTO> devs=new ArrayList<>();
         List<UserDTO> testers=new ArrayList<>();
@@ -115,7 +113,7 @@ public class TeamService {
                 .testers(testers)
                 .build();
     }
-    public Team loadTeamById(@NonNull UUID id){
+    public Team loadTeam(@NonNull UUID id){
         return teamRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Team not found"));
     }
 
@@ -125,7 +123,7 @@ public class TeamService {
         Organization organization=organizationService.loadOrganization(user.getOrganizationId());
         Set<TeamResponse> teamResponses=new HashSet<>();
         for(UUID teamId:organization.getTeams()){
-            teamResponses.add(loadTeam(teamId));
+            teamResponses.add(loadTeamResponse(teamId));
         }
         return teamResponses;
     }
@@ -138,7 +136,7 @@ public class TeamService {
 
         for (Team team : teams) {
             if (pattern.matcher(team.getName()).find()) {
-                suggestions.add(loadTeam(team.getId()));
+                suggestions.add(loadTeamResponse(team.getId()));
             }
         }
         return suggestions;
@@ -224,11 +222,23 @@ public class TeamService {
         List<Map<String,Object>> teamScores=new ArrayList<>();
         for(UUID teamId:teams){
             Map<String,Object> m=new HashMap<>();
-            m.put("team",loadTeam(teamId));
+            m.put("team", loadTeamResponse(teamId));
             m.put("score",calculateTeamScore(teamId,projectId,organization.getWorkloadLimit().getLimit()));
             teamScores.add(m);
         }
         return teamScores;
+    }
+
+    public void deleteTeam(@NonNull UUID teamId){
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.DELETE_TEAM)){
+            throw new UnauthorizedAccessException("User doesn't have required authority");
+        }
+
+        Team team= loadTeam(teamId);
+        team.getMemberIds().clear();
+        teamRepository.save(team);
+        teamRepository.delete(team);
     }
 
 

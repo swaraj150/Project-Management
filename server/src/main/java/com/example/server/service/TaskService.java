@@ -433,5 +433,23 @@ public class TaskService {
 
         taskRepository.save(task);
     }
+    
+    public void deleteTask(UUID taskId,UUID projectId){
+        // delete task from project
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.DELETE_TASKS)){
+            throw new UnauthorizedAccessException("User doesn't have required authority");
+        }
+        Project project=projectRepository.findById(projectId).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        project.getTasks().remove(taskId);
+        projectRepository.save(project);
+
+        // delete assigned to users
+        Task task=loadTask(taskId);
+        task.getAssignedTo().clear();
+        taskRepository.save(task);
+
+        taskRepository.delete(task);
+    }
 
 }

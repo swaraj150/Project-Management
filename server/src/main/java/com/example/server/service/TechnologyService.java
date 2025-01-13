@@ -40,5 +40,8 @@ public class TechnologyService {
         return technologyRepository.findByProjectId(projectId).orElseThrow(()->new EntityNotFoundException("Tech not found"));
     }
 
+    public void deleteTechnology(@NonNull UUID id){
+        technologyRepository.deleteById(id);
+    }
 
 }

@@ -1,7 +1,6 @@
 package com.example.server.controller;
 
 import com.example.server.component.SecurityUtils;
-import com.example.server.entities.Project;
 import com.example.server.enums.ProjectAuthority;
 import com.example.server.entities.User;
 import com.example.server.exception.UnauthorizedAccessException;
@@ -42,7 +41,7 @@ public class TeamController {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        TeamResponse teamResponse=teamService.loadTeam(teamRepository.findTeamIdByUserId(user.getId()));
+        TeamResponse teamResponse=teamService.loadTeamResponse(teamRepository.findTeamIdByUserId(user.getId()));
         HashMap<String,Object> h=new HashMap<>();
         h.put("team",teamResponse);
         return ResponseEntity.ok(h);
@@ -71,6 +70,12 @@ public class TeamController {
         HashMap<String,Object> h=new HashMap<>();
         h.put("teams",projectService.suggestTeams(projectId));
         return ResponseEntity.ok(h);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@RequestParam @NonNull UUID teamId){
+        teamService.deleteTeam(teamId);
+        return ResponseEntity.ok("Deleted Successfully");
     }
 
 

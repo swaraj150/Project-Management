@@ -67,6 +67,11 @@ public class ProjectController {
         return ResponseEntity.ok(h);
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@RequestParam @NonNull UUID projectId){
+        projectService.deleteProject(projectId);
+        return ResponseEntity.ok("Deleted Successfully");
+    }
 
 
 }

@@ -2,8 +2,6 @@ package com.example.server.controller;
 
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.OrganizationDTO;
-import com.example.server.entities.ChatRoom;
-import com.example.server.entities.Organization;
 import com.example.server.entities.Team;
 import com.example.server.entities.User;
 import com.example.server.requests.CreateChatRoomRequest;
@@ -33,7 +31,7 @@ public class ChatRoomController {
         List<UUID> members;
         User user=userService.loadUser(securityUtils.getCurrentUsername());
         if(createChatRoomRequest.getOrganizationId()==null){
-            Team team=teamService.loadTeamById(createChatRoomRequest.getTeamId());
+            Team team=teamService.loadTeam(createChatRoomRequest.getTeamId());
             members=new ArrayList<>(team.getMemberIds());
         }
         else {

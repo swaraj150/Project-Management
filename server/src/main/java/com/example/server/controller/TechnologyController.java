@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/tech")
 @RequiredArgsConstructor
@@ -17,4 +19,11 @@ public class TechnologyController {
         technologyService.create(createTechRequest);
         return ResponseEntity.ok("tech added");
     }
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@RequestParam @NonNull UUID id){
+        technologyService.deleteTechnology(id);
+        return ResponseEntity.ok("Deleted Successfully");
+    }
+    // additions and removals will be added later
+
 }

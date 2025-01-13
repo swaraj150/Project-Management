@@ -61,6 +61,11 @@ public class TaskController {
         return ResponseEntity.ok(h);
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteTask(@RequestParam @NonNull UUID taskId,@RequestParam @NonNull UUID projectId){ //jugaad for now
+        taskService.deleteTask(taskId,projectId);
+        return ResponseEntity.ok("Deleted successfully");
+    }
 
 
 

@@ -39,10 +39,6 @@ public class Task {
     private Set<UUID> assignedTo = new HashSet<>();
 
 
-//    @ElementCollection(fetch = FetchType.EAGER)
-//    @CollectionTable(name = "dependencies", joinColumns = @JoinColumn(name = "task_id"))
-//    @Column(name = "dependency_id")
-//    private List<UUID> dependencies = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private Integer estimatedHours;
