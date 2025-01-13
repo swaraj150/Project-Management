@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createTaskList, extractDelta, formatDate, formatTime, updateDate, updateTaskAndFindNested } from '../../utils/task.utils';
+import { createTaskList, extractDelta, formatDate, formatTime, updateDate, updateDependenciesStatus, updateTaskAndFindNested } from '../../utils/task.utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { addDeltaAndPublish } from '../../utils/websocket.utils';
 import EditField from './EditField';
@@ -83,13 +83,7 @@ const Task = ({ isOpen, tasks }) => {
                 delta.progress = 100
             }
 
-            const dependencies = currentTask.dependencies
-            
-            for (const dependency of dependencies) {
-                // for now, i am not changing states in ui first (will add this, once optimization is found)
-               
-
-            }
+           updateDependenciesStatus(tasks,currentTask.id,value,dependencies_delta)
         }
 
 

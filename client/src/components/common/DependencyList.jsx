@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addDeltaAndPublish } from "../../utils/websocket.utils";
 import { setTasks } from "../../redux/features/taskSlice";
-import { createTaskList } from "../../utils/task.utils";
+import { createTaskList, updateDependenciesDates } from "../../utils/task.utils";
 import { setUpdated } from "../../redux/features/webSocketSlice";
 
 const DependencyList = ({ onClose, currentTask, taskList }) => {
@@ -30,14 +30,14 @@ const DependencyList = ({ onClose, currentTask, taskList }) => {
             dependency_type: dependency.type,
             lag: !dependency.lag ? 0 : dependency.lag
         };
+
+        console.log(dependency)
         const lag = parseInt(delta.lag);
         const toTaskStart = new Date(toTask.start);
         const toTaskEnd = new Date(toTask.end);
         const currentTaskStart = new Date(currentTask.start);
         const currentTaskEnd = new Date(currentTask.end);
         const toTaskDuration = toTaskEnd - toTaskStart;
-        const dependencies = toTask.dependencies
-        const dependencies_delta = [];
         const day = 1000 * 60 * 60 * 24;
         switch (dependency.type) {
            
@@ -71,9 +71,15 @@ const DependencyList = ({ onClose, currentTask, taskList }) => {
             end: delta.end
         };
         console.log(delta);
-        const updatedTasks = addDependencyGlobally(currentTask,toTask, dependency.type, tasksState, dependency.lag);
+        const updatedTasks = addDependencyGlobally(currentTask,toTask, dependency.type, tasksState, lag);
+        const dependencies_delta=[]
+        dependencies_delta.push(delta)
+        updateDependenciesDates(updatedTasks,toTask.id,toTask.start,toTask.end,dependencies_delta)
         dispatch(setTasks({ tasks: updatedTasks }));
         dispatch(setUpdated())
+        for(const delta1 in dependencies_delta){
+            dispatch(addDeltaAndPublish(delta1,isConnected,client))
+        }
         setDependency(null);
         onClose();
 
@@ -85,20 +91,20 @@ const DependencyList = ({ onClose, currentTask, taskList }) => {
             if (task.index === fromTask.index) {
                 return {
                     ...task,
-                    dependencies: [...(task.dependencies || []), { id: toTask.id, index: toTask.index,task:toTask, type: type, lag: lag }],
-                    subtasks: task.subtasks ? addDependencyGlobally(fromTask,toTask, type, task.subtasks, currentTask) : task.subtasks,
+                    dependencies: [...(task.dependencies || []), { id: toTask.id, index: toTask.index, type: type, lag: lag,start:toTask.start,end:toTask.end }],
+                    subtasks: task.subtasks ? addDependencyGlobally(fromTask,toTask, type, task.subtasks, lag) : task.subtasks,
                 };
             }
             if (task.index === toTask.index) {
                 const updatedTask= { ...task, start: toTask.start, end: toTask.end };// change in its dependencies might need
-                // update its dependencies too
-                // https://chatgpt.com/c/677ae16a-e0bc-8010-9866-317b9337d3b5
+                
+                
                 return updatedTask;
             }
             if (task.subtasks && task.subtasks.length > 0) {
                 return {
                     ...task,
-                    subtasks: addDependencyGlobally(fromTask,toTask, type, task.subtasks, currentTask),
+                    subtasks: addDependencyGlobally(fromTask,toTask, type, task.subtasks, lag),
                 };
             }
             return task;

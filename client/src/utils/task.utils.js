@@ -299,8 +299,8 @@ export const dependency_types = {
     START_TO_FINISH: "3",
 }
 
-const updateDependenciesStatus = (tasks, taskId, value, dependencies_delta, visited = new Set()) => {
-    if (visited.has(taskId)) return; // Prevent infinite recursion
+export const updateDependenciesStatus = (tasks, taskId, value, dependencies_delta, visited = new Set()) => {
+    if (visited.has(taskId)) return;
     visited.add(taskId);
 
     tasks.forEach((task) => {
@@ -319,6 +319,8 @@ const updateDependenciesStatus = (tasks, taskId, value, dependencies_delta, visi
                 const triggerAt = lag > 0
                     ? new Date(Date.now() + lag * (1000 * 60 * 60 * 24)).toISOString()
                     : null;
+
+
 
                 dependencies_delta.push({
                     id: dependentTaskId,
@@ -340,8 +342,48 @@ const updateDependenciesStatus = (tasks, taskId, value, dependencies_delta, visi
         }
     });
 };
+export const updateDependenciesDates = (tasks, taskId, fromStart, fromEnd, dependencies_delta, visited = new Set()) => {
+    if (visited.has(taskId)) return;
 
-    
+
+    tasks.forEach((task) => {
+        if (task.id === taskId) {
+            const { dependencies } = task;
+
+            if (!dependencies || dependencies.length === 0) {
+                return;
+            }
+
+            for (const dependency of dependencies) {
+                const { type, lag, id, index } = dependency;
+                
+                // const startDuration = new Date(start).getTime();
+                // const endDuration = new Date(end).getTime();
+
+                // const newStart = new Date(new Date(task.start).getTime() + (endDuration - startDuration)).toISOString();
+                // const newEnd = new Date(new Date(task.end).getTime() + (endDuration - startDuration)).toISOString();
+                const {start,end}=computeDateTimeShift(fromStart,fromEnd,dependency.start,dependency.end,dependency)
+
+                dependencies_delta.push({
+                    id: id,
+                    index,
+                    start: start,
+                    end: end,
+                });
+                console.log(dependencies_delta)
+                visited.add(taskId);
+                updateDependenciesDates(tasks, id, start, end, dependencies_delta, visited);
+
+            }
+        }
+
+        if (task.subtasks && task.subtasks.length > 0) {
+            updateDependenciesDates(task.subtasks, taskId, fromStart, fromEnd, dependencies_delta, visited);
+        }
+    });
+};
+
+
 const computeNewStatus = (type, value, currentStatus) => {
     switch (type) {
         case "FINISH_TO_START":
@@ -362,3 +404,41 @@ const computeNewStatus = (type, value, currentStatus) => {
             return currentStatus;
     }
 };
+
+export const computeDateTimeShift = (fromTaskStart,fromTaskEnd, toTaskStart,toTaskEnd, dependency) => {
+
+    const lag = dependency.lag;
+    toTaskStart = new Date(toTaskStart);
+    toTaskEnd = new Date(toTaskEnd);
+    const currentTaskStart = new Date(fromTaskStart);
+    const currentTaskEnd = new Date(fromTaskEnd);
+    const toTaskDuration = toTaskEnd - toTaskStart;
+    const day = 1000 * 60 * 60 * 24;
+    let start, end;
+    switch (dependency.type) {
+
+        case 'FINISH_TO_FINISH': {
+            start = new Date(currentTaskEnd.getTime() - toTaskDuration - (lag + 1) * day).toISOString().slice(0, -1);
+            end = new Date(currentTaskEnd.getTime() + (lag) * day).toISOString().slice(0, -1);
+            break;
+        }
+        case 'FINISH_TO_START': {
+            start = new Date(currentTaskEnd.getTime() + (lag) * day).toISOString().slice(0, -1);
+            end = new Date(currentTaskEnd.getTime() + toTaskDuration + (lag + 1) * day).toISOString().slice(0, -1);
+            break;
+        }
+        case 'START_TO_START': {
+            start = new Date(currentTaskStart.getTime() + (lag) * day).toISOString().slice(0, -1);
+            end = new Date(currentTaskStart.getTime() + toTaskDuration + (lag + 1) * day).toISOString().slice(0, -1);
+            break;
+        }
+        case 'START_TO_FINISH': {
+            start = new Date(currentTaskStart.getTime() - toTaskDuration - (lag + 1) * day).toISOString().slice(0, -1);
+            end = new Date(currentTaskStart.getTime() + (lag) * day).toISOString().slice(0, -1);
+            break;
+        }
+        default:
+            break;
+    }
+    return { start, end }
+}
