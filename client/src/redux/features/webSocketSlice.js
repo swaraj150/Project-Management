@@ -26,11 +26,15 @@ export const webSocketSlice = createSlice({
         setUpdated: (state,action)=>{
             const flag=state.updated;
             state.updated=!flag
+        },
+        removeDelta:(state,action)=>{
+            const deltas=state.deltas;
+            state.deltas=deltas.filter((task)=>task.index!=action.payload)
         }
         
     }
 })
 
-export const { setClient, setConnected, setDeltas, addDelta, mergeDeltas, setUpdated } = webSocketSlice.actions;
+export const { setClient, setConnected, setDeltas, addDelta, mergeDeltas, setUpdated,removeDelta } = webSocketSlice.actions;
 
 export default webSocketSlice.reducer;

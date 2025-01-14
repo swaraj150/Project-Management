@@ -102,7 +102,9 @@ export const convertTasksToServer = (delta) => {
         toTaskId: delta.to_task_id || null,
         lag: delta.lag || null,
         dependencyType: delta.dependency_type || null,
-        triggerAt: delta.triggerAt || null
+        triggerAt: delta.triggerAt || null,
+        publishType:delta.publish_type||null,
+        projectId:delta.project_id||null
     }
 }
 
@@ -241,6 +243,7 @@ export const setupTasks = (tasks, dispatch) => {
         const task1 = convertTasksFromServer(task, index + 1, 0, dispatch, null);
         return task1;
     })
+    console.log("tasks: ",tasks)
     dispatch(setTasks({ tasks: tasks1 }))
     const { pending, completed, in_progress } = segregateTasks(tasks1);
     dispatch(setKanbanTasks({ status: 'pending', tasks: pending }))
@@ -356,12 +359,6 @@ export const updateDependenciesDates = (tasks, taskId, fromStart, fromEnd, depen
 
             for (const dependency of dependencies) {
                 const { type, lag, id, index } = dependency;
-                
-                // const startDuration = new Date(start).getTime();
-                // const endDuration = new Date(end).getTime();
-
-                // const newStart = new Date(new Date(task.start).getTime() + (endDuration - startDuration)).toISOString();
-                // const newEnd = new Date(new Date(task.end).getTime() + (endDuration - startDuration)).toISOString();
                 const {start,end}=computeDateTimeShift(fromStart,fromEnd,dependency.start,dependency.end,dependency)
 
                 dependencies_delta.push({
@@ -441,4 +438,17 @@ export const computeDateTimeShift = (fromTaskStart,fromTaskEnd, toTaskStart,toTa
             break;
     }
     return { start, end }
+}
+
+
+export const deleteTask=async(taskId,projectId,dispatch)=>{
+    try {
+        await taskApi.delete(taskId,projectId);
+        const { res, err }=await taskApi.fetchByProject(projectId);
+        if (res && res.tasks) {
+            setupTasks(res.tasks, dispatch);
+        }
+    } catch (error) {
+        console.log(error)
+    }
 }

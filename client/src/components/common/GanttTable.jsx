@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { addTask, setTasks, toggleTaskModal } from "../../redux/features/taskSlice";
-import { calculateIndex, extractDelta, formatDate, updateTaskAndFindNested } from "../../utils/task.utils";
+import { calculateIndex, deleteTask, extractDelta, formatDate, updateTaskAndFindNested } from "../../utils/task.utils";
 import { addDeltaAndPublish } from "../../utils/websocket.utils";
-import { setUpdated } from "../../redux/features/webSocketSlice";
+import { removeDelta, setUpdated } from "../../redux/features/webSocketSlice";
 import Task from "./Task";
+import taskApi from "../../api/modules/task.api";
 
 const GanttTable = () => {
 
     const tasks = useSelector((state) => state.task.tasks);
+    const currentProject=useSelector((state)=>state.task.currentProject)
     const isConnected = useSelector((state) => state.webSocket.connected);
     const updated = useSelector((state) => state.webSocket.updated);
     const client = useSelector((state) => state.webSocket.client);
@@ -26,7 +28,24 @@ const GanttTable = () => {
         }
     }, [updated, dispatch])
 
+    const handleDelete=async(task)=>{
+        if(task.id==task.index){
+            dispatch(removeDelta(task.id))
+            return;
+        }
+        // const delta={
+        //     id:task.id,
+        //     index:task.index,
+        //     project_id:currentProject.id,
+        //     publish_type:'DELETE_TASK',
+        //     parentTaskId:task.parentTaskId?(task.index[0]):null
+        // };
+        // dispatch(addDeltaAndPublish(delta,isConnected,client));
 
+        deleteTask(task.id,currentProject.id,dispatch)
+
+
+    }
 
     const renderTaskRow = (task, level = 0) => {
         return (<React.Fragment key={task.id}>
@@ -38,6 +57,17 @@ const GanttTable = () => {
                 >
                     {renderCell(task, "name")}
                     {isHovered != null && isHovered == task.index &&
+                       <>
+                       <button
+                            style={{
+                                backgroundColor: 'var(--white--100)',
+                                color: 'black',
+                                padding: '2%',
+                                borderRadius: '5px',
+                                cursor: 'pointer',
+                                marginRight:'2%'
+                            }}
+                            onClick={() => handleTaskModal(task)}>View</button>
                         <button
                             style={{
                                 backgroundColor: 'var(--white--100)',
@@ -46,7 +76,9 @@ const GanttTable = () => {
                                 borderRadius: '5px',
                                 cursor: 'pointer',
                             }}
-                            onClick={() => handleTaskModal(task)}>View</button>}
+                            onClick={() => handleDelete(task)}>Delete</button>
+                       </>
+                    }
                 </td>
                 <td>{formatDate(task.start, true)}</td>
                 <td>{formatDate(task.end, true)}</td>

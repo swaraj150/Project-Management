@@ -4,7 +4,10 @@ const taskEndpoints={
     fetch:'tasks/fetch',
     create:'tasks/create',
     update:'tasks/update',
-    fetchByProject:'tasks/project'
+    fetchByProject:'tasks/project',
+    delete:'tasks/delete',
+    loadTask:'tasks/load'
+    
 }
 
 
@@ -35,6 +38,28 @@ const taskApi={
             const res=await privateClient.get(
                 taskEndpoints.fetchByProject,
                 { params: { projectId } } // works
+            )
+            return {res}
+        }catch (error) {
+            return {error}
+        }
+    },
+    delete:async(taskId,projectId)=>{
+        try{
+            const res=await privateClient.delete(
+                taskEndpoints.delete,
+                { params: { taskId,projectId } }
+            )
+            return {res}
+        }catch (error) {
+            return {error}
+        }
+    },
+    loadTask:async(taskId)=>{
+        try{
+            const res=await privateClient.get(
+                taskEndpoints.loadTask,
+                { params: { taskId } }
             )
             return {res}
         }catch (error) {
