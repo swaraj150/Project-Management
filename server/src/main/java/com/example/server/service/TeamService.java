@@ -8,10 +8,7 @@ import com.example.server.enums.Level;
 import com.example.server.enums.ProjectAuthority;
 import com.example.server.enums.ProjectRole;
 import com.example.server.exception.UnauthorizedAccessException;
-import com.example.server.repositories.OrganizationRepository;
-import com.example.server.repositories.TeamRepository;
-import com.example.server.repositories.UserExpertiseRepository;
-import com.example.server.repositories.UserRepository;
+import com.example.server.repositories.*;
 import com.example.server.requests.TeamCreateRequest;
 import com.example.server.response.TeamResponse;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,6 +32,7 @@ public class TeamService {
     private final UserExpertiseService userExpertiseService;
     private final UserExpertiseRepository userExpertiseRepository;
     private final OrganizationRepository organizationRepository;
+    private final ProjectRepository projectRepository;
     private static final double EXPERTISE_WEIGHT = 0.4;
     private static final double WORKLOAD_WEIGHT = 0.6;
     private static final Map<Level, Double> LEVEL_SCORES = Map.of(
@@ -234,8 +232,15 @@ public class TeamService {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.DELETE_TEAM)){
             throw new UnauthorizedAccessException("User doesn't have required authority");
         }
-
-        Team team= loadTeam(teamId);
+        Organization organization=organizationService.loadOrganization(user.getOrganizationId());
+        for(UUID id:organization.getProjects()){
+            Project project=projectRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Project not found"));
+            project.getTeams().remove(teamId);
+            projectRepository.save(project);
+        }
+        organization.getTeams().remove(teamId);
+        organizationRepository.save(organization);
+        Team team=loadTeam(teamId);
         team.getMemberIds().clear();
         teamRepository.save(team);
         teamRepository.delete(team);

@@ -32,6 +32,7 @@ public class ProjectService {
     private final TeamRepository teamRepository;
     private final UserService userService;
     private final TeamService teamService;
+    private final TaskService taskService;
     public ProjectResponse createProject(@NonNull CreateProjectRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_PROJECT)){
@@ -156,6 +157,9 @@ public class ProjectService {
         organization.getProjects().remove(projectId);
         organization.getTeams().removeAll(project.getTeams());
         organizationRepository.save(organization);
+        for(UUID id:project.getTasks()){
+            taskService.deleteTask(id,projectId);
+        }
         project.getTasks().clear();
         project.getTeams().clear();
         projectRepository.save(project);

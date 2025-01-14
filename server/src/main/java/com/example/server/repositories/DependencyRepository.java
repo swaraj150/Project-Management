@@ -19,4 +19,6 @@ public interface DependencyRepository extends JpaRepository<Dependency, UUID> {
 
     @Query("select d from Dependency d where d.fromTaskId=:fromTaskId and d.toTaskId=:toTaskId and d.dependencyType=:type")
     Optional<Dependency> doesExist(@Param("fromTaskId") UUID id1, @Param("toTaskId") UUID id2, @Param("type") DependencyType dependencyType);
+    @Query("delete from Dependency where fromTaskId=:fromTaskId")
+    void deleteByFromTaskId(@Param("fromTaskId") UUID id);
 }

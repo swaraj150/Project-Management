@@ -18,7 +18,7 @@ public class WsTaskRequest {
     private UUID taskId;
     private String clientTaskId;
     private String description;
-    private WsPublishType publishType;
+    private String publishType;
     private String title;
     private Integer priority;
     private String taskType;
@@ -30,7 +30,7 @@ public class WsTaskRequest {
     private LocalDateTime timestamp;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private String projectId;
+    private UUID projectId;
     private LocalDateTime date;
     private LocalDateTime achievedAt;
 //    private UUID fromTaskId; // request is sent from the current task itself

@@ -124,7 +124,6 @@ public class TaskService {
                         () -> task.setParentTaskId(null)
                 );
         Optional.ofNullable(request.getProjectId())
-                .map(UUID::fromString)
                 .ifPresent(task::setProjectId);
 
 
@@ -437,10 +436,11 @@ public class TaskService {
     public void deleteTask(UUID taskId,UUID projectId){
         // delete task from project
         User user=userService.loadAuthenticatedUser();
-        if(!user.getProjectRole().hasAuthority(ProjectAuthority.DELETE_TASKS)){
-            throw new UnauthorizedAccessException("User doesn't have required authority");
-        }
+//        if(!user.getProjectRole().hasAuthority(ProjectAuthority.DELETE_TASKS)){
+//            throw new UnauthorizedAccessException("User doesn't have required authority");
+//        }
         Project project=projectRepository.findById(projectId).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        dependencyRepository.deleteByFromTaskId(taskId);
         project.getTasks().remove(taskId);
         projectRepository.save(project);
 
@@ -448,8 +448,8 @@ public class TaskService {
         Task task=loadTask(taskId);
         task.getAssignedTo().clear();
         taskRepository.save(task);
-
         taskRepository.delete(task);
+
     }
 
 }

@@ -94,6 +94,7 @@ public class TaskConsumerService {
 
             for (WsTaskRequest request : batchToProcess) {
                 try {
+
                     Task task = processTaskRequest(request);
                     if (task != null) {
                         tasksToSave.put(task,request.getClientTaskId());
@@ -138,6 +139,13 @@ public class TaskConsumerService {
             return task;
         }
         else{
+//            if(WsPublishType.valueOf(request.getPublishType())==WsPublishType.DELETE_TASK){
+//                taskService.deleteTask(request.getTaskId(),request.getProjectId());
+//
+//                clientIdMap.remove(request.getClientTaskId());
+//                return null;
+//
+//            }
             clientIdMap.put(request.getClientTaskId(),request.getTaskId());
             UUID taskId = clientIdMap.get(request.getClientTaskId());
             if (taskId == null) {
@@ -201,7 +209,7 @@ public class TaskConsumerService {
         newRequest.setEstimatedHours(newRequest.getEstimatedHours() == null ? oldRequest.getEstimatedHours() : newRequest.getEstimatedHours());
         newRequest.setStatus(newRequest.getStatus() == null ? oldRequest.getStatus() : newRequest.getStatus());
         newRequest.setTitle(newRequest.getTitle() == null ? oldRequest.getTitle() : newRequest.getTitle());
-        newRequest.setPublishType(oldRequest.getPublishType() == WsPublishType.CREATE_TASK ? WsPublishType.CREATE_TASK : newRequest.getPublishType());
+        newRequest.setPublishType(WsPublishType.valueOf(oldRequest.getPublishType()) == WsPublishType.CREATE_TASK ? String.valueOf(WsPublishType.CREATE_TASK) : newRequest.getPublishType());
         newRequest.setStartDate(newRequest.getStartDate()==null?oldRequest.getStartDate():newRequest.getStartDate());
         newRequest.setEndDate(newRequest.getEndDate()==null?oldRequest.getEndDate():newRequest.getEndDate());
         newRequest.setDate(newRequest.getDate()==null?oldRequest.getDate():newRequest.getDate());

@@ -54,10 +54,8 @@ public class TaskController {
     @GetMapping("/project")
     public ResponseEntity<?> fetchByProject(@RequestParam @NonNull UUID projectId){
         List<TaskResponse> taskResponses=taskService.getTasksByProject(projectId);
-//        List<MilestoneResponse> milestoneResponses=milestoneService.loadByProject(projectId);
         HashMap<String,Object> h=new HashMap<>();
         h.put("tasks",taskResponses);
-//        h.put("milestones",milestoneResponses);
         return ResponseEntity.ok(h);
     }
 
@@ -65,6 +63,14 @@ public class TaskController {
     public ResponseEntity<?> deleteTask(@RequestParam @NonNull UUID taskId,@RequestParam @NonNull UUID projectId){ //jugaad for now
         taskService.deleteTask(taskId,projectId);
         return ResponseEntity.ok("Deleted successfully");
+    }
+
+    @GetMapping("/load")
+    public ResponseEntity<?> loadTask(@RequestParam @NonNull UUID taskId){
+        TaskResponse taskResponse=taskService.loadNestedTasks(taskId);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("task",taskResponse);
+        return ResponseEntity.ok(h);
     }
 
 
