@@ -9,6 +9,7 @@ import com.example.server.service.ChatRoomService;
 import com.example.server.service.OrganizationService;
 import com.example.server.service.TeamService;
 import com.example.server.service.UserService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,24 +28,14 @@ public class ChatRoomController {
     private final UserService userService;
     private final SecurityUtils securityUtils;
     @PostMapping("/create")
-    public ResponseEntity<?> createChatRoom(@RequestBody CreateChatRoomRequest createChatRoomRequest) {
-        List<UUID> members;
-        User user=userService.loadUser(securityUtils.getCurrentUsername());
-        if(createChatRoomRequest.getOrganizationId()==null){
-            Team team=teamService.loadTeam(createChatRoomRequest.getTeamId());
-            members=new ArrayList<>(team.getMemberIds());
-        }
-        else {
-            OrganizationDTO organizationDTO=organizationService.createOrganizationDTO(createChatRoomRequest.getOrganizationId());
-            members=new ArrayList<>(organizationDTO.getMemberIds());
-        }
-        chatRoomService.createChatRoom(createChatRoomRequest.getName(),user.getId(), members);
+    public ResponseEntity<?> createChatRoom(@RequestBody @NonNull CreateChatRoomRequest createChatRoomRequest) {
+        chatRoomService.createChatRoom(createChatRoomRequest);
         return ResponseEntity.ok("Room created successfully");
     }
 
-    @PostMapping("/{roomId}/join")
-    public ResponseEntity<?> joinRoom(@PathVariable UUID roomId) {
-        User user=userService.loadUser(securityUtils.getCurrentUsername());
+    @PutMapping("/join")
+    public ResponseEntity<?> joinRoom(@RequestParam UUID roomId) {
+        User user=userService.loadAuthenticatedUser();
         chatRoomService.joinRoom(roomId, user.getId());
         return ResponseEntity.ok("User joined room successfully");
     }

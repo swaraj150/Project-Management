@@ -26,5 +26,7 @@ public class ChatMessage {
     private String sender;
     private LocalDateTime timestamp;
     private UUID roomId;
+    private UUID taskId;
+
 
 }

@@ -9,12 +9,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class UserDTO {
+    private UUID userId;
     private String name;
     private String username;
     private Set<String> emails;
@@ -24,6 +26,7 @@ public class UserDTO {
 
     public static UserDTO mapToUserDTO(User user) {
         return UserDTO.builder()
+                .userId(user.getId())
                 .name(user.getFirstName() + (user.getLastName()==null?"":" "+user.getLastName()))
                 .username(user.getUsername())
                 .emails(user.getEmails())

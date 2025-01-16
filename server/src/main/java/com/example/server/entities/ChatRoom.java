@@ -25,4 +25,5 @@ public class ChatRoom {
     private String name;
     private UUID createdBy;
     private List<UUID> members;
+    private UUID taskId;
 }

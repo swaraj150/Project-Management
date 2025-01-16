@@ -6,6 +6,7 @@ import com.example.server.requests.CreateTaskRequest;
 import com.example.server.response.ProjectResponse;
 import com.example.server.response.TaskResponse;
 //import com.example.server.service.MilestoneService;
+import com.example.server.service.ChatMessageService;
 import com.example.server.service.TaskService;
 import com.example.server.service.UserService;
 import lombok.NonNull;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
+    private final ChatMessageService chatMessageService;
 //    private final MilestoneService milestoneService;
 
     @GetMapping("/")
@@ -70,6 +72,13 @@ public class TaskController {
         TaskResponse taskResponse=taskService.loadNestedTasks(taskId);
         HashMap<String,Object> h=new HashMap<>();
         h.put("task",taskResponse);
+        return ResponseEntity.ok(h);
+    }
+
+    @GetMapping("/loadComments")
+    public ResponseEntity<?> loadTaskComments(@RequestParam @NonNull UUID taskId){
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("comments",chatMessageService.loadComments(taskId));
         return ResponseEntity.ok(h);
     }
 
