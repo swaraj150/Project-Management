@@ -6,7 +6,8 @@ const taskEndpoints={
     update:'tasks/update',
     fetchByProject:'tasks/project',
     delete:'tasks/delete',
-    loadTask:'tasks/load'
+    loadTask:'tasks/load',
+    comments:'tasks/loadComments'
     
 }
 
@@ -66,6 +67,21 @@ const taskApi={
             return {error}
         }
     },
+
+    loadComments:async(taskId)=>{
+        try {
+            const res=await privateClient.get(
+                taskEndpoints.comments,
+                {params:{taskId}}
+            )
+            return {res}
+
+        } catch (error) {
+            return {error}
+        }
+    }
+
+    
     
     
 }

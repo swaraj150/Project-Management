@@ -17,6 +17,7 @@ import { setCurrentProject } from '../../redux/features/taskSlice'
 import metricApi from '../../api/modules/metrics.api'
 import { setTaskStatusData, setTimeLogData } from '../../redux/features/metricsSlice'
 import { setupTasks } from '../../utils/task.utils'
+import { connectWebSocket } from '../../utils/websocket.utils'
 
 
 
@@ -105,13 +106,13 @@ const MainLayout = () => {
       const { tasks } = res;
       console.log("tasks", tasks)
       if (res && tasks) {
-        setupTasks(tasks,dispatch);
+        setupTasks(tasks, dispatch);
         dispatch(setCurrentProject(projects[0]))
       }
 
     }
-    const fetchMetrics=async()=>{
-      const {res,err} =await metricApi.load(projects[0].id)
+    const fetchMetrics = async () => {
+      const { res, err } = await metricApi.load(projects[0].id)
       // const taskStatusData={
       //   name:"Pending Tasks",value:res[pendingTasks],
       //   name:"In Progress Tasks",value:res[in_progressTasks],
@@ -124,13 +125,22 @@ const MainLayout = () => {
 
       // dispatch(setTimeLogData(timeLogData))
       // dispatch(setTaskStatusData(taskStatusData))
-      
+
     }
     if (projects) {
       fetchTasks();
       // fetchMetrics();
     }
   }, [projects])
+  useEffect(() => {
+
+    const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
+    dispatch(connectWebSocket(webSocketUrl + '/ws', localStorage.getItem('token')));
+
+    // return () => {
+    //   dispatch(disonnectWebSocket(client))
+    // }
+  }, [dispatch])
 
   return (
     <>

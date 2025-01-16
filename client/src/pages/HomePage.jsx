@@ -9,6 +9,7 @@ import Projects from './Projects'
 import Tasks from './Tasks'
 import ProjectTasks from '../components/common/ProjectTasks'
 import { toggleProjectTaskModal } from '../redux/features/taskSlice'
+import ChatSection from './ChatSection'
 
 const HomePage = () => {
   const { active, collapsed } = useSelector((state) => state.menu)
@@ -18,7 +19,8 @@ const HomePage = () => {
     <Organization />,
     <Teams />,
     <Projects />,
-    <Tasks />
+    <Tasks />,
+    <ChatSection/>
   ]
 
 

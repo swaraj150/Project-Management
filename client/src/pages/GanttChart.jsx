@@ -94,7 +94,7 @@ const GanttChart = () => {
     return (
         <section id="gantt">
             <div className="resizable-container" style={{ display: "flex", height: "100%", width: "100%" }}>
-                {(flatTasks && flatTasks.data?.length > 0) ? (
+                {(flatTasks && flatTasks.data?.length >= 0) ? (
                     <>
                         <div
                             className="table-container"

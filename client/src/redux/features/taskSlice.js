@@ -37,7 +37,7 @@ export const taskSlice = createSlice({
         taskModal:{flag:false,task:null},
         projectTaskModal:false,
         currentProject:null,
-        
+        comments:[]
     },
     reducers: {
         
@@ -72,6 +72,12 @@ export const taskSlice = createSlice({
         },
         setCurrentProject:(state,action)=>{
             state.currentProject=action.payload;
+        },
+        setComments:(state,action)=>{
+            state.comments=action.payload;
+        },
+        addComment:(state,action)=>{
+            state.comments=[...state.comments,action.payload];
         }
 
 
@@ -79,6 +85,6 @@ export const taskSlice = createSlice({
     }
 });
 
-export const {  addTask, setTasks, putId, incrementPointer,replaceTaskInState,toggleTaskModal,toggleProjectTaskModal,setCurrentProject } = taskSlice.actions;
+export const {  addTask, setTasks, putId, incrementPointer,replaceTaskInState,toggleTaskModal,toggleProjectTaskModal,setCurrentProject,setComments,addComment } = taskSlice.actions;
 
 export default taskSlice.reducer

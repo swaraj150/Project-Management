@@ -11,8 +11,8 @@ const GanttTable = () => {
 
     const tasks = useSelector((state) => state.task.tasks);
     const currentProject=useSelector((state)=>state.task.currentProject)
-    const isConnected = useSelector((state) => state.webSocket.connected);
     const updated = useSelector((state) => state.webSocket.updated);
+    const isConnected = useSelector((state) => state.webSocket.connected);
     const client = useSelector((state) => state.webSocket.client);
     const [editingCell, setEditingCell] = useState(null);
     const [updatedTasks, setUpdatedTasks] = useState(tasks);

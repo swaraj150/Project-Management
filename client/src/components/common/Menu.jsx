@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { MdDashboard, MdGroups, MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from "react-icons/md"
-import { FaBuilding, FaProjectDiagram, FaTasks } from "react-icons/fa"
+import { FaBuilding, FaProjectDiagram, FaRocketchat, FaTasks } from "react-icons/fa"
 
 import Logo from '../../assets/logo.png'
 
@@ -28,6 +28,10 @@ const menuItems = [
   {
     name: 'Tasks',
     icon: <FaTasks />
+  },
+  {
+    name:'ChatSection',
+    icon:<FaRocketchat/>
   }
 ]
 

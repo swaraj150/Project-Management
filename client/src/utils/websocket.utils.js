@@ -1,9 +1,9 @@
 import { addDelta, setClient, setConnected, setDeltas, setUpdated } from '../redux/features/webSocketSlice';
 import { Client } from '@stomp/stompjs';
-import { calculateIndex,  convertTasksFromServer, convertTasksToServer, findByIndex } from './task.utils';
-import { replaceTaskInState } from '../redux/features/taskSlice';
+import { calculateIndex, convertTasksFromServer, convertTasksToServer, findByIndex } from './task.utils';
+import { addComment, replaceTaskInState } from '../redux/features/taskSlice';
 
-export const connectWebSocket = (url,token) => (dispatch,getState) => {
+export const connectWebSocket = (url, token) => (dispatch, getState) => {
   const stompClient = new Client({
     brokerURL: url,
     connectHeaders: {
@@ -15,54 +15,6 @@ export const connectWebSocket = (url,token) => (dispatch,getState) => {
     onConnect: (frame) => {
       console.log('WebSocket connected');
       console.log("connected ", frame)
-      
-      stompClient.subscribe('/topic/tasks', (payload) => {
-        try {
-          const data = JSON.parse(payload.body);
-          dispatch(setDeltas([]));
-          console.log('recieved: ',data);
-          // only sending modified tasks from server
-          const tasks = data.map((task) => {
-            const oldTasks=getState().task.tasks;            
-            const parentTaskId=task.parentTaskId;
-            let parentId=null;
-            if(parentTaskId){
-              const {parentIndex}=calculateIndex(parentTaskId,oldTasks);
-              parentId=parentIndex
-            }
-            const newTask=convertTasksFromServer(task,null,0,dispatch,parentId)
-            dispatch(replaceTaskInState({index:newTask.index,newTask:newTask}));
-            return newTask;
-          })
-
-          
-          dispatch(setUpdated());
-          console.log('tasks: ',tasks) 
- 
-        } catch (error) {
-          console.error("Error parsing payload:", error);
-        }
-      })
-
-      // stompClient.subscribe('/topic/milestones', (payload) => {
-      //   try {
-      //     const data = JSON.parse(payload.body);
-      //     dispatch(setDeltas([]));
-      //     console.log('recieved: ',data);
-      //     // only sending modified tasks from server
-      //     const milestones = data.map((milestone) => {
-            
-      //     })
-
-          
-      //     dispatch(setUpdated());
-      //     console.log('milestones: ',milestones) 
- 
-      //   } catch (error) {
-      //     console.error("Error parsing payload:", error);
-      //   }
-      // })
-      publishTasks(stompClient,getState().task.taskMap,'/app/update-clientMap');
 
     },
     onStompError: (error) => {
@@ -86,10 +38,48 @@ export const disonnectWebSocket = (client) => (dispatch) => {
 };
 
 
-// export const subscribe = (client, url, oldTasks) => (dispatch) => {
-//   \
-// }
+export const setupTaskSubscription = (stompClient, isConnected) => (dispatch, getState) => {
+  if (!isConnected) return;
+  stompClient.subscribe('/topic/tasks', (payload) => {
+    try {
+      const data = JSON.parse(payload.body);
+      dispatch(setDeltas([]));
+      console.log('Received: ', data);
 
+      const tasks = data.map((task) => {
+        const oldTasks = getState().task.tasks;
+        const parentTaskId = task.parentTaskId;
+        let parentId = null;
+
+        if (parentTaskId) {
+          const { parentIndex } = calculateIndex(parentTaskId, oldTasks);
+          parentId = parentIndex;
+        }
+
+        const newTask = convertTasksFromServer(task, null, 0, dispatch, parentId);
+        dispatch(replaceTaskInState({ index: newTask.index, newTask: newTask }));
+        return newTask;
+      });
+
+      dispatch(setUpdated());
+    } catch (error) {
+      console.error('Error parsing payload:', error);
+    }
+  });
+
+
+};
+export const setupChatSubscription = (stompClient, dispatch, userId, taskId) => {
+  stompClient.subscribe(`/user/${userId}/topic/chat/${taskId}`, (payload) => {
+    try {
+      const data = JSON.parse(payload.body);
+      dispatch(addComment(data));
+    } catch (error) {
+      console.error("Error parsing payload:", error);
+    }
+  })
+
+};
 export const publishTasks = (client, content, url) => {
   console.log("content to publish, ", content)
   client.publish({

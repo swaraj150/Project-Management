@@ -1,3 +1,4 @@
+import chatRoomApi from "../api/modules/chatRoom.api";
 import taskApi from "../api/modules/task.api";
 import { setKanbanTasks } from "../redux/features/kanbanSlice";
 import { putId, setCurrentProject, setTasks } from "../redux/features/taskSlice";
@@ -450,5 +451,26 @@ export const deleteTask=async(taskId,projectId,dispatch)=>{
         }
     } catch (error) {
         console.log(error)
+    }
+}
+
+export const fetchTaskComments=async(taskId)=>{
+    try {
+        const {res,err}=await taskApi.loadComments(taskId);
+        if(res && res.comments){
+            // console.log(res.comments)
+            return res.comments;
+        }
+        console.warn("No comments found for the task.");
+        return [];
+    } catch (error) {
+        console.log(error);
+    }
+}
+export const createChatRoom=async(data)=>{
+    try {
+        await chatRoomApi.create(data);
+    } catch (error) {
+        console.log(error);
     }
 }
