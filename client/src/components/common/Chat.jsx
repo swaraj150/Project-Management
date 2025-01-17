@@ -7,7 +7,7 @@ const Chat = ({ currentTask }) => {
   const isConnected = useSelector((state) => state.webSocket.connected);
   const client = useSelector((state) => state.webSocket.client);
   const [comment, setComment] = useState("");
-
+  const user = useSelector((state) => state.user.user) 
   const handleSend = () => {
     if (comment.trim()) {
       // onSendMessage(inputMessage);
@@ -26,20 +26,20 @@ const Chat = ({ currentTask }) => {
       display: "flex",
       flexDirection: "column",
       height: "500px",
-      width: "400px",
+      width: "523px",
       border: "1px solid #ccc",
       borderRadius: "8px",
       overflow: "hidden",
-      backgroundColor: "#f9f9f9",
+      backgroundColor: "#fff",
       fontFamily: "Arial, sans-serif",
     },
     header: {
-      backgroundColor: "#007bff",
+      backgroundColor: "var(--primary--900)",
       color: "white",
       padding: "10px",
       textAlign: "center",
       fontSize: "18px",
-      fontWeight: "bold",
+      // fontWeight: "bold",
     },
     messages: {
       flex: 1,
@@ -51,6 +51,7 @@ const Chat = ({ currentTask }) => {
     },
     message: (isSent) => ({
       maxWidth: "70%",
+      width:"25%",
       padding: "10px",
       borderRadius: "8px",
       fontSize: "14px",
@@ -84,7 +85,7 @@ const Chat = ({ currentTask }) => {
     button: {
       padding: "10px 20px",
       marginLeft: "10px",
-      backgroundColor: "#007bff",
+      backgroundColor: "var(--primary--900)",
       color: "white",
       border: "none",
       borderRadius: "4px",
@@ -98,37 +99,13 @@ const Chat = ({ currentTask }) => {
   };
 
   return (
-    // <div>
-    //   {comments?.map((comment) => (
-    //     <span>{comment.content}</span>
-    //   ))}
-    //   <input
-    //     type="text"
-    //     placeholder="Send a message"
-    //     value={comment}
-    //     onChange={(e) => setComment(e.target.value)}
-    //     onBlur={handleSend}
-    //     onKeyDown={(e) => {
-    //       if (e.key === 'ENTER') handleSend()
-    //     }}
-    //     style={{
-    //       width: "100%",
-    //       padding: "10px",
-    //       border: "1px solid #ddd",
-    //       borderRadius: "8px",
-    //       fontSize: "14px",
-    //       backgroundColor: "#fff",
-    //     }}
-    //   />
-
-    // </div>
     <div style={styles.container}>
-      <div style={styles.header}>Chat</div>
+      <div style={styles.header}>Comments</div>
       <div style={styles.messages}>
         {comments?.map((msg, index) => (
           <div
             key={index}
-            style={styles.message(msg.senderId === "currentUserId")}
+            style={styles.message(msg.senderId ===user.userId )}
           >
             <p style={styles.messageContent}>{msg.content}</p>
             <span style={styles.messageSender}>{msg.sender}</span>
