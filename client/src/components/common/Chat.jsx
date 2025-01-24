@@ -4,20 +4,18 @@ import { useEffect, useState } from "react";
 
 const Chat = ({ currentTask }) => {
   const comments = useSelector((state) => state.task.comments);
-  const isConnected = useSelector((state) => state.webSocket.connected);
   const client = useSelector((state) => state.webSocket.client);
   const [comment, setComment] = useState("");
   const user = useSelector((state) => state.user.user) 
   const handleSend = () => {
     if (comment.trim()) {
-      // onSendMessage(inputMessage);
-      setInputMessage(""); // Clear input after sending
       const delta = {
         taskId: currentTask.id,
         content: comment,
-  
+        
       }
-      // publishTasks(client, delta, "/app/chat.sendMessage")
+      publishTasks(client, delta, "/app/chat.sendMessage")
+      setComment("");
     }
     
   }

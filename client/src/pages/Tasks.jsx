@@ -5,6 +5,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import GanttChart from './GanttChart';
 import { useDispatch, useSelector } from 'react-redux';
 import { connectWebSocket, disonnectWebSocket, publishTasks, setupTaskSubscription } from '../utils/websocket.utils';
+import Workload from './Workload';
 
 const Tasks = () => {
   const [current, setCurrent] = useState(0);
@@ -26,6 +27,10 @@ const Tasks = () => {
           <Kanban />
         </DndProvider>
       ),
+    },
+    {
+      name:'Workload',
+      page:<Workload/>
     }
   ]
 

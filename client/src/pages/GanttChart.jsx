@@ -2,48 +2,52 @@ import React, { useEffect, useRef, useState } from "react";
 import GanttTable from "../components/common/GanttTable";
 import { useSelector } from "react-redux";
 import GanttChartDhtmlx from "../components/common/GanttChartDhtmlx";
-import { dependency_types, formatDate } from "../utils/task.utils";
+import { dependency_types, extractDelta, formatDate } from "../utils/task.utils";
 
 const flattenTasks = (tasks) => {
-    const taskList = {data:[],links:[]};
+    const taskList = { data: [], links: [] };
+    const flatTaskMap = {};
     const indexRef = { i: 0 };
-    const day=(1000*60*60*24);
-    const processTask = (task,indexRef,parentId=null) => {
-        taskList.data.push({
+    const processTask = (task, indexRef, parentId = null) => {
+        const task1 = {
             id: task.id,
-            // index:indexRef.i++,
             text: task.name,
-            // start_date: formatDate(task.start,true),
-            start_date:new Date(task.start),
-            end_date:new Date(task.end),
-            // duration: (new Date(task.end)-new Date(task.start))/day,
-            progress: task.progress/100,
-            parent:parentId||null,
+            start_date: new Date(task.start),
+            end_date: new Date(task.end),
+            progress: task.progress / 100,
+            parent: parentId || null,
             type: (task.task_type == null ? "task" : task.task_type).toLowerCase(),
 
-        });
-        const links=task.dependencies?.map((d)=>{
-            return {
-                id:indexRef.i++,
-                source:task.id,
-                target:d.id,
-                type:dependency_types[d.type]
+        };
+        taskList.data.push(task1);
+        flatTaskMap[task.id] = { ...task1, index: task.index }
+        const links = task.dependencies?.map((d) => {
+            const link = {
+                id: indexRef.i++,
+                source: task.id,
+                target: d.id,
+                type: dependency_types[d.type]
             }
+            flatTaskMap[link.id] = link;
+            return link
         })
-        taskList.links.push(...links);
+        taskList.links.push(...links || []);
+
 
         if (task.subtasks?.length) {
-            task.subtasks.forEach((subTask) => processTask(subTask,indexRef,task.id));
+            task.subtasks.forEach((subTask) => processTask(subTask, indexRef, task.id));
         }
     };
 
-    tasks.forEach((task) => processTask(task,indexRef));
-    return taskList;
+    tasks.forEach((task) => processTask(task, indexRef));
+    return { taskList, flatTaskMap };
 };
 
 
 const GanttChart = () => {
     const tasks = useSelector((state) => state.task["tasks"])
+    const taskMap = useSelector((state) => state.task["taskMap"])
+
     // const data = {
     //     data: [
     //         { id: 1, text: "Project #1", start_date: null, duration: null, parent: 0, progress: 0, open: true },
@@ -60,16 +64,59 @@ const GanttChart = () => {
     //     ]
     // }
     const [flatTasks, setFlatTasks] = useState({});
+    const [flatTaskMap, setFlatTaskMap] = useState({})
+    useEffect(() => {
+        const { taskList, flatTaskMap } = flattenTasks(tasks);
+        // console.dir("flat tasks",flatTasks);
+        setFlatTasks(taskList);
+        setFlatTaskMap(flatTaskMap)
+
+    }, [tasks])
+    const convertToReduxState = (task) => {
+        return {
+            id: task.id,
+            index: task.index,
+            name: task.text || null,
+            start: task.start_date.toISOString().slice(0, -1),
+            end: task.end_date.toISOString().slice(0, -1),
+            parentTaskId: taskMap[parent] || null,
+            progress: task.progress * 100 || null,
+        }
+    }
     const handleTaskUpdate = (id, updatedTask) => {
-        console.log("Task updated:", id, updatedTask);
         // Update tasks if needed
+        const oldTask = flatTaskMap[id];
+        // const updatedStartDate = updatedFields['start_date'] || oldTask.start_date;
+        // const updatedEndDate = updatedFields['end_date'] || oldTask.end_date;
+
+        // // Ensure time is preserved
+        // updatedTask.start_date = new Date(
+        //     updatedStartDate.getFullYear(),
+        //     updatedStartDate.getMonth(),
+        //     updatedStartDate.getDate(),
+        //     updatedStartDate.getHours(),
+        //     updatedStartDate.getMinutes()
+        // );
+
+        // updatedTask.end_date = new Date(
+        //     updatedEndDate.getFullYear(),
+        //     updatedEndDate.getMonth(),
+        //     updatedEndDate.getDate(),
+        //     updatedEndDate.getHours(),
+        //     updatedEndDate.getMinutes()
+        // );
+        console.log(oldTask.start_date)
+        console.log(updatedTask.start_date)
+        // console.log(updatedFields)
+        // console.log(id,oldTask);
+        // console.log(newTask)
+        let delta = extractDelta(oldTask, updatedTask);
+         delta = { ...updatedFields, index: oldTask.index };
+
+        // delta = convertToReduxState(delta);
+        console.log(delta)
     };
 
-    useEffect(()=>{
-        const flatTasks=flattenTasks(tasks);
-        console.dir("flat tasks",flatTasks);
-        setFlatTasks(flatTasks);
-    },[tasks])
 
     const [panelWidth, setPanelWidth] = useState(40);
     const resizerRef = useRef(null);

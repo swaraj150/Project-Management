@@ -5,7 +5,6 @@ import { calculateIndex, deleteTask, extractDelta, formatDate, updateTaskAndFind
 import { addDeltaAndPublish } from "../../utils/websocket.utils";
 import { removeDelta, setUpdated } from "../../redux/features/webSocketSlice";
 import Task from "./Task";
-import taskApi from "../../api/modules/task.api";
 
 const GanttTable = () => {
 
@@ -189,7 +188,7 @@ const GanttTable = () => {
                                 end: new Date(2024, 11, 7),
                                 subtasks: [],
                                 progress: 0,
-                                parentTaskId: parentIndex,// add logic in backend 
+                                parentTaskId: parentIndex,
                                 task_type: type
                             };
                             setNewTaskName("");
@@ -204,12 +203,12 @@ const GanttTable = () => {
                                 dispatch(setTasks({ tasks: newUpdatedTasks }))
 
                             }
-                            addDeltaAndPublish(newTask, isConnected, client)
+                            dispatch(addDeltaAndPublish(newTask, isConnected, client))
                             // dispatch(addDeltaAndPublish(newTask, isConnected, client)); 
                             setDelta(null);
                         }
                         else {
-                            addDeltaAndPublish(delta, isConnected, client)
+                            dispatch(addDeltaAndPublish(delta, isConnected, client))
                             // dispatch(addDeltaAndPublish(delta, isConnected, client)); 
                             setDelta(null)
 
