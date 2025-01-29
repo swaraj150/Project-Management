@@ -5,11 +5,12 @@ import { calculateIndex, deleteTask, extractDelta, formatDate, updateTaskAndFind
 import { addDeltaAndPublish } from "../../utils/websocket.utils";
 import { removeDelta, setUpdated } from "../../redux/features/webSocketSlice";
 import Task from "./Task";
+import { configureStore } from "@reduxjs/toolkit";
 
 const GanttTable = () => {
 
     const tasks = useSelector((state) => state.task.tasks);
-    const currentProject=useSelector((state)=>state.task.currentProject)
+    const currentProject = useSelector((state) => state.task.currentProject)
     const updated = useSelector((state) => state.webSocket.updated);
     const isConnected = useSelector((state) => state.webSocket.connected);
     const client = useSelector((state) => state.webSocket.client);
@@ -27,8 +28,8 @@ const GanttTable = () => {
         }
     }, [updated, dispatch])
 
-    const handleDelete=async(task)=>{
-        if(task.id==task.index){
+    const handleDelete = async (task) => {
+        if (task.id == task.index) {
             dispatch(removeDelta(task.id))
             return;
         }
@@ -41,14 +42,14 @@ const GanttTable = () => {
         // };
         // dispatch(addDeltaAndPublish(delta,isConnected,client));
 
-        deleteTask(task.id,currentProject.id,dispatch)
+        deleteTask(task.id, currentProject.id, dispatch)
 
 
     }
 
     const renderTaskRow = (task, level = 0) => {
         return (<React.Fragment key={task.id}>
-            <tr>
+            <tr style={{ 'height': '35.2px' }}>
                 <td>{task.index}</td>
                 <td id='table-name-row'
                     onMouseEnter={() => setIsHovered(task.index)}
@@ -56,27 +57,27 @@ const GanttTable = () => {
                 >
                     {renderCell(task, "name")}
                     {isHovered != null && isHovered == task.index &&
-                       <>
-                       <button
-                            style={{
-                                backgroundColor: 'var(--white--100)',
-                                color: 'black',
-                                padding: '2%',
-                                borderRadius: '5px',
-                                cursor: 'pointer',
-                                marginRight:'2%'
-                            }}
-                            onClick={() => handleTaskModal(task)}>View</button>
-                        <button
-                            style={{
-                                backgroundColor: 'var(--white--100)',
-                                color: 'black',
-                                padding: '2%',
-                                borderRadius: '5px',
-                                cursor: 'pointer',
-                            }}
-                            onClick={() => handleDelete(task)}>Delete</button>
-                       </>
+                        <>
+                            <button
+                                style={{
+                                    backgroundColor: 'var(--white--100)',
+                                    color: 'black',
+                                    padding: '2%',
+                                    borderRadius: '5px',
+                                    cursor: 'pointer',
+                                    marginRight: '2%'
+                                }}
+                                onClick={() => handleTaskModal(task)}>View</button>
+                            <button
+                                style={{
+                                    backgroundColor: 'var(--white--100)',
+                                    color: 'black',
+                                    padding: '2%',
+                                    borderRadius: '5px',
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => handleDelete(task)}>Delete</button>
+                        </>
                     }
                 </td>
                 <td>{formatDate(task.start, true)}</td>
@@ -97,7 +98,7 @@ const GanttTable = () => {
     const renderEmptyRow = (flag = true, level, parent) => (
         flag ? (level > 0) ? (
             <React.Fragment>
-                <tr className="empty-row2">
+                <tr className="empty-row2" >
                     <td colSpan="5"  >
                         <div style={{ display: "flex", flexDirection: "row", gap: "10px", alignItems: 'center', justifyContent: 'center' }}>
                             {renderCell(null, 'subTask', 1, 'Add new subtask for ' + parent, parent, "TASK")}
@@ -122,13 +123,14 @@ const GanttTable = () => {
                     </td>
                 </tr>
             </React.Fragment>
-        ) : (
-            <React.Fragment>
-                <tr className="empty-row">
-                    <td colSpan="5"></td>
-                </tr>
-            </React.Fragment>
-        )
+        ) : null
+        // (
+        //     <React.Fragment>
+        //         <tr className="empty-row">
+        //             <td colSpan="5"></td>
+        //         </tr>
+        //     </React.Fragment>
+        // )
     );
 
 
@@ -178,14 +180,21 @@ const GanttTable = () => {
                         setEditingCell(null);
                         if (task === null) {
                             const { index, parentIndex } = calculateIndex(parent, updatedTasks);
-                            console.log(index, parentIndex)
+                            // console.log(index, parentIndex)
+                            const startDate=new Date();
+                            startDate.setHours(0,0,0,0);
+                            const endDate=new Date();
+                            endDate.setDate(endDate.getDate()+1);
+                            endDate.setHours(0,0,0,0);
+                            console.log(startDate);
+                            console.log(startDate);
                             const newTask = {
                                 id: index,
                                 index: index,
                                 taskId: index,
                                 name: newTaskName,
-                                start: new Date(2024, 11, 1),
-                                end: new Date(2024, 11, 7),
+                                start: startDate,
+                                end: endDate,
                                 subtasks: [],
                                 progress: 0,
                                 parentTaskId: parentIndex,
@@ -254,7 +263,7 @@ const GanttTable = () => {
         >
             <table border="2" id="gantt-table" >
                 <thead>
-                    <tr>
+                    <tr style={{ 'height': '35px' }}>
                         <th>Sr. No</th>
                         <th>Task Name</th>
                         <th>Start Date</th>
@@ -267,7 +276,7 @@ const GanttTable = () => {
                     {(updatedTasks && updatedTasks.length > 0) ? updatedTasks.map((task, index) => (
                         <React.Fragment key={index}>
                             {renderRow(task)}
-                            {index === updatedTasks.length - 1 ? renderEmptyRow(true, 0) : ''} {/* Render the empty row */}
+                            {index === updatedTasks.length - 1 ? renderEmptyRow(true, 0) : ''} 
                         </React.Fragment>
                     )) : renderEmptyRow(true, 0)}
                 </tbody>

@@ -19,7 +19,17 @@ const flattenTasks = (tasks) => {
             type: (task.task_type == null ? "task" : task.task_type).toLowerCase(),
 
         };
-        taskList.data.push(task1);
+        // const blankTask={
+        //     id: (++indexRef.i)+100,
+        //     text: "",
+        //     // start_date: null,
+        //     duration: 0, 
+        //     progress: 0,
+        //     parent: 0,
+        // };
+        
+        taskList.data.push(task1); 
+        // taskList.data.push(blankTask); 
         flatTaskMap[task.id] = { ...task1, index: task.index }
         const links = task.dependencies?.map((d) => {
             const link = {
@@ -67,7 +77,7 @@ const GanttChart = () => {
     const [flatTaskMap, setFlatTaskMap] = useState({})
     useEffect(() => {
         const { taskList, flatTaskMap } = flattenTasks(tasks);
-        // console.dir("flat tasks",flatTasks);
+        console.dir("flat tasks",flatTasks);
         setFlatTasks(taskList);
         setFlatTaskMap(flatTaskMap)
 
@@ -84,36 +94,9 @@ const GanttChart = () => {
         }
     }
     const handleTaskUpdate = (id, updatedTask) => {
-        // Update tasks if needed
-        const oldTask = flatTaskMap[id];
-        // const updatedStartDate = updatedFields['start_date'] || oldTask.start_date;
-        // const updatedEndDate = updatedFields['end_date'] || oldTask.end_date;
-
-        // // Ensure time is preserved
-        // updatedTask.start_date = new Date(
-        //     updatedStartDate.getFullYear(),
-        //     updatedStartDate.getMonth(),
-        //     updatedStartDate.getDate(),
-        //     updatedStartDate.getHours(),
-        //     updatedStartDate.getMinutes()
-        // );
-
-        // updatedTask.end_date = new Date(
-        //     updatedEndDate.getFullYear(),
-        //     updatedEndDate.getMonth(),
-        //     updatedEndDate.getDate(),
-        //     updatedEndDate.getHours(),
-        //     updatedEndDate.getMinutes()
-        // );
-        console.log(oldTask.start_date)
-        console.log(updatedTask.start_date)
-        // console.log(updatedFields)
-        // console.log(id,oldTask);
-        // console.log(newTask)
+        const oldTask = flatTaskMap[id];       
         let delta = extractDelta(oldTask, updatedTask);
-         delta = { ...updatedFields, index: oldTask.index };
-
-        // delta = convertToReduxState(delta);
+        delta = { ...delta, index: oldTask.index };
         console.log(delta)
     };
 

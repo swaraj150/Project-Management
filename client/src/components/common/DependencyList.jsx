@@ -42,23 +42,23 @@ const DependencyList = ({ onClose, currentTask, taskList }) => {
         switch (dependency.type) {
            
             case 'FINISH_TO_FINISH': {
-                delta.start = new Date(currentTaskEnd.getTime() - toTaskDuration - (lag + 1) * day).toISOString().slice(0, -1);
-                delta.end = new Date(currentTaskEnd.getTime() + (lag) * day).toISOString().slice(0, -1);
+                delta.start = new Date(currentTaskEnd.getTime() - toTaskDuration - (lag + 1) * day).toISOString();
+                delta.end = new Date(currentTaskEnd.getTime() + (lag) * day).toISOString();
                 break;
             }
             case 'FINISH_TO_START': {
-                delta.start = new Date(currentTaskEnd.getTime() + (lag) * day).toISOString().slice(0, -1);
-                delta.end = new Date(currentTaskEnd.getTime() + toTaskDuration + (lag + 1) * day).toISOString().slice(0, -1);
+                delta.start = new Date(currentTaskEnd.getTime() + (lag) * day).toISOString();
+                delta.end = new Date(currentTaskEnd.getTime() + toTaskDuration + (lag + 1) * day).toISOString();
                 break;
             }
             case 'START_TO_START': {
-                delta.start = new Date(currentTaskStart.getTime() + (lag) * day).toISOString().slice(0, -1);
-                delta.end = new Date(currentTaskStart.getTime() + toTaskDuration + (lag + 1) * day).toISOString().slice(0, -1);
+                delta.start = new Date(currentTaskStart.getTime() + (lag) * day).toISOString();
+                delta.end = new Date(currentTaskStart.getTime() + toTaskDuration + (lag + 1) * day).toISOString();
                 break;
             }
             case 'START_TO_FINISH': {
-                delta.start = new Date(currentTaskStart.getTime() - toTaskDuration - (lag + 1) * day).toISOString().slice(0, -1);
-                delta.end = new Date(currentTaskStart.getTime() + (lag) * day).toISOString().slice(0, -1);
+                delta.start = new Date(currentTaskStart.getTime() - toTaskDuration - (lag + 1) * day).toISOString();
+                delta.end = new Date(currentTaskStart.getTime() + (lag) * day).toISOString();
                 break;
             }
             default:

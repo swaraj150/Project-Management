@@ -245,7 +245,7 @@ const Task = ({ isOpen, tasks }) => {
                             onChange={(e) => setTask({ ...task, ["start"]: e.target.value })}
                             onBlur={(e) => handleEdit(task, "start", e.target.value)}
                         />
-                        <input type="time" defaultValue={formatTime(task?.start)} />
+                        {/* <input type="time" defaultValue={formatTime(task?.start)} /> */}
 
                     </div>
                 </div>
@@ -257,7 +257,7 @@ const Task = ({ isOpen, tasks }) => {
                             onBlur={(e) => handleEdit(task, "end", e.target.value)}
 
                         />
-                        <input type="time" defaultValue={formatTime(task?.end)} />
+                        {/* <input type="time" defaultValue={formatTime(task?.end)} /> */}
                     </div>
 
                 </div>

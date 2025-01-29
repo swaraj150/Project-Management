@@ -14,27 +14,11 @@ const GanttChartDhtmlx = ({ tasks, onTaskUpdated }) => {
 
     gantt.clearAll();
     gantt.parse(tasks);
-    // const beforeUpdateHandlerId = gantt.attachEvent("onBeforeTaskUpdate", (id, new_task) => {
-    //   const fieldsToCheck = ["start_date", "end_date","text","progress"];
-    //   const originalTask = gantt.getTask(id);
-    //   const updatedFields = {};
-
-    //   fieldsToCheck.forEach((field) => {
-    //     if (new_task[field] !== originalTask[field]) {
-
-    //       updatedFields[field] = new_task[field];
-
-    //     }
-    //   });
-    //   setUpdatedTasks(updatedFields);
-    // })
-
-
+    gantt.config.auto_scheduling = false;
+  
 
     const updateHandlerId = gantt.attachEvent("onAfterTaskUpdate", (id, item) => {
-      // if (onTaskUpdated) {
-      //   onTaskUpdated(id, item);
-      // }
+      
       if (onTaskUpdated) {
 
         onTaskUpdated(id, item);
@@ -49,7 +33,6 @@ const GanttChartDhtmlx = ({ tasks, onTaskUpdated }) => {
 
     return () => {
       gantt.detachEvent(updateHandlerId)
-      // gantt.detachEvent(beforeUpdateHandlerId)
       gantt.clearAll();
     };
   }, [tasks, onTaskUpdated]);

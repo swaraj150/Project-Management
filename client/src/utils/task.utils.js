@@ -99,7 +99,7 @@ export const convertTasksToServer = (delta) => {
         parentTaskId: delta.parentTaskId || null,
         estimatedHours: delta.estimated_hours || null,
         startDate: delta.start || null,
-        endDate: delta.end || null,
+        endDate: delta.end|| null,
         toTaskId: delta.to_task_id || null,
         lag: delta.lag || null,
         dependencyType: delta.dependency_type || null,
@@ -188,7 +188,7 @@ export const updateDate = (dateTime, date) => {
 
     const [year, month, day] = date.split("-").map(Number);
     originalDate.setFullYear(year, month - 1, day);
-    return originalDate.toISOString().slice(0, -1);
+    return originalDate.toISOString();
 };
 
 export const formatTime = (date) => {
@@ -416,23 +416,23 @@ export const computeDateTimeShift = (fromTaskStart,fromTaskEnd, toTaskStart,toTa
     switch (dependency.type) {
 
         case 'FINISH_TO_FINISH': {
-            start = new Date(currentTaskEnd.getTime() - toTaskDuration - (lag + 1) * day).toISOString().slice(0, -1);
-            end = new Date(currentTaskEnd.getTime() + (lag) * day).toISOString().slice(0, -1);
+            start = new Date(currentTaskEnd.getTime() - toTaskDuration - (lag + 1) * day).toISOString();
+            end = new Date(currentTaskEnd.getTime() + (lag) * day).toISOString();
             break;
         }
         case 'FINISH_TO_START': {
-            start = new Date(currentTaskEnd.getTime() + (lag) * day).toISOString().slice(0, -1);
-            end = new Date(currentTaskEnd.getTime() + toTaskDuration + (lag + 1) * day).toISOString().slice(0, -1);
+            start = new Date(currentTaskEnd.getTime() + (lag) * day).toISOString();
+            end = new Date(currentTaskEnd.getTime() + toTaskDuration + (lag + 1) * day).toISOString();
             break;
         }
         case 'START_TO_START': {
-            start = new Date(currentTaskStart.getTime() + (lag) * day).toISOString().slice(0, -1);
-            end = new Date(currentTaskStart.getTime() + toTaskDuration + (lag + 1) * day).toISOString().slice(0, -1);
+            start = new Date(currentTaskStart.getTime() + (lag) * day).toISOString();
+            end = new Date(currentTaskStart.getTime() + toTaskDuration + (lag + 1) * day).toISOString();
             break;
         }
         case 'START_TO_FINISH': {
-            start = new Date(currentTaskStart.getTime() - toTaskDuration - (lag + 1) * day).toISOString().slice(0, -1);
-            end = new Date(currentTaskStart.getTime() + (lag) * day).toISOString().slice(0, -1);
+            start = new Date(currentTaskStart.getTime() - toTaskDuration - (lag + 1) * day).toISOString();
+            end = new Date(currentTaskStart.getTime() + (lag) * day).toISOString();
             break;
         }
         default:
