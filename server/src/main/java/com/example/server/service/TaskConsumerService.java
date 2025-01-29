@@ -22,6 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +43,7 @@ public class TaskConsumerService {
     private final DependencyRepository dependencyRepository;
     private final UserService userService;
 
-    private final int BATCH_SIZE = 2;
+    private final int BATCH_SIZE = 1;
 
 
     public void consumeAndBuffer(WsTaskRequest taskRequest) {
@@ -183,8 +186,18 @@ public class TaskConsumerService {
         if(request.getStatus()!=null){
             taskService.changeStatus(request.getStatus(),task);
         }
-        Optional.ofNullable(request.getStartDate()).ifPresent(task::setStartDate);
-        Optional.ofNullable(request.getEndDate()).ifPresent(task::setEndDate);
+//        Optional.ofNullable(request.getStartDate()).ifPresent(task::setStartDate);
+//        Optional.ofNullable(request.getEndDate()).ifPresent(task::setEndDate);
+        if(request.getStartDate()!=null){
+            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
+            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            task.setStartDate(localDateTime);
+        }
+        if(request.getEndDate()!=null){
+            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
+            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            task.setEndDate(localDateTime);
+        }
         if (request.getToTaskId() != null && request.getDependencyType() != null) {
 //            boolean isValid= taskService.validateDependency(task.getId(),request.getDependentTaskId(),DependencyType.valueOf(request.getDependencyType()));
 //            if(!isValid) {
@@ -209,7 +222,7 @@ public class TaskConsumerService {
         newRequest.setEstimatedHours(newRequest.getEstimatedHours() == null ? oldRequest.getEstimatedHours() : newRequest.getEstimatedHours());
         newRequest.setStatus(newRequest.getStatus() == null ? oldRequest.getStatus() : newRequest.getStatus());
         newRequest.setTitle(newRequest.getTitle() == null ? oldRequest.getTitle() : newRequest.getTitle());
-        newRequest.setPublishType(WsPublishType.valueOf(oldRequest.getPublishType()) == WsPublishType.CREATE_TASK ? String.valueOf(WsPublishType.CREATE_TASK) : newRequest.getPublishType());
+//        newRequest.setPublishType(WsPublishType.valueOf(oldRequest.getPublishType()) == WsPublishType.CREATE_TASK ? String.valueOf(WsPublishType.CREATE_TASK) : newRequest.getPublishType());
         newRequest.setStartDate(newRequest.getStartDate()==null?oldRequest.getStartDate():newRequest.getStartDate());
         newRequest.setEndDate(newRequest.getEndDate()==null?oldRequest.getEndDate():newRequest.getEndDate());
         newRequest.setDate(newRequest.getDate()==null?oldRequest.getDate():newRequest.getDate());

@@ -23,6 +23,9 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -107,11 +110,19 @@ public class TaskService {
                 .map(CompletionStatus::valueOf)
                 .ifPresentOrElse(task::setCompletionStatus,()->task.setCompletionStatus(CompletionStatus.PENDING));
 
-        Optional.ofNullable(request.getStartDate())
-                .ifPresent(task::setStartDate);
 
-        Optional.ofNullable(request.getEndDate())
-                .ifPresent(task::setEndDate); // achieved at
+        if(request.getStartDate()!=null){
+            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
+            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            task.setStartDate(localDateTime);
+        }
+        if(request.getEndDate()!=null){
+            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
+            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            task.setEndDate(localDateTime);
+        }
+//        Optional.ofNullable(request.getEndDate())
+//                .ifPresent(task::setEndDate); // achieved at
 
         Optional.ofNullable(request.getEstimatedHours())
                 .map(Integer::valueOf)

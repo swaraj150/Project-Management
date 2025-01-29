@@ -28,11 +28,11 @@ public class WsTaskRequest {
     private List<String> assignedTo;
     private String status;
     private LocalDateTime timestamp;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String startDate;
+    private String endDate;
     private UUID projectId;
-    private LocalDateTime date;
-    private LocalDateTime achievedAt;
+    private String date;
+    private String achievedAt;
 //    private UUID fromTaskId; // request is sent from the current task itself
     private UUID toTaskId;
     private String dependencyType;
