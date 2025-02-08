@@ -217,12 +217,12 @@ public class TaskService {
 
     public TaskResponse loadTaskResponse(@NonNull UUID id){
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
-//        Set<UserDTO> assignedToUsers=new HashSet<>();
-//        for(UUID id1:task.getAssignedTo()){
-//            User user=userService.loadUser(id);
-//            UserDTO userDTO=UserDTO.mapToUserDTO(user);
-//            assignedToUsers.add(userDTO);
-//        }
+        Set<UserDTO> assignedToUsers=new HashSet<>();
+        for(UUID id1:task.getAssignedTo()){
+            User user=userService.loadUser(id);
+            UserDTO userDTO=UserDTO.mapToUserDTO(user);
+            assignedToUsers.add(userDTO);
+        }
         return TaskResponse.builder()
                 .id(task.getId())
                 .title(task.getTitle())
@@ -230,7 +230,7 @@ public class TaskService {
                 .priority(task.getPriority())
                 .type(task.getType())
                 .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
-//                .assignedToUsers(assignedToUsers)
+                .assignedToUsers(assignedToUsers)
                 .createdAt(task.getCreatedAt())
                 .estimatedHours(task.getEstimatedHours())
                 .completedAt(task.getCompletedAt())
@@ -244,12 +244,12 @@ public class TaskService {
     }
     public TaskResponse loadTaskResponse(@NonNull UUID id,String clientId){
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
-//        Set<UserDTO> assignedToUsers=new HashSet<>();
-//        for(UUID id1:task.getAssignedTo()){
-//            User user=userService.loadUser(id);
-//            UserDTO userDTO=UserDTO.mapToUserDTO(user);
-//            assignedToUsers.add(userDTO);
-//        }
+        Set<UserDTO> assignedToUsers=new HashSet<>();
+        for(UUID id1:task.getAssignedTo()){
+            User user=userService.loadUser(id);
+            UserDTO userDTO=UserDTO.mapToUserDTO(user);
+            assignedToUsers.add(userDTO);
+        }
         return TaskResponse.builder()
                 .id(task.getId())
                 .clientTaskId(clientId)
@@ -258,7 +258,7 @@ public class TaskService {
                 .priority(task.getPriority())
                 .type(task.getType())
                 .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
-//                .assignedToUsers(assignedToUsers)
+                .assignedToUsers(assignedToUsers)
                 .createdAt(task.getCreatedAt())
                 .estimatedHours(task.getEstimatedHours())
                 .completedAt(task.getCompletedAt())

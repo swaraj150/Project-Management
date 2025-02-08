@@ -194,8 +194,10 @@ public class TaskConsumerService {
             task.setStartDate(localDateTime);
         }
         if(request.getEndDate()!=null){
+
             ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
             LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            log.info("request endDate : {}",localDateTime);
             task.setEndDate(localDateTime);
         }
         if (request.getToTaskId() != null && request.getDependencyType() != null) {
