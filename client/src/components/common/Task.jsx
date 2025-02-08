@@ -93,13 +93,13 @@ const Task = ({ isOpen, tasks }) => {
 
             return updatedTree;
         });
-        // let delta = extractDelta(oldTask, newTask)
 
         if (field == 'start') {
-            delta.start = updateDate(currentTask.start, value);
+            delta.start = new Date(currentTask.start).toISOString();
+            // delta.start = updateDate(currentTask.start, value);
         }
         if (field == 'end') {
-            delta.end = updateDate(currentTask.end, value);
+            delta.end =new Date(currentTask.end).toISOString();
         }
         delta.id = currentTask.id
         delta.index = currentTask.index
@@ -233,7 +233,7 @@ const Task = ({ isOpen, tasks }) => {
                 <button className="btn-add-dependency" onClick={handleDependencyList}>Add dependency</button>
                 <button className="btn-log-time">Log time</button>
             </div>
-            {showAssigneeList && <AssigneeList onClose={onCloseAssignee} />}
+            {showAssigneeList && <AssigneeList onClose={onCloseAssignee} currentTask={{id:task.id,index:task.index}}/>}
             {showDependencyList && <DependencyList onClose={onCloseDependencyList} currentTask={{ id: task.id, index: task.index, start: task.start, end: task.end }} taskList={taskList || []} />}
             <hr />
 

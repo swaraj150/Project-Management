@@ -7,8 +7,9 @@ import { dependency_types, extractDelta, formatDate } from "../utils/task.utils"
 const flattenTasks = (tasks) => {
     const taskList = { data: [], links: [] };
     const flatTaskMap = {};
-    const indexRef = { i: 0 };
-    const processTask = (task, indexRef, parentId = null) => {
+    const taskIndexRef = { i: 0 };
+    const linkIndexRef = { i: 0 };
+    const processTask = (task, taskIndexRef,linkIndexRef, parentId = null) => {
         const task1 = {
             id: task.id,
             text: task.name,
@@ -30,10 +31,10 @@ const flattenTasks = (tasks) => {
         
         taskList.data.push(task1); 
         // taskList.data.push(blankTask); 
-        flatTaskMap[task.id] = { ...task1, index: task.index }
+        flatTaskMap[task.id] = { ...task1, index: task.index,taskIndex:taskIndexRef.i++,status:task.status }
         const links = task.dependencies?.map((d) => {
             const link = {
-                id: indexRef.i++,
+                id: linkIndexRef.i++,
                 source: task.id,
                 target: d.id,
                 type: dependency_types[d.type]
@@ -42,14 +43,12 @@ const flattenTasks = (tasks) => {
             return link
         })
         taskList.links.push(...links || []);
-
-
         if (task.subtasks?.length) {
-            task.subtasks.forEach((subTask) => processTask(subTask, indexRef, task.id));
+            task.subtasks.forEach((subTask) => processTask(subTask, taskIndexRef,linkIndexRef, task.id));
         }
     };
 
-    tasks.forEach((task) => processTask(task, indexRef));
+    tasks.forEach((task) => processTask(task, taskIndexRef,linkIndexRef));
     return { taskList, flatTaskMap };
 };
 
@@ -77,7 +76,7 @@ const GanttChart = () => {
     const [flatTaskMap, setFlatTaskMap] = useState({})
     useEffect(() => {
         const { taskList, flatTaskMap } = flattenTasks(tasks);
-        console.dir("flat tasks",flatTasks);
+        // console.dir("flat tasks",flatTasks.data);
         setFlatTasks(taskList);
         setFlatTaskMap(flatTaskMap)
 
@@ -87,8 +86,8 @@ const GanttChart = () => {
             id: task.id,
             index: task.index,
             name: task.text || null,
-            start: task.start_date.toISOString().slice(0, -1),
-            end: task.end_date.toISOString().slice(0, -1),
+            start: task.start_date?.toISOString(),
+            end: task.end_date?.toISOString(),
             parentTaskId: taskMap[parent] || null,
             progress: task.progress * 100 || null,
         }
@@ -97,9 +96,52 @@ const GanttChart = () => {
         const oldTask = flatTaskMap[id];       
         let delta = extractDelta(oldTask, updatedTask);
         delta = { ...delta, index: oldTask.index };
+        delta=convertToReduxState(delta);
         console.log(delta)
+        
     };
-
+    const validateLink=(link)=>{
+        const source=flatTaskMap[link.source];
+        const target=flatTaskMap[link.target];
+        if(source.taskIndex>target.taskIndex){
+            return false;
+        }
+        switch(link.type){
+            case dependency_types.FINISH_TO_START:{
+                if((source.status=="PENDING" || source.status=="IN_PROGRESS") && target.status!="PENDING"){
+                    return false;
+                }
+                break;
+            }
+            case dependency_types.FINISH_TO_FINISH : {
+                if((source.status=="PENDING" || source.status=="IN_PROGRESS") && target.status!="COMPLETED"){
+                    return false;
+                }
+                break;
+            }
+            case dependency_types.START_TO_FINISH : {
+                
+                if(source.status=="PENDING" && target.status!="COMPLETED"){
+                    return false;
+                }
+                break;
+            }
+            case dependency_types.START_TO_START : {
+                if(source.status=="PENDING" && target.status!="PENDING"){
+                    return false;
+                }
+                break;
+            }
+        }
+        return true;
+    }
+    const handleAddLink = (link) => {
+        const lastLinkId = flatTasks.links.length === 0 ? 0 : flatTasks.links[flatTasks.links.length - 1].id;
+        const links = [...flatTasks.links, { id: lastLinkId + 1, ...link }];
+        setFlatTasks({ ...flatTasks, links }); 
+        
+    };
+    
 
     const [panelWidth, setPanelWidth] = useState(40);
     const resizerRef = useRef(null);
@@ -138,7 +180,7 @@ const GanttChart = () => {
                             onMouseDown={handleMouseDown}
                         ></div>
                         <div style={{ flexGrow: 1, overflowY: "scroll", width: `${100 - panelWidth}%` }}>
-                            <GanttChartDhtmlx tasks={flatTasks} onTaskUpdated={handleTaskUpdate} />
+                            <GanttChartDhtmlx tasks={flatTasks} onTaskUpdated={handleTaskUpdate} validateLink={validateLink} handleAddLink={handleAddLink} />
                         </div>
                     </>
                 ) : (

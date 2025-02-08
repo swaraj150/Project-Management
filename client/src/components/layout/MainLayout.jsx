@@ -32,18 +32,21 @@ const MainLayout = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       const { res, err } = await userApi.getInfo()
-
-
-
+      console.log(res)
+      console.log(err)
       if (res) {
         dispatch(setUser(res))
         toast.success('Login successful. Welcome back!')
-      }
-
-      if (err) {
+      }else{
         localStorage.removeItem('token')
         navigate('/sign-in')
       }
+
+      // if (err) {
+        // localStorage.removeItem('token')
+        // navigate('/sign-in')
+        
+      // }
     }
 
     const token = localStorage.getItem('token')
