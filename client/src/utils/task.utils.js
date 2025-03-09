@@ -21,7 +21,7 @@ export const convertTasksFromServer = (task, index1, level = 0, dispatch, parent
         end: task.endDate,
         status: task.completionStatus ? task.completionStatus : 'PENDING',
         subtasks: task.subTasks ? task.subTasks.map((subTask) => convertTasksFromServer(subTask, taskIndex, level++, dispatch, taskIndex)) : [],
-        dependencies: [],
+        dependencies: task.dependencies?task.dependencies:[],
         progress: 60,
         parentTaskId: parentTaskId,
         created_by: task.createdByUser,
@@ -99,13 +99,13 @@ export const convertTasksToServer = (delta) => {
         parentTaskId: delta.parentTaskId || null,
         estimatedHours: delta.estimated_hours || null,
         startDate: delta.start || null,
-        endDate: delta.end|| null,
+        endDate: delta.end || null,
         toTaskId: delta.to_task_id || null,
         lag: delta.lag || null,
         dependencyType: delta.dependency_type || null,
         triggerAt: delta.triggerAt || null,
-        publishType:delta.publish_type||null,
-        projectId:delta.project_id||null
+        publishType: delta.publish_type || null,
+        projectId: delta.project_id || null
     }
 }
 
@@ -244,7 +244,7 @@ export const setupTasks = (tasks, dispatch) => {
         const task1 = convertTasksFromServer(task, index + 1, 0, dispatch, null);
         return task1;
     })
-    console.log("tasks: ",tasks)
+    console.log("tasks: ", tasks)
     dispatch(setTasks({ tasks: tasks1 }))
     const { pending, completed, in_progress } = segregateTasks(tasks1);
     dispatch(setKanbanTasks({ status: 'pending', tasks: pending }))
@@ -301,6 +301,12 @@ export const dependency_types = {
     START_TO_START: "1",
     FINISH_TO_FINISH: "2",
     START_TO_FINISH: "3",
+}
+export const dependency_types_for_server = {
+    "0": "FINISH_TO_START",
+    "1": "START_TO_START",
+    "2": "FINISH_TO_FINISH",
+    "3": "START_TO_FINISH"
 }
 
 export const updateDependenciesStatus = (tasks, taskId, value, dependencies_delta, visited = new Set()) => {
@@ -360,7 +366,7 @@ export const updateDependenciesDates = (tasks, taskId, fromStart, fromEnd, depen
 
             for (const dependency of dependencies) {
                 const { type, lag, id, index } = dependency;
-                const {start,end}=computeDateTimeShift(fromStart,fromEnd,dependency.start,dependency.end,dependency)
+                const { start, end } = computeDateTimeShift(fromStart, fromEnd, dependency.start, dependency.end, dependency)
 
                 dependencies_delta.push({
                     id: id,
@@ -403,7 +409,7 @@ const computeNewStatus = (type, value, currentStatus) => {
     }
 };
 
-export const computeDateTimeShift = (fromTaskStart,fromTaskEnd, toTaskStart,toTaskEnd, dependency) => {
+export const computeDateTimeShift = (fromTaskStart, fromTaskEnd, toTaskStart, toTaskEnd, dependency) => {
 
     const lag = dependency.lag;
     toTaskStart = new Date(toTaskStart);
@@ -442,10 +448,10 @@ export const computeDateTimeShift = (fromTaskStart,fromTaskEnd, toTaskStart,toTa
 }
 
 
-export const deleteTask=async(taskId,projectId,dispatch)=>{
+export const deleteTask = async (taskId, projectId, dispatch) => {
     try {
-        await taskApi.delete(taskId,projectId);
-        const { res, err }=await taskApi.fetchByProject(projectId);
+        await taskApi.delete(taskId, projectId);
+        const { res, err } = await taskApi.fetchByProject(projectId);
         if (res && res.tasks) {
             setupTasks(res.tasks, dispatch);
         }
@@ -454,10 +460,10 @@ export const deleteTask=async(taskId,projectId,dispatch)=>{
     }
 }
 
-export const fetchTaskComments=async(taskId)=>{
+export const fetchTaskComments = async (taskId) => {
     try {
-        const {res,err}=await taskApi.loadComments(taskId);
-        if(res && res.comments){
+        const { res, err } = await taskApi.loadComments(taskId);
+        if (res && res.comments) {
             // console.log(res.comments)
             return res.comments;
         }
@@ -467,7 +473,7 @@ export const fetchTaskComments=async(taskId)=>{
         console.log(error);
     }
 }
-export const createChatRoom=async(data)=>{
+export const createChatRoom = async (data) => {
     try {
         await chatRoomApi.create(data);
     } catch (error) {

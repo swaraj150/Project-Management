@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import GanttTable from "../components/common/GanttTable";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import GanttChartDhtmlx from "../components/common/GanttChartDhtmlx";
-import { dependency_types, extractDelta, formatDate } from "../utils/task.utils";
+import { dependency_types, dependency_types_for_server, extractDelta, formatDate } from "../utils/task.utils";
+import { addDeltaAndPublish } from "../utils/websocket.utils";
 
 const flattenTasks = (tasks) => {
     const taskList = { data: [], links: [] };
@@ -35,9 +36,9 @@ const flattenTasks = (tasks) => {
         const links = task.dependencies?.map((d) => {
             const link = {
                 id: linkIndexRef.i++,
-                source: task.id,
-                target: d.id,
-                type: dependency_types[d.type]
+                source: d.fromTaskId,
+                target: d.toTaskId,
+                type: dependency_types[d.dependencyType]
             }
             flatTaskMap[link.id] = link;
             return link
@@ -56,7 +57,8 @@ const flattenTasks = (tasks) => {
 const GanttChart = () => {
     const tasks = useSelector((state) => state.task["tasks"])
     const taskMap = useSelector((state) => state.task["taskMap"])
-
+    const client=useSelector((state)=>state.webSocket.client);
+    const isConnected=useSelector((state)=>state.webSocket.connected);
     // const data = {
     //     data: [
     //         { id: 1, text: "Project #1", start_date: null, duration: null, parent: 0, progress: 0, open: true },
@@ -74,6 +76,7 @@ const GanttChart = () => {
     // }
     const [flatTasks, setFlatTasks] = useState({});
     const [flatTaskMap, setFlatTaskMap] = useState({})
+    const dispatch=useDispatch();
     useEffect(() => {
         const { taskList, flatTaskMap } = flattenTasks(tasks);
         // console.dir("flat tasks",flatTasks.data);
@@ -98,6 +101,7 @@ const GanttChart = () => {
         delta = { ...delta, index: oldTask.index };
         delta=convertToReduxState(delta);
         console.log(delta)
+        dispatch(addDeltaAndPublish(delta, isConnected, client));
         
     };
     const validateLink=(link)=>{
@@ -136,9 +140,17 @@ const GanttChart = () => {
         return true;
     }
     const handleAddLink = (link) => {
+        console.log(link);
         const lastLinkId = flatTasks.links.length === 0 ? 0 : flatTasks.links[flatTasks.links.length - 1].id;
         const links = [...flatTasks.links, { id: lastLinkId + 1, ...link }];
         setFlatTasks({ ...flatTasks, links }); 
+        const delta={
+            id:link.source,
+            index:flatTaskMap[link.source].index,
+            to_task_id:link.target,
+            dependency_type:dependency_types_for_server[link.type]
+        }
+        dispatch(addDeltaAndPublish(delta,isConnected,client));
         
     };
     

@@ -219,10 +219,12 @@ public class TaskService {
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
         Set<UserDTO> assignedToUsers=new HashSet<>();
         for(UUID id1:task.getAssignedTo()){
-            User user=userService.loadUser(id);
+            User user=userService.loadUser(id1);
             UserDTO userDTO=UserDTO.mapToUserDTO(user);
             assignedToUsers.add(userDTO);
         }
+        List<Dependency> dependencies=dependencyRepository.findByFromTaskId(id);
+
         return TaskResponse.builder()
                 .id(task.getId())
                 .title(task.getTitle())
@@ -238,7 +240,7 @@ public class TaskService {
                 .endDate(task.getEndDate())
                 .completionStatus(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
-//                .dependencies(task.getDependencies())
+                .dependencies(dependencies)
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
@@ -246,10 +248,11 @@ public class TaskService {
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
         Set<UserDTO> assignedToUsers=new HashSet<>();
         for(UUID id1:task.getAssignedTo()){
-            User user=userService.loadUser(id);
+            User user=userService.loadUser(id1);
             UserDTO userDTO=UserDTO.mapToUserDTO(user);
             assignedToUsers.add(userDTO);
         }
+        List<Dependency> dependencies=dependencyRepository.findByFromTaskId(id);
         return TaskResponse.builder()
                 .id(task.getId())
                 .clientTaskId(clientId)
@@ -266,6 +269,7 @@ public class TaskService {
                 .endDate(task.getEndDate())
                 .completionStatus(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
+                .dependencies(dependencies)
 //                .dependencies(task.getDependencies())
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
