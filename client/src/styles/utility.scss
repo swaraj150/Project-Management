@@ -19,6 +19,11 @@
     user-select: none;
 }
 
+.dark-btn {
+    color: var(--white--500) !important;
+    background-color: var(--primary--900) !important;
+}
+
 .input-field {
     width: 100%;
     display: flex;

@@ -65,7 +65,7 @@ const ProjectDetails = ({ project, setModalOpen, modalRef }) => {
           <p>Team Lead</p>
           <p>Members</p>
         </div>
-        <ul className="teams-list no-scrollbar">
+        <ul className="teams-list">
           {
             projectTeams.map((projectTeam, index) => (
               <li>

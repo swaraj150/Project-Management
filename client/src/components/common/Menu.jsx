@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { MdDashboard, MdGroups, MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from "react-icons/md"
 import { FaBuilding, FaProjectDiagram, FaRocketchat, FaTasks } from "react-icons/fa"
@@ -6,45 +7,55 @@ import { FaBuilding, FaProjectDiagram, FaRocketchat, FaTasks } from "react-icons
 import Logo from '../../assets/logo.png'
 
 import { setActive, setCollapsed } from '../../redux/features/menuSlice'
-import { toggleProjectTaskModal } from '../../redux/features/taskSlice'
+// import { toggleProjectTaskModal } from '../../redux/features/tasksSlice'
 
 const menuItems = [
   {
     name: 'DashBoard',
-    icon: <MdDashboard />
+    icon: <MdDashboard />,
+    path: '/dashboard'
   },
   {
     name: 'Organization',
-    icon: <FaBuilding />
+    icon: <FaBuilding />,
+    path: '/organization'
   },
   {
     name: 'Teams',
-    icon: <MdGroups />
+    icon: <MdGroups />,
+    path: '/teams'
   },
   {
     name: 'Projects',
-    icon: <FaProjectDiagram />
+    icon: <FaProjectDiagram />,
+    path: '/projects'
   },
   {
     name: 'Tasks',
-    icon: <FaTasks />
+    icon: <FaTasks />,
+    path: '/tasks'
   },
   {
-    name:'ChatSection',
-    icon:<FaRocketchat/>
+    name: 'ChatSection',
+    icon: <FaRocketchat />,
+    path: '/chat'
+  },
+  {
+    name: 'Reference',
+    icon: <FaProjectDiagram />,
+    path: '/reference'
   }
 ]
 
 const Menu = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  const { collapsed } = useSelector((state) => state.menu)
-
-  const [selected, setSelected] = useState(0)
+  const { active, collapsed } = useSelector((state) => state.menu)
 
   const handleChange = (index) => {
-    setSelected(index)
     dispatch(setActive(index))
+    navigate(menuItems[index].path)
   }
 
   return (
@@ -63,13 +74,13 @@ const Menu = () => {
       <ul className="menu-items">
         {
           menuItems.map((item, index) => (
-            <li key={index} className={selected === index ? "active pointer paper" : "pointer" } 
-            onClick={() => {
-              handleChange(index)
-              if(index==4){
-                dispatch(toggleProjectTaskModal());
-              }
-            }}>
+            <li key={index} className={active === index ? "active pointer paper" : "pointer"}
+              onClick={() => {
+                handleChange(index)
+                // if (index == 4) {
+                //   dispatch(toggleProjectTaskModal())
+                // }
+              }}>
               {item.icon} {collapsed ? null : item.name}
             </li>
           ))

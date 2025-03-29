@@ -6,7 +6,7 @@ import DashBoard from './DashBoard'
 import Organization from './Organization'
 import Teams from './Teams'
 import Projects from './Projects'
-import Tasks from './Tasks'
+import Tasks from './Reference'
 import ProjectTasks from '../components/common/ProjectTasks'
 import { toggleProjectTaskModal } from '../redux/features/taskSlice'
 import ChatSection from './ChatSection'
@@ -23,12 +23,10 @@ const HomePage = () => {
     <ChatSection/>
   ]
 
-
-
   return (
     <section id="homepage">
       <Menu />
-      <section id="content" className={`no-scrollbar ${collapsed ? "expanded" : null}`} >
+      <section id="content" className={`${collapsed ? "expanded" : null}`} >
         {
         menuItems[active]        
         }

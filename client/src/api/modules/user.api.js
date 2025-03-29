@@ -1,4 +1,4 @@
-import privateClient from  '../clients/private.client'
+import privateClient from '../clients/private.client'
 import publicClient from '../clients/public.client'
 
 const userEndpoints = {
@@ -17,7 +17,6 @@ const userApi = {
         userEndpoints.signin,
         { username, password }
       )
-
       return { res }
     } catch (err) {
       return { err }
@@ -26,12 +25,10 @@ const userApi = {
   signup: async ({ firstname, lastname, email, password }) => {
     try {
       const name = firstname + " " + lastname
-
       const res = await publicClient.post(
         userEndpoints.signup,
         { name, email, password }
       )
-
       return { res }
     } catch (err) {
       return { err }
@@ -39,8 +36,10 @@ const userApi = {
   },
   googleSignin: async ({ accessToken }) => {
     try {
-      const res = await publicClient.post(userEndpoints.googleSignin, { accessToken })
-
+      const res = await publicClient.post(
+        userEndpoints.googleSignin,
+        { accessToken }
+      )
       return { res }
     } catch (err) {
       return { err }
@@ -48,8 +47,10 @@ const userApi = {
   },
   githubSignin: async ({ code }) => {
     try {
-      const res = await publicClient.post(userEndpoints.githubSignin, { code })
-
+      const res = await publicClient.post(
+        userEndpoints.githubSignin,
+        { code }
+      )
       return { res }
     } catch (err) {
       return { err }
@@ -58,7 +59,6 @@ const userApi = {
   getInfo: async () => {
     try {
       const res = await privateClient.get(userEndpoints.getInfo)
-
       return { res }
     } catch (err) {
       return { err }
@@ -66,8 +66,10 @@ const userApi = {
   },
   updateProjectRole: async ({ userId, role }) => {
     try {
-      const res = await privateClient.get(userEndpoints.updateProjectRole, { userId, role })
-
+      const res = await privateClient.put(
+        userEndpoints.updateProjectRole,
+        { userId, role }
+      )
       return { res }
     } catch (err) {
       return { err }

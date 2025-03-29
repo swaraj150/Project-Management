@@ -1,4 +1,4 @@
-import privateClient from  '../clients/private.client'
+import privateClient from '../clients/private.client'
 
 const projectsEndpoints = {
   create: 'projects/create',
@@ -14,7 +14,6 @@ const projectsApi = {
         projectsEndpoints.create,
         { title, description, estimatedEndDate, budget }
       )
-
       return { res }
     } catch (err) {
       return { err }
@@ -29,7 +28,6 @@ const projectsApi = {
   getAll: async () => {
     try {
       const res = await privateClient.get(projectsEndpoints.getAll)
-
       return { res }
     } catch (err) {
       return { err }
@@ -41,7 +39,6 @@ const projectsApi = {
         projectsEndpoints.addTeam,
         { projectId, teams }
       )
-
       return { res }
     } catch (err) {
       return { err }

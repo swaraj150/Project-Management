@@ -1,5 +1,4 @@
 import axios from 'axios'
-import queryString from 'query-string'
 
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 
@@ -21,7 +20,7 @@ privateClient.interceptors.request.use(async (config) => {
     ...config,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('projectMaestroToken')}`
     }
   }
 })

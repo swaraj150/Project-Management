@@ -13,6 +13,8 @@ import AuthOptions from './AuthOptions'
 
 import { setUser } from '../../redux/features/userSlice'
 
+import { preventDefaultBehaviour } from '../../utils/event.utils'
+
 const SignupForm = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -40,6 +42,7 @@ const SignupForm = () => {
         .required('Email is required'),
       password: Yup.string()
         .min(8, 'Password must be at least 8 characters')
+        .max(20, 'Password must be at most 20 characters')
         .matches(
           /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~!@#$%&*?])[A-Za-z\d~!@#$%&*?]+$/,
           'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (~, !, @, #, $, %, &, *, ?)'
@@ -58,22 +61,22 @@ const SignupForm = () => {
       })
 
       if (res) {
-        if (res.token) localStorage.setItem('token', res.token)
+        if (res.token) localStorage.setItem('projectMaestroToken', res.token)
         dispatch(setUser(res))
         toast.success('Registration successful! Welcome aboard.')
-        navigate('/')
+        navigate('/dashboard')
       }
 
       if (err) {
-        localStorage.removeItem('token')
+        localStorage.removeItem('projectMaestroToken')
         toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
       }
     }
   })
 
   return (
-    <section className='signup-form'>
-      <div className='signup-card paper'>
+    <section className='auth-form'>
+      <div className='auth-card paper'>
         <h1>Sign Up</h1>
         <p className='prompt opacity-5' >Enter following details to create an account.</p>
         <form onSubmit={signupForm.handleSubmit}>
@@ -135,6 +138,8 @@ const SignupForm = () => {
                 value={signupForm.values.password}
                 onChange={signupForm.handleChange}
                 onBlur={signupForm.handleBlur}
+                onPaste={preventDefaultBehaviour}
+                onCopy={preventDefaultBehaviour}
               />
               {
                 hidePassword
@@ -157,6 +162,8 @@ const SignupForm = () => {
                 value={signupForm.values.confirmPassword}
                 onChange={signupForm.handleChange}
                 onBlur={signupForm.handleBlur}
+                onPaste={preventDefaultBehaviour}
+                onCopy={preventDefaultBehaviour}
               />
               {
                 hideConfirmPassword

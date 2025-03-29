@@ -12,7 +12,7 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]; // Default colors
  * @param {number} width - Width of the pie chart.
  * @param {number} height - Height of the pie chart.
  */
-const ReusablePieChart = (
+const PieChart = (
     {
         data,
         dataKey,
@@ -42,4 +42,4 @@ const ReusablePieChart = (
         </PieChart>
     );
 }
-export default ReusablePieChart
+export default PieChart

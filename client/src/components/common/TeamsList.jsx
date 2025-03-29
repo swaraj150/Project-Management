@@ -23,7 +23,7 @@ const TeamsList = () => {
           ))
         }
       </div>
-      <ul className="team-list-items no-scrollbar">
+      <ul className="team-list-items">
         {
           teams.map((team, index) => (
             <Team key={index} team={team} />

@@ -13,13 +13,13 @@ const SignupPage = () => {
   useEffect(() => {
     if (user) navigate('/')
     
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('projectMaestroToken')
 
     if (token !== null) navigate('/')
   }, [])
 
   return (
-    <section className='signin'>
+    <section className='auth-container'>
       <Welcome />
       <SignupForm />
     </section>

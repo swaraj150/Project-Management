@@ -7,7 +7,7 @@ const ProjectsList = () => {
   const { projects } = useSelector((state) => state.projects)
 
   return (
-    <ul className="projects-list no-scrollbar">
+    <ul className="projects-list">
       {
         projects.map((project, index) => (
           <Project key={index} project={project} />
