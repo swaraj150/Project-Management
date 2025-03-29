@@ -125,7 +125,7 @@ public class OrganizationService {
 
 
 
-    public void respondToJoinRequest(@NonNull UUID id,@NonNull String status){
+    public UserDTO respondToJoinRequest(@NonNull UUID id,@NonNull String status){
         User user1 = userService.loadUser(securityUtils.getCurrentUsername());
         if (!user1.getProjectRole().hasAuthority(ProjectAuthority.ACCEPT_MEMBERS)) {
             throw new UnauthorizedAccessException("User does not have the required authority");
@@ -144,16 +144,18 @@ public class OrganizationService {
 //            joinRequestRepository.save(joinRequest);
             joinRequestRepository.delete(joinRequest);
             userRepository.save(user);
+            return UserDTO.mapToUserDTO(user);
         }
         else if(Objects.equals(status,"reject")){
             joinRequest.setStatus(RequestStatus.REJECTED);
             joinRequestRepository.delete(joinRequest);
-
 //            joinRequestRepository.save(joinRequest);
         }
         else{
             throw new IllegalArgumentException("invalid request status");
         }
+        return null;
+
     }
 
 

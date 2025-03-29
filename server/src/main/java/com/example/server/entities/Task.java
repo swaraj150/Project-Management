@@ -23,7 +23,7 @@ public class Task {
     private UUID id;
     private String title;
     private String description;
-    private Integer priority;
+    private Integer priority; // enum
     @Enumerated(EnumType.STRING)
     private TaskType type;
     @Enumerated(EnumType.STRING)
@@ -41,7 +41,7 @@ public class Task {
 
 
     private LocalDateTime createdAt;
-    private Integer estimatedHours;
+    private Integer estimatedHours;// estimated Days
     private LocalDateTime completedAt;
     @Enumerated(EnumType.STRING)
     private CompletionStatus completionStatus;
@@ -52,6 +52,7 @@ public class Task {
     @Column(name = "project_id")
     private UUID projectId;
 
+    // progress int
 
 
 

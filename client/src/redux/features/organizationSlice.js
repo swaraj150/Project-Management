@@ -11,7 +11,7 @@ export const organizationSlice = createSlice({
       state.organization = action.payload.organization
     },
     addMember: (state, action) => {
-      state.organization.members = [...state.organization.members, action.payload]
+      state.organization.members = [...state.organization.members, action.payload.user]
     }
   }
 })

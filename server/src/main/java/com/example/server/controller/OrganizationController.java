@@ -2,6 +2,7 @@ package com.example.server.controller;
 
 import com.example.server.dto.JoinRequestDTO;
 import com.example.server.dto.OrganizationDTO;
+import com.example.server.dto.UserDTO;
 import com.example.server.entities.Organization;
 import com.example.server.requests.ChangeJoinRequestStatusRequest;
 import com.example.server.requests.JoinOrganizationRequest;
@@ -59,14 +60,15 @@ public class OrganizationController {
 //        h.put("message","request accepted");
 //        return ResponseEntity.ok(h);
 //    }
-    @PutMapping("/accept/{id}")
+    @PutMapping("/requests/accept/{id}")
     public ResponseEntity<?> acceptRequest(@PathVariable @NonNull UUID id){
-        organizationService.respondToJoinRequest(id,"accept");
+        UserDTO user=organizationService.respondToJoinRequest(id,"accept");
         HashMap<String,Object> h=new HashMap<>();
         h.put("message","request accepted");
+        h.put("user",user);
         return ResponseEntity.ok(h);
     }
-    @PutMapping("/reject/{id}")
+    @PutMapping("/requests/reject/{id}")
     public ResponseEntity<?> rejectRequest(@PathVariable @NonNull UUID id){
         organizationService.respondToJoinRequest(id,"reject");
         HashMap<String,Object> h=new HashMap<>();
@@ -100,7 +102,7 @@ public class OrganizationController {
     }
 
 
-
+// remove user
 
 
 

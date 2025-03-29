@@ -13,7 +13,10 @@ const Request = ({ request, removeRequest }) => {
 
   const handleReject = async () => {
     const { res, err } = await organizationApi.reject({ requestId: request.id })
-    if (res) removeRequest({ requestId: request.id })
+    if (res){
+      removeRequest({ requestId: request.id })
+      toast.success(`${request.username} has been successfully rejected!`)
+    }
     if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
   }
 
