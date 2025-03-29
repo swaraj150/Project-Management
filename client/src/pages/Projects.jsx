@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { IoMdAdd } from 'react-icons/io'
 
+import Menu from '../components/common/Menu'
 import CreateProject from '../components/common/CreateProject'
 import ProjectsList from '../components/common/ProjectsList'
 
@@ -12,6 +13,7 @@ const Projects = () => {
 
   const { user } = useSelector((state) => state.user)
   const { projects } = useSelector((state) => state.projects)
+  const { collapsed } = useSelector((state) => state.menu)
 
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -31,20 +33,23 @@ const Projects = () => {
 
   return (
     <section id="projects">
-      {modalOpen ? <CreateProject setModalOpen={setModalOpen} modalRef={modalRef} /> : null}
-      <div className="heading">
-        <h2 className="title h1">Projects</h2>
-        {
-          user.projectRole === roles.productOwner ? (
-            <button className="cta pointer" onClick={() => setModalOpen(true)}>
-              <IoMdAdd />
-              <p>Create Project</p>
-            </button>
-          ) : null
-        }
-      </div>
-      <p className="opacity-7">Projects Count: {projects.length}</p>
-      <ProjectsList />
+      <Menu />
+      <section className={`content ${collapsed ? "expanded" : null}`} >
+        {modalOpen ? <CreateProject setModalOpen={setModalOpen} modalRef={modalRef} /> : null}
+        <div className="heading">
+          <h2 className="title h1">Projects</h2>
+          {
+            user.projectRole === roles.productOwner ? (
+              <button className="cta pointer dark-btn" onClick={() => setModalOpen(true)}>
+                <IoMdAdd />
+                <p>Create Project</p>
+              </button>
+            ) : null
+          }
+        </div>
+        <p className="opacity-7">Projects Count: {projects.length}</p>
+        <ProjectsList />
+      </section>
     </section>
   )
 }

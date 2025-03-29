@@ -1,13 +1,21 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
 import MainLayout from './components/layout/MainLayout'
 
-import { publicRoutes, privateRoutes } from './routes/Routes'
 import NotFoundPage from './pages/NotFoundPage'
 
+import { publicRoutes, privateRoutes } from './routes/Routes'
+
+import usePrevious from './hooks/usePrevious'
+
 const App = () => {
+
+  const { active } = useSelector((state) => state.menu)
+  const previousActive = usePrevious(active)
+
   return (
     <>
       <ToastContainer
@@ -37,18 +45,14 @@ const App = () => {
           <Route path='/' element={<MainLayout />} >
             {
               privateRoutes.map((route, index) => (
-                route.index ? (
-                  <Route index key={index} element={route.element} />
-                ) : (
                   <Route path={route.path} key={index} element={route.element} />
-                )
               ))
             }
           </Route>
           {/* Private Routes */}
 
           {/* Not Found Page */}
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="*" element={<NotFoundPage previousActive={previousActive} />} />
           {/* Not Found Page */}
 
         </Routes>

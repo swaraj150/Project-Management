@@ -12,6 +12,8 @@ import AuthOptions from './AuthOptions'
 
 import { setUser } from '../../redux/features/userSlice'
 
+import { preventDefaultBehaviour } from '../../utils/event.utils'
+
 const SigninForm = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -28,14 +30,15 @@ const SigninForm = () => {
       usernameOrEmail: Yup.string()
         .test(
           'usernameOrEmail',
-          'Must be a valid email or a username (username should be at least 8 characters long and contain only letters, numbers and underscores)', function (value) {
-            const usernameRegex = /^[a-z0-9_]{8,}$/;
+          'Must be a valid email or a username (username should be at least 8 and atmost 20 characters long and contain only letters, numbers and underscores)', function (value) {
+            const usernameRegex = /^[A-Za-z0-9_]{8,20}$/;
             return usernameRegex.test(value) || Yup.string().email().isValidSync(value);
           }
         )
         .required('Username or Email is required'),
       password: Yup.string()
         .min(8, 'Password must be at least 8 characters')
+        .max(20, 'Password must be at most 20 characters')
         .matches(
           /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[~!@#$%&*?])[A-Za-z\d~!@#$%&*?]+$/,
           'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (~, !, @, #, $, %, &, *, ?)'
@@ -45,10 +48,10 @@ const SigninForm = () => {
     onSubmit: async (values) => {
       if (rememberMe) {
         localStorage.setItem('rememberMe', true)
-        localStorage.setItem('projectMaestroUsername', values.usernameOrEmail)
+        localStorage.setItem('projectMaestroUsernameOrEmail', values.usernameOrEmail)
       } else {
         localStorage.removeItem('rememberMe')
-        localStorage.removeItem('projectMaestroUsername')
+        localStorage.removeItem('projectMaestroUsernameOrEmail')
       }
 
       const { res, err } = await userApi.signin({ 
@@ -57,14 +60,14 @@ const SigninForm = () => {
       })
 
       if (res) {
-        if (res.token) localStorage.setItem('token', res.token)
+        if (res.token) localStorage.setItem('projectMaestroToken', res.token)
         dispatch(setUser(res))
         toast.success('Login successful. Welcome back!')
-        navigate('/')
+        navigate('/dashboard')
       }
 
       if (err) {
-        localStorage.removeItem('token')
+        localStorage.removeItem('projectMaestroToken')
         toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
       }
     }
@@ -72,9 +75,7 @@ const SigninForm = () => {
 
   useEffect(() => {
     if (localStorage.getItem('rememberMe') != null) setRememberMe(true)
-
-    const savedUsername = localStorage.getItem('projectMaestroUsername')
-
+    const savedUsername = localStorage.getItem('projectMaestroUsernameOrEmail')
     if (savedUsername) signinForm.setFieldValue('usernameOrEmail', savedUsername)
   }, [])
 
@@ -104,10 +105,10 @@ const SigninForm = () => {
   }, [])
 
   return (
-    <section className='signin-form'>
-      <div className='signin-card paper'>
+    <section className='auth-form'>
+      <div className='auth-card paper'>
         <h1>Sign In</h1>
-        <p className='prompt opacity-5' >Enter email and password to log in to you account.</p>
+        <p className='prompt opacity-5'>Enter email and password to log in to you account.</p>
         <form onSubmit={signinForm.handleSubmit}>
           <div className="input-field">
             <input
@@ -135,6 +136,8 @@ const SigninForm = () => {
                 value={signinForm.values.password}
                 onChange={signinForm.handleChange}
                 onBlur={signinForm.handleBlur}
+                onPaste={preventDefaultBehaviour}
+                onCopy={preventDefaultBehaviour}
               />
               {
                 hidePassword

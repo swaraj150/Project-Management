@@ -261,14 +261,13 @@ main {
 }
 
 /* Signin / Signup Page */
-.signin,
-.signup {
+.auth-container {
     height: 100vh;
     width: 100%;
     display: flex;
     overflow: hidden;
 
-    .welcome {
+    #welcome {
         width: 50%;
         display: flex;
         gap: 3%;
@@ -301,15 +300,13 @@ main {
         }
     }
 
-    .signin-form,
-    .signup-form {
+    .auth-form {
         width: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
 
-        .signin-card,
-        .signup-card {
+        .auth-card {
             width: 70%;
             padding: 3%;
             border-radius: 10px;
@@ -411,8 +408,7 @@ main {
                 }
             }
 
-            .signin-option,
-            .signup-option {
+            .auth-options {
                 width: 100%;
                 display: flex;
                 gap: 20px;
@@ -617,84 +613,94 @@ main {
     }
 }
 
-#homepage {
+#menu {
+    width: 15%;
     height: 100%;
+    padding: 2% 1%;
     display: flex;
-    align-items: center;
-    background-color: var(--white-500);
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--white--500);
+    background-color: var(--primary--950);
+    position: relative;
 
-    #menu {
-        width: 15%;
-        height: 100%;
-        padding: 2% 1%;
+    .collapse-btn {
+        height: 30px;
+        width: 30px;
+        color: var(--black);
+        background-color: var(--white--500);
+        border-radius: 50%;
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        color: var(--white--500);
-        background-color: var(--primary--950);
-        position: relative;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        right: -15px;
+        top: 130px;
 
-        .collapse-btn {
-            height: 30px;
-            width: 30px;
-            color: var(--black);
-            background-color: var(--white--500);
-            border-radius: 50%;
+        svg {
+            font-size: 1.5rem;
+        }
+    }
+
+    .menu-title {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            width: 40px;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+    }
+
+    .menu-items {
+        list-style: none;
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+
+        li {
+            width: 100%;
+            padding: 3%;
+            padding-left: 10%;
+            border-radius: 20px;
             display: flex;
+            gap: 10px;
             align-items: center;
-            justify-content: center;
-            position: absolute;
-            right: -15px;
-            top: 130px;
+            font-size: 1.3rem;
 
             svg {
                 font-size: 1.5rem;
             }
         }
 
-        .menu-title {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            justify-content: center;
-
-            img {
-                width: 40px;
-            }
-
-            p {
-                font-size: 1.2rem;
-            }
+        li:hover,
+        .active {
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), -2px 2px 5px rgba(0, 0, 0, 0.3);
+            color: var(--black);
+            background-color: var(--white--500);
         }
+    }
+}
 
-        .menu-items {
-            list-style: none;
-            display: flex;
-            gap: 10px;
-            flex-direction: column;
+#dashboard,
+#organization,
+#teams,
+#projects,
+#tasks {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    background-color: var(--white-500);
 
-            li {
-                width: 100%;
-                padding: 3%;
-                padding-left: 10%;
-                border-radius: 20px;
-                display: flex;
-                gap: 10px;
-                align-items: center;
-                font-size: 1.3rem;
-
-                svg {
-                    font-size: 1.5rem;
-                }
-            }
-
-            li:hover,
-            .active {
-                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), -2px 2px 5px rgba(0, 0, 0, 0.3);
-                color: var(--black);
-                background-color: var(--white--500);
-            }
-        }
+    .content {
+        width: 85%;
+        padding: 1%;
+        height: 100vh;
     }
 
     .collapsed {
@@ -711,707 +717,148 @@ main {
         }
     }
 
-    #content {
-        width: 85%;
-        padding: 1%;
-        height: 100vh;
+    .expanded {
+        width: 95% !important;
+    }
+}
 
-        #organization {
-            height: 100%;
+// #dashboard {
+//     .content {
 
-            .organization-heading {
+//     }
+// }
+
+#organization {
+    .content {
+        .organization-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .title {
+                color: var(--primary--500);
+            }
+
+            .cta {
+                width: 20%;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+
+                button {
+                    flex-grow: 1;
+                    outline: none;
+                    border: none;
+                    padding: 5%;
+                    border-radius: 10px;
+                    background-color: var(--white--500);
+                    font-size: 1rem;
+                    font-weight: 500;
+                }
+
+                button:hover {
+                    color: var(--white--500);
+                    background-color: var(--primary--900);
+                }
+            }
+        }
+
+        .members {
+            padding: 2%;
+
+            .heading {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-
-                .title {
-                    color: var(--primary--500);
-                }
-
-                .cta {
-                    width: 20%;
-                    display: flex;
-                    gap: 10px;
-                    align-items: center;
-
-                    button {
-                        flex-grow: 1;
-                        outline: none;
-                        border: none;
-                        padding: 5%;
-                        border-radius: 10px;
-                        background-color: var(--white--500);
-                        font-size: 1rem;
-                        font-weight: 500;
-                    }
-
-                    .active,
-                    button:hover {
-                        color: var(--white--500);
-                        background-color: var(--primary--900);
-                    }
-                }
             }
 
-            .members {
-                padding: 2%;
+            .members-list {
+                height: 70vh;
+                margin: 1%;
 
-                .heading {
+                li {
+                    height: 10%;
+                    width: 100%;
+                    padding: 5px;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                }
 
-                .members-list {
-                    height: 64vh;
-                    padding: 1%;
-                    list-style: none;
-
-                    li {
-                        width: 100%;
-                        padding: 5px;
-                        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                    .modal {
+                        width: 500px;
                         display: flex;
-                        align-items: center;
-                        justify-content: space-between;
+                        gap: 20px;
+                        flex-direction: column;
+                        justify-content: center;
 
-                        .modal {
-                            width: 500px;
+                        .cta {
+                            width: 100%;
                             display: flex;
-                            gap: 20px;
-                            flex-direction: column;
-                            justify-content: center;
+                            align-items: center;
+                            justify-content: space-between;
 
-                            .cta {
-                                width: 100%;
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-
-                                h3 {
-                                    color: var(--primary--500);
-                                }
-
-                                select {
-                                    width: 30%;
-                                    outline: none;
-                                    border: none;
-                                }
+                            h3 {
+                                color: var(--primary--500);
                             }
 
-                            .member-info {
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-
-                                .member-details {
-                                    display: flex;
-                                    gap: 10px;
-                                    align-items: center;
-                                }
-
-                                .changed-role {
-                                    color: var(--white--950);
-                                    display: flex;
-                                    gap: 10px;
-                                    align-items: center;
-
-                                    :nth-child(3) {
-                                        color: var(--primary--500);
-                                    }
-                                }
-                            }
-
-                            .cta-buttons {
-                                padding: 0 5%;
-                                display: flex;
-                                gap: 10%;
-                                align-items: center;
-                                justify-content: space-between;
-
-                                button {
-                                    flex-grow: 1;
-                                    outline: none;
-                                    border: none;
-                                    padding: 2% 5%;
-                                    border-radius: 10px;
-                                    background-color: var(--white--100);
-                                }
-
-                                button:last-child {
-                                    color: var(--white--500);
-                                    background-color: var(--primary--900);
-                                }
+                            select {
+                                width: 30%;
+                                outline: none;
+                                border: none;
                             }
                         }
 
                         .member-info {
                             display: flex;
                             align-items: center;
-                            gap: 10px;
-
-                            img {
-                                height: 30px;
-                                width: 30px;
-                                border-radius: 10px;
-                            }
-
-                            a {
-                                text-decoration: none;
-                                color: inherit;
-                            }
-                        }
-
-                        .cta {
-                            width: 15%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: flex-end;
-
-                            .role {
-                                width: 80%;
-                                padding: 2% 5%;
-                                border-radius: 5px;
-                                background-color: var(--white--100);
-                                text-align: center;
-                            }
-
-                            svg {
-                                font-size: 1.3rem;
-                            }
-                        }
-
-                        .authorized {
-                            justify-content: space-between !important;
-
-                            .role {
-                                justify-content: space-between !important;
-                            }
-                        }
-                    }
-
-                    li:first-child {
-                        border-top: 1px solid rgba(0, 0, 0, 0.1);
-                    }
-
-                    li:hover {
-                        transform: scale(1.01);
-                    }
-                }
-            }
-
-            .requests {
-                padding: 2%;
-
-                .heading {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                }
-
-                .requests-list {
-                    height: 65vh;
-                    padding: 1%;
-                    list-style: none;
-
-                    li {
-                        width: 100%;
-                        padding: 5px;
-                        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-
-                        .request-info {
-                            display: flex;
-                            align-items: center;
-                            gap: 10px;
-
-                            img {
-                                height: 30px;
-                                width: 30px;
-                                border-radius: 10px;
-                            }
-
-                            a {
-                                text-decoration: none;
-                                color: inherit;
-                            }
-                        }
-
-                        .cta {
-                            width: 35%;
-                            display: flex;
-                            gap: 10px;
-                            align-items: center;
-                            justify-content: flex-end;
-
-                            .role {
-                                padding: 1% 5%;
-                                border-radius: 10px;
-                                background-color: var(--white--100);
-                            }
-
-                            .role {
-                                width: 40%;
-                                text-align: center;
-                            }
-
-                            .cta-button {
-                                padding: 1% 5%;
-                                border-radius: 10px;
-                                color: var(--success);
-                                background-color: rgba($color: green, $alpha: 0.2);
-                                display: flex;
-                                gap: 5px;
-                                align-items: center;
-                            }
-
-                            .cta-button:hover {
-                                background-color: rgba($color: green, $alpha: 0.3);
-                            }
-
-                            .cta-button:last-child {
-                                color: var(--error);
-                                background-color: rgba($color: red, $alpha: 0.2);
-
-                                svg {
-                                    font-size: 1.2rem;
-                                }
-                            }
-
-                            .cta-button:last-child:hover {
-                                background-color: rgba($color: red, $alpha: 0.3);
-                            }
-                        }
-                    }
-
-                    li:first-child {
-                        border-top: 1px solid rgba(0, 0, 0, 0.1);
-                    }
-
-                    li:hover {
-                        transform: scale(1.01);
-                    }
-                }
-            }
-        }
-
-        #teams {
-            height: 100%;
-
-            .modal {
-                width: 50vw;
-                display: flex;
-                gap: 10px;
-                flex-direction: column;
-
-                .modal-close {
-                    right: 3%;
-                    top: 5%;
-                    font-size: 1rem;
-                }
-
-                input {
-                    padding: 2%;
-                    width: 100%;
-                    outline: none;
-                    border: none;
-                    border-radius: 10px;
-                    font-size: 1rem;
-                }
-
-                .select {
-                    padding: 0.5%;
-                    border-radius: 10px;
-                    border: none;
-
-                    .css-13cymwt-control,
-                    .css-t3ipsp-control {
-                        min-height: 10px;
-                        border: none;
-                        box-shadow: none;
-                    }
-                }
-
-                .cta {
-                    margin-top: 2%;
-                    width: 100%;
-                    display: flex;
-                    gap: 5%;
-                    align-items: center;
-
-                    button {
-                        flex-grow: 1;
-                        padding: 1.5%;
-                        border: none;
-                        outline: none;
-                        border-radius: 10px;
-                        background-color: var(--white--100);
-                        font-size: 1rem;
-                    }
-
-                    button:last-child {
-                        color: var(--white--500);
-                        background-color: var(--primary--900);
-                    }
-                }
-            }
-
-            .heading {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-
-                .cta {
-                    width: 15%;
-                    border: none;
-                    outline: none;
-                    padding: 0.8%;
-                    border-radius: 10px;
-                    color: var(--white--500);
-                    background-color: var(--primary--900);
-                    font-size: 1rem;
-                    display: flex;
-                    gap: 10px;
-                    align-items: center;
-                    justify-content: center;
-
-                    svg {
-                        font-size: 1.2rem;
-                    }
-                }
-            }
-
-            .teams-list {
-                list-style: none;
-                padding: 2%;
-
-                .team-list-headings {
-                    padding: 0.5%;
-                    border-radius: 10px;
-                    color: var(--white--500);
-                    background-color: var(--primary--900);
-                    font-size: 1.2rem;
-                    display: grid;
-                    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-
-                    p {
-                        padding: 1%;
-                        text-align: center;
-                    }
-                }
-
-                .team-list-items {
-                    margin-top: 1%;
-                    padding: 0 1%;
-                    height: 65vh;
-
-                    .team-list-info {
-                        padding: 0.5%;
-                        border-radius: 10px;
-                        position: relative;
-                        display: grid;
-                        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-
-                        .modal {
-                            height: 50vh;
-                            width: 40vw;
-                            display: flex;
-                            flex-direction: column;
-                            align-items: flex-start;
                             justify-content: space-between;
 
-                            .modal-close {
-                                right: 3%;
-                                top: 6%;
-                                font-size: 1rem;
-                            }
-
-                            a {
-                                text-decoration: none;
-                                color: inherit;
-                            }
-
-                            .team-lead {
-                                width: 100%;
-
-                                .team-lead-details {
-                                    width: 100%;
-                                    display: flex;
-                                    gap: 10px;
-                                    align-items: center;
-                                }
-                            }
-
-                            .developers,
-                            .testers {
-                                width: 100%;
-
-                                .developers-list,
-                                .testers-list {
-                                    list-style: none;
-
-                                    li {
-                                        display: flex;
-                                        gap: 10px;
-                                        align-items: center;
-                                    }
-                                }
-                            }
-                        }
-
-                        .team-list-info-item {
-                            padding: 1%;
-                            text-align: center;
-                        }
-
-                        svg {
-                            position: absolute;
-                            right: 1%;
-                            top: 50%;
-                            transform: translateY(-50%);
-                            font-size: 1.5rem;
-                        }
-                    }
-
-                    .team-list-info:nth-child(even) {
-                        background-color: var(--white--100);
-                    }
-                }
-            }
-        }
-
-        #projects {
-            height: 100%;
-
-            .modal {
-                width: 50vw;
-                display: flex;
-                gap: 10px;
-                flex-direction: column;
-
-                .modal-close {
-                    right: 3%;
-                    top: 5%;
-                    font-size: 1rem;
-                }
-
-                .heading {
-                    width: 95%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-
-                    .cta {
-                        padding: 0;
-                        margin: 0;
-                        height: 100%;
-                        width: 40%;
-                        background-color: inherit;
-
-                        button {
-                            padding: 3%;
-                        }
-                    }
-                }
-
-                input,
-                textarea {
-                    padding: 2%;
-                    width: 100%;
-                    outline: none;
-                    border: none;
-                    border-radius: 10px;
-                    font-size: 1rem;
-                }
-
-                .select {
-                    padding: 0.5%;
-                    border-radius: 10px;
-                    border: none;
-
-                    .css-13cymwt-control,
-                    .css-t3ipsp-control {
-                        min-height: 10px;
-                        border: none;
-                        box-shadow: none;
-                    }
-                }
-
-                .cta {
-                    margin-top: 2%;
-                    width: 100%;
-                    display: flex;
-                    gap: 5%;
-                    align-items: center;
-
-                    button {
-                        flex-grow: 1;
-                        padding: 1.5%;
-                        border: none;
-                        outline: none;
-                        border-radius: 10px;
-                        background-color: var(--white--100);
-                        font-size: 1rem;
-                    }
-
-                    button:last-child {
-                        color: var(--white--500);
-                        background-color: var(--primary--900);
-                    }
-                }
-            }
-
-            .heading {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-
-                .cta {
-                    width: 15%;
-                    border: none;
-                    outline: none;
-                    padding: 0.8%;
-                    border-radius: 10px;
-                    color: var(--white--500);
-                    background-color: var(--primary--900);
-                    font-size: 1rem;
-                    display: flex;
-                    gap: 10px;
-                    align-items: center;
-                    justify-content: center;
-
-                    svg {
-                        font-size: 1.2rem;
-                    }
-                }
-            }
-
-            .projects-list {
-                margin-top: 2%;
-                padding: 2%;
-                height: 70vh;
-                list-style: none;
-                display: flex;
-                row-gap: 5%;
-                flex-wrap: wrap;
-                align-items: center;
-                justify-content: space-evenly;
-
-                .project-info {
-                    padding: 1%;
-                    width: 30%;
-                    height: 50%;
-                    border-radius: 10px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-
-                    .modal {
-                        height: 60vh;
-                        width: 50vw;
-                        color: var(--black);
-
-                        .sub-modal {
-                            justify-content: space-evenly;
-                            height: 25vh;
-                            width: 40vw;
-                            z-index: 9999;
-
-                            .modal-close {
-                                top: 8%;
-                            }
-
-                            .select {
-                                padding: 0.5%;
-                                border-radius: 10px;
-                                border: none;
-
-                                .css-13cymwt-control,
-                                .css-t3ipsp-control {
-                                    min-height: 10px;
-                                    border: none;
-                                    box-shadow: none;
-                                }
-                            }
-                        }
-
-                        .modal-close {
-                            top: 5%;
-                            right: 2.5%;
-                        }
-
-                        .project-manager {
-                            gap: 5px;
-                            flex-direction: column;
-                            align-items: flex-start;
-
-                            .project-manager-details {
+                            .member-details {
+                                display: flex;
                                 gap: 10px;
-                                flex-direction: row;
+                                align-items: center;
+                            }
+
+                            .changed-role {
+                                color: var(--white--950);
+                                display: flex;
+                                gap: 10px;
                                 align-items: center;
 
-                                a {
-                                    text-decoration: none;
-                                    color: inherit;
+                                :nth-child(3) {
+                                    color: var(--primary--500);
                                 }
                             }
                         }
 
-                        .teams {
-                            .teams-list-headings {
-                                padding: 0.5%;
-                                width: 100%;
-                                display: grid;
-                                grid-template-columns: 1fr 1fr 1fr;
-                                text-align: center;
-                                border-radius: 5px;
+                        .cta-buttons {
+                            padding: 0 5%;
+                            display: flex;
+                            gap: 10%;
+                            align-items: center;
+                            justify-content: space-between;
+
+                            button {
+                                flex-grow: 1;
+                                outline: none;
+                                border: none;
+                                padding: 2% 5%;
+                                border-radius: 10px;
+                                background-color: var(--white--100);
+                            }
+
+                            button:last-child {
                                 color: var(--white--500);
                                 background-color: var(--primary--900);
                             }
-
-                            ul {
-                                margin-top: 1%;
-                                height: 6vh;
-                                list-style: none;
-
-                                li {
-                                    width: 100%;
-                                    display: grid;
-                                    grid-template-columns: 1fr 1fr 1fr;
-                                    text-align: center;
-                                    border-radius: 5px;
-                                }
-
-                                li:nth-child(even) {
-                                    background-color: var(--white--100);
-                                }
-                            }
                         }
                     }
 
-                    .description {
-                        display: inline-block;
-                        width: 100%;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-
-                    .date,
-                    .budget {
+                    .member-info {
                         display: flex;
-                        gap: 10px;
                         align-items: center;
-                    }
-
-                    .project-manager {
-                        display: flex;
                         gap: 10px;
-                        align-items: center;
 
                         img {
                             height: 30px;
@@ -1419,28 +866,631 @@ main {
                             border-radius: 10px;
                         }
 
-                        .project-manager-details {
-                            display: flex;
-                            flex-direction: column;
+                        a {
+                            text-decoration: none;
+                            color: inherit;
+                        }
+                    }
 
-                            a {
-                                text-decoration: none;
-                                color: inherit;
-                                font-size: small;
-                            }
+                    .cta {
+                        width: 15%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+
+                        .role {
+                            width: 80%;
+                            padding: 2% 5%;
+                            border-radius: 5px;
+                            background-color: var(--white--100);
+                            text-align: center;
+                        }
+
+                        svg {
+                            font-size: 1.3rem;
+                        }
+                    }
+
+                    .authorized {
+                        justify-content: space-between !important;
+
+                        .role {
+                            justify-content: space-between !important;
                         }
                     }
                 }
 
-                .project-info:nth-child(even) {
+                li:first-child {
+                    border-top: 1px solid rgba(0, 0, 0, 0.1);
+                }
+
+                li:hover {
+                    transform: scale(1.01);
+                }
+            }
+        }
+
+        .requests {
+            padding: 2%;
+
+            .heading {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                div {
+                    width: 10%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-evenly;
+                }
+            }
+
+            .requests-list {
+                height: 70vh;
+                margin: 1%;
+
+                li {
+                    height: 10%;
+                    width: 100%;
+                    padding: 5px;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .request-info {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+
+                        img {
+                            height: 30px;
+                            width: 30px;
+                            border-radius: 10px;
+                        }
+
+                        a {
+                            text-decoration: none;
+                            color: inherit;
+                        }
+                    }
+
+                    .cta {
+                        width: 35%;
+                        display: flex;
+                        gap: 10px;
+                        align-items: center;
+                        justify-content: flex-end;
+
+                        .role {
+                            padding: 1% 5%;
+                            border-radius: 10px;
+                            background-color: var(--white--100);
+                        }
+
+                        .role {
+                            width: 40%;
+                            text-align: center;
+                        }
+
+                        .cta-button {
+                            padding: 1% 5%;
+                            border-radius: 10px;
+                            color: var(--success);
+                            background-color: rgba($color: green, $alpha: 0.2);
+                            display: flex;
+                            gap: 5px;
+                            align-items: center;
+                        }
+
+                        .cta-button:hover {
+                            background-color: rgba($color: green, $alpha: 0.3);
+                        }
+
+                        .cta-button:last-child {
+                            color: var(--error);
+                            background-color: rgba($color: red, $alpha: 0.2);
+
+                            svg {
+                                font-size: 1.2rem;
+                            }
+                        }
+
+                        .cta-button:last-child:hover {
+                            background-color: rgba($color: red, $alpha: 0.3);
+                        }
+                    }
+                }
+
+                li:first-child {
+                    border-top: 1px solid rgba(0, 0, 0, 0.1);
+                }
+
+                li:hover {
+                    transform: scale(1.01);
+                }
+            }
+        }
+    }
+}
+
+#teams {
+    .content {
+        .modal {
+            width: 50vw;
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+
+            .modal-close {
+                right: 3%;
+                top: 5%;
+                font-size: 1rem;
+            }
+
+            input {
+                padding: 2%;
+                width: 100%;
+                outline: none;
+                border: none;
+                border-radius: 10px;
+                font-size: 1rem;
+            }
+
+            .select {
+                padding: 0.5%;
+                border-radius: 10px;
+                border: none;
+
+                .css-13cymwt-control,
+                .css-t3ipsp-control {
+                    min-height: 10px;
+                    border: none;
+                    box-shadow: none;
+                }
+            }
+
+            .cta {
+                margin-top: 2%;
+                width: 100%;
+                display: flex;
+                gap: 5%;
+                align-items: center;
+
+                button {
+                    flex-grow: 1;
+                    padding: 1.5%;
+                    border: none;
+                    outline: none;
+                    border-radius: 10px;
+                    background-color: var(--white--100);
+                    font-size: 1rem;
+                }
+
+                button:last-child {
                     color: var(--white--500);
                     background-color: var(--primary--900);
                 }
             }
         }
+
+        .heading {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .cta {
+                width: 15%;
+                border: none;
+                outline: none;
+                padding: 0.8%;
+                border-radius: 10px;
+                font-size: 1rem;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                justify-content: center;
+
+                svg {
+                    font-size: 1.2rem;
+                }
+            }
+        }
+
+        .teams-list {
+            list-style: none;
+            padding: 2%;
+
+            .team-list-headings {
+                padding: 0.5%;
+                border-radius: 10px;
+                color: var(--white--500);
+                background-color: var(--primary--900);
+                font-size: 1.2rem;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+                p {
+                    padding: 1%;
+                    text-align: center;
+                }
+            }
+
+            .team-list-items {
+                margin-top: 1%;
+                padding: 0 1%;
+                height: 65vh;
+
+                .team-list-info {
+                    padding: 0.5%;
+                    border-radius: 10px;
+                    position: relative;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+                    .modal {
+                        height: 50vh;
+                        width: 40vw;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        justify-content: space-between;
+
+                        .modal-close {
+                            right: 3%;
+                            top: 6%;
+                            font-size: 1rem;
+                        }
+
+                        a {
+                            text-decoration: none;
+                            color: inherit;
+                        }
+
+                        .team-lead {
+                            width: 100%;
+
+                            .team-lead-details {
+                                width: 100%;
+                                display: flex;
+                                gap: 10px;
+                                align-items: center;
+                            }
+                        }
+
+                        .developers,
+                        .testers {
+                            width: 100%;
+
+                            .developers-list,
+                            .testers-list {
+                                list-style: none;
+
+                                li {
+                                    display: flex;
+                                    gap: 10px;
+                                    align-items: center;
+                                }
+                            }
+                        }
+                    }
+
+                    .team-list-info-item {
+                        padding: 1%;
+                        text-align: center;
+                    }
+
+                    svg {
+                        position: absolute;
+                        right: 1%;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        font-size: 1.5rem;
+                    }
+                }
+
+                .team-list-info:nth-child(even) {
+                    background-color: var(--white--100);
+                }
+            }
+        }
+    }
+}
+
+#projects {
+    height: 100%;
+
+    .modal {
+        width: 50vw;
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+
+        .modal-close {
+            right: 3%;
+            top: 5%;
+            font-size: 1rem;
+        }
+
+        .heading {
+            width: 95%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .cta {
+                padding: 0;
+                margin: 0;
+                height: 100%;
+                width: 40%;
+                background-color: inherit;
+
+                button {
+                    padding: 3%;
+                }
+            }
+        }
+
+        input,
+        textarea {
+            padding: 2%;
+            width: 100%;
+            outline: none;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .select {
+            padding: 0.5%;
+            border-radius: 10px;
+            border: none;
+
+            .css-13cymwt-control,
+            .css-t3ipsp-control {
+                min-height: 10px;
+                border: none;
+                box-shadow: none;
+            }
+        }
+
+        .cta {
+            margin-top: 2%;
+            width: 100%;
+            display: flex;
+            gap: 5%;
+            align-items: center;
+
+            button {
+                flex-grow: 1;
+                padding: 1.5%;
+                border: none;
+                outline: none;
+                border-radius: 10px;
+                background-color: var(--white--100);
+                font-size: 1rem;
+            }
+
+            button:last-child {
+                color: var(--white--500);
+                background-color: var(--primary--900);
+            }
+        }
     }
 
-    .expanded {
-        width: 95% !important;
+    .heading {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .cta {
+            width: 15%;
+            border: none;
+            outline: none;
+            padding: 0.8%;
+            border-radius: 10px;
+            font-size: 1rem;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    .projects-list {
+        margin-top: 2%;
+        padding: 2%;
+        height: 70vh;
+        list-style: none;
+        display: flex;
+        row-gap: 5%;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-evenly;
+
+        .project-info {
+            padding: 1%;
+            width: 30%;
+            height: 50%;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .modal {
+                height: 60vh;
+                width: 50vw;
+                color: var(--black);
+
+                .sub-modal {
+                    justify-content: space-evenly;
+                    height: 25vh;
+                    width: 40vw;
+                    z-index: 9999;
+
+                    .modal-close {
+                        top: 8%;
+                    }
+
+                    .select {
+                        padding: 0.5%;
+                        border-radius: 10px;
+                        border: none;
+
+                        .css-13cymwt-control,
+                        .css-t3ipsp-control {
+                            min-height: 10px;
+                            border: none;
+                            box-shadow: none;
+                        }
+                    }
+                }
+
+                .modal-close {
+                    top: 5%;
+                    right: 2.5%;
+                }
+
+                .project-manager {
+                    gap: 5px;
+                    flex-direction: column;
+                    align-items: flex-start;
+
+                    .project-manager-details {
+                        gap: 10px;
+                        flex-direction: row;
+                        align-items: center;
+
+                        a {
+                            text-decoration: none;
+                            color: inherit;
+                        }
+                    }
+                }
+
+                .teams {
+                    .teams-list-headings {
+                        padding: 0.5%;
+                        width: 100%;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr;
+                        text-align: center;
+                        border-radius: 5px;
+                        color: var(--white--500);
+                        background-color: var(--primary--900);
+                    }
+
+                    ul {
+                        margin-top: 1%;
+                        height: 6vh;
+                        list-style: none;
+
+                        li {
+                            width: 100%;
+                            display: grid;
+                            grid-template-columns: 1fr 1fr 1fr;
+                            text-align: center;
+                            border-radius: 5px;
+                        }
+
+                        li:nth-child(even) {
+                            background-color: var(--white--100);
+                        }
+                    }
+                }
+            }
+
+            .description {
+                display: inline-block;
+                width: 100%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .date,
+            .budget {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .project-manager {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+
+                img {
+                    height: 30px;
+                    width: 30px;
+                    border-radius: 10px;
+                }
+
+                .project-manager-details {
+                    display: flex;
+                    flex-direction: column;
+
+                    a {
+                        text-decoration: none;
+                        color: inherit;
+                        font-size: small;
+                    }
+                }
+            }
+        }
+
+        .project-info:nth-child(even) {
+            color: var(--white--500);
+            background-color: var(--primary--900);
+        }
+    }
+}
+
+#tasks {
+    .content {
+        display: flex;
+        flex-direction: column;
+
+        .task-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+
+            button {
+                width: 40%;
+                padding: 1%;
+                border: none;
+                outline: none;
+                border-radius: 10px;
+                display: flex;
+                gap: 5%;
+                align-items: center;
+                justify-content: center;
+
+                svg {
+                    font-size: 1.5rem;
+                }
+
+                p {
+                    font-size: 1.2rem;
+                }
+            }
+        }
+
+        .task-container {
+            height: 100%;
+            margin: 3% 2% 1%;
+            
+            .gantt-chart-container {
+                height: 100% !important;
+            }
+        }
     }
 }

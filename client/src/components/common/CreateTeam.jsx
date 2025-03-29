@@ -8,6 +8,8 @@ import teamsApi from '../../api/modules/teams.api'
 
 import { addTeam } from '../../redux/features/teamsSlice'
 
+import { roles } from '../../utils/organization.utils'
+
 const CreateTeam = ({ setModalOpen, modalRef }) => {
   const dispatch = useDispatch()
   const { organization } = useSelector((state) => state.organization)
@@ -27,7 +29,7 @@ const CreateTeam = ({ setModalOpen, modalRef }) => {
   }, [organization])
 
   useEffect(() => {
-    setDisabled(!(name && developers.length > 0 && testers.length > 0 && teamLead))
+    setDisabled(!(name && (developers.length > 0 || testers.length > 0) && teamLead))
   }, [name, developers, testers, teamLead])
 
   const handleCreate = async () => {
@@ -53,28 +55,30 @@ const CreateTeam = ({ setModalOpen, modalRef }) => {
   }
 
   const getFilteredOptions = (role) => {
-    return options.filter(option => {
-      const memberId = option.value.id
-      
-      if (teamLead && memberId === teamLead.value.id) {
+    const filteredOptions = options.filter(option => {
+      const memberId = option.value.userId
+
+      if (teamLead && memberId === teamLead.value.userId) {
         return false
       }
-      
-      if (role === 'developer') {
-        return !testers.some(tester => tester.value.id === memberId)
+
+      if (role === roles.developer) {
+        return !testers.some(tester => tester.value.userId === memberId)
       }
       
-      if (role === 'tester') {
-        return !developers.some(dev => dev.value.id === memberId)
+      if (role === roles.qa) {
+        return !developers.some(dev => dev.value.userId === memberId)
       }
-      
-      if (role === 'teamLead') {
-        return !developers.some(dev => dev.value.id === memberId) &&
-               !testers.some(tester => tester.value.id === memberId)
+
+      if (role === roles.teamLead) {
+        return !developers.some(dev => dev.value.userId === memberId) &&
+          !testers.some(tester => tester.value.userId === memberId)
       }
 
       return true
     })
+
+    return filteredOptions
   }
 
   return (
@@ -95,7 +99,7 @@ const CreateTeam = ({ setModalOpen, modalRef }) => {
         isSearchable
         value={teamLead}
         onChange={setTeamLead}
-        options={getFilteredOptions('teamLead')}
+        options={getFilteredOptions(roles.teamLead)}
         placeholder="Select team lead"
         innerRef={modalRef}
       />
@@ -105,7 +109,7 @@ const CreateTeam = ({ setModalOpen, modalRef }) => {
         isSearchable
         value={developers}
         onChange={setDevelopers}
-        options={getFilteredOptions('developer')}
+        options={getFilteredOptions(roles.developer)}
         placeholder="Select developers"
         innerRef={modalRef}
       />
@@ -115,7 +119,7 @@ const CreateTeam = ({ setModalOpen, modalRef }) => {
         isSearchable
         value={testers}
         onChange={setTesters}
-        options={getFilteredOptions('tester')}
+        options={getFilteredOptions(roles.qa)}
         placeholder="Select testers"
         innerRef={modalRef}
       />

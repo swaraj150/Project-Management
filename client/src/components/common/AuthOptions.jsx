@@ -18,18 +18,17 @@ const AuthOptions = () => {
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (oauthRes) => {
       const accessToken = oauthRes.access_token
-
       const { res, err } = await userApi.googleSignin({ accessToken })
 
       if (res) {
-        if (res.token) localStorage.setItem('token', res.token)
+        if (res.token) localStorage.setItem('projectMaestroToken', res.token)
         dispatch(setUser(res))
         toast.success('Login successful. Welcome back!')
         navigate('/')
       }
 
       if (err) {
-        localStorage.removeItem('token')
+        localStorage.removeItem('projectMaestroToken')
         toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
       }
     },
@@ -41,7 +40,7 @@ const AuthOptions = () => {
   }
 
   return (
-    <div className='signin-option'>
+    <div className='auth-options'>
       <div className='divider-text'>
         <hr />
         <span className='opacity-5'>Or continue with</span>

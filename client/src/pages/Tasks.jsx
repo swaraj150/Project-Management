@@ -1,62 +1,77 @@
 import React, { useEffect, useState } from 'react'
-import Kanban from './Kanban'
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import GanttChart from './GanttChart';
-import { useDispatch, useSelector } from 'react-redux';
-import { connectWebSocket, disonnectWebSocket, publishTasks, setupTaskSubscription } from '../utils/websocket.utils';
-import Workload from './Workload';
+import { useDispatch, useSelector } from 'react-redux'
+import { LuGanttChartSquare } from 'react-icons/lu'
+import { MdOutlineViewKanban } from 'react-icons/md'
+
+import tasksApi from '../api/modules/tasks.api'
+
+import Menu from '../components/common/Menu'
+import GanttChart from '../components/common/GanttChart'
+import KanbanBoard from '../components/common/KanbanBoard'
+
+import { setTasks } from '../redux/features/tasksSlice'
+
+import { extendTask } from '../utils/task.utils'
 
 const Tasks = () => {
-  const [current, setCurrent] = useState(0);
-  const isConnected = useSelector((state) => state.webSocket.connected);
-  const client = useSelector((state) => state.webSocket.client);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch
+
+  const { collapsed } = useSelector((state) => state.menu)
+
+  const [active, setActive] = useState(0)
+  const [extendedTasks, setExtendedTasks] = useState({ data: [], links: [] })
+
   useEffect(() => {
-    dispatch(setupTaskSubscription(client,isConnected))
-  },[])
-
-
-
-  const taskItems = [
-    { name: "Gantt Chart", page: <GanttChart /> },
-    {
-      name: "Kanban Board",
-      page: (
-        <DndProvider backend={HTML5Backend}>
-          <Kanban />
-        </DndProvider>
-      ),
-    },
-    {
-      name:'Workload',
-      page:<Workload/>
+    const fetchTasks = async () => {
+      const { res, err } = await tasksApi.fetch()
+      if (res) {
+        dispatch(setTasks(res.tasks))
+        setExtendedTasks([...res.tasks.map((task) => extendTask(task))])
+      }
+      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
-  ]
+
+    fetchTasks()
+  }, [])
+
+  const addTask = (task) => {
+    setTasks((prev) => ({
+      ...prev,
+      data: [...prev.data, task],
+    }))
+  }
+
+  const updateTask = ({ taskId, updatedTask }) => {
+    setTasks((prev) => ({
+      ...prev,
+      data: prev.data.map((task) => (task.id === taskId ? updatedTask : task)),
+    }))
+  }
 
   return (
     <section id="tasks">
-      <nav>
-        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '1rem' }}>
-          {taskItems.map((task, index) => (
-            <li>
-              <button
-                onClick={() => setCurrent(index)}
-                style={{
-                  backgroundColor: current === index ? 'var(--primary--900)' : 'transparent',
-                  color: current === index ? 'white' : 'black',
-                  padding: '0.5rem 1rem',
-                  border: current === index ? 'none' : '1px solid black',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                }}>
-                {task.name}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      {taskItems[current].page}
+      <Menu />
+      <section className={`content ${collapsed ? "expanded" : null}`} >
+        <div className="task-options">
+          <button 
+            className={`pointer ${active === 0 ? 'dark-btn' : ''}`}
+            onClick={() => setActive(0)}
+          >
+            <LuGanttChartSquare />
+            <p>Gantt Chart</p>
+          </button>
+          <button 
+            className={`pointer ${active === 1 ? 'dark-btn' : ''}`}
+            onClick={() => setActive(1)}
+          >
+            <MdOutlineViewKanban />
+            <p>Kanban Board</p>
+          </button>
+        </div>
+        <div className="task-container">
+          {active === 0 ? <GanttChart tasks={extendedTasks} addTask={addTask} updateTask={updateTask} /> : <KanbanBoard tasks={extendedTasks} updateTask={updateTask} />}
+        </div>
+      </section>
     </section>
   )
 }

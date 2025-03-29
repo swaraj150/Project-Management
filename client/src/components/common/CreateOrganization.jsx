@@ -13,7 +13,7 @@ const CreateOrganization = ({ setCreateModalOpen, modalRef }) => {
   const [name, setName] = useState(null)
   const [disabled, setDisabled] = useState(true)
 
-  const handleJoin = async () => {
+  const handleCreate = async () => {
     setDisabled(true)
 
     const { res, err } = await organizationApi.create({ name })
@@ -21,7 +21,7 @@ const CreateOrganization = ({ setCreateModalOpen, modalRef }) => {
     if (res) {
       dispatch(setOrganization(res))
       setCreateModalOpen(false)
-      navigate('/')
+      navigate('/dashboard')
       toast.success('Organization joined successfully!')
     }
 
@@ -50,7 +50,7 @@ const CreateOrganization = ({ setCreateModalOpen, modalRef }) => {
       />
       <div className="cta-group">
         <button className="paper-1 pointer" onClick={() => setCreateModalOpen(false)}>Cancel</button>
-        <button className="paper-1 pointer" onClick={handleJoin} disabled={disabled} >Create</button>
+        <button className="paper-1 pointer" onClick={handleCreate} disabled={disabled} >Create</button>
       </div>
     </div >
   )

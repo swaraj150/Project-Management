@@ -1,5 +1,5 @@
 export const roles = {
-  projectManager: "Project Manager",
+  projectManager: "PROJECT_MANAGER",
   productOwner: "PRODUCT_OWNER",
   teamLead: "TEAM_LEAD",
   developer: "DEVELOPER",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
@@ -15,53 +15,53 @@ const JoinOrganization = ({ setJoinModalOpen, modalRef }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  const { organization } = useSelector((state) => state.organization)
+
   const [tab, settab] = useState(0)
   const [options, setOptions] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [code, setcode] = useState('')
   const [disabled, setDisabled] = useState(true)
-  const [role, setrole] = useState(null)
+  const [role, setRole] = useState(null)
 
   const handleSearch = async (inputValue) => {
-    if (!inputValue) return
+    if (!inputValue || inputValue.trim().length === 0) {
+      setOptions([])
+      return
+    }
 
     setIsLoading(true)
 
-    const { res, err } = await organizationApi.search({ query: inputValue })
+    const { res, err } = await organizationApi.search({
+      query: inputValue.trim()
+    })
 
-    console.log(res, err)
-
-    if (res) {
-      const formattedOptions = res.data.map(org => ({
-        label: org.name,
-        value: org
+    if (res && res.organizations) {
+      const formattedOptions = res.organizations.map(org => ({
+        label: String(org.name || 'Unknown'),
+        value: String(org.code || '')
       }))
 
       setOptions(formattedOptions)
-      setIsLoading(false)
     }
 
     if (err) {
-      setIsLoading(false)
       toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+      setOptions([])
     }
-  }
 
-  const handleChange = (selected) => {
-    setcode(selected.value.code)
+    setIsLoading(false)
   }
 
   const handleJoin = async () => {
     setDisabled(true)
 
-    const { res, err } = await organizationApi.join({ code, role:role.value })
+    const { res, err } = await organizationApi.join({ code, role: role.value })
 
     if (res) {
-      console.log(res)
       dispatch(setOrganization(res))
       setJoinModalOpen(false)
-      // navigate('/')
-      toast.success('Organization joined successfully!')
+      toast.success('Request sent successfully!')
     }
 
     if (err) {
@@ -75,8 +75,12 @@ const JoinOrganization = ({ setJoinModalOpen, modalRef }) => {
   }, [tab])
 
   useEffect(() => {
-    setDisabled(!code.length === 0)
-  }, [code])
+    setDisabled(code.trim().length === 0 || !role)
+  }, [code, role])
+
+  useEffect(() => {
+    if (organization) navigate('/dashboard')
+  }, [organization])
 
   return (
     <div ref={modalRef} className="modal paper">
@@ -93,8 +97,10 @@ const JoinOrganization = ({ setJoinModalOpen, modalRef }) => {
           <Select
             className="select paper-1"
             isLoading={isLoading}
-            onInputChange={handleSearch}
-            onChange={handleChange}
+            onInputChange={(newValue) => {
+              handleSearch(newValue)
+            }}
+            onChange={(selected) => setcode(selected?.value || '')}
             options={options}
             placeholder="Search for an organization"
           />
@@ -114,7 +120,7 @@ const JoinOrganization = ({ setJoinModalOpen, modalRef }) => {
         className="select paper-1"
         isSearchable
         value={role}
-        onChange={setrole}
+        onChange={setRole}
         options={joinableRoles.map((role) => ({
           label: role,
           value: role

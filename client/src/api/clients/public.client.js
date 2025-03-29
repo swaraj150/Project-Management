@@ -1,5 +1,4 @@
 import axios from 'axios'
-import queryString from 'query-string'
 
 const baseURL = import.meta.env.VITE_BACKEND_BASE_URL
 

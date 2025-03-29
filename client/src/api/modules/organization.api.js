@@ -1,20 +1,19 @@
-import privateClient from  '../clients/private.client'
+import privateClient from '../clients/private.client'
 
 const organizationEndpoints = {
   create: 'organizations/initiate',
   getInfo: 'organizations/',
   join: 'organizations/join',
   search: 'organizations/search',
-  fetchRequests:'organizations/requests',
-  accept: 'organizations/accept',
-  reject: 'organizations/reject'
+  fetchRequests: 'organizations/requests',
+  accept: (requestId) => `organizations/requests/${requestId}/accept`,
+  reject: (requestId) => `organizations/requests/${requestId}/reject`
 }
 
 const organizationApi = {
   create: async ({ name }) => {
     try {
       const res = await privateClient.post(organizationEndpoints.create, { name })
-
       return { res }
     } catch (err) {
       return { err }
@@ -23,7 +22,6 @@ const organizationApi = {
   getInfo: async () => {
     try {
       const res = await privateClient.get(organizationEndpoints.getInfo)
-
       return { res }
     } catch (err) {
       return { err }
@@ -32,10 +30,9 @@ const organizationApi = {
   join: async ({ code, role }) => {
     try {
       const res = await privateClient.post(
-        organizationEndpoints.join, 
-         { code, role } 
+        organizationEndpoints.join,
+        { code, role }
       )
-
       return { res }
     } catch (err) {
       return { err }
@@ -44,32 +41,27 @@ const organizationApi = {
   search: async ({ query }) => {
     try {
       const res = await privateClient.get(
-        organizationEndpoints.search, 
+        organizationEndpoints.search,
         { params: { key: query } }
       )
-
       return { res }
     } catch (err) {
       return { err }
     }
   },
-  fetchRequests:async() => {
+  fetchRequests: async () => {
     try {
-      const res= await privateClient.get(
+      const res = await privateClient.get(
         organizationEndpoints.fetchRequests,
       )
-      return {res}
+      return { res }
     } catch (error) {
-      return {err}
+      return { err }
     }
   },
   accept: async ({ requestId }) => {
     try {
-      const res = await privateClient.put(
-        organizationEndpoints.accept,
-        { id: requestId }
-      )
-
+      const res = await privateClient.put(organizationApi.accept(requestId))
       return { res }
     } catch (err) {
       return { err }
@@ -77,11 +69,7 @@ const organizationApi = {
   },
   reject: async ({ requestId }) => {
     try {
-      const res = await privateClient.put(
-        organizationEndpoints.reject,
-          { id: requestId } 
-      )
-
+      const res = await privateClient.put(organizationApi.reject(requestId))
       return { res }
     } catch (err) {
       return { err }

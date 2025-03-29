@@ -1,4 +1,4 @@
-import privateClient from  '../clients/private.client'
+import privateClient from '../clients/private.client'
 
 const teamsEndpoints = {
   getAll: 'teams/getAllTeams',
@@ -10,7 +10,6 @@ const teamsApi = {
   getAll: async () => {
     try {
       const res = await privateClient.get(teamsEndpoints.getAll)
-
       return { res }
     } catch (err) {
       return { err }
@@ -22,22 +21,21 @@ const teamsApi = {
         teamsEndpoints.create,
         { name, developers, testers, teamLead }
       )
-
       return { res }
     } catch (err) {
       return { err }
     }
   },
-  suggest:async(projectId)=>{
-    try{
-      const res=await privateClient.get(
+  suggest: async (projectId) => {
+    try {
+      const res = await privateClient.get(
         teamsEndpoints.suggest,
-        {params:{projectId:projectId}}
-      );
-      return {res};
+        { params: { projectId: projectId } }
+      )
+      return { res }
     }
-    catch(err){
-      return {err}
+    catch (err) {
+      return { err }
     }
   }
 }

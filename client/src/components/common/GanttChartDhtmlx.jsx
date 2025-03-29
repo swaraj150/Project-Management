@@ -8,6 +8,7 @@ const GanttChartDhtmlx = ({ tasks, onTaskUpdated }) => {
 
     gantt.config.show_grid = false;
     gantt.config.date_format = "%Y-%m-%d %H:%i";
+    
 
     gantt.init(ganttContainer.current);
 
