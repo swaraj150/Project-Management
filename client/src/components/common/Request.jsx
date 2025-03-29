@@ -8,13 +8,13 @@ import organizationApi from '../../api/modules/organization.api'
 
 import { addMember, removeRequest } from '../../redux/features/organizationSlice'
 
-const Request = ({ request, removeRequest }) => {
+const Request = ({ request }) => {
   const dispatch = useDispatch()
 
   const handleReject = async () => {
     const { res, err } = await organizationApi.reject({ requestId: request.id })
     if (res){
-      removeRequest({ requestId: request.id })
+      dispatch(removeRequest({ requestId: request.id }))
       toast.success(`${request.username} has been successfully rejected!`)
     }
     if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
@@ -22,9 +22,9 @@ const Request = ({ request, removeRequest }) => {
 
   const handleAccept = async () => {
     const { res, err } = await organizationApi.accept({ requestId: request.id })
-    if (res) {
-      dispatch(addMember(res))
-      removeRequest({ requestId: request.id })
+    if (res?.user) {
+      dispatch(addMember(res.user))
+      dispatch(removeRequest({ requestId: request.id }))
       toast.success(`${request.username} has been successfully accepted!`)
     }
     if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')

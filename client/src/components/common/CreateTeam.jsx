@@ -12,6 +12,7 @@ import { roles } from '../../utils/organization.utils'
 
 const CreateTeam = ({ setModalOpen, modalRef }) => {
   const dispatch = useDispatch()
+
   const { organization } = useSelector((state) => state.organization)
 
   const [name, setName] = useState('')
@@ -23,7 +24,7 @@ const CreateTeam = ({ setModalOpen, modalRef }) => {
 
   useEffect(() => {
     setOptions(organization.members.map((member) => ({
-      value: member,
+      value: member.userId,
       label: member.name
     })))
   }, [organization])
@@ -56,23 +57,23 @@ const CreateTeam = ({ setModalOpen, modalRef }) => {
 
   const getFilteredOptions = (role) => {
     const filteredOptions = options.filter(option => {
-      const memberId = option.value.userId
+      const memberId = option.value
 
-      if (teamLead && memberId === teamLead.value.userId) {
+      if (teamLead && memberId === teamLead.value) {
         return false
       }
 
       if (role === roles.developer) {
-        return !testers.some(tester => tester.value.userId === memberId)
+        return !testers.some(tester => tester.value === memberId)
       }
       
       if (role === roles.qa) {
-        return !developers.some(dev => dev.value.userId === memberId)
+        return !developers.some(dev => dev.value === memberId)
       }
 
       if (role === roles.teamLead) {
-        return !developers.some(dev => dev.value.userId === memberId) &&
-          !testers.some(tester => tester.value.userId === memberId)
+        return !developers.some(dev => dev.value === memberId) &&
+          !testers.some(tester => tester.value === memberId)
       }
 
       return true

@@ -1,28 +1,32 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { FaSync } from 'react-icons/fa'
 
 import organizationApi from '../../api/modules/organization.api'
 
 import Request from './Request'
 
-const RequestList = () => {
-  const [requests, setRequests] = useState([])
+import { setRequests } from '../../redux/features/organizationSlice'
 
-  const removeRequest = (requestId) => {
-    setRequests((prev) => prev.filter((request) => request.id !== requestId))
-  }
+const RequestList = () => {
+  const dispatch = useDispatch()
+
+  const { requests } = useSelector((state) => state.organization)
+
+  const [dataRequested, setDataRequested] = useState(false)
 
   const fetchRequests = async () => {
-    setRequests([])
+    setDataRequested(true)
     const { res, err } = await organizationApi.fetchRequests()
-    console.log(res.requests)
-    if (res?.requests) setRequests(res.requests)
-    if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+    if (res?.requests) {
+      dispatch(setRequests(res.requests))
+      setDataRequested(false)
+    }
+    if (err) {
+      toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+      setDataRequested(false)
+    }
   }
-
-  useEffect(() => {
-    fetchRequests()
-  }, [])
 
   return (
     <section className='requests'>
@@ -38,14 +42,14 @@ const RequestList = () => {
         {
           requests.length !== 0 ? (
             requests.map((request, index) => (
-              <Request key={index} request={request} removeRequest={removeRequest} />
+              <Request key={index} request={request} />
             ))
           ) : (
-            <p>loading</p>
+            dataRequested ? <p>Loading...</p> : <p>No pending requests</p>
           )
         }
-      </ul>
-    </section>
+    </ul>
+    </section >
   )
 }
 

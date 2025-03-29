@@ -13,7 +13,7 @@ const MembersList = ({ members }) => {
         <h2 className="title">Members</h2>
         <p>{members.length} members</p>
       </div>
-      <ul className="members-list">
+      <ul className="members-list no-scrollbar">
         {
           members.map((member, index) => (
             <Member key={index} member={member} />

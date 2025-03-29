@@ -7,14 +7,15 @@ import organizationApi from '../../api/modules/organization.api'
 import projectsApi from '../../api/modules/projects.api'
 import teamsApi from '../../api/modules/teams.api'
 import userApi from '../../api/modules/user.api'
+import metricApi from '../../api/modules/metrics.api'
 
 import { setOrganization, setRequests } from '../../redux/features/organizationSlice'
 import { setProjects } from '../../redux/features/projectsSlice'
 import { setTeams } from '../../redux/features/teamsSlice'
 import { setUser } from '../../redux/features/userSlice'
+
 import tasksApi from '../../api/modules/tasks.api'
 // import { setCurrentProject } from '../../redux/features/tasksSlice'
-import metricApi from '../../api/modules/metrics.api'
 // import { setTaskStatusData, setTimeLogData } from '../../redux/features/metricsSlice'
 // import { setupTasks } from '../../utils/task.utils'
 // import { connectWebSocket } from '../../utils/websocket.utils'
@@ -42,18 +43,6 @@ const MainLayout = () => {
         localStorage.removeItem('projectMaestroToken')
         navigate('/sign-in')
       }
-
-      // if (err) {
-        // localStorage.removeItem('token')
-        // navigate('/sign-in')
-        
-      // }
-
-      // if (err) {
-        // localStorage.removeItem('token')
-        // navigate('/sign-in')
-        
-      // }
     }
 
     const token = localStorage.getItem('projectMaestroToken')
@@ -89,9 +78,17 @@ const MainLayout = () => {
       if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
 
+    const fetchRequests = async () => {
+      const { res, err } = await organizationApi.fetchRequests()
+      if (res?.requests) dispatch(setRequests(res.requests))
+      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+    }
+
     if (organization) {
       fetchProjects()
       fetchTeams()
+      fetchRequests()
+      console.log("hi")
     }
   }, [organization])
 

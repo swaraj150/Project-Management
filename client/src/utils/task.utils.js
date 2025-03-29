@@ -12,7 +12,7 @@ export const taskTypes = {
 
 export const taskPriorities = {
     low: 'LOW',
-    normal: 'NOMRAL',
+    medium: 'MEDIUM',
     high: 'HIGH'
 }
 
@@ -51,7 +51,6 @@ export const extendTask = (task) => {
         ...task,
         duration: task.estimated_days,
         parent: task.parent_task_id,
-        projectId: task.project_id,
-        
+        projectId: task.project_id
     }
 }
