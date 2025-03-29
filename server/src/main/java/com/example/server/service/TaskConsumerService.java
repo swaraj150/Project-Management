@@ -26,9 +26,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,36 +34,42 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TaskConsumerService {
     private final BlockingQueue<WsTaskRequest> taskBuffer = new LinkedBlockingQueue<>();
+    private final ConcurrentHashMap<WsTaskRequest, Boolean> processedTasks = new ConcurrentHashMap<>();
     private final SimpMessageSendingOperations messagingTemplate;
     private final Map<String, UUID> clientIdMap = new ConcurrentHashMap<>();
     private final TaskRepository taskRepository;
     private final TaskService taskService;
     private final DependencyRepository dependencyRepository;
     private final UserService userService;
-
+    private final ExecutorService executor = Executors.newSingleThreadExecutor(); // For batch processing
     private final int BATCH_SIZE = 1;
 
 
     public void consumeAndBuffer(WsTaskRequest taskRequest) {
         synchronized (taskBuffer) {
-            if (taskRequest == null) {
+            if (taskRequest == null || taskRequest.isSatisfied()) {
                 log.warn("Received null task request");
                 return;
             }
             String clientTaskId = taskRequest.getClientTaskId();
+            if (processedTasks.putIfAbsent(taskRequest, true) != null) {
+                log.warn("Duplicate task ignored: {}", clientTaskId);
+                return;
+            }
+
             log.info("received taskRequest : {}", clientTaskId);
             taskBuffer.add(taskRequest);
             log.info("Added task to buffer: {}", clientTaskId);
             log.info("Buffer size: {}", taskBuffer.size());
             if (taskBuffer.size() >= BATCH_SIZE) {
                 log.info("processing batch");
-                processBatch();
+                executor.submit(this::processBatch);
             }
 
         }
     }
 
-    @Scheduled(fixedRate = 5000)
+//    @Scheduled(fixedRate = 5000)
     @Transactional
     public void processBatch() {
         List<WsTaskRequest> batchToProcess = new ArrayList<>();
@@ -102,6 +106,7 @@ public class TaskConsumerService {
                     if (task != null) {
                         tasksToSave.put(task,request.getClientTaskId());
                     }
+                    request.setSatisfied(true);
                 } catch (Exception e) {
                     log.error("Error processing task request: {}", request, e);
                 }
@@ -194,8 +199,10 @@ public class TaskConsumerService {
             task.setStartDate(localDateTime);
         }
         if(request.getEndDate()!=null){
+
             ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
             LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            log.info("request endDate : {}",localDateTime);
             task.setEndDate(localDateTime);
         }
         if (request.getToTaskId() != null && request.getDependencyType() != null) {
@@ -208,8 +215,11 @@ public class TaskConsumerService {
                     .fromTaskId(task.getId())
                     .toTaskId(request.getToTaskId())
                     .lag(request.getLag())
+                    .dependencyType(DependencyType.valueOf(request.getDependencyType()))
                     .build();
             dependencyRepository.save(dependency);
+            log.info("dependency created!!");
+
         }
     }
 

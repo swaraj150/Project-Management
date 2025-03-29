@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "dhtmlx-gantt/codebase/dhtmlxgantt.css";; // Import DHTMLX Gantt styles
 import gantt from "dhtmlx-gantt"; // Import Gantt library
 
-const GanttChartDhtmlx = ({ tasks, onTaskUpdated }) => {
+const GanttChartDhtmlx = ({ tasks, onTaskUpdated,validateLink,handleAddLink}) => {
   const ganttContainer = useRef(null);
   useEffect(() => {
 
@@ -26,6 +26,17 @@ const GanttChartDhtmlx = ({ tasks, onTaskUpdated }) => {
 
       }
     });
+    
+    const createDependencyId=gantt.attachEvent("onLinkCreated",(link)=>{
+      if(!validateLink(link)) return false;
+      console.log("dependency created",link)
+      return true;
+      
+    })
+    const addDependencyId=gantt.attachEvent("onAfterLinkAdd",(id,link)=>{
+      console.log("dependency added",id)
+      handleAddLink(link)
+    })
 
     gantt.eachTask(function (task) {
       task.$open = true;
@@ -34,6 +45,7 @@ const GanttChartDhtmlx = ({ tasks, onTaskUpdated }) => {
 
     return () => {
       gantt.detachEvent(updateHandlerId)
+      gantt.detachEvent(createDependencyId)
       gantt.clearAll();
     };
   }, [tasks, onTaskUpdated]);

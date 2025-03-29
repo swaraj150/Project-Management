@@ -217,12 +217,14 @@ public class TaskService {
 
     public TaskResponse loadTaskResponse(@NonNull UUID id){
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
-//        Set<UserDTO> assignedToUsers=new HashSet<>();
-//        for(UUID id1:task.getAssignedTo()){
-//            User user=userService.loadUser(id);
-//            UserDTO userDTO=UserDTO.mapToUserDTO(user);
-//            assignedToUsers.add(userDTO);
-//        }
+        Set<UserDTO> assignedToUsers=new HashSet<>();
+        for(UUID id1:task.getAssignedTo()){
+            User user=userService.loadUser(id1);
+            UserDTO userDTO=UserDTO.mapToUserDTO(user);
+            assignedToUsers.add(userDTO);
+        }
+        List<Dependency> dependencies=dependencyRepository.findByFromTaskId(id);
+
         return TaskResponse.builder()
                 .id(task.getId())
                 .title(task.getTitle())
@@ -230,7 +232,7 @@ public class TaskService {
                 .priority(task.getPriority())
                 .type(task.getType())
                 .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
-//                .assignedToUsers(assignedToUsers)
+                .assignedToUsers(assignedToUsers)
                 .createdAt(task.getCreatedAt())
                 .estimatedHours(task.getEstimatedHours())
                 .completedAt(task.getCompletedAt())
@@ -238,18 +240,19 @@ public class TaskService {
                 .endDate(task.getEndDate())
                 .completionStatus(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
-//                .dependencies(task.getDependencies())
+                .dependencies(dependencies)
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
     public TaskResponse loadTaskResponse(@NonNull UUID id,String clientId){
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
-//        Set<UserDTO> assignedToUsers=new HashSet<>();
-//        for(UUID id1:task.getAssignedTo()){
-//            User user=userService.loadUser(id);
-//            UserDTO userDTO=UserDTO.mapToUserDTO(user);
-//            assignedToUsers.add(userDTO);
-//        }
+        Set<UserDTO> assignedToUsers=new HashSet<>();
+        for(UUID id1:task.getAssignedTo()){
+            User user=userService.loadUser(id1);
+            UserDTO userDTO=UserDTO.mapToUserDTO(user);
+            assignedToUsers.add(userDTO);
+        }
+        List<Dependency> dependencies=dependencyRepository.findByFromTaskId(id);
         return TaskResponse.builder()
                 .id(task.getId())
                 .clientTaskId(clientId)
@@ -258,7 +261,7 @@ public class TaskService {
                 .priority(task.getPriority())
                 .type(task.getType())
                 .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
-//                .assignedToUsers(assignedToUsers)
+                .assignedToUsers(assignedToUsers)
                 .createdAt(task.getCreatedAt())
                 .estimatedHours(task.getEstimatedHours())
                 .completedAt(task.getCompletedAt())
@@ -266,6 +269,7 @@ public class TaskService {
                 .endDate(task.getEndDate())
                 .completionStatus(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
+                .dependencies(dependencies)
 //                .dependencies(task.getDependencies())
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();

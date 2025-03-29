@@ -38,4 +38,5 @@ public class WsTaskRequest {
     private String dependencyType;
     private Integer lag;// days
     private LocalDateTime triggerAt;
+    private boolean satisfied;
 }

@@ -42,6 +42,12 @@ const MainLayout = () => {
         localStorage.removeItem('projectMaestroToken')
         navigate('/sign-in')
       }
+
+      // if (err) {
+        // localStorage.removeItem('token')
+        // navigate('/sign-in')
+        
+      // }
     }
 
     const token = localStorage.getItem('projectMaestroToken')

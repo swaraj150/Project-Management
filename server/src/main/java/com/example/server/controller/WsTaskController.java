@@ -26,6 +26,7 @@ public class WsTaskController {
         User user=userService.loadAuthenticatedUser();
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)) return;
         taskRequest.setTimestamp(LocalDateTime.now());
+        taskRequest.setSatisfied(false);
         taskConsumerService.consumeAndBuffer(taskRequest);
     }
 
