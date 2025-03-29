@@ -6,8 +6,8 @@ const organizationEndpoints = {
   join: 'organizations/join',
   search: 'organizations/search',
   fetchRequests: 'organizations/requests',
-  accept: (requestId) => `organizations/requests/${requestId}/accept`,
-  reject: (requestId) => `organizations/requests/${requestId}/reject`
+  accept: (requestId) => `organizations/requests/accept/${requestId}`,
+  reject: (requestId) => `organizations/requests/reject/${requestId}`
 }
 
 const organizationApi = {
@@ -61,7 +61,7 @@ const organizationApi = {
   },
   accept: async ({ requestId }) => {
     try {
-      const res = await privateClient.put(organizationApi.accept(requestId))
+      const res = await privateClient.put(organizationEndpoints.accept(requestId))
       return { res }
     } catch (err) {
       return { err }
@@ -69,7 +69,7 @@ const organizationApi = {
   },
   reject: async ({ requestId }) => {
     try {
-      const res = await privateClient.put(organizationApi.reject(requestId))
+      const res = await privateClient.put(organizationEndpoints.reject(requestId))
       return { res }
     } catch (err) {
       return { err }
