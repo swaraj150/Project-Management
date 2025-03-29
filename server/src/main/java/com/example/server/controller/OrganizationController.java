@@ -59,16 +59,16 @@ public class OrganizationController {
 //        h.put("message","request accepted");
 //        return ResponseEntity.ok(h);
 //    }
-    @PutMapping("/accept")
-    public ResponseEntity<?> acceptRequest(@RequestBody @NonNull ChangeJoinRequestStatusRequest request){
-        organizationService.respondToJoinRequest(request.getId(),"accept");
+    @PutMapping("/accept/{id}")
+    public ResponseEntity<?> acceptRequest(@PathVariable @NonNull UUID id){
+        organizationService.respondToJoinRequest(id,"accept");
         HashMap<String,Object> h=new HashMap<>();
         h.put("message","request accepted");
         return ResponseEntity.ok(h);
     }
-    @PutMapping("/reject")
-    public ResponseEntity<?> rejectRequest(@RequestBody @NonNull ChangeJoinRequestStatusRequest request){
-        organizationService.respondToJoinRequest(request.getId(),"reject");
+    @PutMapping("/reject/{id}")
+    public ResponseEntity<?> rejectRequest(@PathVariable @NonNull UUID id){
+        organizationService.respondToJoinRequest(id,"reject");
         HashMap<String,Object> h=new HashMap<>();
         h.put("message","request rejected");
         return ResponseEntity.ok(h);
