@@ -150,7 +150,7 @@ public class TeamService {
             int total=0;
             List<Task> taskList=taskService.getActiveTasksByUser(id);
             for(Task t:taskList){
-                total+=t.getEstimatedHours();
+                total+=t.getEstimatedDays();
             }
             res+=total>limit?1:0;
         }
@@ -164,7 +164,7 @@ public class TeamService {
         for(UUID id:team.getMemberIds()){
             List<Task> taskList=taskService.getActiveTasksByUser(id);
             for(Task t:taskList){
-                res+=t.getEstimatedHours();
+                res+=t.getEstimatedDays();
             }
         }
         return res;

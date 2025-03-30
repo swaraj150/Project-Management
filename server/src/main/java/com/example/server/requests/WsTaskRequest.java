@@ -20,10 +20,10 @@ public class WsTaskRequest {
     private String description;
     private String publishType;
     private String title;
-    private Integer priority;
+    private String priority;
     private String taskType;
     private String level;
-    private String estimatedHours;
+    private String estimatedDays;
     private String parentTaskId;
     private List<String> assignedTo;
     private String status;
@@ -39,4 +39,5 @@ public class WsTaskRequest {
     private Integer lag;// days
     private LocalDateTime triggerAt;
     private boolean satisfied;
+    private Integer progress;
 }

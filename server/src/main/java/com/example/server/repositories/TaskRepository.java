@@ -34,10 +34,10 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     @Query("select count(t) from Task t where t.projectId = :projectId ")
     Integer getTaskCountWithinProject(@Param("projectId") UUID id);
 
-    @Query("select sum(t.estimatedHours) from Task t join Project p on t.projectId = p.id where p.organizationId = :organizationId")
+    @Query("select sum(t.estimatedDays) from Task t join Project p on t.projectId = p.id where p.organizationId = :organizationId")
     Integer getEstimatedHours(@Param("organizationId") UUID id);
 
-    @Query("select sum(t.estimatedHours) from Task t where t.completionStatus=:status and t.projectId=:projectId")
+    @Query("select sum(t.estimatedDays) from Task t where t.completionStatus=:status and t.projectId=:projectId")
     Integer getEstimatedHoursWithinProject(@Param("projectId") UUID id);
 
     @Query("select count(t) from Task t where t.completionStatus=:status and t.projectId=:projectId")

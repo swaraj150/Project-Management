@@ -5,7 +5,6 @@ import com.example.server.component.SecurityUtils;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
 import com.example.server.enums.*;
-import com.example.server.exception.InvalidDependencyException;
 import com.example.server.exception.InvalidStatusException;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.DependencyRepository;
@@ -19,7 +18,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,7 +25,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,10 +50,10 @@ public class TaskService {
         task.setDescription((request.getDescription()));
         task.setCreatedBy(user.getId());
         task.setCreatedAt(LocalDateTime.now());
-        task.setPriority(request.getPriority());
+        task.setPriority(Priority.valueOf(request.getPriority()));
         task.setType(TaskType.valueOf(request.getType()));
         task.setLevel(Level.valueOf(request.getLevel()));
-        task.setEstimatedHours(request.getEstimatedHours());
+        task.setEstimatedDays(request.getEstimatedDays());
         task.setParentTaskId(request.getParentTaskId());
         task.setProjectId(team.getProjectId());
         task.setStartDate(request.getStartDate());
@@ -100,16 +97,20 @@ public class TaskService {
                 .ifPresent(task::setType);
 
         Optional.ofNullable(request.getPriority())
+                .map(Priority::valueOf)
                 .ifPresent(task::setPriority);
 
         Optional.ofNullable(request.getLevel())
                 .map(Level::valueOf)
                 .ifPresent(task::setLevel);
+
         Optional.ofNullable(request.getStatus())
                 .map(String::toUpperCase)
                 .map(CompletionStatus::valueOf)
                 .ifPresentOrElse(task::setCompletionStatus,()->task.setCompletionStatus(CompletionStatus.PENDING));
 
+        Optional.ofNullable(request.getProgress())
+                .ifPresent(task::setProgress);
 
         if(request.getStartDate()!=null){
             ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
@@ -124,9 +125,9 @@ public class TaskService {
 //        Optional.ofNullable(request.getEndDate())
 //                .ifPresent(task::setEndDate); // achieved at
 
-        Optional.ofNullable(request.getEstimatedHours())
+        Optional.ofNullable(request.getEstimatedDays())
                 .map(Integer::valueOf)
-                .ifPresent(task::setEstimatedHours);
+                .ifPresent(task::setEstimatedDays);
 
         Optional.ofNullable(request.getParentTaskId())
                 .map(UUID::fromString)
@@ -234,13 +235,14 @@ public class TaskService {
                 .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
                 .assignedToUsers(assignedToUsers)
                 .createdAt(task.getCreatedAt())
-                .estimatedHours(task.getEstimatedHours())
+                .estimatedDays(task.getEstimatedDays())
                 .completedAt(task.getCompletedAt())
                 .startDate(task.getStartDate())
                 .endDate(task.getEndDate())
                 .completionStatus(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
                 .dependencies(dependencies)
+                .progress(task.getProgress())
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
@@ -263,13 +265,14 @@ public class TaskService {
                 .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
                 .assignedToUsers(assignedToUsers)
                 .createdAt(task.getCreatedAt())
-                .estimatedHours(task.getEstimatedHours())
+                .estimatedDays(task.getEstimatedDays())
                 .completedAt(task.getCompletedAt())
                 .startDate(task.getStartDate())
                 .endDate(task.getEndDate())
                 .completionStatus(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
                 .dependencies(dependencies)
+                .progress(task.getProgress())
 //                .dependencies(task.getDependencies())
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
@@ -388,7 +391,7 @@ public class TaskService {
             log.error("One of the tasks with id : {} and {} do not exist",fromTaskId,toTaskId);
             throw new EntityNotFoundException("One or both tasks do not exist");
         }
-        if(!dependencyRepository.doesExist(fromTaskId,toTaskId,dependencyType).isPresent()){
+        if(dependencyRepository.doesExist(fromTaskId,toTaskId,dependencyType).isEmpty()){
             log.error("Dependency from id : {} to {} does not exist",fromTaskId,toTaskId);
             throw new EntityNotFoundException("Dependency does not exist");
         }

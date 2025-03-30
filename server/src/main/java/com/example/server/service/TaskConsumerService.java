@@ -3,10 +3,7 @@ package com.example.server.service;
 import com.example.server.entities.Dependency;
 import com.example.server.entities.Task;
 import com.example.server.entities.User;
-import com.example.server.enums.CompletionStatus;
-import com.example.server.enums.DependencyType;
-import com.example.server.enums.Level;
-import com.example.server.enums.WsPublishType;
+import com.example.server.enums.*;
 import com.example.server.exception.InvalidDependencyException;
 import com.example.server.repositories.DependencyRepository;
 import com.example.server.repositories.TaskRepository;
@@ -176,16 +173,20 @@ public class TaskConsumerService {
         Optional.ofNullable(request.getParentTaskId())
                 .map(clientIdMap::get)
                 .ifPresent(task::setParentTaskId);
-        Optional.ofNullable(request.getPriority()).ifPresent(task::setPriority);
-        Optional.ofNullable(request.getEstimatedHours())
+        Optional.ofNullable(request.getPriority())
+                .map(Priority::valueOf)
+                .ifPresent(task::setPriority);
+        Optional.ofNullable(request.getEstimatedDays())
                 .map(Integer::valueOf)
-                .ifPresent(task::setEstimatedHours);
+                .ifPresent(task::setEstimatedDays);
         Optional.ofNullable(request.getLevel())
                 .map(Level::valueOf)
                 .ifPresent(task::setLevel);
         Optional.ofNullable(request.getAssignedTo())
                 .map(assignedTo -> assignedTo.stream().map(userService::loadUser).map(User::getId).collect(Collectors.toSet()))
                 .ifPresent(task::setAssignedTo);
+        Optional.ofNullable(request.getProgress())
+                .ifPresent(task::setProgress);
 
 
         if(request.getStatus()!=null){
@@ -229,10 +230,9 @@ public class TaskConsumerService {
         newRequest.setLevel(newRequest.getLevel() == null ? oldRequest.getLevel() : newRequest.getLevel());
         newRequest.setPriority(newRequest.getPriority() == null ? oldRequest.getPriority() : newRequest.getPriority());
         newRequest.setParentTaskId(newRequest.getParentTaskId() == null ? oldRequest.getParentTaskId() : newRequest.getParentTaskId());
-        newRequest.setEstimatedHours(newRequest.getEstimatedHours() == null ? oldRequest.getEstimatedHours() : newRequest.getEstimatedHours());
+        newRequest.setEstimatedDays(newRequest.getEstimatedDays() == null ? oldRequest.getEstimatedDays() : newRequest.getEstimatedDays());
         newRequest.setStatus(newRequest.getStatus() == null ? oldRequest.getStatus() : newRequest.getStatus());
         newRequest.setTitle(newRequest.getTitle() == null ? oldRequest.getTitle() : newRequest.getTitle());
-//        newRequest.setPublishType(WsPublishType.valueOf(oldRequest.getPublishType()) == WsPublishType.CREATE_TASK ? String.valueOf(WsPublishType.CREATE_TASK) : newRequest.getPublishType());
         newRequest.setStartDate(newRequest.getStartDate()==null?oldRequest.getStartDate():newRequest.getStartDate());
         newRequest.setEndDate(newRequest.getEndDate()==null?oldRequest.getEndDate():newRequest.getEndDate());
         newRequest.setDate(newRequest.getDate()==null?oldRequest.getDate():newRequest.getDate());

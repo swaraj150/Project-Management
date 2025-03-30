@@ -16,14 +16,15 @@ import java.util.UUID;
 public class CreateTaskRequest {
     private String title;
     private String description;
-    private Integer priority;
+    private String priority;
     private String type;
     private String level;
     private Date createdAt;
-    private Integer estimatedHours;
+    private Integer estimatedDays;
     private UUID parentTaskId;
     private List<String> assignedTo;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private Integer progress;
 
 }
