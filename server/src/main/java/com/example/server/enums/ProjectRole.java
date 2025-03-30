@@ -36,8 +36,6 @@ public enum ProjectRole {
             ProjectAuthority.CREATE_TASKS,
             ProjectAuthority.CREATE_TEAM,
             ProjectAuthority.VIEW_TASKS
-
-
     )),
     DEVELOPER(EnumSet.of(
             ProjectAuthority.VIEW_PROJECT,

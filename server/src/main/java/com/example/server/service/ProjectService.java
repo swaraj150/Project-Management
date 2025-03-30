@@ -119,7 +119,7 @@ public class ProjectService {
                 .title(project.getTitle())
                 .description(project.getDescription())
                 .tasksIds(project.getTasks())
-                .projectManager(UserDTO.mapToUserDTO(userService.loadUser(project.getProjectManagerId())))
+                .projectManager(project.getProjectManagerId())
                 .startDate(project.getStartDate())
                 .estimatedEndDate(project.getEstimatedEndDate())
                 .endDate(project.getEndDate())

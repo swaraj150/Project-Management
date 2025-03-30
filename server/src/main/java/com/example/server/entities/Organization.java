@@ -39,47 +39,4 @@ public class Organization {
     private Set<UUID> teams = new HashSet<>();
     @Embedded
     private WorkloadLimit workloadLimit;
-
-
-//    @OneToOne
-//    // a single user might be responsible for single organization
-//    @JoinColumn(name="product_owner_id")
-//    @JsonIgnore
-//    @ToString.Exclude
-//    private User productOwner;
-//
-//    @OneToOne
-//    // a single user might be responsible for  single organization
-//    @JoinColumn(name="project_manager_id")
-//    @JsonIgnore
-//    @ToString.Exclude
-//    private User projectManager;
-//
-//    @OneToMany(mappedBy = "organization")
-//    @JsonIgnore
-//    @ToString.Exclude
-//    // many teams belong to one organization
-//    private List<Team> teams;
-//
-//    @OneToMany(mappedBy = "organization")
-//    @JsonIgnore
-//    @ToString.Exclude
-//    // many users can be stakeholders for single  organization
-//    private List<User> stakeholders;
-//
-//    private String code;
-//
-//    @OneToMany(mappedBy = "organization",fetch = FetchType.LAZY)
-////    @JsonIgnore
-//    @JsonIgnoreProperties("organization")
-//    @ToString.Exclude
-//    private Set<JoinRequest> joinRequestSet;
-//
-//    // list of members
-//    @OneToMany
-//    @ToString.Exclude
-//    @JsonIgnore
-//    private Set<User> members;
-
-
 }

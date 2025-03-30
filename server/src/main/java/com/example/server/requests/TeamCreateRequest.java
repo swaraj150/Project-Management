@@ -15,8 +15,8 @@ import java.util.UUID;
 @Builder
 public class TeamCreateRequest {
     private String name;
-    private List<String> dev;
-    private List<String> qa;
-    private String teamLead;
+    private List<UUID> developers;
+    private List<UUID> testers;
+    private UUID teamLead;
 
 }

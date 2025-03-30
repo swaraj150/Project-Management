@@ -66,13 +66,13 @@ public class TeamService {
         Set<UUID> members=new HashSet<>();
         members.add(teamLead.getId());
         members.add(organization.getProductOwnerId());
-        for(String user: request.getDev()){
+        for(UUID user: request.getDevelopers()){
             User dev=userService.loadUser(user);
             userService.updateProjectRole(ProjectRole.DEVELOPER,dev);
             members.add(dev.getId());
             userRepository.save(dev);
         }
-        for(String user: request.getQa()){
+        for(UUID user: request.getTesters()){
             User qa=userService.loadUser(user);
             userService.updateProjectRole(ProjectRole.QA,qa);
             members.add(qa.getId());

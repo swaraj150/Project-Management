@@ -22,7 +22,7 @@ public class ProjectResponse {
     private String description;
     private List<UUID> tasksIds;
     private Set<TeamResponse> teams;
-    private UserDTO projectManager;
+    private UUID projectManager;
     private LocalDate startDate;
     private LocalDate estimatedEndDate;
     private LocalDate endDate;

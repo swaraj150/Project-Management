@@ -2,6 +2,7 @@ package com.example.server.entities;
 
 import com.example.server.enums.CompletionStatus;
 import com.example.server.enums.Level;
+import com.example.server.enums.Priority;
 import com.example.server.enums.TaskType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,26 +24,28 @@ public class Task {
     private UUID id;
     private String title;
     private String description;
-    private Integer priority; // enum
+
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
+
     @Enumerated(EnumType.STRING)
     private TaskType type;
+
     @Enumerated(EnumType.STRING)
     private Level level;
+
+
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private LocalDateTime createdAt;
+    private Integer estimatedDays;
+    private LocalDateTime completedAt;
+
+    private Integer progress;
+
     @Column(name = "created_by_user_id")
     private UUID createdBy;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "assigned_to", joinColumns = @JoinColumn(name = "task_id"))
-    @Column(name = "user_id")
-    private Set<UUID> assignedTo = new HashSet<>();
-
-
-
-    private LocalDateTime createdAt;
-    private Integer estimatedHours;// estimated Days
-    private LocalDateTime completedAt;
     @Enumerated(EnumType.STRING)
     private CompletionStatus completionStatus;
 
@@ -52,8 +55,8 @@ public class Task {
     @Column(name = "project_id")
     private UUID projectId;
 
-    // progress int
-
-
-
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "assigned_to", joinColumns = @JoinColumn(name = "task_id"))
+    @Column(name = "user_id")
+    private Set<UUID> assignedTo = new HashSet<>();
 }
