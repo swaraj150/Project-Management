@@ -21,8 +21,8 @@ public class OrganizationDTO {
     private String name;
     private UUID productOwnerId;
 //    private UUID projectManagerId;
-    private List<UUID> teamIds;
-    private List<UUID> stakeholderIds;
+    private Set<UUID> teamIds;
+    private Set<UUID> stakeholderIds;
     private String code;
     private Set<UUID> joinRequestIds;
     private Set<UUID> memberIds;

@@ -20,6 +20,7 @@ import com.example.server.response.OrganizationResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,6 +33,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrganizationService {
     private final OrganizationRepository organizationRepository;
     private final JoinRequestRepository joinRequestRepository;
@@ -40,7 +42,6 @@ public class OrganizationService {
     private final UserRepository userRepository;
     private final SecurityUtils securityUtils;
     private final UserService userService;
-    private static final Logger logger= LoggerFactory.getLogger(OrganizationService.class);
 
 
     public OrganizationDTO createOrganizationDTO(UUID id){
@@ -48,9 +49,9 @@ public class OrganizationService {
                 .orElseThrow(() -> new EntityNotFoundException("Organization not found"));
 
         OrganizationDTO organizationDTO=OrganizationDTO.fromOrganization(org);
-        organizationDTO.setTeamIds(teamRepository.findIdsByOrganizationId(org.getId()));
+        organizationDTO.setTeamIds(new HashSet<>(teamRepository.findIdsByOrganizationId(org.getId())));
         organizationDTO.setMemberIds(new HashSet<>(userRepository.findMemberIdsByOrganizationId(org.getId())));
-        organizationDTO.setStakeholderIds(userRepository.findStakeholderIdsByOrganizationId(org.getId()));
+        organizationDTO.setStakeholderIds(new HashSet<>(userRepository.findStakeholderIdsByOrganizationId(org.getId())));
         organizationDTO.setJoinRequestIds(new HashSet<>(joinRequestRepository.findIdsByOrganizationId(org.getId())));
         organizationDTO.setProjects(new HashSet<>(organizationRepository.findProjectIdsForOrganization(id)));
         return organizationDTO;
@@ -84,9 +85,9 @@ public class OrganizationService {
     }
     public OrganizationResponse loadOrganizationResponse() {
         OrganizationDTO organizationDTO = loadOrganizationDTOByCurrentUser();
-        List<UserDTO> stakeholders=new ArrayList<>();
-        List<UserDTO> members=new ArrayList<>();
-        List<UUID> ids=organizationDTO.getStakeholderIds();
+        Set<UserDTO> stakeholders=new HashSet<>();
+        Set<UserDTO> members=new HashSet<>();
+        Set<UUID> ids=organizationDTO.getStakeholderIds();
         for(UUID id1:ids){
             stakeholders.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
         }
@@ -194,7 +195,7 @@ public class OrganizationService {
 
         for (Organization organization : organizations) {
             if (pattern.matcher(organization.getName()).find()) {
-                logger.info("matched: {}", organization.getName());
+                log.info("matched: {}", organization.getName());
                 suggestions.add(loadOrganizationResponse(organization.getId()));
             }
         }
@@ -215,9 +216,9 @@ public class OrganizationService {
     //}
     public OrganizationResponse loadOrganizationResponse(UUID id) {
         OrganizationDTO organizationDTO = createOrganizationDTO(id);
-        List<UserDTO> stakeholders=new ArrayList<>();
-        List<UserDTO> members=new ArrayList<>();
-        List<UUID> ids=organizationDTO.getStakeholderIds();
+        Set<UserDTO> stakeholders=new HashSet<>();
+        Set<UserDTO> members=new HashSet<>();
+        Set<UUID> ids=organizationDTO.getStakeholderIds();
         for(UUID id1:ids){
             stakeholders.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
         }
@@ -242,6 +243,15 @@ public class OrganizationService {
     }
 
 
+    public void removeMemberFromOrg(UUID id){
+        User user=userService.loadUser(securityUtils.getCurrentUsername());
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.ACCEPT_MEMBERS)){
+            throw new UnauthorizedAccessException("User doesn't have required authority");
+        }
+        user=userService.loadUser(id);
+        user.setOrganizationId(null);
+        userRepository.save(user);
+    }
 
 
 

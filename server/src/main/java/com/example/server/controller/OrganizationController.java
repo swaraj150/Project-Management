@@ -101,6 +101,14 @@ public class OrganizationController {
         return ResponseEntity.ok(h);
     }
 
+    @PutMapping("/members/remove/{id}")
+    public ResponseEntity<?> removeMemberFromOrganization(@PathVariable @NonNull UUID id){
+        organizationService.removeMemberFromOrg(id);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("message","member removed from organization");
+        return ResponseEntity.ok(h);
+    }
+
 
 // remove user
 

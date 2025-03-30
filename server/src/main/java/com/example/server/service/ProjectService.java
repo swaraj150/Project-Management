@@ -41,7 +41,7 @@ public class ProjectService {
         Organization organization=organizationRepository.findById(user.getOrganizationId())
                 .orElseThrow(()->new EntityNotFoundException("Organization not found"));
         Project project=new Project();
-        if(user.getProjectRole()== ProjectRole.PROJECT_MANAGER){
+        if(user.getProjectRole()==ProjectRole.PROJECT_MANAGER){
             project.setProjectManagerId(user.getId());
         }
         project.setTitle(request.getTitle());
