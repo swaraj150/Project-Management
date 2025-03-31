@@ -58,6 +58,10 @@ public class OrganizationService {
     }
 
 
+    public List<UUID> getProjectsInOrganization(UUID id){
+        return organizationRepository.findProjectIdsForOrganization(id);
+    }
+
 
     public OrganizationResponse initiateOrganization(@NonNull OrganizationInitiateRequest request){
         // request will have the metadata

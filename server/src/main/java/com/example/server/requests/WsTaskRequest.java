@@ -40,4 +40,6 @@ public class WsTaskRequest {
     private LocalDateTime triggerAt;
     private boolean satisfied;
     private Integer progress;
+
+
 }

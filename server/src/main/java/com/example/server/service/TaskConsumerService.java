@@ -40,6 +40,8 @@ public class TaskConsumerService {
     private final UserService userService;
     private final ExecutorService executor = Executors.newSingleThreadExecutor(); // For batch processing
     private final int BATCH_SIZE = 1;
+    private final ProjectService projectService;
+    private final OrganizationService organizationService;
 
 
     public void consumeAndBuffer(WsTaskRequest taskRequest) {
@@ -48,6 +50,12 @@ public class TaskConsumerService {
                 log.warn("Received null task request");
                 return;
             }
+
+            if(!validateProjectId(taskRequest.getProjectId())){
+                log.warn("Project Id should be valid");
+                return;
+            }
+
             String clientTaskId = taskRequest.getClientTaskId();
             if (processedTasks.putIfAbsent(taskRequest, true) != null) {
                 log.warn("Duplicate task ignored: {}", clientTaskId);
@@ -101,7 +109,7 @@ public class TaskConsumerService {
 
                     Task task = processTaskRequest(request);
                     if (task != null) {
-                        tasksToSave.put(task,request.getClientTaskId());
+                        tasksToSave.put(task,request.getClientTaskId()+"#"+request.getProjectId());
                     }
                     request.setSatisfied(true);
                 } catch (Exception e) {
@@ -111,21 +119,24 @@ public class TaskConsumerService {
 
             if (!tasksToSave.isEmpty()) {
                 taskRepository.saveAll(tasksToSave.keySet());
-                List<TaskResponse> taskResponses=new ArrayList<>();
+//                List<TaskResponse> taskResponses=new ArrayList<>();
+                Map<String,List<TaskResponse>> taskResponses=new HashMap<>();
                 // send whole parent task for now
                 for(Map.Entry<Task,String> t:tasksToSave.entrySet()){
                     // order mismatch
-                    taskResponses.add(taskService.loadTaskResponse(t.getKey().getId(),t.getValue()));
+                    String[] ids=t.getValue().split("#");
+                    String clientId=ids[0];
+                    String projectId=ids[1];
+                    taskResponses.get(projectId).add(taskService.loadTaskResponse(t.getKey().getId(),clientId));
                 }
 
                 log.info("Successfully saved batch of {} tasks", tasksToSave.size());
-
-                messagingTemplate.convertAndSend(
-
-                        "/topic/tasks",
-                        taskResponses
-
-                );
+                for(Map.Entry<String,List<TaskResponse>> t:taskResponses.entrySet()){
+                    messagingTemplate.convertAndSend(
+                            "/topic/tasks/"+t.getKey(),
+                            t.getValue()
+                    );
+                }
             }
 
         } catch (Exception e) {
@@ -282,5 +293,9 @@ public class TaskConsumerService {
         }
     }
 
+    public boolean validateProjectId(UUID projectId){
+        User user=userService.loadAuthenticatedUser();
+        return projectId!=null && organizationService.getProjectsInOrganization(user.getOrganizationId()).contains(projectId) && projectService.exists(projectId);
+    }
 
 }

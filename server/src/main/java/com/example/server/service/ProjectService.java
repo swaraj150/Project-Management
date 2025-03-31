@@ -33,6 +33,12 @@ public class ProjectService {
     private final UserService userService;
     private final TeamService teamService;
     private final TaskService taskService;
+
+    public boolean exists(@NonNull UUID projectId){
+        return projectRepository.existsById(projectId);
+    }
+
+
     public ProjectResponse createProject(@NonNull CreateProjectRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_PROJECT)){

@@ -24,7 +24,7 @@ public class WsTaskController {
     @MessageMapping("/task.handle")
     public void handleTasks(WsTaskRequest taskRequest){
         User user=userService.loadAuthenticatedUser();
-        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)) return;
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS) || !user.getProjectRole().hasAuthority(ProjectAuthority.EDIT_TASKS) ) return;
         taskRequest.setTimestamp(LocalDateTime.now());
         taskRequest.setSatisfied(false);
         taskConsumerService.consumeAndBuffer(taskRequest);
