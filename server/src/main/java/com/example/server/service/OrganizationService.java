@@ -17,6 +17,7 @@ import com.example.server.repositories.UserRepository;
 import com.example.server.requests.ChangeJoinRequestStatusRequest;
 import com.example.server.requests.OrganizationInitiateRequest;
 import com.example.server.response.OrganizationResponse;
+import com.example.server.response.OrganizationSearchResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -191,16 +192,17 @@ public class OrganizationService {
         return loadOrganizationDTOByCurrentUser();
     }
 
-    public Set<OrganizationResponse> searchByName(@NonNull String prefix) {
+    public Set<OrganizationSearchResponse> searchByName(@NonNull String prefix) {
+
         List<Organization> organizations = organizationRepository.findAll();
-        Set<OrganizationResponse> suggestions = new HashSet<>();
+        Set<OrganizationSearchResponse> suggestions = new HashSet<>();
         String escapedPrefix = prefix.replaceAll("([\\\\^$.|?*+()\\[\\]{}])", "\\\\$1").toLowerCase();
         Pattern pattern = Pattern.compile("^" + escapedPrefix, Pattern.CASE_INSENSITIVE);
 
         for (Organization organization : organizations) {
             if (pattern.matcher(organization.getName()).find()) {
                 log.info("matched: {}", organization.getName());
-                suggestions.add(loadOrganizationResponse(organization.getId()));
+                suggestions.add(OrganizationSearchResponse.builder().name(organization.getName()).code(organization.getCode()).build());
             }
         }
         return suggestions;

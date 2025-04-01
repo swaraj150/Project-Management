@@ -4,10 +4,7 @@ import com.example.server.dto.JoinRequestDTO;
 import com.example.server.dto.OrganizationDTO;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.Organization;
-import com.example.server.requests.ChangeJoinRequestStatusRequest;
-import com.example.server.requests.JoinOrganizationRequest;
-import com.example.server.requests.OrganizationCreateRequest;
-import com.example.server.requests.OrganizationInitiateRequest;
+import com.example.server.requests.*;
 import com.example.server.response.ApiResponse;
 import com.example.server.response.OrganizationResponse;
 import com.example.server.service.OrganizationService;
@@ -31,7 +28,7 @@ public class OrganizationController {
     private final OrganizationService organizationService;
     private static final Logger logger= LoggerFactory.getLogger(OrganizationController.class);
 
-    @PostMapping("/initiate")
+    @PostMapping("")
     public ResponseEntity<?> initiate(@RequestBody @NonNull OrganizationInitiateRequest request){
         HashMap<String,Object> h=new HashMap<>();
         h.put("organization",organizationService.initiateOrganization(request));
@@ -60,17 +57,17 @@ public class OrganizationController {
 //        h.put("message","request accepted");
 //        return ResponseEntity.ok(h);
 //    }
-    @PutMapping("/requests/accept/{id}")
-    public ResponseEntity<?> acceptRequest(@PathVariable @NonNull UUID id){
-        UserDTO user=organizationService.respondToJoinRequest(id,"accept");
+    @PutMapping("/requests/accept")
+    public ResponseEntity<?> acceptRequest(@RequestBody @NonNull ChangeJoinRequestStatusRequest request){
+        UserDTO user=organizationService.respondToJoinRequest(request.getRequestId(),"accept");
         HashMap<String,Object> h=new HashMap<>();
         h.put("message","request accepted");
         h.put("user",user);
         return ResponseEntity.ok(h);
     }
-    @PutMapping("/requests/reject/{id}")
-    public ResponseEntity<?> rejectRequest(@PathVariable @NonNull UUID id){
-        organizationService.respondToJoinRequest(id,"reject");
+    @PutMapping("/requests/reject")
+    public ResponseEntity<?> rejectRequest(@RequestBody @NonNull ChangeJoinRequestStatusRequest request){
+        organizationService.respondToJoinRequest(request.getRequestId(),"reject");
         HashMap<String,Object> h=new HashMap<>();
         h.put("message","request rejected");
         return ResponseEntity.ok(h);
@@ -86,31 +83,37 @@ public class OrganizationController {
         return ResponseEntity.ok(h);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> loadOrganization(){
-        OrganizationResponse response=organizationService.loadOrganizationResponse();
+    @GetMapping("/{id}")
+    public ResponseEntity<?> loadOrganization(@PathVariable @NonNull UUID id){
+        OrganizationResponse response=organizationService.loadOrganizationResponse(id);
         HashMap<String,Object> h=new HashMap<>();
         h.put("organization",response);
         return ResponseEntity.ok(h);
     }
+//    @GetMapping("/")
+//    public ResponseEntity<?> loadOrganization(){
+//        OrganizationResponse response=organizationService.loadOrganizationResponse();
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("organization",response);
+//        return ResponseEntity.ok(h);
+//    }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchOrganization(@RequestParam @NonNull String key){
+    public ResponseEntity<?> searchOrganization(@RequestParam @NonNull String query){
         HashMap<String,Object> h=new HashMap<>();
-        h.put("organizations",organizationService.searchByName(key));
+        h.put("organizations",organizationService.searchByName(query));
         return ResponseEntity.ok(h);
     }
 
-    @PutMapping("/members/remove/{id}")
-    public ResponseEntity<?> removeMemberFromOrganization(@PathVariable @NonNull UUID id){
-        organizationService.removeMemberFromOrg(id);
+    @DeleteMapping("/members")
+    public ResponseEntity<?> removeMemberFromOrganization(@RequestBody @NonNull RemoveMemberRequest request){
+        organizationService.removeMemberFromOrg(request.getMemberId());
         HashMap<String,Object> h=new HashMap<>();
         h.put("message","member removed from organization");
         return ResponseEntity.ok(h);
     }
 
 
-// remove user
 
 
 

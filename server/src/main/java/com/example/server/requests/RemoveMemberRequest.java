@@ -11,7 +11,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChangeJoinRequestStatusRequest {
-    private UUID requestId;
-
+public class RemoveMemberRequest {
+    private UUID memberId;
 }
