@@ -60,7 +60,7 @@ public class TeamController {
         return ResponseEntity.ok(h);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<?> getAllTeams(){
         User user=userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){

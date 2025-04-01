@@ -51,7 +51,7 @@ public class ProjectController {
 //        h.put("msg","teams added successfully");
 //        return ResponseEntity.ok(h);
 //    }
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<?> getAllProjects(){
 //        User user=userService.loadUser(securityUtils.getCurrentUsername());
 //        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
