@@ -117,16 +117,16 @@ public class ProjectService {
             addTeam(s);
         }
     }
-    public void addTeamsById(@NonNull List<UUID> teams){
-        User user= userService.loadUser(securityUtils.getCurrentUsername());
-        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_PROJECT)){
-            throw new UnauthorizedAccessException("User does not have the required authority");
-        }
-        for(UUID s:teams){
-            Team team=teamRepository.findById(s).orElseThrow(()->new EntityNotFoundException("Team not found"));
-            addTeam(team);
-        }
-    }
+//    public void addTeamsById(@NonNull List<UUID> teams){
+//        User user= userService.loadUser(securityUtils.getCurrentUsername());
+//        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_PROJECT)){
+//            throw new UnauthorizedAccessException("User does not have the required authority");
+//        }
+//        for(UUID s:teams){
+//            Team team=teamRepository.findById(s).orElseThrow(()->new EntityNotFoundException("Team not found"));
+//            addTeam(team);
+//        }
+//    }
 
     public ProjectResponse loadProjectResponse(@NonNull UUID projectId){
         Project project=projectRepository.findById(projectId).orElseThrow(()->new EntityNotFoundException("Project not found"));
@@ -179,7 +179,7 @@ public class ProjectService {
         organization.getTeams().removeAll(project.getTeams());
         organizationRepository.save(organization);
         for(UUID id:project.getTasks()){
-            taskService.deleteTask(id,projectId);
+            taskService.deleteTask(id);
         }
         project.getTasks().clear();
         project.getTeams().clear();
