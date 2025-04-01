@@ -27,7 +27,7 @@ public class TeamController {
     private final ProjectService projectService;
     private final TeamRepository teamRepository;
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> create(@RequestBody @NonNull TeamCreateRequest request){
         TeamResponse teamResponse=teamService.createTeam(request);
         HashMap<String,Object> h=new HashMap<>();
@@ -35,19 +35,32 @@ public class TeamController {
         return ResponseEntity.ok(h);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> load(){
+//    @GetMapping("/")
+//    public ResponseEntity<?> load(){
+//        User user=userService.loadUser(securityUtils.getCurrentUsername());
+//        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
+//            throw new UnauthorizedAccessException("User does not have the required authority");
+//        }
+//        TeamResponse teamResponse=teamService.loadTeamResponse(teamRepository.findTeamIdByUserId(user.getId()));
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("team",teamResponse);
+//        return ResponseEntity.ok(h);
+//    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> load(@PathVariable @NonNull UUID id){
         User user=userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        TeamResponse teamResponse=teamService.loadTeamResponse(teamRepository.findTeamIdByUserId(user.getId()));
+
+        TeamResponse teamResponse=teamService.loadTeamResponse(id);
         HashMap<String,Object> h=new HashMap<>();
         h.put("team",teamResponse);
         return ResponseEntity.ok(h);
     }
 
-    @GetMapping("/getAllTeams")
+    @GetMapping("/")
     public ResponseEntity<?> getAllTeams(){
         User user=userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
@@ -59,18 +72,18 @@ public class TeamController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchTeam(@RequestParam @NonNull String key){
+    public ResponseEntity<?> searchTeam(@RequestParam @NonNull String query){
         HashMap<String,Object> h=new HashMap<>();
-        h.put("teams",teamService.searchByName(key));
+        h.put("teams",teamService.searchByName(query));
         return ResponseEntity.ok(h);
     }
 
-    @GetMapping("/suggest/project") // suggest teams based on project workload
-    public ResponseEntity<?> suggest(@RequestParam @NonNull UUID projectId){
-        HashMap<String,Object> h=new HashMap<>();
-        h.put("teams",projectService.suggestTeams(projectId));
-        return ResponseEntity.ok(h);
-    }
+//    @GetMapping("/suggestions") // suggest teams based on project workload
+//    public ResponseEntity<?> suggest(@RequestParam @NonNull UUID projectId){
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("suggestedMembers",projectService.suggestTeams(projectId));
+//        return ResponseEntity.ok(h);
+//    }
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> delete(@RequestParam @NonNull UUID teamId){
