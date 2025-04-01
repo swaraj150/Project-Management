@@ -43,8 +43,8 @@ public class TaskService {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        Team team=teamRepository.findById(teamRepository.findTeamIdByUserId(user.getId())).orElseThrow(()->new EntityNotFoundException("Team not found"));
-        Project project=projectRepository.findById(team.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        Project project=projectRepository.findById(request.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+//        Team team=teamRepository.findById(teamRepository.findTeamIdByUserId(user.getId())).orElseThrow(()->new EntityNotFoundException("Team not found"));
         Task task=new Task();
         task.setTitle(request.getTitle());
         task.setDescription((request.getDescription()));
@@ -55,9 +55,21 @@ public class TaskService {
         task.setLevel(Level.valueOf(request.getLevel()));
         task.setEstimatedDays(request.getEstimatedDays());
         task.setParentTaskId(request.getParentTaskId());
-        task.setProjectId(team.getProjectId());
-        task.setStartDate(request.getStartDate());
-        task.setEndDate(request.getEndDate());
+        task.setProjectId(project.getId());
+//        task.setStartDate(request.getStartDate());
+//        task.setEndDate(request.getEndDate());
+
+        if(request.getStartDate()!=null){
+            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
+            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            task.setStartDate(localDateTime);
+        }
+        if(request.getEndDate()!=null){
+            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
+            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            task.setEndDate(localDateTime);
+        }
+        task.setProgress(0);
         Set<UUID> assignedTo=new HashSet<>();
         for(String s:request.getAssignedTo()){
             assignedTo.add(userService.loadUser(s).getId());
@@ -68,12 +80,12 @@ public class TaskService {
         project.getTasks().add(task.getId());
         projectRepository.save(project);
 
-        notificationService.createNotification(NotificationEvent.builder()
-                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
-                        .actorId(user.getId())
-                        .userId(new ArrayList<>(task.getAssignedTo()))
-                        .type(NotificationType.TASK_ASSIGNED)
-                        .build());
+//        notificationService.createNotification(NotificationEvent.builder()
+//                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
+//                        .actorId(user.getId())
+//                        .userId(new ArrayList<>(task.getAssignedTo()))
+//                        .type(NotificationType.TASK_ASSIGNED)
+//                        .build());
         return loadTaskResponse(task.getId());
     }
     public Task createTask(WsTaskRequest request){
@@ -451,23 +463,92 @@ public class TaskService {
         taskRepository.save(task);
     }
     
-    public void deleteTask(UUID taskId,UUID projectId){
+    public void deleteTask(UUID taskId){
         // delete task from project
         User user=userService.loadAuthenticatedUser();
 //        if(!user.getProjectRole().hasAuthority(ProjectAuthority.DELETE_TASKS)){
 //            throw new UnauthorizedAccessException("User doesn't have required authority");
 //        }
-        Project project=projectRepository.findById(projectId).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        Task task=loadTask(taskId);
+        Project project=projectRepository.findById(task.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
         dependencyRepository.deleteByFromTaskId(taskId);
         project.getTasks().remove(taskId);
         projectRepository.save(project);
 
         // delete assigned to users
-        Task task=loadTask(taskId);
         task.getAssignedTo().clear();
         taskRepository.save(task);
         taskRepository.delete(task);
 
+    }
+
+    public void updateTask(UUID id,CreateTaskRequest request){
+        User user= userService.loadUser(securityUtils.getCurrentUsername());
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        Task task=loadTask(id);
+        Project project=projectRepository.findById(task.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        Optional.ofNullable(request.getTitle())
+                .ifPresent(task::setTitle);
+        Optional.ofNullable(request.getDescription())
+                .ifPresent(task::setDescription);
+        Optional.ofNullable(request.getPriority())
+                .map(Priority::valueOf)
+                .ifPresent(task::setPriority);
+
+        Optional.ofNullable(request.getLevel())
+                .map(Level::valueOf)
+                .ifPresent(task::setLevel);
+
+        Optional.ofNullable(request.getProgress())
+                .ifPresent(task::setProgress);
+
+        if(request.getStartDate()!=null){
+            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
+            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            task.setStartDate(localDateTime);
+        }
+        if(request.getEndDate()!=null){
+            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
+            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            task.setEndDate(localDateTime);
+        }
+//        Optional.ofNullable(request.getEndDate())
+//                .ifPresent(task::setEndDate); // achieved at
+
+        Optional.ofNullable(request.getEstimatedDays())
+                .map(Integer::valueOf)
+                .ifPresent(task::setEstimatedDays);
+
+
+        // validation checks are remaining
+        Optional.ofNullable(request.getParentTaskId())
+                .ifPresentOrElse(
+                        task::setParentTaskId,
+                        () -> task.setParentTaskId(null)
+                );
+        Optional.ofNullable(request.getProjectId())
+                .ifPresent(task::setProjectId);
+
+
+        Set<UUID> assignedTo=new HashSet<>();
+        if(request.getAssignedTo()!=null){
+            for(String s:request.getAssignedTo()){
+                assignedTo.add(userService.loadUser(s).getId());
+            }
+        }
+        task.setAssignedTo(assignedTo);
+        taskRepository.save(task);
+        project.getTasks().add(task.getId());
+        projectRepository.save(project);
+//        notificationService.createNotification(NotificationEvent.builder()
+//                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
+//                        .actorId(user.getId())
+//                        .userId(new ArrayList<>(task.getAssignedTo()))
+//                        .type(NotificationType.TASK_ASSIGNED)
+//                        .build());
+//        return loadTaskResponse(task.getId());
     }
 
 }

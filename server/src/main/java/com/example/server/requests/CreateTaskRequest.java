@@ -23,8 +23,9 @@ public class CreateTaskRequest {
     private Integer estimatedDays;
     private UUID parentTaskId;
     private List<String> assignedTo;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String startDate;
+    private String endDate;
     private Integer progress;
+    private UUID projectId;
 
 }

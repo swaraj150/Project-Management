@@ -26,15 +26,22 @@ public class TaskController {
     private final ChatMessageService chatMessageService;
 //    private final MilestoneService milestoneService;
 
-    @GetMapping("/")
-    public ResponseEntity<?> loadTasks(){
-        return ResponseEntity.ok(taskService.getActiveTasksByUser());
-    }
-    @PostMapping("/create")
+//    @GetMapping("/")
+//    public ResponseEntity<?> loadTasks(){
+//        return ResponseEntity.ok(taskService.getActiveTasksByUser());
+//    }
+    @PostMapping("")
     public ResponseEntity<?> create(@RequestBody @NonNull CreateTaskRequest request){
         TaskResponse taskResponse=taskService.createTask(request);
         HashMap<String,Object> h=new HashMap<>();
         h.put("task",taskResponse);
+        return ResponseEntity.ok(h);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTask(@PathVariable @NonNull UUID id,@RequestBody @NonNull CreateTaskRequest request){
+        TaskResponse taskResponse=taskService.createTask(request);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("message","Task updated successfully");
         return ResponseEntity.ok(h);
     }
 //    @PutMapping("/change-status")
@@ -45,7 +52,7 @@ public class TaskController {
 //        return ResponseEntity.ok(h);
 //    }
 
-    @GetMapping("/fetch")
+    @GetMapping("")
     public ResponseEntity<?> fetch(){
         List<TaskResponse> taskResponses=taskService.getTasksByOrganization();
 
@@ -53,22 +60,22 @@ public class TaskController {
         h.put("tasks",taskResponses);
         return ResponseEntity.ok(h);
     }
-    @GetMapping("/project")
-    public ResponseEntity<?> fetchByProject(@RequestParam @NonNull UUID projectId){
+    @GetMapping("/project/{id}")
+    public ResponseEntity<?> fetchByProject(@PathVariable @NonNull UUID projectId){
         List<TaskResponse> taskResponses=taskService.getTasksByProject(projectId);
         HashMap<String,Object> h=new HashMap<>();
         h.put("tasks",taskResponses);
         return ResponseEntity.ok(h);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteTask(@RequestParam @NonNull UUID taskId,@RequestParam @NonNull UUID projectId){ //jugaad for now
-        taskService.deleteTask(taskId,projectId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTask(@PathVariable @NonNull UUID taskId){ //jugaad for now
+        taskService.deleteTask(taskId);
         return ResponseEntity.ok("Deleted successfully");
     }
 
-    @GetMapping("/load")
-    public ResponseEntity<?> loadTask(@RequestParam @NonNull UUID taskId){
+    @GetMapping("/{id}")
+    public ResponseEntity<?> loadTask(@PathVariable @NonNull UUID taskId){
         TaskResponse taskResponse=taskService.loadNestedTasks(taskId);
         HashMap<String,Object> h=new HashMap<>();
         h.put("task",taskResponse);
