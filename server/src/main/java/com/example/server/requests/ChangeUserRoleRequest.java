@@ -12,6 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class ChangeUserRoleRequest {
-    private UUID id;
+    private UUID userId;
     private String role;
 }

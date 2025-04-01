@@ -134,7 +134,7 @@ public class UserService {
         if(!user1.getProjectRole().hasAuthority(ProjectAuthority.ACCEPT_MEMBERS)){
             throw new UnauthorizedAccessException("user does not have required authority");
         }
-        User user2=loadUser(request.getId());
+        User user2=loadUser(request.getUserId());
         String role=request.getRole().toLowerCase();
         switch (role) {
             case "project manager" -> user2.setProjectRole(ProjectRole.PROJECT_MANAGER);

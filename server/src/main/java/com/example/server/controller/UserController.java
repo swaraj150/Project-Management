@@ -44,7 +44,7 @@ public class UserController {
 
 
 
-    @PostMapping("/register")
+    @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody  RegisterRequest registerRequest) {
         AuthResponse authResponse = userService.createUser(registerRequest);
         if (authResponse == null) {
@@ -59,7 +59,7 @@ public class UserController {
         return ResponseEntity.ok(h);
     }
     @CrossOrigin("http://localhost:5173")
-    @PostMapping("/login")
+    @PostMapping("/signin")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         logger.info("Received login request for: {}", loginRequest.getUsername());
         AuthResponse authResponse = userService.authenticate(loginRequest);
@@ -95,11 +95,11 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("Password Reset Successful"));
     }
 
-    @PutMapping("/update-project-role")
+    @PutMapping("/project-role")
     public ResponseEntity<?> updateProjectRole(@RequestBody @NonNull ChangeUserRoleRequest request) {
         userService.updateProjectRole(request);
         HashMap<String,Object> h=new HashMap<>();
-        h.put("msg","Project role updated");
+        h.put("message","Project role updated");
         return ResponseEntity.ok(h);
     }
 
@@ -148,7 +148,6 @@ public class UserController {
         User user=oAuth2UserService.processOAuthPostLogin(email,oauth2ClientName,oauth2Id,name);
         String token = jwtService.generateToken(user);
         HashMap<String,Object> h=new HashMap<>();
-        h.put("status","200");
         h.put("token",token);
         h.put("user",UserDTO.mapToUserDTO(user));
         return ResponseEntity.ok(h);
