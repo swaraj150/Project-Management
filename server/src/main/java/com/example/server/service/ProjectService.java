@@ -7,16 +7,19 @@ import com.example.server.entities.*;
 import com.example.server.enums.CompletionStatus;
 import com.example.server.enums.ProjectAuthority;
 import com.example.server.enums.ProjectRole;
+import com.example.server.exception.IllegalRoleException;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.OrganizationRepository;
 import com.example.server.repositories.ProjectRepository;
 import com.example.server.repositories.TeamRepository;
+import com.example.server.requests.AddTeamsToProjectRequest;
 import com.example.server.requests.CreateProjectRequest;
 import com.example.server.response.ProjectResponse;
 import com.example.server.response.TeamResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +27,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProjectService {
     private final SecurityUtils securityUtils;
     private final ProjectRepository projectRepository;
@@ -47,12 +51,16 @@ public class ProjectService {
         Organization organization=organizationRepository.findById(user.getOrganizationId())
                 .orElseThrow(()->new EntityNotFoundException("Organization not found"));
         Project project=new Project();
-        if(user.getProjectRole()==ProjectRole.PROJECT_MANAGER){
-            project.setProjectManagerId(user.getId());
+        User projectManager=userService.loadUser(request.getProjectManagerId());
+        // assuming he is already a project manager
+        if(projectManager.getProjectRole()!=ProjectRole.PROJECT_MANAGER){
+            log.error("User with userId {} is not a project manager",projectManager.getId());
+            throw new IllegalRoleException("User with userId {} is not a project manager");
         }
         project.setTitle(request.getTitle());
         project.setDescription(request.getDescription());
         project.setBudget(request.getBudget());
+        project.setProjectManagerId(user.getId());
         project.setStartDate(LocalDate.now());
         project.setEstimatedEndDate(request.getEstimatedEndDate());
         project.setOrganizationId(user.getOrganizationId());
@@ -81,16 +89,23 @@ public class ProjectService {
         teamRepository.save(team);
         projectRepository.save(project);
     }
-    public void addTeam(@NonNull Team team){
+    public void addTeam(@NonNull AddTeamsToProjectRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_PROJECT)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        Project project=projectRepository.findByOrganization(user.getOrganizationId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
-        project.getTeams().add(team.getId());
-        team.setProjectId(project.getId());
-        team.getMemberIds().add(project.getProjectManagerId());
-        teamRepository.save(team);
+        Project project=projectRepository.findById(request.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        for(UUID teamId:request.getTeamsIds()){
+            Optional<Team> team=teamRepository.findById(teamId);
+            if(team.isEmpty()){
+                log.warn("Team with id: {} does not exist",teamId);
+                continue;
+            }
+            project.getTeams().add(teamId);
+            team.get().setProjectId(project.getId());
+            team.get().getMemberIds().add(project.getProjectManagerId());
+            teamRepository.save(team.get());
+        }
         projectRepository.save(project);
     }
     public void addTeamsByName(@NonNull List<String> teams){

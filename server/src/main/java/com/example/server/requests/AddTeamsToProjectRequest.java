@@ -14,7 +14,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class AddTeamsToProjectRequest {
-    List<String> teamNames;
     List<UUID> teamsIds;
     UUID projectId;
 }

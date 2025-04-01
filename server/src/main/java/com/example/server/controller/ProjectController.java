@@ -18,38 +18,40 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> create(@RequestBody @NonNull CreateProjectRequest request){
         ProjectResponse projectResponse=projectService.createProject(request);
         HashMap<String,Object> h=new HashMap<>();
         h.put("project",projectResponse);
         return ResponseEntity.ok(h);
     }
-    @GetMapping("")
-    public ResponseEntity<?> load(@RequestParam @NonNull UUID id){
+    @GetMapping("/{id}")
+    public ResponseEntity<?> load(@PathVariable @NonNull UUID id){
         ProjectResponse projectResponse=projectService.loadProjectResponse(id);
         HashMap<String,Object> h=new HashMap<>();
         h.put("project",projectResponse);
         return ResponseEntity.ok(h);
     }
-    @PutMapping("/add-team")
-    public ResponseEntity<ApiResponse<String>> addTeam(@RequestParam @NonNull String team){
-        projectService.addTeam(team);
-        return ResponseEntity.ok(ApiResponse.success("team added successfully"));
-    }
-    @PutMapping("/add-teams")
-    public ResponseEntity<?> addTeams(@RequestBody AddTeamsToProjectRequest request){
-        if(request.getTeamNames()==null){
-            projectService.addTeamsById(request.getTeamsIds());
-        }
-        else if(request.getTeamsIds()==null){
-            projectService.addTeamsByName(request.getTeamNames());
-        }
-        HashMap<String,Object> h=new HashMap<>();
-        h.put("msg","teams added successfully");
-        return ResponseEntity.ok(h);
-    }
-    @GetMapping("/getAllProjects")
+//    @PutMapping("/teams")
+//    public ResponseEntity<?> addTeam(@RequestBody @NonNull AddTeamsToProjectRequest request){
+//        projectService.addTeam(team);
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("message","Team added successfully");
+//        return ResponseEntity.ok(h);
+//    }
+//    @PutMapping("/add-teams")
+//    public ResponseEntity<?> addTeams(@RequestBody AddTeamsToProjectRequest request){
+//        if(request.getTeamNames()==null){
+//            projectService.addTeamsById(request.getTeamsIds());
+//        }
+//        else if(request.getTeamsIds()==null){
+//            projectService.addTeamsByName(request.getTeamNames());
+//        }
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("msg","teams added successfully");
+//        return ResponseEntity.ok(h);
+//    }
+    @GetMapping("/")
     public ResponseEntity<?> getAllProjects(){
 //        User user=userService.loadUser(securityUtils.getCurrentUsername());
 //        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){

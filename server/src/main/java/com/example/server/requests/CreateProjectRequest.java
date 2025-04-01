@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 public class CreateProjectRequest {
     private String title;
     private String description;
-//    private Integer teamSize;
     private LocalDate estimatedEndDate;
     private BigDecimal budget;
+    private UUID projectManagerId;
 }
