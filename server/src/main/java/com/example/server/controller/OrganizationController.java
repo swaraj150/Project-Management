@@ -83,20 +83,20 @@ public class OrganizationController {
         return ResponseEntity.ok(h);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> loadOrganization(@PathVariable @NonNull UUID id){
-        OrganizationResponse response=organizationService.loadOrganizationResponse(id);
-        HashMap<String,Object> h=new HashMap<>();
-        h.put("organization",response);
-        return ResponseEntity.ok(h);
-    }
-//    @GetMapping("/")
-//    public ResponseEntity<?> loadOrganization(){
-//        OrganizationResponse response=organizationService.loadOrganizationResponse();
+//    @GetMapping("/{id}")
+//    public ResponseEntity<?> loadOrganization(@PathVariable @NonNull UUID id){
+//        OrganizationResponse response=organizationService.loadOrganizationResponse(id);
 //        HashMap<String,Object> h=new HashMap<>();
 //        h.put("organization",response);
 //        return ResponseEntity.ok(h);
 //    }
+    @GetMapping("/")
+    public ResponseEntity<?> loadOrganization(){
+        OrganizationResponse response=organizationService.loadOrganizationResponse();
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("organization",response);
+        return ResponseEntity.ok(h);
+    }
 
     @GetMapping("/search")
     public ResponseEntity<?> searchOrganization(@RequestParam @NonNull String query){

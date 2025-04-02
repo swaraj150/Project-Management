@@ -165,6 +165,13 @@ public class UserController {
     }
 
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> loadUser(@PathVariable @NonNull UUID id){
+        UserDTO userDTO = UserDTO.mapToUserDTO(userService.loadUser(id));
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("user",userDTO);
+        return ResponseEntity.ok(h);
+    }
 
 
 

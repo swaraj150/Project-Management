@@ -4,6 +4,7 @@ import com.example.server.entities.JoinRequest;
 import com.example.server.enums.ProjectRole;
 import com.example.server.exception.IllegalRoleException;
 import com.example.server.repositories.JoinRequestRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class JoinRequestService {
     private final JoinRequestRepository joinRequestRepository;
 
     public JoinRequest loadJoinRequest(@NonNull UUID id){
-        return joinRequestRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return joinRequestRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Join Request Not Found"));
     }
 
     public ProjectRole toProjectRole(@NonNull String role){
