@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -90,6 +91,16 @@ public class OrganizationService {
     }
     public OrganizationResponse loadOrganizationResponseByCurrentUser(){
         return loadOrganizationResponse(loadOrganizationDTOByCurrentUser());
+    }
+
+    public Set<UserDTO> loadMembers(){
+        User user=userService.loadAuthenticatedUser();
+        return userRepository.findMemberIdsByOrganizationId(user.getOrganizationId())
+                .stream()
+                .map(memberId->{
+                    return UserDTO.mapToUserDTO(userRepository.findById(memberId).orElseThrow(()->new UsernameNotFoundException("User not found")));
+                })
+                .collect(Collectors.toSet());
     }
 
     public OrganizationResponse loadOrganizationResponse(OrganizationDTO organizationDTO) {

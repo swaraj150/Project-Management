@@ -112,6 +112,13 @@ public class OrganizationController {
         h.put("message","member removed from organization");
         return ResponseEntity.ok(h);
     }
+    @GetMapping("/members")
+    public ResponseEntity<?> fetchMembers(){
+
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("members",organizationService.loadMembers());
+        return ResponseEntity.ok(h);
+    }
 
 
 
