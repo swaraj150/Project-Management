@@ -39,18 +39,13 @@ public class ProjectController {
 //        h.put("message","Team added successfully");
 //        return ResponseEntity.ok(h);
 //    }
-//    @PutMapping("/add-teams")
-//    public ResponseEntity<?> addTeams(@RequestBody AddTeamsToProjectRequest request){
-//        if(request.getTeamNames()==null){
-//            projectService.addTeamsById(request.getTeamsIds());
-//        }
-//        else if(request.getTeamsIds()==null){
-//            projectService.addTeamsByName(request.getTeamNames());
-//        }
-//        HashMap<String,Object> h=new HashMap<>();
-//        h.put("msg","teams added successfully");
-//        return ResponseEntity.ok(h);
-//    }
+    @PostMapping("/teams")
+    public ResponseEntity<?> addTeams(@RequestBody AddTeamsToProjectRequest request){
+        projectService.addTeam(request);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("msg","Teams added successfully");
+        return ResponseEntity.ok(h);
+    }
     @GetMapping("")
     public ResponseEntity<?> getAllProjects(){
 //        User user=userService.loadUser(securityUtils.getCurrentUsername());

@@ -90,7 +90,7 @@ public class OrganizationController {
 //        h.put("organization",response);
 //        return ResponseEntity.ok(h);
 //    }
-    @GetMapping("/")
+    @GetMapping("/info")
     public ResponseEntity<?> loadOrganization(){
         OrganizationResponse response=organizationService.loadOrganizationResponse();
         HashMap<String,Object> h=new HashMap<>();
