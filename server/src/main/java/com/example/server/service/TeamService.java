@@ -91,26 +91,16 @@ public class TeamService {
 
     public TeamResponse loadTeamResponse(@NonNull UUID id){
         TeamDTO teamDTO=createTeamDto(id);
-        List<UserDTO> devs=new ArrayList<>();
-        List<UserDTO> testers=new ArrayList<>();
-        List<UUID> ids=teamDTO.getDeveloperIds();
-        for(UUID id1:ids){
-            devs.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
-        }
-        List<UUID> ids2=teamDTO.getQaIds();
-        for(UUID id1:ids2){
-            testers.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
-        }
+
         return TeamResponse.builder()
                 .id(teamDTO.getId())
                 .name(teamDTO.getName())
-                .organization(teamDTO.getOrganizationId())
-                .teamLead(UserDTO.mapToUserDTO(userRepository.findById(teamDTO.getTeamLeadId())
-                        .orElseThrow(()->new UsernameNotFoundException("User not found"))))
-                .developers(devs)
-                .testers(testers)
+                .teamLead(teamDTO.getTeamLeadId())
+                .developers(new HashSet<>(teamDTO.getDeveloperIds()))
+                .testers(new HashSet<>(teamDTO.getQaIds()))
                 .build();
     }
+
     public Team loadTeam(@NonNull UUID id){
         return teamRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Team not found"));
     }

@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
 public class TeamResponse {
     private UUID id;
     private String name;
-    private UUID organization;
-    private List<UserDTO> developers;
-    private List<UserDTO> testers;
-    private UserDTO teamLead;
+    private Set<UUID> developers;
+    private Set<UUID> testers;
+    private UUID teamLead;
 }
