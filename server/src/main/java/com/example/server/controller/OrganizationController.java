@@ -85,14 +85,14 @@ public class OrganizationController {
 
 //    @GetMapping("/{id}")
 //    public ResponseEntity<?> loadOrganization(@PathVariable @NonNull UUID id){
-//        OrganizationResponse response=organizationService.loadOrganizationResponse(id);
+//        OrganizationResponse response=organizationService.loadOrganizationResponseById(id);
 //        HashMap<String,Object> h=new HashMap<>();
 //        h.put("organization",response);
 //        return ResponseEntity.ok(h);
 //    }
     @GetMapping("/info")
     public ResponseEntity<?> loadOrganization(){
-        OrganizationResponse response=organizationService.loadOrganizationResponse();
+        OrganizationResponse response=organizationService.loadOrganizationResponseByCurrentUser();
         HashMap<String,Object> h=new HashMap<>();
         h.put("organization",response);
         return ResponseEntity.ok(h);

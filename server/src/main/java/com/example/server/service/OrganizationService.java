@@ -14,7 +14,6 @@ import com.example.server.repositories.JoinRequestRepository;
 import com.example.server.repositories.OrganizationRepository;
 import com.example.server.repositories.TeamRepository;
 import com.example.server.repositories.UserRepository;
-import com.example.server.requests.ChangeJoinRequestStatusRequest;
 import com.example.server.requests.OrganizationInitiateRequest;
 import com.example.server.response.OrganizationResponse;
 import com.example.server.response.OrganizationSearchResponse;
@@ -22,8 +21,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,11 +47,11 @@ public class OrganizationService {
                 .orElseThrow(() -> new EntityNotFoundException("Organization not found"));
 
         OrganizationDTO organizationDTO=OrganizationDTO.fromOrganization(org);
-        organizationDTO.setTeamIds(new HashSet<>(teamRepository.findIdsByOrganizationId(org.getId())));
+//        organizationDTO.setTeamIds(new HashSet<>(teamRepository.findIdsByOrganizationId(org.getId())));
         organizationDTO.setMemberIds(new HashSet<>(userRepository.findMemberIdsByOrganizationId(org.getId())));
-        organizationDTO.setStakeholderIds(new HashSet<>(userRepository.findStakeholderIdsByOrganizationId(org.getId())));
-        organizationDTO.setJoinRequestIds(new HashSet<>(joinRequestRepository.findIdsByOrganizationId(org.getId())));
-        organizationDTO.setProjects(new HashSet<>(organizationRepository.findProjectIdsForOrganization(id)));
+//        organizationDTO.setStakeholderIds(new HashSet<>(userRepository.findStakeholderIdsByOrganizationId(org.getId())));
+//        organizationDTO.setJoinRequestIds(new HashSet<>(joinRequestRepository.findIdsByOrganizationId(org.getId())));
+//        organizationDTO.setProjects(new HashSet<>(organizationRepository.findProjectIdsForOrganization(id)));
         return organizationDTO;
     }
 
@@ -78,7 +75,7 @@ public class OrganizationService {
         organizationRepository.save(organization);
         productOwner.setOrganizationId(organization.getId());
         userRepository.save(productOwner);
-        return loadOrganizationResponse();
+        return loadOrganizationResponseByCurrentUser();
     }
 
     public Organization loadOrganization(@NonNull UUID id){
@@ -88,29 +85,47 @@ public class OrganizationService {
         }
         return orgOptional.get();
     }
-    public OrganizationResponse loadOrganizationResponse() {
-        OrganizationDTO organizationDTO = loadOrganizationDTOByCurrentUser();
-        Set<UserDTO> stakeholders=new HashSet<>();
+    public OrganizationResponse loadOrganizationResponseById(UUID id){
+        return loadOrganizationResponse(createOrganizationDTO(id));
+    }
+    public OrganizationResponse loadOrganizationResponseByCurrentUser(){
+        return loadOrganizationResponse(loadOrganizationDTOByCurrentUser());
+    }
+
+    public OrganizationResponse loadOrganizationResponse(OrganizationDTO organizationDTO) {
         Set<UserDTO> members=new HashSet<>();
-        Set<UUID> ids=organizationDTO.getStakeholderIds();
-        for(UUID id1:ids){
-            stakeholders.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
+        Set<UUID> stakeholders=new HashSet<>();
+        Set<UUID> devs=new HashSet<>();
+        Set<UUID> testers=new HashSet<>();
+        Set<UUID> managers=new HashSet<>();
+        Set<UUID> memberIds =organizationDTO.getMemberIds();
+        for(UUID memberId : memberIds){
+            UserDTO member=UserDTO.mapToUserDTO(userRepository.findById(memberId).orElseThrow(()->new UsernameNotFoundException("User not found")));
+            members.add(member);
+            switch (member.getProjectRole()){
+                case DEVELOPER -> {
+                    devs.add(memberId);
+                }
+                case QA -> {
+                    testers.add(memberId);
+                }
+                case PROJECT_MANAGER -> {
+                    managers.add(memberId);
+                }
+                case STAKEHOLDER -> {
+                    stakeholders.add(memberId);
+                }
+
+
+            }
         }
-        Set<UUID> ids2=organizationDTO.getMemberIds();
-        for(UUID id1:ids2){
-            members.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
-        }
-//        Set<ProjectResponse> projectResponses=new HashSet<>();
-//        for(UUID id1:projects){
-//            projectResponses.add(projectService.loadProjectResponse(id1));
-//        }
         return OrganizationResponse.builder()
                 .name(organizationDTO.getName())
-                .productOwner(UserDTO.mapToUserDTO(userRepository.findById(organizationDTO.getProductOwnerId())
-                        .orElseThrow(()->new UsernameNotFoundException("User not found"))))
-//                .projectManager(UserDTO.mapToUserDTO(userRepository.findById(organizationDTO.getProjectManagerId())
-//                        .orElseThrow(()->new UsernameNotFoundException("User not found"))))
+                .productOwner(organizationDTO.getProductOwnerId())
                 .stakeholders(stakeholders)
+                .developers(devs)
+                .testers(testers)
+                .managers(managers)
                 .members(members)
                 .code(organizationDTO.getCode())
                 .build();
@@ -220,33 +235,7 @@ public class OrganizationService {
     //    }
     //    return suggestions;
     //}
-    public OrganizationResponse loadOrganizationResponse(UUID id) {
-        OrganizationDTO organizationDTO = createOrganizationDTO(id);
-        Set<UserDTO> stakeholders=new HashSet<>();
-        Set<UserDTO> members=new HashSet<>();
-        Set<UUID> ids=organizationDTO.getStakeholderIds();
-        for(UUID id1:ids){
-            stakeholders.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
-        }
-        Set<UUID> ids2=organizationDTO.getMemberIds();
-        for(UUID id1:ids2){
-            members.add(UserDTO.mapToUserDTO(userRepository.findById(id1).orElseThrow(()->new UsernameNotFoundException("User not found"))));
-        }
-//        Set<ProjectResponse> projectResponses=new HashSet<>();
-//        for(UUID id1:projects){
-//            projectResponses.add(projectService.loadProjectResponse(id1));
-//        }
-        return OrganizationResponse.builder()
-                .name(organizationDTO.getName())
-                .productOwner(UserDTO.mapToUserDTO(userRepository.findById(organizationDTO.getProductOwnerId())
-                        .orElseThrow(()->new UsernameNotFoundException("User not found"))))
-//                .projectManager(UserDTO.mapToUserDTO(userRepository.findById(organizationDTO.getProjectManagerId())
-//                        .orElseThrow(()->new UsernameNotFoundException("User not found"))))
-                .stakeholders(stakeholders)
-                .members(members)
-                .code(organizationDTO.getCode())
-                .build();
-    }
+
 
 
     public void removeMemberFromOrg(UUID id){

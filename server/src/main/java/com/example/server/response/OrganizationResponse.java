@@ -18,8 +18,11 @@ import java.util.stream.Collectors;
 @Builder
 public class OrganizationResponse {
     private String name;
-    private UserDTO productOwner;
-    private Set<UserDTO> stakeholders;
-    private Set<UserDTO> members;
+    private UUID productOwner;
+    private Set<UUID> stakeholders;
+    private Set<UUID> developers;
+    private Set<UUID> testers;
+    private Set<UUID> managers;
     private String code;
+    private Set<UserDTO> members;
 }
