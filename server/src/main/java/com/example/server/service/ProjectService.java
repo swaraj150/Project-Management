@@ -144,7 +144,6 @@ public class ProjectService {
                 .startDate(project.getStartDate())
                 .estimatedEndDate(project.getEstimatedEndDate())
                 .endDate(project.getEndDate())
-                .organizationId(project.getOrganizationId())
                 .budget(project.getBudget())
                 .completionStatus(project.getCompletionStatus())
                 .teams(teams)

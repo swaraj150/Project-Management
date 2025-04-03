@@ -26,7 +26,6 @@ public class ProjectResponse {
     private LocalDate startDate;
     private LocalDate estimatedEndDate;
     private LocalDate endDate;
-    private UUID organizationId;
     private BigDecimal budget;// in INR
     private CompletionStatus completionStatus;
 }
