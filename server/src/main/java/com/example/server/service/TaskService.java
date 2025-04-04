@@ -290,11 +290,14 @@ public class TaskService {
                 .build();
     }
 
-    public List<Task> getActiveTasksByUser(@NonNull UUID userId){
-        return taskRepository.findTasksByStatusAndAssignedTo(CompletionStatus.IN_PROGRESS,userId);
+    public List<Task> getActiveTasksByUser(@NonNull UUID userId,@NonNull UUID projectId){
+        return taskRepository.findTasksByStatusAndAssignedTo(CompletionStatus.IN_PROGRESS,userId,projectId);
     }
-    public List<Task> getActiveTasksByUser(){
-        return taskRepository.findTasksByStatusAndAssignedTo(CompletionStatus.PENDING,userService.loadAuthenticatedUser().getId());
+    public List<Task> getCompletedTasksByUser(@NonNull UUID userId,@NonNull UUID projectId){
+        return taskRepository.findTasksByStatusAndAssignedTo(CompletionStatus.COMPLETED,userId,projectId);
+    }
+    public List<Task> getActiveTasksByUser(@NonNull UUID projectId){
+        return taskRepository.findTasksByStatusAndAssignedTo(CompletionStatus.PENDING,userService.loadAuthenticatedUser().getId(),projectId);
     }
 
     public Task loadTask(UUID id){
@@ -354,10 +357,13 @@ public class TaskService {
 
     public Integer getNoOfTasksWithStatus(CompletionStatus completionStatus){
         User user=userService.loadUser(securityUtils.getCurrentUsername());
-        return taskRepository.getTaskCountByStatusWithinProject(completionStatus,user.getOrganizationId());
+        return taskRepository.getTaskCountByStatus(completionStatus,user.getOrganizationId());
     }
     public Integer getNoOfTasksWithStatus(CompletionStatus completionStatus,UUID projectId){
-        return taskRepository.getTaskCountByStatus(completionStatus,projectId);
+        return taskRepository.getTaskCountByStatusWithinProject(completionStatus,projectId);
+    }
+    public Integer getNoOfTasksWithPriority(Priority priority,UUID projectId){
+        return taskRepository.getTaskCountByPriorityWithinProject(priority,projectId);
     }
 
     public Integer getTaskCount(UUID projectId){

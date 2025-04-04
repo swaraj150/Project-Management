@@ -2,7 +2,6 @@ package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.TeamDTO;
-import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
 import com.example.server.enums.Level;
 import com.example.server.enums.ProjectAuthority;
@@ -14,7 +13,6 @@ import com.example.server.response.TeamResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -147,12 +145,12 @@ public class TeamService {
         return res;
     }
     // calculate total workload per team
-    private Integer calculateTotalTeamWorkload(@NonNull UUID teamId){
+    public Long calculateTotalTeamWorkload(@NonNull UUID teamId,@NonNull UUID projectId){
         // currently calculating every individual's workload without considering collective effort.
         Team team=teamRepository.findById(teamId).orElseThrow(()->new EntityNotFoundException("Team not found"));
-        int res=0;
+        long res=0;
         for(UUID id:team.getMemberIds()){
-            List<Task> taskList=taskService.getActiveTasksByUser(id);
+            List<Task> taskList=taskService.getActiveTasksByUser(id,projectId);
             for(Task t:taskList){
                 res+=t.getEstimatedDays();
             }
@@ -160,7 +158,7 @@ public class TeamService {
         return res;
     }
     // get team expertise
-    private Level calculateTeamExpertise(@NonNull UUID teamId,@NonNull UUID projectId){
+    public Level calculateAverageTeamExpertise(@NonNull UUID teamId, @NonNull UUID projectId){
         Team team=teamRepository.findById(teamId).orElseThrow(()->new EntityNotFoundException("Team not found"));
         int beginners=0,intermediates=0,experts=0;
         int total=0;
@@ -188,18 +186,37 @@ public class TeamService {
         }
         return Level.EXPERT;
     }
+    public List<Double> calculateTeamExpertise(@NonNull UUID teamId, @NonNull UUID projectId){
+        Team team=teamRepository.findById(teamId).orElseThrow(()->new EntityNotFoundException("Team not found"));
+        int beginners=0,intermediates=0,experts=0,total=0;
+        for(UUID id:team.getMemberIds()){
+            User user=userService.loadUser(id);
+            if(user.getProjectRole()==ProjectRole.PROJECT_MANAGER ||
+                    user.getProjectRole()==ProjectRole.PRODUCT_OWNER || user.getProjectRole()==ProjectRole.TEAM_LEAD
+            ) continue;
+            Optional<Level> optionalLevel=userExpertiseRepository.findExpertise(id,projectId);
+            if(optionalLevel.isEmpty()) continue;
+            Level level=optionalLevel.get();
+//            userExpertiseService.findExpertise(id,projectId);
+            beginners+=level==Level.BEGINNER?1:0;
+            intermediates+=level==Level.INTERMEDIATE?1:0;
+            experts+=level==Level.EXPERT?1:0;
+            total++;
+        }
+        return List.of(((double)beginners/total)*100,((double)intermediates/total)*100,((double)experts/total)*100);
+    }
 
-    public double calculateWorkloads(@NonNull UUID teamId,@NonNull Integer limit){
+    public double calculateWorkloads(@NonNull UUID teamId,@NonNull Integer limit,@NonNull UUID projectId){
         Team team=teamRepository.findById(teamId).orElseThrow(()->new EntityNotFoundException("Team not found"));
         int membersWithinLimit=team.getMemberIds().size()-calculateAboveLimitTeamMembers(teamId,limit);
         double percent_available= (double) membersWithinLimit /team.getMemberIds().size();
-        double averageWorkload= (double) calculateTotalTeamWorkload(teamId) /team.getMemberIds().size();
+        double averageWorkload= (double) calculateTotalTeamWorkload(teamId,projectId) /team.getMemberIds().size();
         return percent_available*0.6 + ((limit-averageWorkload)/limit*0.4);
     }
     public double calculateTeamScore(@NonNull UUID teamId, @NonNull UUID projectId, @NonNull Integer workloadLimit) {
-        Level expertiseLevel = calculateTeamExpertise(teamId, projectId);
+        Level expertiseLevel = calculateAverageTeamExpertise(teamId, projectId);
         double expertiseScore = expertiseLevel==null?0:LEVEL_SCORES.get(expertiseLevel);
-        double workloadScore = calculateWorkloads(teamId, workloadLimit);
+        double workloadScore = calculateWorkloads(teamId, workloadLimit,projectId);
         return (expertiseScore * EXPERTISE_WEIGHT) + (workloadScore * WORKLOAD_WEIGHT);
     }
 

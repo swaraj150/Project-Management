@@ -2,6 +2,7 @@ package com.example.server.repositories;
 
 import com.example.server.enums.CompletionStatus;
 import com.example.server.entities.Task;
+import com.example.server.enums.Priority;
 import org.hibernate.annotations.Parent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,8 +21,8 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     @Query("SELECT t FROM Task t WHERE :userId MEMBER OF t.assignedTo")
     List<Task> findByAssignedTo(@Param("userId") UUID userId);
 
-    @Query("SELECT t FROM Task t WHERE t.completionStatus = :status AND :userId MEMBER OF t.assignedTo")
-    List<Task> findTasksByStatusAndAssignedTo(@Param("status") CompletionStatus status, @Param("userId") UUID userId);
+    @Query("SELECT t FROM Task t WHERE t.projectId=:projectId AND t.completionStatus = :status AND :userId MEMBER OF t.assignedTo")
+    List<Task> findTasksByStatusAndAssignedTo(@Param("status") CompletionStatus status, @Param("userId") UUID userId,@Param("projectId") UUID projectId);
 
     @Query("select t.id from Task t where t.parentTaskId=:id")
     List<UUID> findByParentId(@Param("id") UUID id);
@@ -31,6 +32,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     @Query("select count(t) from Task t join Project p on t.projectId = p.id where t.completionStatus=:status and p.organizationId = :organizationId")
     Integer getTaskCountByStatus(@Param(("status")) CompletionStatus status,@Param("organizationId") UUID id);
+
     @Query("select count(t) from Task t where t.projectId = :projectId ")
     Integer getTaskCountWithinProject(@Param("projectId") UUID id);
 
@@ -42,6 +44,9 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     @Query("select count(t) from Task t where t.completionStatus=:status and t.projectId=:projectId")
     Integer getTaskCountByStatusWithinProject(@Param(("status")) CompletionStatus status, @Param("projectId") UUID id);
+
+    @Query("select count(t) from Task t where t.priority=:priority and t.projectId=:projectId")
+    Integer getTaskCountByPriorityWithinProject(@Param(("status")) Priority priority, @Param("projectId") UUID id);
 
 
 }
