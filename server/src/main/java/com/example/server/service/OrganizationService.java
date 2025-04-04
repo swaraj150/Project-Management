@@ -48,11 +48,11 @@ public class OrganizationService {
                 .orElseThrow(() -> new EntityNotFoundException("Organization not found"));
 
         OrganizationDTO organizationDTO=OrganizationDTO.fromOrganization(org);
-//        organizationDTO.setTeamIds(new HashSet<>(teamRepository.findIdsByOrganizationId(org.getId())));
+        organizationDTO.setTeamIds(new HashSet<>(teamRepository.findIdsByOrganizationId(org.getId())));
         organizationDTO.setMemberIds(new HashSet<>(userRepository.findMemberIdsByOrganizationId(org.getId())));
-//        organizationDTO.setStakeholderIds(new HashSet<>(userRepository.findStakeholderIdsByOrganizationId(org.getId())));
-//        organizationDTO.setJoinRequestIds(new HashSet<>(joinRequestRepository.findIdsByOrganizationId(org.getId())));
-//        organizationDTO.setProjects(new HashSet<>(organizationRepository.findProjectIdsForOrganization(id)));
+        organizationDTO.setStakeholderIds(new HashSet<>(userRepository.findStakeholderIdsByOrganizationId(org.getId())));
+        organizationDTO.setJoinRequestIds(new HashSet<>(joinRequestRepository.findIdsByOrganizationId(org.getId())));
+        organizationDTO.setProjects(new HashSet<>(organizationRepository.findProjectIdsForOrganization(id)));
         return organizationDTO;
     }
 

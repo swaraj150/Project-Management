@@ -153,6 +153,7 @@ public class ProjectService {
     public Set<ProjectResponse> loadAllProjectResponses(){
         OrganizationDTO organizationDTO = organizationService.loadOrganizationDTOByCurrentUser();
         Set<ProjectResponse> projectResponses=new HashSet<>();
+        if(organizationDTO.getProjects()==null) return projectResponses;
         for(UUID id1:organizationDTO.getProjects()){
             projectResponses.add(loadProjectResponse(id1));
         }

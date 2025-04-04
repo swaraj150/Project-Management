@@ -74,7 +74,7 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(userService.getAllUsers()));
     }
 
-    @GetMapping("/")
+    @GetMapping("/me")
     public ResponseEntity<?> getUser() {
         String username=securityUtils.getCurrentUsername();
         UserDTO userDTO = userService.getUser(username);
