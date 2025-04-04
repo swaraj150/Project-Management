@@ -201,6 +201,7 @@ public class OrganizationService {
         OrganizationDTO organizationDTO=createOrganizationDTO(user1.getOrganizationId());
         Set<UUID> joinRequests=organizationDTO.getJoinRequestIds();
         Set<JoinRequestDTO> set=new HashSet<>();
+        if(joinRequests==null || joinRequests.isEmpty()) return set;
         for(UUID id:joinRequests){
             JoinRequest request=joinRequestService.loadJoinRequest(id);
             if(request.getStatus()==RequestStatus.APPROVED || request.getStatus()==RequestStatus.REJECTED) continue;
