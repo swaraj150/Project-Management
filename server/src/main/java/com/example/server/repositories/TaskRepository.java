@@ -46,7 +46,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     Integer getTaskCountByStatusWithinProject(@Param(("status")) CompletionStatus status, @Param("projectId") UUID id);
 
     @Query("select count(t) from Task t where t.priority=:priority and t.projectId=:projectId")
-    Integer getTaskCountByPriorityWithinProject(@Param(("status")) Priority priority, @Param("projectId") UUID id);
+    Integer getTaskCountByPriorityWithinProject(@Param(("priority")) Priority priority, @Param("projectId") UUID id);
 
 
 }
