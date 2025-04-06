@@ -23,8 +23,7 @@ const CreateTask = () => {
   const { parentTaskId, projectId } = location.state || {}
 
   const { collapsed } = useSelector((state) => state.menu)
-
-  const [assigneeOptions, setAssigneeOptions] = useState([])
+  const { developers, testers, membersMap } = useSelector((state) => state.organization)
 
   const handleGoBack = () => {
     navigate(-1)
@@ -142,8 +141,9 @@ const CreateTask = () => {
             <Select
               className="paper-1 select"
               isSearchable
+              isMulti
               isClearable
-              options={assigneeOptions}
+              options={[...developers, ...testers].map((member) => ({ value: member, label: membersMap[member].name }))}
               name='assignedTo'
               placeholder="Select assignees"
               value={createTaskForm.values.assignedTo}
@@ -204,7 +204,13 @@ const CreateTask = () => {
           </div>
           <div className="cta">
             <button className="pointer paper-1" onClick={handleGoBack}>Cancel</button>
-            <button className="pointer paper-1" type='submit'>Create</button>
+            <button
+              className="pointer paper-1"
+              type='submit'
+              disabled={createTaskForm.isSubmitting || !createTaskForm.isValid}
+            >
+              Create
+            </button>
           </div>
         </form>
       </section>
