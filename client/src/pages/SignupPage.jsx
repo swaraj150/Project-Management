@@ -11,11 +11,9 @@ const SignupPage = () => {
   const { user } = useSelector((state) => state.user)
 
   useEffect(() => {
-    if (user) navigate('/')
-    
-    const token = localStorage.getItem('projectMaestroToken')
-
-    if (token !== null) navigate('/')
+    if (user) navigate('/dashboard')
+    const token = localStorage.getItem('token')
+    if (token !== null) navigate('/dashboard')
   }, [])
 
   return (
