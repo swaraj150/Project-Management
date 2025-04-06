@@ -21,14 +21,14 @@ const AuthOptions = () => {
       const { res, err } = await userApi.googleSignin({ accessToken })
 
       if (res) {
-        if (res.token) localStorage.setItem('projectMaestroToken', res.token)
+        if (res.token) localStorage.setItem('token', res.token)
         dispatch(setUser(res))
         toast.success('Login successful. Welcome back!')
-        navigate('/')
+        navigate('/dashboard')
       }
 
       if (err) {
-        localStorage.removeItem('projectMaestroToken')
+        localStorage.removeItem('token')
         toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
       }
     },
@@ -51,10 +51,10 @@ const AuthOptions = () => {
           <img src={GoogleLogo} alt='' />
           <p>Continue with Google</p>
         </div>
-        <div className='option paper pointer' onClick={handleGithubLogin}>
+        {/* <div className='option paper pointer' onClick={handleGithubLogin}>
           <img src={GithubLogo} alt='' />
           <p>Continue with Github</p>
-        </div>
+        </div> */}
       </div>
     </div>
   )

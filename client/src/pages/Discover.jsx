@@ -1,5 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { FaLongArrowAltRight } from 'react-icons/fa'
+
 
 import CreateOrganization from '../components/common/CreateOrganization'
 import JoinOrganization from '../components/common/JoinOrganization'
@@ -59,39 +62,30 @@ const cards = [
 ]
 
 const Discover = () => {
-  const modalRef = useRef(null)
+  const navigate = useNavigate()
 
-  const [joinModalOpen, setJoinModalOpen] = useState(false)
-  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const { organization } = useSelector((state) => state.organization)
+
+  const [organizationOption, setOrganizationOption] = useState(0)
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setJoinModalOpen(false)
-        setCreateModalOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  })
+    if (organization) navigate('/dashboard')
+  }, [organization])
 
   return (
     <section id="discover">
-      {joinModalOpen ? <JoinOrganization setJoinModalOpen={setJoinModalOpen} modalRef={modalRef} /> : null}
-      {createModalOpen ? <CreateOrganization setCreateModalOpen={setCreateModalOpen} modalRef={modalRef} /> : null}
       <div className="hero">
         <h1 className="h1">Transform How Your Teams Work</h1>
-        <p>
+        <p className='description'>
           Discover our comprehensive project management platform that brings organizations, projects, teams, and tasks together using advanced AI and real-time analytics. Built for modern teams that value efficiency, collaboration, and data-driven decision-making.
         </p>
         <div className="cta">
-          <button className="paper pointer" onClick={() => setJoinModalOpen(true)} >Join Organization</button>
-          <button className="paper pointer" onClick={() => setCreateModalOpen(true)} >Create Organization</button>
+          <button className={`paper pointer ${organizationOption === 0 ? 'dark-btn' : ''}`} onClick={() => setOrganizationOption(0)} >Join Organization</button>
+          <button className={`paper pointer ${organizationOption === 1 ? 'dark-btn' : ''}`} onClick={() => setOrganizationOption(1)} >Create Organization</button>
         </div>
+        {
+          organizationOption === 0 ? <JoinOrganization /> : <CreateOrganization />
+        }
       </div>
       <div className="cards">
         {

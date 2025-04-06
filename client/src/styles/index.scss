@@ -1,135 +1,5 @@
+@use 'variables' as *;
 @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&display=swap');
-
-:root {
-    /* Color styles */
-    --black: rgba(0, 0, 0, 1);
-    --white--500: rgba(255, 255, 255, 1);
-    --white--50: rgba(242, 242, 242, 1);
-    --white--100: rgba(230, 230, 230, 1);
-    --white--200: rgba(204, 204, 204, 1);
-    --white--300: rgba(179, 179, 179, 1);
-    --white--400: rgba(153, 153, 153, 1);
-    --white--600: rgba(102, 102, 102, 1);
-    --white--700: rgba(77, 77, 77, 1);
-    --white--800: rgba(51, 51, 51, 1);
-    --white--900: rgba(26, 26, 26, 1);
-    --white--950: rgba(13, 13, 13, 1);
-    --primary--500: rgba(10, 36, 114, 1);
-    --primary--50: rgba(232, 237, 253, 1);
-    --primary--100: rgba(208, 219, 251, 1);
-    --primary--200: rgba(161, 183, 247, 1);
-    --primary--300: rgba(114, 146, 243, 1);
-    --primary--400: rgba(67, 110, 239, 1);
-    --primary--600: rgba(16, 59, 188, 1);
-    --primary--700: rgba(12, 44, 141, 1);
-    --primary--800: rgba(8, 30, 94, 1);
-    --primary--900: rgba(4, 15, 47, 1);
-    --primary--950: rgba(2, 7, 23, 1);
-    --secondary--500: rgba(10, 114, 114, 1);
-    --secondary--50: rgba(232, 253, 253, 1);
-    --secondary--100: rgba(208, 251, 251, 1);
-    --secondary--200: rgba(161, 247, 247, 1);
-    --secondary--300: rgba(114, 243, 243, 1);
-    --secondary--400: rgba(67, 239, 239, 1);
-    --secondary--600: rgba(16, 188, 188, 1);
-    --secondary--700: rgba(12, 141, 141, 1);
-    --secondary--800: rgba(8, 94, 94, 1);
-    --secondary--900: rgba(4, 47, 47, 1);
-    --secondary--950: rgba(2, 23, 23, 1);
-    --contrast--500: rgba(114, 10, 91, 1);
-    --contrast--50: rgba(253, 232, 248, 1);
-    --contrast--100: rgba(251, 208, 242, 1);
-    --contrast--200: rgba(247, 161, 228, 1);
-    --contrast--300: rgba(243, 114, 215, 1);
-    --contrast--400: rgba(239, 67, 201, 1);
-    --contrast--600: rgba(188, 16, 150, 1);
-    --contrast--700: rgba(141, 12, 113, 1);
-    --contrast--800: rgba(94, 8, 75, 1);
-    --contrast--900: rgba(47, 4, 38, 1);
-    --contrast--950: rgba(23, 2, 19, 1);
-    --success: green;
-    --error: red;
-
-    /* Text-size styles */
-    /* base size: mukta--body---extra-light (16px) */
-    --mukta--body---extra-light: 1rem;
-    --mukta--body---light: 1rem;
-    --mukta--body---regular: 1rem;
-    --mukta--body---medium: 1rem;
-    --mukta--body---semi-bold: 1rem;
-    --mukta--body---bold: 1rem;
-    --mukta--body---extra-bold: 1rem;
-    --mukta--h1---extra-light: 2rem;
-    --mukta--h1---light: 2rem;
-    --mukta--h1---regular: 2rem;
-    --mukta--h1---medium: 2rem;
-    --mukta--h1---semi-bold: 2rem;
-    --mukta--h1---bold: 2rem;
-    --mukta--h1---extra-bold: 2rem;
-    --mukta--h2---extra-light: 1.75rem;
-    --mukta--h2---light: 1.75rem;
-    --mukta--h2---regular: 1.75rem;
-    --mukta--h2---medium: 1.75rem;
-    --mukta--h2---semi-bold: 1.75rem;
-    --mukta--h2---bold: 1.75rem;
-    --mukta--h2---extra-bold: 1.75rem;
-    --mukta--h3---extra-light: 1.5rem;
-    --mukta--h3---light: 1.5rem;
-    --mukta--h3---regular: 1.5rem;
-    --mukta--h3---medium: 1.5rem;
-    --mukta--h3---semi-bold: 1.5rem;
-    --mukta--h3---bold: 1.5rem;
-    --mukta--h3---extra-bold: 1.5rem;
-    --mukta--h4---extra-light: 1.25rem;
-    --mukta--h4---light: 1.25rem;
-    --mukta--h4---regular: 1.25rem;
-    --mukta--h4---medium: 1.25rem;
-    --mukta--h4---semi-bold: 1.25rem;
-    --mukta--h4---bold: 1.25rem;
-    --mukta--h4---extra-bold: 1.25rem;
-    --mukta--h5---extra-light: 1.12rem;
-    --mukta--h5---light: 1.12rem;
-    --mukta--h5---regular: 1.12rem;
-    --mukta--h5---medium: 1.12rem;
-    --mukta--h5---semi-bold: 1.12rem;
-    --mukta--h5---bold: 1.12rem;
-    --mukta--h5---extra-bold: 1.12rem;
-    --mukta--h6---extra-light: 1rem;
-    --mukta--h6---light: 1rem;
-    --mukta--h6---regular: 1rem;
-    --mukta--h6---medium: 1rem;
-    --mukta--h6---semi-bold: 1rem;
-    --mukta--h6---bold: 1rem;
-    --mukta--h6---extra-bold: 1rem;
-    --mukta--captions---extra-light: 0.75rem;
-    --mukta--captions---light: 0.75rem;
-    --mukta--captions---regular: 0.75rem;
-    --mukta--captions---medium: 0.75rem;
-    --mukta--captions---semi-bold: 0.75rem;
-    --mukta--captions---bold: 0.75rem;
-    --mukta--captions---extra-bold: 0.75rem;
-    --mukta--small---extra-light: 0.75rem;
-    --mukta--small---light: 0.75rem;
-    --mukta--small---regular: 0.75rem;
-    --mukta--small---medium: 0.75rem;
-    --mukta--small---semi-bold: 0.75rem;
-    --mukta--small---bold: 0.75rem;
-    --mukta--small---extra-bold: 0.75rem;
-    --mukta--large---extra-light: 3rem;
-    --mukta--large---light: 3rem;
-    --mukta--large---regular: 3rem;
-    --mukta--large---medium: 3rem;
-    --mukta--large---semi-bold: 3rem;
-    --mukta--large---bold: 3rem;
-    --mukta--large---extra-bold: 3rem;
-    --mukta--x-large---extra-light: 4rem;
-    --mukta--x-large---light: 4rem;
-    --mukta--x-large---regular: 4rem;
-    --mukta--x-large---medium: 4rem;
-    --mukta--x-large---semi-bold: 4rem;
-    --mukta--x-large---bold: 4rem;
-    --mukta--x-large---extra-bold: 4rem;
-}
 
 * {
     margin: 0;
@@ -141,7 +11,7 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
-    font-size: var(--mukta--body---regular);
+    font-size: $mukta-body-regular;
     font-family: "Mukta", sans-serif;
 }
 
@@ -157,7 +27,7 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: var(--primary--900);
+    color: $primary-900;
 
     .cta {
         width: 20%;
@@ -169,13 +39,13 @@ main {
         .cta-btn {
             padding: 3% 10%;
             border-radius: 15px;
-            border: 1px solid var(--primary--500);
+            border: 1px solid $primary-500;
             user-select: none;
         }
 
         :nth-child(2) {
-            color: var(--white--500);
-            background-color: var(--primary--500);
+            color: $white-500;
+            background-color: $primary-500;
         }
     }
 
@@ -183,8 +53,8 @@ main {
 
 /* Landing Page */
 #landing-page {
-    color: var(--white--500);
-    background-color: var(--primary--900);
+    color: $white-500;
+    background-color: $primary-900;
 
     header {
         padding: 1%;
@@ -254,7 +124,7 @@ main {
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: linear-gradient(rgba(0, 0, 0, 0.1), var(--primary--900));
+                background: linear-gradient(rgba(0, 0, 0, 0.1), $primary-900);
             }
         }
     }
@@ -279,15 +149,15 @@ main {
         .info {
             width: 70%;
             padding: 4%;
-            color: var(--white--500);
+            color: $white-500;
             border-radius: 10px;
             background-color: #005C90;
 
             h1 {
                 padding-left: 5%;
                 margin-bottom: 3%;
-                border-left: 2px solid var(--white--500);
-                font-size: var(--mukta--large---bold);
+                border-left: 2px solid $white-500;
+                font-size: $mukta-large-bold;
             }
 
             p {
@@ -315,7 +185,7 @@ main {
             flex-direction: column;
 
             h1 {
-                font-size: var(--mukta--h1---regular);
+                font-size: $mukta-h1-regular;
                 font-weight: 500;
             }
 
@@ -339,6 +209,15 @@ main {
                         flex-grow: 1;
                         padding: 5%;
                     }
+                }
+
+                input,
+                textarea {
+                    width: 100%;
+                    padding: 2.5%;
+                    outline: none;
+                    border: none;
+                    border-radius: 5px;
                 }
 
                 .form-utilities {
@@ -369,7 +248,7 @@ main {
                                 height: 20px;
                                 width: 20px;
                                 border-radius: 20px;
-                                background-color: var(--white--500);
+                                background-color: $white-500;
                                 transition: margin-left 0.3s ease, background-color 0.3s ease;
                             }
                         }
@@ -377,34 +256,34 @@ main {
 
                     .active {
                         .switch {
-                            background-color: var(--primary--100);
+                            background-color: $primary-100;
 
                             .switch-thumb {
                                 margin-left: 27.5px;
-                                background-color: var(--primary--400);
+                                background-color: $primary-400;
                             }
                         }
 
                         p {
                             opacity: 1;
-                            color: var(--primary--500);
+                            color: $primary-500;
                         }
                     }
 
                     a {
                         text-decoration: none;
-                        color: var(--primary--500);
+                        color: $primary-500;
                     }
                 }
 
                 button {
-                    font-size: var(--mukta--body---bold);
+                    font-size: $mukta-body-bold;
                     margin-top: 1.5%;
                     padding: 2.5%;
                     border: none;
                     border-radius: 5px;
-                    color: var(--white--500);
-                    background-color: var(--primary--500);
+                    color: $white-500;
+                    background-color: $primary-500;
                 }
             }
 
@@ -435,7 +314,7 @@ main {
                     width: 100%;
                     display: flex;
                     align-items: center;
-                    justify-content: space-between;
+                    justify-content: center;
 
                     .option {
                         padding: 1%;
@@ -443,7 +322,7 @@ main {
                         display: flex;
                         gap: 2%;
                         align-items: center;
-                        justify-content: flex-start;
+                        justify-content: center;
                         border-radius: 5px;
                     }
                 }
@@ -455,7 +334,7 @@ main {
                 a {
                     text-decoration: none;
                     font-weight: bold;
-                    color: var(--primary--500);
+                    color: $primary-500;
                 }
             }
         }
@@ -465,89 +344,6 @@ main {
 #discover {
     margin: 0 auto;
     width: 70%;
-
-    .modal {
-        height: 40vh;
-        width: 50vw;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-
-        .modal-close {
-            top: 5%;
-            right: 2%;
-        }
-
-        .heading {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            .cta {
-                width: 40%;
-                display: flex;
-                gap: 10px;
-                align-items: center;
-
-                button {
-                    flex-grow: 1;
-                    padding: 3%;
-                    outline: none;
-                    border: none;
-                    border-radius: 10px;
-                    background-color: var(--white--500);
-                }
-
-                .active {
-                    color: var(--white--500);
-                    background-color: var(--primary--900);
-                }
-            }
-        }
-
-        .select {
-            padding: 0.5%;
-            border-radius: 10px;
-            border: none;
-
-            .css-13cymwt-control,
-            .css-t3ipsp-control {
-                min-height: 10px;
-                border: none;
-                box-shadow: none;
-            }
-        }
-
-        input {
-            padding: 2%;
-            outline: none;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-        }
-
-        .cta-group {
-            width: 100%;
-            display: flex;
-            gap: 5%;
-            align-items: center;
-
-            button {
-                flex-grow: 1;
-                padding: 1.5%;
-                outline: none;
-                border: none;
-                border-radius: 10px;
-                background-color: var(--white--500);
-                font-size: 1rem;
-
-                &:last-child {
-                    color: var(--white--500);
-                    background-color: var(--primary--900);
-                }
-            }
-        }
-    }
 
     .hero {
         padding-top: 10%;
@@ -559,7 +355,7 @@ main {
             margin-bottom: 2%;
         }
 
-        p {
+        .description {
             width: 80%;
             margin-bottom: 1%;
         }
@@ -576,14 +372,39 @@ main {
                 outline: none;
                 border: none;
                 border-radius: 10px;
-                color: var(--white--500);
-                background-color: var(--primary--900);
                 font-size: 1rem;
             }
+        }
 
-            button:first-child {
-                color: var(--black);
-                background-color: var(--white--500);
+        form {
+            margin: 2% 0;
+            padding: 2%;
+            border-radius: 10px;
+            display: flex;
+            gap: 20px;
+            flex-direction: column;
+
+            .input-field {
+                input {
+                    padding: 1%;
+                    width: 100%;
+                    outline: none;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 1rem;
+                }
+
+                .select {
+                    width: 100%;
+                }
+            }
+
+            button {
+                padding: 1%;
+                border: none;
+                outline: none;
+                border-radius: 10px;
+                font-size: 1rem;
             }
         }
     }
@@ -607,8 +428,8 @@ main {
         }
 
         &:nth-child(even) {
-            color: var(--white--500);
-            background-color: var(--primary--900);
+            color: $white-500;
+            background-color: $primary-900;
         }
     }
 }
@@ -620,15 +441,15 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    color: var(--white--500);
-    background-color: var(--primary--950);
+    color: $white-500;
+    background-color: $primary-900;
     position: relative;
 
     .collapse-btn {
         height: 30px;
         width: 30px;
-        color: var(--black);
-        background-color: var(--white--500);
+        color: $black;
+        background-color: $white-500;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -636,6 +457,7 @@ main {
         position: absolute;
         right: -15px;
         top: 130px;
+        z-index: 100;
 
         svg {
             font-size: 1.5rem;
@@ -681,8 +503,8 @@ main {
         li:hover,
         .active {
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), -2px 2px 5px rgba(0, 0, 0, 0.3);
-            color: var(--black);
-            background-color: var(--white--500);
+            color: $black;
+            background-color: $white-500;
         }
     }
 }
@@ -690,12 +512,17 @@ main {
 #dashboard,
 #organization,
 #teams,
+#create-team,
+#team-details,
 #projects,
-#tasks {
+#create-project,
+#project-details,
+#tasks,
+#create-task {
     height: 100vh;
     display: flex;
     align-items: center;
-    background-color: var(--white-500);
+    background-color: $white-500;
 
     .content {
         width: 85%;
@@ -722,12 +549,6 @@ main {
     }
 }
 
-// #dashboard {
-//     .content {
-
-//     }
-// }
-
 #organization {
     .content {
         .organization-heading {
@@ -736,7 +557,7 @@ main {
             justify-content: space-between;
 
             .title {
-                color: var(--primary--500);
+                color: $primary-500;
             }
 
             .cta {
@@ -751,14 +572,14 @@ main {
                     border: none;
                     padding: 5%;
                     border-radius: 10px;
-                    background-color: var(--white--500);
+                    background-color: $white-500;
                     font-size: 1rem;
                     font-weight: 500;
                 }
 
                 button:hover {
-                    color: var(--white--500);
-                    background-color: var(--primary--900);
+                    color: $white-500;
+                    background-color: $primary-900;
                 }
             }
         }
@@ -785,86 +606,10 @@ main {
                     align-items: center;
                     justify-content: space-between;
 
-                    .modal {
-                        width: 500px;
-                        display: flex;
-                        gap: 20px;
-                        flex-direction: column;
-                        justify-content: center;
-
-                        .cta {
-                            width: 100%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-
-                            h3 {
-                                color: var(--primary--500);
-                            }
-
-                            select {
-                                width: 30%;
-                                outline: none;
-                                border: none;
-                            }
-                        }
-
-                        .member-info {
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-
-                            .member-details {
-                                display: flex;
-                                gap: 10px;
-                                align-items: center;
-                            }
-
-                            .changed-role {
-                                color: var(--white--950);
-                                display: flex;
-                                gap: 10px;
-                                align-items: center;
-
-                                :nth-child(3) {
-                                    color: var(--primary--500);
-                                }
-                            }
-                        }
-
-                        .cta-buttons {
-                            padding: 0 5%;
-                            display: flex;
-                            gap: 10%;
-                            align-items: center;
-                            justify-content: space-between;
-
-                            button {
-                                flex-grow: 1;
-                                outline: none;
-                                border: none;
-                                padding: 2% 5%;
-                                border-radius: 10px;
-                                background-color: var(--white--100);
-                            }
-
-                            button:last-child {
-                                color: var(--white--500);
-                                background-color: var(--primary--900);
-                            }
-                        }
-                    }
-
                     .member-info {
                         display: flex;
                         align-items: center;
                         gap: 10px;
-
-                        img {
-                            height: 30px;
-                            width: 30px;
-                            border-radius: 10px;
-                        }
 
                         a {
                             text-decoration: none;
@@ -882,7 +627,7 @@ main {
                             width: 80%;
                             padding: 2% 5%;
                             border-radius: 5px;
-                            background-color: var(--white--100);
+                            background-color: $white-100;
                             text-align: center;
                         }
 
@@ -944,12 +689,6 @@ main {
                         align-items: center;
                         gap: 10px;
 
-                        img {
-                            height: 30px;
-                            width: 30px;
-                            border-radius: 10px;
-                        }
-
                         a {
                             text-decoration: none;
                             color: inherit;
@@ -966,7 +705,7 @@ main {
                         .role {
                             padding: 1% 5%;
                             border-radius: 10px;
-                            background-color: var(--white--100);
+                            background-color: $white-100;
                         }
 
                         .role {
@@ -977,7 +716,7 @@ main {
                         .cta-button {
                             padding: 1% 5%;
                             border-radius: 10px;
-                            color: var(--success);
+                            color: $success;
                             background-color: rgba($color: green, $alpha: 0.2);
                             display: flex;
                             gap: 5px;
@@ -989,7 +728,7 @@ main {
                         }
 
                         .cta-button:last-child {
-                            color: var(--error);
+                            color: $error;
                             background-color: rgba($color: red, $alpha: 0.2);
 
                             svg {
@@ -1017,97 +756,15 @@ main {
 
 #teams {
     .content {
-        .modal {
-            width: 50vw;
-            display: flex;
-            gap: 10px;
-            flex-direction: column;
-
-            .modal-close {
-                right: 3%;
-                top: 5%;
-                font-size: 1rem;
-            }
-
-            input {
-                padding: 2%;
-                width: 100%;
-                outline: none;
-                border: none;
-                border-radius: 10px;
-                font-size: 1rem;
-            }
-
-            .select {
-                padding: 0.5%;
-                border-radius: 10px;
-                border: none;
-
-                .css-13cymwt-control,
-                .css-t3ipsp-control {
-                    min-height: 10px;
-                    border: none;
-                    box-shadow: none;
-                }
-            }
-
-            .cta {
-                margin-top: 2%;
-                width: 100%;
-                display: flex;
-                gap: 5%;
-                align-items: center;
-
-                button {
-                    flex-grow: 1;
-                    padding: 1.5%;
-                    border: none;
-                    outline: none;
-                    border-radius: 10px;
-                    background-color: var(--white--100);
-                    font-size: 1rem;
-                }
-
-                button:last-child {
-                    color: var(--white--500);
-                    background-color: var(--primary--900);
-                }
-            }
-        }
-
-        .heading {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            .cta {
-                width: 15%;
-                border: none;
-                outline: none;
-                padding: 0.8%;
-                border-radius: 10px;
-                font-size: 1rem;
-                display: flex;
-                gap: 10px;
-                align-items: center;
-                justify-content: center;
-
-                svg {
-                    font-size: 1.2rem;
-                }
-            }
-        }
-
         .teams-list {
             list-style: none;
             padding: 2%;
 
-            .team-list-headings {
-                padding: 0.5%;
+            .teams-list-headings {
+                padding: 0.5% 1%;
                 border-radius: 10px;
-                color: var(--white--500);
-                background-color: var(--primary--900);
+                color: $white-500;
+                background-color: $primary-900;
                 font-size: 1.2rem;
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -1118,66 +775,19 @@ main {
                 }
             }
 
-            .team-list-items {
-                margin-top: 1%;
-                padding: 0 1%;
+            .teams-list-items {
+                padding: 1%;
                 height: 65vh;
 
-                .team-list-info {
-                    padding: 0.5%;
+                .teams-list-info {
+                    height: 10%;
                     border-radius: 10px;
                     position: relative;
                     display: grid;
                     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+                    align-items: center;
 
-                    .modal {
-                        height: 50vh;
-                        width: 40vw;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-start;
-                        justify-content: space-between;
-
-                        .modal-close {
-                            right: 3%;
-                            top: 6%;
-                            font-size: 1rem;
-                        }
-
-                        a {
-                            text-decoration: none;
-                            color: inherit;
-                        }
-
-                        .team-lead {
-                            width: 100%;
-
-                            .team-lead-details {
-                                width: 100%;
-                                display: flex;
-                                gap: 10px;
-                                align-items: center;
-                            }
-                        }
-
-                        .developers,
-                        .testers {
-                            width: 100%;
-
-                            .developers-list,
-                            .testers-list {
-                                list-style: none;
-
-                                li {
-                                    display: flex;
-                                    gap: 10px;
-                                    align-items: center;
-                                }
-                            }
-                        }
-                    }
-
-                    .team-list-info-item {
+                    .teams-list-info-item {
                         padding: 1%;
                         text-align: center;
                     }
@@ -1191,8 +801,64 @@ main {
                     }
                 }
 
-                .team-list-info:nth-child(even) {
-                    background-color: var(--white--100);
+                .teams-list-info:nth-child(odd) {
+                    box-shadow: none !important;
+                }
+
+                .teams-list-info:nth-child(even) {
+                    background-color: $white-100;
+                }
+            }
+        }
+    }
+}
+
+#team-details {
+    .content {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        .information {
+            margin-top: 5%;
+            padding: 2% 5%;
+            width: 100%;
+            height: 95%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+
+            .team-lead {
+                .team-lead-details {
+                    display: flex;
+                    gap: 20px;
+                    align-items: center;
+
+                    a {
+                        text-decoration: none;
+                        color: inherit;
+                    }
+                }
+            }
+
+            .developers,
+            .testers {
+
+                .list {
+                    list-style: none;
+                    max-height: 25vh;
+
+                    li {
+                        height: 20%;
+                        display: flex;
+                        gap: 20px;
+                        align-items: center;
+
+                        a {
+                            text-decoration: none;
+                            color: inherit;
+                        }
+                    }
                 }
             }
         }
@@ -1200,168 +866,31 @@ main {
 }
 
 #projects {
-    height: 100%;
-
-    .modal {
-        width: 50vw;
-        display: flex;
-        gap: 10px;
-        flex-direction: column;
-
-        .modal-close {
-            right: 3%;
-            top: 5%;
-            font-size: 1rem;
-        }
-
-        .heading {
-            width: 95%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            .cta {
-                padding: 0;
-                margin: 0;
-                height: 100%;
-                width: 40%;
-                background-color: inherit;
-
-                button {
-                    padding: 3%;
-                }
-            }
-        }
-
-        input,
-        textarea {
-            padding: 2%;
-            width: 100%;
-            outline: none;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-        }
-
-        .select {
-            padding: 0.5%;
-            border-radius: 10px;
-            border: none;
-
-            .css-13cymwt-control,
-            .css-t3ipsp-control {
-                min-height: 10px;
-                border: none;
-                box-shadow: none;
-            }
-        }
-
-        .cta {
+    .content {
+        .projects-list {
             margin-top: 2%;
-            width: 100%;
+            padding: 2%;
+            height: 80vh;
+            list-style: none;
             display: flex;
-            gap: 5%;
+            row-gap: 5%;
+            flex-wrap: wrap;
             align-items: center;
+            justify-content: space-evenly;
 
-            button {
-                flex-grow: 1;
-                padding: 1.5%;
-                border: none;
-                outline: none;
-                border-radius: 10px;
-                background-color: var(--white--100);
-                font-size: 1rem;
-            }
-
-            button:last-child {
-                color: var(--white--500);
-                background-color: var(--primary--900);
-            }
-        }
-    }
-
-    .heading {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        .cta {
-            width: 15%;
-            border: none;
-            outline: none;
-            padding: 0.8%;
-            border-radius: 10px;
-            font-size: 1rem;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
-
-            svg {
-                font-size: 1.2rem;
-            }
-        }
-    }
-
-    .projects-list {
-        margin-top: 2%;
-        padding: 2%;
-        height: 70vh;
-        list-style: none;
-        display: flex;
-        row-gap: 5%;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-evenly;
-
-        .project-info {
-            padding: 1%;
-            width: 30%;
-            height: 50%;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            .modal {
-                height: 60vh;
-                width: 50vw;
-                color: var(--black);
-
-                .sub-modal {
-                    justify-content: space-evenly;
-                    height: 25vh;
-                    width: 40vw;
-                    z-index: 9999;
-
-                    .modal-close {
-                        top: 8%;
-                    }
-
-                    .select {
-                        padding: 0.5%;
-                        border-radius: 10px;
-                        border: none;
-
-                        .css-13cymwt-control,
-                        .css-t3ipsp-control {
-                            min-height: 10px;
-                            border: none;
-                            box-shadow: none;
-                        }
-                    }
-                }
-
-                .modal-close {
-                    top: 5%;
-                    right: 2.5%;
-                }
+            .project-info {
+                padding: 1%;
+                width: 30%;
+                height: 48%;
+                border-radius: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
 
                 .project-manager {
-                    gap: 5px;
-                    flex-direction: column;
-                    align-items: flex-start;
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
 
                     .project-manager-details {
                         gap: 10px;
@@ -1383,8 +912,8 @@ main {
                         grid-template-columns: 1fr 1fr 1fr;
                         text-align: center;
                         border-radius: 5px;
-                        color: var(--white--500);
-                        background-color: var(--primary--900);
+                        color: $white-500;
+                        background-color: $primary-900;
                     }
 
                     ul {
@@ -1401,7 +930,7 @@ main {
                         }
 
                         li:nth-child(even) {
-                            background-color: var(--white--100);
+                            background-color: $white-100;
                         }
                     }
                 }
@@ -1427,12 +956,6 @@ main {
                 gap: 10px;
                 align-items: center;
 
-                img {
-                    height: 30px;
-                    width: 30px;
-                    border-radius: 10px;
-                }
-
                 .project-manager-details {
                     display: flex;
                     flex-direction: column;
@@ -1447,8 +970,120 @@ main {
         }
 
         .project-info:nth-child(even) {
-            color: var(--white--500);
-            background-color: var(--primary--900);
+            color: $white-500;
+            background-color: $primary-900;
+        }
+    }
+}
+
+#project-details {
+    .content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .cta {
+            align-self: flex-end;
+            width: 30%;
+            display: flex;
+            gap: 5%;
+            align-items: center;
+
+            button {
+                flex-grow: 1;
+                padding: 3% 5%;
+                outline: none;
+                border: none;
+                border-radius: 10px;
+                background-color: $white-500;
+                font-size: 1rem;
+                font-weight: 500;
+            }
+        }
+
+        .information {
+            margin-top: 5%;
+            padding: 2% 5%;
+            width: 100%;
+            height: 95%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+
+            .date,
+            .budget {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .project-manager {
+                .project-manager-details {
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+
+                    a {
+                        text-decoration: none;
+                        color: inherit;
+                    }
+                }
+            }
+
+            .teams {
+                .teams-list {
+                    list-style: none;
+
+                    .teams-list-headings {
+                        padding: 0.5%;
+                        border-radius: 10px;
+                        color: $white-500;
+                        background-color: $primary-900;
+                        font-size: 1.2rem;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+                        p {
+                            padding: 1%;
+                            text-align: center;
+                        }
+                    }
+
+                    .teams-list-items {
+                        height: 25vh;
+
+                        .teams-list-info {
+                            height: 20%;
+                            border-radius: 10px;
+                            position: relative;
+                            display: grid;
+                            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+                            align-items: center;
+
+                            .teams-list-info-item {
+                                text-align: center;
+                            }
+
+                            svg {
+                                position: absolute;
+                                right: 1%;
+                                top: 50%;
+                                transform: translateY(-50%);
+                                font-size: 1.5rem;
+                            }
+                        }
+
+                        .teams-list-info:nth-child(odd) {
+                            box-shadow: none !important;
+                        }
+
+                        .teams-list-info:nth-child(even) {
+                            background-color: $white-100;
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -1459,27 +1094,42 @@ main {
         flex-direction: column;
 
         .task-options {
+            margin: 1% 1% 0;
+            width: 98%;
             display: flex;
             align-items: center;
-            justify-content: space-evenly;
+            justify-content: space-between;
 
-            button {
-                width: 40%;
-                padding: 1%;
-                border: none;
-                outline: none;
-                border-radius: 10px;
+            .select {
+                flex-grow: 1;
+                padding: 0.5%;
+            }
+
+            .view-options {
+                width: 70%;
                 display: flex;
-                gap: 5%;
+                gap: 2%;
                 align-items: center;
-                justify-content: center;
+                justify-content: flex-end;
 
-                svg {
-                    font-size: 1.5rem;
-                }
+                button {
+                    width: 40%;
+                    padding: 1% 0;
+                    border: none;
+                    outline: none;
+                    border-radius: 10px;
+                    display: flex;
+                    gap: 5%;
+                    align-items: center;
+                    justify-content: center;
 
-                p {
-                    font-size: 1.2rem;
+                    svg {
+                        font-size: 1.5rem;
+                    }
+
+                    p {
+                        font-size: 1.2rem;
+                    }
                 }
             }
         }
@@ -1487,9 +1137,120 @@ main {
         .task-container {
             height: 100%;
             margin: 3% 2% 1%;
-            
+
             .gantt-chart-container {
                 height: 100% !important;
+            }
+
+            .kanban-board-container {
+                height: 100%;
+                display: flex;
+                gap: 2%;
+                align-items: center;
+                justify-content: center;
+
+                .kanban-column {
+                    height: 100%;
+                    flex-grow: 1;
+                    border-radius: 10px;
+                    padding: 1%;
+                }
+            }
+        }
+    }
+}
+
+#teams,
+#projects,
+#tasks {
+    .content {
+        .heading {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .cta {
+                width: 15%;
+                border: none;
+                outline: none;
+                padding: 0.8%;
+                border-radius: 10px;
+                font-size: 1rem;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                justify-content: center;
+
+                svg {
+                    font-size: 1.2rem;
+                }
+            }
+        }
+    }
+}
+
+#create-team,
+#create-project,
+#create-task {
+    .content {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        form {
+            height: 100%;
+            width: 80%;
+            margin-top: 2%;
+            padding: 0 1%;
+            display: flex;
+            gap: 15px;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .input-field {
+                input,
+                textarea {
+                    padding: 1%;
+                    width: 100%;
+                    outline: none;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 1rem;
+                }
+
+                .select {
+                    width: 100%;
+                }
+            }
+
+            .cta {
+                margin-top: 2%;
+                width: 100%;
+                display: flex;
+                gap: 5%;
+                align-items: center;
+
+                button {
+                    flex-grow: 1;
+                    padding: 1%;
+                    border: none;
+                    outline: none;
+                    border-radius: 10px;
+                    background-color: $white-100;
+                    font-size: 1.2rem;
+                }
+
+                button:last-child {
+                    color: $white-500;
+                    background-color: $primary-900;
+                }
             }
         }
     }

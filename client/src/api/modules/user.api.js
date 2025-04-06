@@ -2,12 +2,13 @@ import privateClient from '../clients/private.client'
 import publicClient from '../clients/public.client'
 
 const userEndpoints = {
-  signin: 'users/login',
-  signup: 'users/register',
+  signin: 'users/signin',
+  signup: 'users/signup',
   googleSignin: 'users/google',
   githubSignin: 'users/github',
-  getInfo: 'users/',
-  updateProjectRole: 'update-project-role'
+  getInfo: 'users/me',
+  getInfoById: (userId) => `users/${userId}`,
+  updateProjectRole: 'users/project-role'
 }
 
 const userApi = {
@@ -64,9 +65,17 @@ const userApi = {
       return { err }
     }
   },
+  getInfoById: async ({ userId }) => {
+    try {
+      const res = await privateClient.get(userEndpoints.getInfoById(userId))
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
   updateProjectRole: async ({ userId, role }) => {
     try {
-      const res = await privateClient.put(
+      const res = await privateClient.patch(
         userEndpoints.updateProjectRole,
         { userId, role }
       )

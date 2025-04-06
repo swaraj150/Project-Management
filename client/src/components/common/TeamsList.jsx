@@ -3,30 +3,24 @@ import { useSelector } from 'react-redux'
 
 import Team from './Team'
 
-const headings = [
-  'Team Name',
-  'Team Lead',
-  'Members',
-  'Developers',
-  'Testers'
-]
+import { headings } from '../../utils/team.utils'
 
 const TeamsList = () => {
-  const { teams } = useSelector((state) => state.teams)
+  const { teams, teamsMap } = useSelector((state) => state.teams)
 
   return (
     <ul className="teams-list">
-      <div className="team-list-headings">
+      <div className="teams-list-headings paper-1">
         {
           headings.map((heading, index) => (
             <p key={index} >{heading}</p>
           ))
         }
       </div>
-      <ul className="team-list-items">
+      <ul className="teams-list-items no-scrollbar">
         {
           teams.map((team, index) => (
-            <Team key={index} team={team} />
+            <Team key={index} team={teamsMap[team]} />
           ))
         }
       </ul>

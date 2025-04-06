@@ -1,46 +1,37 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { IoMdAdd } from 'react-icons/io'
 
 import Menu from '../components/common/Menu'
-import CreateProject from '../components/common/CreateProject'
 import ProjectsList from '../components/common/ProjectsList'
 
+import { setActive } from '../redux/features/menuSlice'
+
+import { menuIndices } from '../utils/menu.utils'
 import { roles } from '../utils/organization.utils'
 
 const Projects = () => {
-  const modalRef = useRef(null)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const { user } = useSelector((state) => state.user)
   const { projects } = useSelector((state) => state.projects)
   const { collapsed } = useSelector((state) => state.menu)
 
-  const [modalOpen, setModalOpen] = useState(false)
-
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setModalOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  })
+    dispatch(setActive(menuIndices.projects))
+  }, [])
 
   return (
     <section id="projects">
       <Menu />
       <section className={`content ${collapsed ? "expanded" : null}`} >
-        {modalOpen ? <CreateProject setModalOpen={setModalOpen} modalRef={modalRef} /> : null}
         <div className="heading">
           <h2 className="title h1">Projects</h2>
           {
             user.projectRole === roles.productOwner ? (
-              <button className="cta pointer dark-btn" onClick={() => setModalOpen(true)}>
+              <button className="cta pointer dark-btn paper-1" onClick={() => navigate('create')}>
                 <IoMdAdd />
                 <p>Create Project</p>
               </button>

@@ -1,58 +1,64 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import { toast } from 'react-toastify'
-import { RxCross1 } from 'react-icons/rx'
 
 import organizationApi from '../../api/modules/organization.api'
 
 import { setOrganization } from '../../redux/features/organizationSlice'
 
-const CreateOrganization = ({ setCreateModalOpen, modalRef }) => {
+const CreateOrganization = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  const [name, setName] = useState(null)
-  const [disabled, setDisabled] = useState(true)
-
-  const handleCreate = async () => {
-    setDisabled(true)
-
-    const { res, err } = await organizationApi.create({ name })
-
-    if (res) {
-      dispatch(setOrganization(res))
-      setCreateModalOpen(false)
-      navigate('/dashboard')
-      toast.success('Organization joined successfully!')
+  const createOrganizationForm = useFormik({
+    initialValues: {
+      name: ''
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .required('Organization name is required')
+        .min(2, 'Organization name must be at least 2 characters')
+        .max(50, 'Organization name must be at most 50 characters')
+    }),
+    onSubmit: async ({ name }) => {
+      const { res, err } = await organizationApi.create({ name })
+      if (res && res.organization) {
+        dispatch(setOrganization(res.organization))
+        navigate('/dashboard')
+        toast.success('Organization joined successfully!')
+      }
+      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
-
-    if (err) {
-      setDisabled(false)
-      toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
-    }
-  }
-
-  useEffect(() => {
-    setDisabled(!name)
-  }, [name])
+  })
 
   return (
-    <div ref={modalRef} className="modal paper">
-      <RxCross1 className="modal-close pointer" onClick={() => setCreateModalOpen(false)} />
-      <h2>Create Organization</h2>
-      <input
-        className='paper-1'
-        type='text'
-        name='name'
-        required
-        placeholder='Enter organization name'
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <div className="cta-group">
-        <button className="paper-1 pointer" onClick={() => setCreateModalOpen(false)}>Cancel</button>
-        <button className="paper-1 pointer" onClick={handleCreate} disabled={disabled} >Create</button>
+    <form className='paper' onSubmit={createOrganizationForm.handleSubmit}>
+      <div className="input-field">
+        <input
+          className='paper-1'
+          type='text'
+          name='name'
+          required
+          placeholder='Enter organization name'
+          value={createOrganizationForm.values.name}
+          onChange={createOrganizationForm.handleChange}
+          onBlur={createOrganizationForm.handleBlur}
+        />
+        <p className="helper-text opacity-5">
+          {createOrganizationForm.touched.name && createOrganizationForm.errors.name ? createOrganizationForm.errors.name : ''}
+        </p>
       </div>
-    </div >
+      <button
+        className='paper-1 pointer dark-btn'
+        type='submit'
+        disabled={createOrganizationForm.isSubmitting || !createOrganizationForm.isValid}
+      >
+        Create Organization
+      </button>
+    </form>
   )
 }
 

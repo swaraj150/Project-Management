@@ -52,23 +52,16 @@ const SignupForm = () => {
         .oneOf([Yup.ref('password'), null], 'Passwords must match')
         .required('Confirm password is required')
     }),
-    onSubmit: async (values) => {
-      const { res, err } = await userApi.signup({
-        firstname: values.firstname,
-        lastname: values.lastname,
-        email: values.email,
-        password: values.password
-      })
-
+    onSubmit: async ({ firstname, lastname, email, password }) => {
+      const { res, err } = await userApi.signup({ firstname, lastname, email, password })
       if (res) {
-        if (res.token) localStorage.setItem('projectMaestroToken', res.token)
+        if (res.token) localStorage.setItem('token', res.token)
         dispatch(setUser(res))
         toast.success('Registration successful! Welcome aboard.')
         navigate('/dashboard')
       }
-
       if (err) {
-        localStorage.removeItem('projectMaestroToken')
+        localStorage.removeItem('token')
         toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
       }
     }
@@ -92,7 +85,7 @@ const SignupForm = () => {
                 onChange={signupForm.handleChange}
                 onBlur={signupForm.handleBlur}
               />
-              <p className="helper-text">
+              <p className="helper-text opacity-5">
                 {signupForm.touched.firstname && signupForm.errors.firstname ? signupForm.errors.firstname : ''}
               </p>
             </div>
@@ -107,7 +100,7 @@ const SignupForm = () => {
                 onChange={signupForm.handleChange}
                 onBlur={signupForm.handleBlur}
               />
-              <p className="helper-text">
+              <p className="helper-text opacity-5">
                 {signupForm.touched.lastname && signupForm.errors.lastname ? signupForm.errors.lastname : ''}
               </p>
             </div>
@@ -123,7 +116,7 @@ const SignupForm = () => {
               onChange={signupForm.handleChange}
               onBlur={signupForm.handleBlur}
             />
-            <p className="helper-text">
+            <p className="helper-text opacity-5">
               {signupForm.touched.email && signupForm.errors.email ? signupForm.errors.email : ''}
             </p>
           </div>
@@ -147,7 +140,7 @@ const SignupForm = () => {
                   : <FaEyeSlash className='pointer' onClick={() => setHidePassword(true)} />
               }
             </div>
-            <p className="helper-text">
+            <p className="helper-text opacity-5">
               {signupForm.touched.password && signupForm.errors.password ? signupForm.errors.password : ''}
             </p>
           </div>
@@ -171,7 +164,7 @@ const SignupForm = () => {
                   : <FaEyeSlash className='pointer' onClick={() => setHideConfirmPassword(true)} />
               }
             </div>
-            <p className="helper-text">
+            <p className="helper-text opacity-5">
               {signupForm.touched.confirmPassword && signupForm.errors.confirmPassword ? signupForm.errors.confirmPassword : ''}
             </p>
           </div>

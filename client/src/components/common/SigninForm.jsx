@@ -45,29 +45,26 @@ const SigninForm = () => {
         )
         .required('Password is required')
     }),
-    onSubmit: async (values) => {
+    onSubmit: async ({ usernameOrEmail, password}) => {
       if (rememberMe) {
         localStorage.setItem('rememberMe', true)
-        localStorage.setItem('projectMaestroUsernameOrEmail', values.usernameOrEmail)
+        localStorage.setItem('username', usernameOrEmail)
       } else {
         localStorage.removeItem('rememberMe')
-        localStorage.removeItem('projectMaestroUsernameOrEmail')
+        localStorage.removeItem('username')
       }
 
-      const { res, err } = await userApi.signin({ 
-        username: values.usernameOrEmail, 
-        password: values.password 
-      })
+      const { res, err } = await userApi.signin({ username: usernameOrEmail, password})
 
       if (res) {
-        if (res.token) localStorage.setItem('projectMaestroToken', res.token)
+        if (res.token) localStorage.setItem('token', res.token)
         dispatch(setUser(res))
         toast.success('Login successful. Welcome back!')
         navigate('/dashboard')
       }
 
       if (err) {
-        localStorage.removeItem('projectMaestroToken')
+        localStorage.removeItem('token')
         toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
       }
     }
@@ -75,7 +72,7 @@ const SigninForm = () => {
 
   useEffect(() => {
     if (localStorage.getItem('rememberMe') != null) setRememberMe(true)
-    const savedUsername = localStorage.getItem('projectMaestroUsernameOrEmail')
+    const savedUsername = localStorage.getItem('username')
     if (savedUsername) signinForm.setFieldValue('usernameOrEmail', savedUsername)
   }, [])
 

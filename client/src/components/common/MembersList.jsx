@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 
 import Member from './Member'
 
-const MembersList = ({ members }) => {
-  const { user } = useSelector((state) => state.user)
+const MembersList = () => {
+  const { members, membersMap } = useSelector((state) => state.organization)
 
   return (
     <section className="members">
@@ -16,7 +16,7 @@ const MembersList = ({ members }) => {
       <ul className="members-list no-scrollbar">
         {
           members.map((member, index) => (
-            <Member key={index} member={member} />
+            <Member key={index} member={membersMap[member]} />
           ))
         }
       </ul>

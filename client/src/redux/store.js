@@ -18,7 +18,7 @@ const store = configureStore({
     projects: projectsSlice,
     teams: teamsSlice,
     kanban: kanbanSlice,
-    task: tasksSlice,
+    tasks: tasksSlice,
     webSocket: webSocketSlice,
     metrics: metricsSlice,
   },
