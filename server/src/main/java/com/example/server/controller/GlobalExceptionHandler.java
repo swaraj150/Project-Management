@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<?> handleInvalidTokenException(InvalidTokenException e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("error",e.getMessage());
+        h.put("message",e.getMessage());
         return ResponseEntity.status(400).body(h);
 
 
@@ -30,60 +30,60 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<?> handleInvalidPasswordException(InvalidPasswordException e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("error",e.getMessage());
+        h.put("message",e.getMessage());
         return ResponseEntity.status(400).body(h);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("error",e.getMessage());
+        h.put("message",e.getMessage());
         return ResponseEntity.status(400).body(h);
     }
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("error",e.getMessage());
+        h.put("message",e.getMessage());
         return ResponseEntity.status(401).body(h);
     }
 
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<?> handleDisabledException(DisabledException e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("error",e.getMessage());
+        h.put("message",e.getMessage());
         return ResponseEntity.status(403).body(h);
     }
 
     @ExceptionHandler(SecurityException.class)
     public ResponseEntity<?> handleSecurityException(SecurityException e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("error",e.getMessage());
+        h.put("message",e.getMessage());
         return ResponseEntity.status(401).body(h);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("error",e.getMessage());
+        h.put("message",e.getMessage());
         return ResponseEntity.status(500).body(h);
     }
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("error",e.getMessage());
+        h.put("message",e.getMessage());
        return ResponseEntity.status(404).body(h);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("error",e.getMessage());
+        h.put("message",e.getMessage());
         return ResponseEntity.status(404).body(h);
     }
     @ExceptionHandler(UnauthorizedAccessException.class)
     public ResponseEntity<?> handleUnauthorizedAccessException(UnauthorizedAccessException e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("error",e.getMessage());
+        h.put("message",e.getMessage());
         return ResponseEntity.status(403).body(h);
     }
 
