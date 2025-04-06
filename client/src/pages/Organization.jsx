@@ -1,18 +1,27 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Menu from '../components/common/Menu'
 import MembersList from '../components/common/MembersList'
 import RequestList from '../components/common/RequestList'
 
+import { setActive } from '../redux/features/menuSlice'
+
+import { menuIndices } from '../utils/menu.utils'
 import { roles } from '../utils/organization.utils'
 
 const Organization = () => {
+  const dispatch = useDispatch()
+
   const { user } = useSelector((state) => state.user)
   const { organization } = useSelector((state) => state.organization)
   const { collapsed } = useSelector((state) => state.menu)
 
   const [activeSection, setActiveSection] = useState(0)
+
+  useEffect(() => {
+    dispatch(setActive(menuIndices.organization))
+  }, [])
 
   return (
     <section id='organization'>
@@ -41,7 +50,7 @@ const Organization = () => {
         </div>
         {
           activeSection === 0
-            ? <MembersList members={organization.members} />
+            ? <MembersList />
             : <RequestList />
         }
       </section>
