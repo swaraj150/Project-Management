@@ -179,7 +179,13 @@ const CreateTeam = () => {
           </div>
           <div className="cta">
             <button className="pointer paper-1" onClick={handleGoBack}>Cancel</button>
-            <button className="pointer paper-1" type='submit'>Create</button>
+            <button
+              className="pointer paper-1"
+              type='submit'
+              disabled={createTeamForm.isSubmitting || !createTeamForm.isValid}
+            >
+              Create
+            </button>
           </div>
         </form>
       </section>

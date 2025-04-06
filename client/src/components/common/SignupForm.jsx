@@ -169,9 +169,9 @@ const SignupForm = () => {
             </p>
           </div>
           <button
-            type='submit'
-            name='signup'
             className='paper pointer'
+            type='submit'
+            disabled={signupForm.isSubmitting || !signupForm.isValid}
           >
             Sign Up
           </button>

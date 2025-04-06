@@ -173,7 +173,13 @@ const CreateProject = () => {
           </div>
           <div className="cta">
             <button className="pointer paper-1" onClick={handleGoBack}>Cancel</button>
-            <button className="pointer paper-1" type='submit'>Create</button>
+            <button
+              className="pointer paper-1"
+              type='submit'
+              disabled={createProjectForm.isSubmitting || !createProjectForm.isValid}
+            >
+              Create
+            </button>
           </div>
         </form>
       </section>

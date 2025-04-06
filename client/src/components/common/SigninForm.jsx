@@ -156,9 +156,9 @@ const SigninForm = () => {
             <a href='/forgot-password'>Forgot password?</a>
           </div>
           <button
-            type='submit'
-            name='signin'
             className='paper pointer'
+            type='submit'
+            disabled={signinForm.isSubmitting || !signinForm.isValid}
           >
             Sign In
           </button>
