@@ -33,7 +33,7 @@ const Request = ({ request }) => {
   return (
     <li>
       <div className="request-info">
-        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
+        <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
         <p>{request.username} &nbsp;&nbsp;
           {/* <a href={`mailto:${request.emails[0]}`} className="opacity-5" >
             {request.emails[0]}
