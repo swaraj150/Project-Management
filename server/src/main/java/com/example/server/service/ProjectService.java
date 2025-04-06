@@ -60,7 +60,7 @@ public class ProjectService {
         project.setTitle(request.getTitle());
         project.setDescription(request.getDescription());
         project.setBudget(request.getBudget());
-        project.setProjectManagerId(user.getId());
+        project.setProjectManagerId(projectManager.getId());
         project.setStartDate(LocalDate.now());
         project.setEstimatedEndDate(request.getEstimatedEndDate());
         project.setOrganizationId(user.getOrganizationId());
