@@ -20,7 +20,7 @@ privateClient.interceptors.request.use(async (config) => {
     ...config,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('projectMaestroToken')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
   }
 })
@@ -29,7 +29,9 @@ privateClient.interceptors.response.use(async (response) => {
   if (response?.data) return response.data
   return response
 }, (error) => {
-  throw error.response.data
+  const message = error?.response?.data?.message
+  if (message) throw message || 'Something went wrong. Please try again.'
+  throw error
 })
 
 export default privateClient
