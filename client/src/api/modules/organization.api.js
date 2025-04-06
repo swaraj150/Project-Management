@@ -1,13 +1,15 @@
 import privateClient from '../clients/private.client'
 
 const organizationEndpoints = {
-  create: 'organizations/initiate',
-  getInfo: 'organizations/',
+  create: 'organizations',
+  getInfo: 'organizations/info',
+  getMembers: 'organizations/members',
   join: 'organizations/join',
   search: 'organizations/search',
   fetchRequests: 'organizations/requests',
-  accept: (requestId) => `organizations/requests/accept/${requestId}`,
-  reject: (requestId) => `organizations/requests/reject/${requestId}`
+  accept: 'organizations/requests/accept',
+  reject: 'organizations/requests/reject',
+  remove: 'organizations/members'
 }
 
 const organizationApi = {
@@ -22,6 +24,14 @@ const organizationApi = {
   getInfo: async () => {
     try {
       const res = await privateClient.get(organizationEndpoints.getInfo)
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  getMembers: async () => {
+    try {
+      const res = await privateClient.get(organizationEndpoints.getMembers)
       return { res }
     } catch (err) {
       return { err }
@@ -42,7 +52,7 @@ const organizationApi = {
     try {
       const res = await privateClient.get(
         organizationEndpoints.search,
-        { params: { key: query } }
+        { params: { query } }
       )
       return { res }
     } catch (err) {
@@ -61,7 +71,10 @@ const organizationApi = {
   },
   accept: async ({ requestId }) => {
     try {
-      const res = await privateClient.put(organizationEndpoints.accept(requestId))
+      const res = await privateClient.put(
+        organizationEndpoints.accept,
+        { requestId }
+      )
       return { res }
     } catch (err) {
       return { err }
@@ -69,7 +82,21 @@ const organizationApi = {
   },
   reject: async ({ requestId }) => {
     try {
-      const res = await privateClient.put(organizationEndpoints.reject(requestId))
+      const res = await privateClient.put(
+        organizationEndpoints.reject,
+        { requestId }
+      )
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  remove: async ({ memberId }) => {
+    try {
+      const res = await privateClient.delete(
+        organizationEndpoints.remove,
+        { data: { memberId } }
+      )
       return { res }
     } catch (err) {
       return { err }

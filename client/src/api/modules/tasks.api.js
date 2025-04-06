@@ -11,11 +11,11 @@ const taskEndpoints = {
 }
 
 const tasksApi = {
-  create: async ({ title, description, priority, type, level, estimatedHours, parentTaskId, assignedTo }) => {
+  create: async ({ title, description, startDate, estimatedDays, assignedTo, priority, type, level, projectId, parentTaskId = null }) => {
     try {
       const res = await privateClient.post(
         taskEndpoints.create,
-        { title, description, priority, type, level, estimatedHours, parentTaskId, assignedTo }
+        { title, description, startDate, estimatedDays, assignedTo, priority, type, level, projectId, parentTaskId }
       )
       return { res }
     } catch (error) {
