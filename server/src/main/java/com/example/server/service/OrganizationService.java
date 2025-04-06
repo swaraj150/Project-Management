@@ -17,6 +17,7 @@ import com.example.server.repositories.UserRepository;
 import com.example.server.requests.OrganizationInitiateRequest;
 import com.example.server.response.OrganizationResponse;
 import com.example.server.response.OrganizationSearchResponse;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -150,8 +151,11 @@ public class OrganizationService {
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         Organization org = organizationRepository.findByCode(code)
                 .orElseThrow(() -> new EntityNotFoundException("Organization not found"));
-
+        if(joinRequestRepository.existsByUserIdAndOrganizationId(user.getId(),org.getId())){
+            throw new EntityExistsException("Request already exists");
+        }
         JoinRequest request=JoinRequest.builder().userId(user.getId()).organizationId(org.getId()).projectRole(projectRole).requestDate(LocalDateTime.now()).status(RequestStatus.PENDING).build();
+
         joinRequestRepository.save(request);
     }
 
@@ -166,6 +170,7 @@ public class OrganizationService {
         if(Objects.equals(status, "accept")){
             joinRequest.setStatus(RequestStatus.APPROVED);
             User user=userRepository.findById(joinRequest.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
+
             Organization organization=loadOrganization(joinRequest.getOrganizationId());
             user.setProjectRole(joinRequestService.toProjectRole(joinRequest.getProjectRole()));
 //            if(user.getProjectRole()==ProjectRole.PROJECT_MANAGER){

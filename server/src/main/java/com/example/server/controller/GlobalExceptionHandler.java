@@ -5,6 +5,7 @@ import com.example.server.exception.InvalidTokenException;
 import com.example.server.exception.OrganizationNotFoundException;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.response.ApiResponse;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +73,12 @@ public class GlobalExceptionHandler {
         HashMap<String,Object> h=new HashMap<>();
         h.put("message",e.getMessage());
        return ResponseEntity.status(404).body(h);
+    }
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<?> handleEntityExistsException(EntityExistsException e) {
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("message",e.getMessage());
+       return ResponseEntity.status(400).body(h);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)

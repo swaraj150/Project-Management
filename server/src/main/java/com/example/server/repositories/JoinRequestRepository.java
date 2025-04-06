@@ -15,5 +15,8 @@ public interface JoinRequestRepository extends JpaRepository<JoinRequest, UUID> 
     @Query("SELECT j.id FROM JoinRequest j WHERE j.organizationId = :organizationId")
     List<UUID> findIdsByOrganizationId(@Param("organizationId") UUID organizationId);
 
+
+    boolean existsByUserIdAndOrganizationId(UUID userId,UUID organizationId);
+
 }
 
