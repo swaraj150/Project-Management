@@ -1,11 +1,15 @@
 import React, { useEffect, useRef } from 'react'
-import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
+import { useNavigate } from 'react-router-dom'
 import { gantt } from 'dhtmlx-gantt'
 
-import { taskLevelLabels, taskPriorityLabels, taskTypeLabels } from '../../utils/task.utils'
+import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
 
-const GanttChart = ({ tasks, addTask, updateTask }) => {
+import { taskTypeLabels, taskPriorityLabels, taskLevelLabels } from '../../utils/task.utils'
+
+const GanttChart = ({ tasks, projectId }) => {
   const ganttChartContainer = useRef(null)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Define custom lightbox (popup) sections
@@ -36,17 +40,22 @@ const GanttChart = ({ tasks, addTask, updateTask }) => {
 
     gantt.parse(tasks)
 
-    // ✅ Handle Task Add Event
-    gantt.attachEvent('onAfterTaskAdd', (id, task) => {
-      console.log('Task Added:', task)
-      addTask(task)
+    gantt.attachEvent('onBeforeLightbox', (id) => {
+      navigate('/tasks/create', { state: { parentTaskId: id, projectId } })
+      return false
     })
 
-    // ✅ Handle Task Update Event
-    gantt.attachEvent('onAfterTaskUpdate', (id, task) => {
-      console.log('Task Updated:', task)
-      updateTask({ taskId: id, updatedTask: task })
-    })
+    // // ✅ Handle Task Add Event
+    // gantt.attachEvent('onAfterTaskAdd', (id, task) => {
+    //   console.log('Task Added:', task)
+    //   addTask(task)
+    // })
+
+    // // ✅ Handle Task Update Event
+    // gantt.attachEvent('onAfterTaskUpdate', (id, task) => {
+    //   console.log('Task Updated:', task)
+    //   updateTask({ taskId: id, updatedTask: task })
+    // })
 
     // Cleanup on unmount
     return () => {
