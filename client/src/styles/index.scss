@@ -549,6 +549,53 @@ main {
     }
 }
 
+#dashboard {
+    .content {
+        display: flex;
+        flex-direction: column;
+
+        .select-options {
+            margin: 1% 2%;
+            display: flex;
+            gap: 2%;
+            align-items: center;
+
+            .select {
+                flex-grow: 1;
+            }
+        }
+
+        .charts {
+            flex-grow: 1;
+            padding: 1%;
+            width: 100%;
+            row-gap: 10%;
+            display: flex;
+            flex-wrap: wrap;
+
+            .priority-distribution {
+                height: 100%;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .status-distribution,
+            .project-workload,
+            .team-expertise {
+                height: 100%;
+                width: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+}
+
 #organization {
     .content {
         .organization-heading {
