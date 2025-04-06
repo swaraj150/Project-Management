@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import Project from './Project'
 
 const ProjectsList = () => {
-  const { projects } = useSelector((state) => state.projects)
+  const { projects, projectsMap } = useSelector((state) => state.projects)
+
+  useEffect(() => {
+    console.log(projects, projectsMap)
+  }, [projects, projectsMap])
 
   return (
-    <ul className="projects-list">
+    <ul className="projects-list no-scrollbar">
       {
-        projects.map((project, index) => (
-          <Project key={index} project={project} />
+        projects.length > 0 && projects.map((project, index) => (
+          <Project key={index} project={projectsMap[project]} />
         ))
       }
     </ul>
