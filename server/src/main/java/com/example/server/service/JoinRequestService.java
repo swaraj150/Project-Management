@@ -23,10 +23,10 @@ public class JoinRequestService {
     public ProjectRole toProjectRole(@NonNull String role){
         role=role.toLowerCase();
         switch (role){
-            case "product owner" -> {
+            case "product_owner" -> {
                 return ProjectRole.PRODUCT_OWNER;
             }
-            case "project manager" -> {
+            case "project_manager" -> {
                 return ProjectRole.PROJECT_MANAGER;
             }
             case "developer"-> {
@@ -35,7 +35,7 @@ public class JoinRequestService {
             case "qa"-> {
                 return ProjectRole.QA;
             }
-            case "team lead"-> {
+            case "team_lead"-> {
                 return ProjectRole.TEAM_LEAD;
             }
             case "stakeholder"-> {

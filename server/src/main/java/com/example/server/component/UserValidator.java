@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class UserValidator {
     private final UserRepository userRepository;
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-    private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,20}$";
+    private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=~]).{8,20}$";
 
 
     public void validateRegisterRequest(RegisterRequest registerRequest) {
