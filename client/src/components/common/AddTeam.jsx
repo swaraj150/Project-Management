@@ -58,6 +58,7 @@ const AddTeam = ({ project, setAddTeamModalOpen, modalRef }) => {
         className="select paper-1"
         isMulti
         isSearchable
+        isClearable
         value={selectedTeams}
         onChange={setSelectedTeams}
         options={options}
