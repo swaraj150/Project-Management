@@ -1,9 +1,18 @@
 import React from 'react'
+import { useDrop } from 'react-dnd'
 
-const KanbanColumn = ({ title }) => {
+const KanbanColumn = ({ status, updateStatus }) => {
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'TASK',
+    drop: (item) => updateStatus({ taskId: item.id, newStatus: status.key }),
+    collect: (monitor) => ({
+      isOver: monitor.isOver
+    })
+  }))
+
   return (
-    <div className="kanban-column">
-      <h2>{title}</h2>
+    <div ref={drop} className={`kanban-column paper-1 ${isOver ? 'highlight' : ''}`}>
+      <h2>{status.label}</h2>
     </div>
   )
 }
