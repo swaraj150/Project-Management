@@ -1,3 +1,6 @@
+/* Color styles */
+/* Text-size styles */
+/* base size: mukta--body--extra-light (16px) */
 .paper {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), -2px 2px 5px rgba(0, 0, 0, 0.3);
 }
@@ -20,25 +23,20 @@
 }
 
 .dark-btn {
-  color: var(--white--500) !important;
-  background-color: var(--primary--900) !important;
+  color: rgb(255, 255, 255) !important;
+  background-color: rgb(4, 15, 47) !important;
 }
 
 .input-field {
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
-.input-field input {
-  width: 100%;
-  padding: 2.5%;
-  outline: none;
-  border: none;
-  border-radius: 5px;
-}
-.input-field input::placeholder {
-  color: var(--black);
+.input-field input::placeholder,
+.input-field textarea::placeholder {
+  color: rgb(0, 0, 0);
   opacity: 0.5;
 }
 .input-field .password-field {
@@ -57,11 +55,30 @@
   right: 2.5%;
 }
 .input-field .helper-text {
-  color: var(--error);
-  font-size: var(--mukta--small---regular);
+  color: red;
+  font-size: 0.75rem;
   text-align: left !important;
-  margin-top: 1%;
+  margin-top: 0.5%;
   margin-left: 2%;
+}
+
+input,
+textarea,
+.select {
+  font-family: inherit;
+}
+
+.select {
+  padding: 0.5%;
+  border-radius: 10px;
+  border: none;
+  font-family: inherit;
+}
+.select .css-13cymwt-control,
+.select .css-t3ipsp-control {
+  min-height: 10px;
+  border: none;
+  box-shadow: none;
 }
 
 .no-scrollbar {
@@ -70,8 +87,14 @@
 }
 
 .h1 {
-  font-size: var(--mukta--h1---bold);
+  font-size: 2rem;
   font-weight: 700;
+}
+
+.profile-img {
+  height: 30px;
+  width: 30px;
+  border-radius: 10px;
 }
 
 .animated-btn {
@@ -87,7 +110,7 @@
   right: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(to right, var(--secondary--500), var(--primary--500));
+  background: linear-gradient(to right, rgb(10, 114, 114), rgb(10, 36, 114));
   animation: animate1 2s linear infinite;
 }
 .animated-btn span:nth-child(2) {
@@ -96,7 +119,7 @@
   right: 0;
   height: 100%;
   width: 3px;
-  background: linear-gradient(to bottom, var(--secondary--500), var(--primary--500));
+  background: linear-gradient(to bottom, rgb(10, 114, 114), rgb(10, 36, 114));
   animation: animate2 2s linear infinite;
   animation-delay: 1s;
 }
@@ -106,7 +129,7 @@
   right: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(to left, var(--secondary--500), var(--primary--500));
+  background: linear-gradient(to left, rgb(10, 114, 114), rgb(10, 36, 114));
   animation: animate3 2s linear infinite;
 }
 .animated-btn span:nth-child(4) {
@@ -115,7 +138,7 @@
   left: 0;
   height: 100%;
   width: 3px;
-  background: linear-gradient(to top, var(--secondary--500), var(--primary--500));
+  background: linear-gradient(to top, rgb(10, 114, 114), rgb(10, 36, 114));
   animation: animate4 2s linear infinite;
   animation-delay: 1s;
 }
@@ -127,9 +150,27 @@
   transform: translate(-50%, -50%);
   padding: 2%;
   border-radius: 20px;
-  background-color: var(--white--500);
+  background-color: rgb(255, 255, 255);
   z-index: 999;
 }
 .modal .modal-close {
   position: absolute;
+}
+
+.go-back {
+  position: absolute;
+  top: 2%;
+  left: 2%;
+  width: 12%;
+  padding: 1%;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.go-back svg {
+  font-size: 1rem;
 }
