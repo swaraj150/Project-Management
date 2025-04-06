@@ -75,6 +75,10 @@ public class ProjectService {
         return projectRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Project not found"));
 
     }
+    Project loadProjectByOrganization(@NonNull UUID organizationId){
+        return projectRepository.findByOrganization(organizationId).orElseThrow(()->new EntityNotFoundException("Project not found"));
+
+    }
 
     public void addTeam(@NonNull String name){
         User user= userService.loadUser(securityUtils.getCurrentUsername());

@@ -1,7 +1,5 @@
 package com.example.server.service;
 
-import com.example.server.dto.OrganizationDTO;
-import com.example.server.entities.Organization;
 import com.example.server.entities.Project;
 import com.example.server.entities.Task;
 import com.example.server.entities.User;
@@ -29,7 +27,7 @@ public class MetricsService {
     private final UserService userService;
     private final OrganizationService organizationService;
 
-    public Map<UUID,Long> loadTeamWorkload(@NonNull UUID projectId){
+    public Map<UUID,Long> loadTeamWiseWorkload(@NonNull UUID projectId){
         Project project=projectService.loadProject(projectId);
         Map<UUID,Long> workloads=new HashMap<>();
         for(UUID teamId:project.getTeams()){
@@ -37,21 +35,23 @@ public class MetricsService {
         }
         return workloads;
     }
-
-    public Map<UUID,List<Double>> loadTeamExpertise(@NonNull UUID projectId){
+    public Map<UUID,Map<String,Double>> loadTeamWiseExpertise(@NonNull UUID projectId){
         Project project=projectService.loadProject(projectId);
-        Map<UUID,List<Double>> expertise=new HashMap<>();
+        Map<UUID,Map<String,Double>> expertise=new HashMap<>();
         for(UUID teamId:project.getTeams()){
             expertise.put(teamId,teamService.calculateTeamExpertise(teamId,projectId));
         }
         return expertise;
     }
-    public Map<UUID,List<Integer>> loadTaskPriority(){
+    public Map<String,Double> loadTeamExpertise(@NonNull UUID projectId,@NonNull UUID teamId){
+        return teamService.calculateTeamExpertise(teamId,projectId);
+    }
+    public Map<UUID,Map<String,Integer>> loadProjectWisePriority(){
         User user= userService.loadAuthenticatedUser();
         List<UUID> projects=organizationService.getProjectsInOrganization(user.getOrganizationId());
-        Map<UUID,List<Integer>> priority=new HashMap<>();
+        Map<UUID,Map<String,Integer>> priority=new HashMap<>();
         for(UUID projectId:projects){
-            priority.put(projectId,List.of(taskService.getNoOfTasksWithPriority(Priority.LOW,projectId),taskService.getNoOfTasksWithPriority(Priority.NORMAL,projectId),taskService.getNoOfTasksWithPriority(Priority.HIGH,projectId)));
+            priority.put(projectId,Map.of("Low",taskService.getNoOfTasksWithPriority(Priority.LOW,projectId),"Normal",taskService.getNoOfTasksWithPriority(Priority.NORMAL,projectId),"High",taskService.getNoOfTasksWithPriority(Priority.HIGH,projectId)));
         }
         return priority;
     }
@@ -106,16 +106,68 @@ public class MetricsService {
         return metrics;
     }
 
-    public List<Double> loadProjectCompletionStatuses(@NonNull UUID projectId){
+    public Map<String,Double> employeePerformance(@NonNull UUID userId){
+        Map<String,Double> metrics=new HashMap<>();
+        User user=userService.loadUser(userId);
+        Project project=projectService.loadProjectByOrganization(user.getId());
+        List<Task> taskList=taskService.getCompletedTasksByUser(userId,project.getId());
+        // rate of task completion before deadline
+        int totalTasks = taskList.size();
+        if(totalTasks==0){
+            metrics.put("Tasks completed within deadline",0.0);
+
+            metrics.put("No. of tasks completed",0.0);
+
+            metrics.put("Average level of tasks completed",0.0);
+            return metrics;
+        }
+        int onTimeTasks = 0;
+        int totalDaysDifference = 0;
+        int beginner=0,intermediate=0,expert=0;
+
+        for (Task task : taskList) {
+            LocalDateTime startDate = task.getStartDate();
+            LocalDateTime endDate = task.getEndDate();
+            int estimatedDays = task.getEstimatedDays();
+            LocalDateTime estimatedDeadline = startDate.plusDays(estimatedDays);
+
+            long daysDifference = ChronoUnit.DAYS.between(endDate, estimatedDeadline);
+            totalDaysDifference += (int) daysDifference;
+
+            if (!endDate.isAfter(estimatedDeadline)) {
+                onTimeTasks++;
+            }
+            switch (task.getLevel()){
+                case BEGINNER -> beginner++;
+                case INTERMEDIATE -> intermediate++;
+                case EXPERT -> expert++;
+            }
+        }
+
+        double onTimeCompletionRate = ((double) onTimeTasks / totalTasks) * 100;
+        double avgDaysEarlyLate = (double) totalDaysDifference / totalTasks;
+
+        double performanceScore = onTimeCompletionRate + (avgDaysEarlyLate * 2);
+        metrics.put("Tasks completed within deadline",performanceScore);
+
+
+        metrics.put("No. of tasks completed",(double)taskList.size());
+
+        metrics.put("Average level of tasks completed",(double)(beginner+intermediate+expert)/taskList.size());
+
+        return metrics;
+    }
+
+    public Map<String,Double> loadProjectCompletionStatuses(@NonNull UUID projectId){
         int tasks=taskService.getTaskCount(projectId);
         double pendingTasks=0,inProgressTasks=0,completedTasks=0;
         if(tasks==0){
-            return List.of(pendingTasks, inProgressTasks,completedTasks);
+            return Map.of("pending tasks",0.0,"in progress tasks",0.0,"completed tasks",0.0);
         }
         pendingTasks=taskService.getNoOfTasksWithStatus(CompletionStatus.PENDING,projectId);
         inProgressTasks=taskService.getNoOfTasksWithStatus(CompletionStatus.IN_PROGRESS,projectId);
         completedTasks=taskService.getNoOfTasksWithStatus(CompletionStatus.COMPLETED,projectId);
-        return List.of((pendingTasks /tasks)*100,(inProgressTasks /tasks)*100,(completedTasks /tasks)*100);
+        return Map.of("pending tasks",(pendingTasks /tasks)*100,"in progress tasks",(inProgressTasks /tasks)*100,"completed tasks",(completedTasks /tasks)*100);
     }
 
 

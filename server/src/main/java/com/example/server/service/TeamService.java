@@ -186,7 +186,7 @@ public class TeamService {
         }
         return Level.EXPERT;
     }
-    public List<Double> calculateTeamExpertise(@NonNull UUID teamId, @NonNull UUID projectId){
+    public Map<String,Double> calculateTeamExpertise(@NonNull UUID teamId, @NonNull UUID projectId){
         Team team=teamRepository.findById(teamId).orElseThrow(()->new EntityNotFoundException("Team not found"));
         int beginners=0,intermediates=0,experts=0,total=0;
         for(UUID id:team.getMemberIds()){
@@ -203,7 +203,7 @@ public class TeamService {
             experts+=level==Level.EXPERT?1:0;
             total++;
         }
-        return List.of(((double)beginners/total)*100,((double)intermediates/total)*100,((double)experts/total)*100);
+        return Map.of("Beginner",((double)beginners/total)*100,"Intermediate",((double)intermediates/total)*100,"Expert",((double)experts/total)*100);
     }
 
     public double calculateWorkloads(@NonNull UUID teamId,@NonNull Integer limit,@NonNull UUID projectId){
