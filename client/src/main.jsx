@@ -6,7 +6,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import App from './App.jsx'
 
 import 'react-toastify/dist/ReactToastify.css'
-import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
 
 import './styles/index.css'
 import './styles/utility.css'
