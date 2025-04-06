@@ -12,14 +12,14 @@ export const taskTypes = {
 
 export const taskPriorities = {
     low: 'LOW',
-    medium: 'MEDIUM',
+    normal: 'NORMAL',
     high: 'HIGH'
 }
 
 export const taskLevels = {
-    basic: 'BASIC',
-    moderate: 'MODERATE',
-    advanced: 'ADVANCED'
+    beginner: 'BEGINNER',
+    intermediate: 'INTERMEDIATE',
+    expert: 'EXPERT'
 }
 
 export const taskStatusLabels  = [
@@ -41,9 +41,9 @@ export const taskPriorityLabels = [
 ]
 
 export const taskLevelLabels = [
-    { key: taskLevels.basic, label: 'Basic' },
-    { key: taskLevels.moderate, label: 'Moderate' },
-    { key: taskLevels.advanced, label: 'Advanced' }
+    { key: taskLevels.beginner, label: 'Beginner' },
+    { key: taskLevels.intermediate, label: 'Intermediate' },
+    { key: taskLevels.expert, label: 'Expert' }
 ]
 
 export const extendTask = (task) => {

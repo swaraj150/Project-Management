@@ -1,3 +1,11 @@
+export const headings = [
+  'Team Name',
+  'Team Lead',
+  'Members',
+  'Developers',
+  'Testers'
+]
+
 export const membersCount = (team) => {
   return team.developers.length + team.testers.length + 1
 }
