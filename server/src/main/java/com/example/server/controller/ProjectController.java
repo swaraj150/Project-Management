@@ -40,7 +40,7 @@ public class ProjectController {
 //        h.put("message","Team added successfully");
 //        return ResponseEntity.ok(h);
 //    }
-    @PostMapping("/teams")
+    @PatchMapping("/teams")
     public ResponseEntity<?> addTeams(@RequestBody AddTeamsToProjectRequest request){
         projectService.addTeam(request);
         HashMap<String,Object> h=new HashMap<>();

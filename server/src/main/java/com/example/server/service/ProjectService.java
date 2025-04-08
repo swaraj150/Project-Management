@@ -2,7 +2,6 @@ package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.OrganizationDTO;
-import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
 import com.example.server.enums.CompletionStatus;
 import com.example.server.enums.ProjectAuthority;
@@ -99,7 +98,7 @@ public class ProjectService {
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
         Project project=projectRepository.findById(request.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
-        for(UUID teamId:request.getTeamsIds()){
+        for(UUID teamId:request.getTeams()){
             Optional<Team> team=teamRepository.findById(teamId);
             if(team.isEmpty()){
                 log.warn("Team with id: {} does not exist",teamId);

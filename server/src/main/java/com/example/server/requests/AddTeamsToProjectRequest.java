@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -14,6 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class AddTeamsToProjectRequest {
-    List<UUID> teamsIds;
+    List<UUID> teams;
     UUID projectId;
 }
