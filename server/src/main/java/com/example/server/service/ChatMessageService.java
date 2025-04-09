@@ -1,12 +1,6 @@
 package com.example.server.service;
 
-import com.example.server.component.NotificationEvent;
-import com.example.server.component.SecurityUtils;
-import com.example.server.entities.ChatMessage;
-import com.example.server.entities.ChatRoom;
-import com.example.server.entities.Project;
-import com.example.server.entities.User;
-import com.example.server.enums.NotificationType;
+import com.example.server.entities.*;
 import com.example.server.repositories.ChatMessageRepository;
 import com.example.server.requests.WsChatRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +21,7 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomService chatRoomService;
     private final UserService userService;
+    private final OrganizationService organizationService;
     private final ProjectService projectService;
     private final TaskService taskService;
     private final NotificationService notificationService;
@@ -58,17 +53,28 @@ public class ChatMessageService {
         return chatMessage;
     }
 
-    public List<ChatMessage> loadComments(@NonNull UUID taskId){
-        return chatMessageRepository.findByTaskId(taskId).orElseThrow(()->new EntityNotFoundException("no comments found"));
+    public List<ChatMessage> loadChats(@NonNull UUID roomId){
+        return chatMessageRepository.findByRoomId(roomId).orElseThrow(()->new EntityNotFoundException("no comments found"));
     }
 
-    public Map<UUID,List<ChatMessage>>  loadChatsByUser(){
+
+
+    public Map<UUID,List<ChatMessage>> loadChatsByUser(){
         User user=userService.loadAuthenticatedUser();
         Project project=projectService.loadProject(user.getProjectId());
         Map<UUID,List<ChatMessage>> chats=new HashMap<>();
-        List<UUID> tasks=taskService.getActiveTaskIdsByUser(user.getId(),project.getId());
+        List<UUID> tasks=taskService.getAllTaskIdsByUser(user.getId(),project.getId());
         for(UUID taskId:tasks){
-            chats.put(taskId,loadComments(taskId));
+            chats.put(taskId, loadChats(taskId));
+        }
+        return chats;
+    }
+    public Map<UUID,List<ChatMessage>> loadChatsByOrganization(){
+        User user=userService.loadAuthenticatedUser();
+        Organization organization=organizationService.loadOrganization(user.getOrganizationId());
+        Map<UUID,List<ChatMessage>> chats=new HashMap<>();
+        for(UUID roomId:organization.getProjects()){
+            chats.put(roomId, loadChats(roomId));
         }
         return chats;
     }

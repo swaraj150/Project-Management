@@ -107,6 +107,11 @@ public class ProjectService {
             project.getTeams().add(teamId);
             team.get().setProjectId(project.getId());
             team.get().getMemberIds().add(project.getProjectManagerId());
+            for(UUID userId:team.get().getMemberIds()){
+               User member= userService.loadUser(userId);
+               member.setProjectId(project.getId());
+               userService.save(user);
+            }
             teamRepository.save(team.get());
         }
         projectRepository.save(project);

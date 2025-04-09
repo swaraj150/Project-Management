@@ -48,7 +48,9 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-
+    public void save(User user){
+        userRepository.save(user);
+    }
     public User loadUser(@NonNull String username){
         Optional<User> userOptional=userRepository.findByUsername(username);
         if(userOptional.isEmpty()){

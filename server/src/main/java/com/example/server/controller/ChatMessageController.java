@@ -1,20 +1,53 @@
 package com.example.server.controller;
 
 import com.example.server.entities.ChatMessage;
+import com.example.server.entities.User;
+import com.example.server.enums.ProjectAuthority;
+import com.example.server.enums.ProjectRole;
+import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.requests.WsChatRequest;
 import com.example.server.service.ChatMessageService;
+import com.example.server.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
 
 
-@Controller
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/chats")
 public class ChatMessageController {
     private final ChatMessageService chatMessageService;
-    @MessageMapping("/chat.sendMessage")
-    public void sendMessage(@NonNull WsChatRequest request) {
-        ChatMessage chatMessage=chatMessageService.createChatMessage(request);
+    private final UserService userService;
+    @GetMapping("")
+    public ResponseEntity<?> loadChats(){
+
+        User user=userService.loadAuthenticatedUser();
+        HashMap<String,Object> h=new HashMap<>();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        };
+        if(user.getProjectRole()==ProjectRole.PRODUCT_OWNER){
+            h.put("projectChats",chatMessageService.loadChatsByOrganization());
+        }
+//        else if(user.getProjectRole()== ProjectRole.PROJECT_MANAGER){
+//            h.put("taskChats",chatMessageService.loadChatsByUser());
+//            h.put("projectChats",chatMessageService.loadChatsByUser());
+//        }
+        else{
+            h.put("taskChats",chatMessageService.loadChatsByUser());
+            h.put("projectChats",chatMessageService.loadChats(user.getProjectId()));
+
+        }
+
+        return ResponseEntity.ok(h);
     }
+
 }

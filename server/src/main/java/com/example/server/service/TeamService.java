@@ -114,7 +114,11 @@ public class TeamService {
         }
         return teamResponses;
     }
-    public Set<TeamResponse> loadTeamResponsesByUser(){
+    public TeamResponse loadTeamResponsesByUser(){
+        User user=userService.loadAuthenticatedUser();
+        return loadTeamResponse(teamRepository.findTeamIdByUserId(user.getId()));
+    }
+    public Set<TeamResponse> loadTeamResponsesByProject(){
         User user=userService.loadAuthenticatedUser();
         Set<TeamResponse> teamResponses=new HashSet<>();
         Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
