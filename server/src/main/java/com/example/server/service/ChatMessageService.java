@@ -61,8 +61,11 @@ public class ChatMessageService {
 
     public Map<UUID,List<ChatMessage>> loadChatsByUser(){
         User user=userService.loadAuthenticatedUser();
-        Project project=projectService.loadProject(user.getProjectId());
         Map<UUID,List<ChatMessage>> chats=new HashMap<>();
+        if(user.getProjectId()==null){
+            return chats;
+        }
+        Project project=projectService.loadProject(user.getProjectId());
         List<UUID> tasks=taskService.getAllTaskIdsByUser(user.getId(),project.getId());
         for(UUID taskId:tasks){
             chats.put(taskId, loadChats(taskId));

@@ -43,7 +43,7 @@ public class TaskService {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        Project project=projectRepository.findById(request.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
 //        Team team=teamRepository.findById(teamRepository.findTeamIdByUserId(user.getId())).orElseThrow(()->new EntityNotFoundException("Team not found"));
         Task task=new Task();
         task.setTitle(request.getTitle());
@@ -93,8 +93,7 @@ public class TaskService {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        Team team=teamRepository.findById(teamRepository.findTeamIdByUserId(user.getId())).orElseThrow(()->new EntityNotFoundException("Team not found"));
-        Project project=projectRepository.findById(team.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
         Task task=new Task();
         Optional.ofNullable(request.getTitle())
                         .ifPresent(task::setTitle);
@@ -352,8 +351,11 @@ public class TaskService {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_PROJECT)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
         List<Task> taskResponses=new ArrayList<>();
+        if(user.getProjectId()==null){
+            return taskResponses;
+        }
+        Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
         for(UUID taskId:project.getTasks()){
             Task task=loadTask(taskId);
             taskResponses.add(task);

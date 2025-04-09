@@ -114,9 +114,14 @@ public class TeamService {
         }
         return teamResponses;
     }
-    public TeamResponse loadTeamResponsesByUser(){
+    public List<TeamResponse> loadTeamResponsesByUser(){
         User user=userService.loadAuthenticatedUser();
-        return loadTeamResponse(teamRepository.findTeamIdByUserId(user.getId()));
+        var teams=teamRepository.findTeamIdByUserId(user.getId());
+        List<TeamResponse> res=new ArrayList<>();
+        for(UUID teamId:teams){
+            res.add(loadTeamResponse(teamId));
+        }
+        return res;
     }
     public Set<TeamResponse> loadTeamResponsesByProject(){
         User user=userService.loadAuthenticatedUser();

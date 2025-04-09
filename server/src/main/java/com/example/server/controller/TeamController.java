@@ -68,10 +68,10 @@ public class TeamController {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        if(user.getProjectRole()== ProjectRole.PRODUCT_OWNER){
+        if(user.getProjectRole()==ProjectRole.PRODUCT_OWNER){
             h.put("teams",teamService.loadAllTeamResponses());
         }
-        else if(user.getProjectRole()== ProjectRole.PROJECT_MANAGER){
+        else if(user.getProjectRole()==ProjectRole.PROJECT_MANAGER){
             h.put("teams",teamService.loadTeamResponsesByProject());
         }
         else{

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -43,7 +44,14 @@ public class ChatMessageController {
 //        }
         else{
             h.put("taskChats",chatMessageService.loadChatsByUser());
-            h.put("projectChats",chatMessageService.loadChats(user.getProjectId()));
+            if (user.getProjectId() == null) {
+                h.put("projectChats",new ArrayList<>());
+
+            }
+            else{
+                h.put("projectChats",chatMessageService.loadChats(user.getProjectId()));
+
+            }
 
         }
 

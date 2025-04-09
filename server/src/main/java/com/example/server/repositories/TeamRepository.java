@@ -22,7 +22,7 @@ public interface TeamRepository extends JpaRepository<Team, UUID> {
 
     // optimization can be done by only joining it with users within organization
     @Query("select t.id from Team t join t.memberIds u where u = :userId")
-    UUID findTeamIdByUserId(@Param("userId") UUID userId);
+    List<UUID> findTeamIdByUserId(@Param("userId") UUID userId);
 
 
     Optional<Team> findByName(String name);
