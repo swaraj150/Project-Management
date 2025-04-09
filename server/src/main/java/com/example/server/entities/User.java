@@ -56,6 +56,8 @@ public class User implements UserDetails {
     private Set<String> skills;
     private Set<String> domain;
     private Integer yearsOfExp;
+    @Column(name="project_id")
+    private UUID projectId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

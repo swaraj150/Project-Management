@@ -293,6 +293,16 @@ public class TaskService {
     public List<Task> getActiveTasksByUser(@NonNull UUID userId,@NonNull UUID projectId){
         return taskRepository.findTasksByStatusAndAssignedTo(CompletionStatus.IN_PROGRESS,userId,projectId);
     }
+    public List<UUID> getActiveTaskIdsByUser(@NonNull UUID userId,@NonNull UUID projectId){
+        return taskRepository.findTaskIdsByStatusAndAssignedTo(CompletionStatus.IN_PROGRESS,userId,projectId);
+    }
+
+    public List<UUID> getAllTaskIdsByUser(@NonNull UUID userId,@NonNull UUID projectId){
+        return taskRepository.findTaskIdsByStatusAndAssignedTo(CompletionStatus.IN_PROGRESS,userId,projectId);
+    }
+    public List<Task> getTasksByUser(@NonNull UUID userId,@NonNull UUID projectId){
+        return taskRepository.findByAssignedTo(userId,projectId);
+    }
     public List<Task> getCompletedTasksByUser(@NonNull UUID userId,@NonNull UUID projectId){
         return taskRepository.findTasksByStatusAndAssignedTo(CompletionStatus.COMPLETED,userId,projectId);
     }
@@ -334,6 +344,19 @@ public class TaskService {
             if(task.getParentTaskId()!=null) continue;
             TaskResponse taskResponse=loadNestedTasks(taskId);
             taskResponses.add(taskResponse);
+        }
+        return taskResponses;
+    }
+    public List<Task> getTasksByProject(){
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_PROJECT)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        List<Task> taskResponses=new ArrayList<>();
+        for(UUID taskId:project.getTasks()){
+            Task task=loadTask(taskId);
+            taskResponses.add(task);
         }
         return taskResponses;
     }

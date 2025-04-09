@@ -16,7 +16,5 @@ public class ChatMessageController {
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(@NonNull WsChatRequest request) {
         ChatMessage chatMessage=chatMessageService.createChatMessage(request);
-
-
     }
 }

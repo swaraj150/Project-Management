@@ -3,7 +3,6 @@ package com.example.server.repositories;
 import com.example.server.enums.CompletionStatus;
 import com.example.server.entities.Task;
 import com.example.server.enums.Priority;
-import org.hibernate.annotations.Parent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,11 +17,17 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     @Query("select t from Task t where t.createdBy=:userId")
     Optional<Task> findByCreatedBy(@Param("userId") UUID id);
 
-    @Query("SELECT t FROM Task t WHERE :userId MEMBER OF t.assignedTo")
-    List<Task> findByAssignedTo(@Param("userId") UUID userId);
+    @Query("SELECT t FROM Task t WHERE t.projectId=:projectId AND :userId MEMBER OF t.assignedTo")
+    List<Task> findByAssignedTo(@Param("userId") UUID userId,@Param("projectId") UUID projectId);
 
     @Query("SELECT t FROM Task t WHERE t.projectId=:projectId AND t.completionStatus = :status AND :userId MEMBER OF t.assignedTo")
     List<Task> findTasksByStatusAndAssignedTo(@Param("status") CompletionStatus status, @Param("userId") UUID userId,@Param("projectId") UUID projectId);
+
+    @Query("SELECT t.id FROM Task t WHERE t.projectId=:projectId AND t.completionStatus = :status AND :userId MEMBER OF t.assignedTo")
+    List<UUID> findTaskIdsByStatusAndAssignedTo(@Param("status") CompletionStatus status, @Param("userId") UUID userId,@Param("projectId") UUID projectId);
+
+    @Query("SELECT t.id FROM Task t WHERE t.projectId=:projectId AND :userId MEMBER OF t.assignedTo")
+    List<UUID> findTaskIdsByAssignedTo(@Param("userId") UUID userId,@Param("projectId") UUID projectId);
 
     @Query("select t.id from Task t where t.parentTaskId=:id")
     List<UUID> findByParentId(@Param("id") UUID id);

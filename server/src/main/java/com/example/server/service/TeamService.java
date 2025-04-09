@@ -99,6 +99,7 @@ public class TeamService {
                 .build();
     }
 
+
     public Team loadTeam(@NonNull UUID id){
         return teamRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Team not found"));
     }
@@ -109,6 +110,15 @@ public class TeamService {
         Organization organization=organizationService.loadOrganization(user.getOrganizationId());
         Set<TeamResponse> teamResponses=new HashSet<>();
         for(UUID teamId:organization.getTeams()){
+            teamResponses.add(loadTeamResponse(teamId));
+        }
+        return teamResponses;
+    }
+    public Set<TeamResponse> loadTeamResponsesByUser(){
+        User user=userService.loadAuthenticatedUser();
+        Set<TeamResponse> teamResponses=new HashSet<>();
+        Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        for(UUID teamId:project.getTeams()){
             teamResponses.add(loadTeamResponse(teamId));
         }
         return teamResponses;

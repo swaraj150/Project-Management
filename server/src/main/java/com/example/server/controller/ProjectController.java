@@ -1,10 +1,12 @@
 package com.example.server.controller;
 
+import com.example.server.entities.User;
+import com.example.server.enums.ProjectRole;
 import com.example.server.requests.AddTeamsToProjectRequest;
 import com.example.server.requests.CreateProjectRequest;
-import com.example.server.response.ApiResponse;
 import com.example.server.response.ProjectResponse;
 import com.example.server.service.ProjectService;
+import com.example.server.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;
-
+    private final UserService userService;
     @PostMapping("")
     public ResponseEntity<?> create(@RequestBody @NonNull CreateProjectRequest request){
         ProjectResponse projectResponse=projectService.createProject(request);
@@ -48,13 +50,14 @@ public class ProjectController {
         return ResponseEntity.ok(h);
     }
     @GetMapping("")
-    public ResponseEntity<?> getAllProjects(){
-//        User user=userService.loadUser(securityUtils.getCurrentUsername());
-//        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
-//            throw new UnauthorizedAccessException("User does not have the required authority");
-//        }
+    public ResponseEntity<?> getProjectByUser(){
+        User user=userService.loadAuthenticatedUser();
         HashMap<String,Object> h=new HashMap<>();
-        h.put("projects",projectService.loadAllProjectResponses());
+        if(user.getProjectRole()== ProjectRole.PRODUCT_OWNER){
+            h.put("projects",projectService.loadAllProjectResponses());
+        }else{
+            h.put("projects",projectService.loadProjectResponseByUser());
+        }
         return ResponseEntity.ok(h);
     }
 

@@ -1,5 +1,6 @@
 package com.example.server.controller;
 
+import com.example.server.entities.Task;
 import com.example.server.entities.User;
 import com.example.server.requests.CreateProjectRequest;
 import com.example.server.requests.CreateTaskRequest;
@@ -51,11 +52,18 @@ public class TaskController {
 //        h.put("task",taskResponse);
 //        return ResponseEntity.ok(h);
 //    }
-
+//
+//    @GetMapping("")
+//    public ResponseEntity<?> fetch(){
+//        List<TaskResponse> taskResponses=taskService.getTasksByOrganization();
+//
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("tasks",taskResponses);
+//        return ResponseEntity.ok(h);
+//    }
     @GetMapping("")
     public ResponseEntity<?> fetch(){
-        List<TaskResponse> taskResponses=taskService.getTasksByOrganization();
-
+        List<Task> taskResponses=taskService.getTasksByProject();
         HashMap<String,Object> h=new HashMap<>();
         h.put("tasks",taskResponses);
         return ResponseEntity.ok(h);

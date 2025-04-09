@@ -133,7 +133,7 @@ public class TaskConsumerService {
                 log.info("Successfully saved batch of {} tasks", tasksToSave.size());
                 for(Map.Entry<String,List<TaskResponse>> t:taskResponses.entrySet()){
                     messagingTemplate.convertAndSend(
-                            "/topic/tasks/"+t.getKey(),
+                            "/topic/task.update."+t.getKey(),
                             t.getValue()
                     );
                 }

@@ -152,6 +152,10 @@ public class ProjectService {
                 .teams(teams)
                 .build();
     }
+    public ProjectResponse loadProjectResponseByUser(){
+        User user=userService.loadAuthenticatedUser();
+        return loadProjectResponse(user.getProjectId());
+    }
 
     public Set<ProjectResponse> loadAllProjectResponses(){
         OrganizationDTO organizationDTO = organizationService.loadOrganizationDTOByCurrentUser();

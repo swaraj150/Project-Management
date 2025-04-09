@@ -3,6 +3,7 @@ package com.example.server.controller;
 import com.example.server.component.SecurityUtils;
 import com.example.server.enums.ProjectAuthority;
 import com.example.server.entities.User;
+import com.example.server.enums.ProjectRole;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.TeamRepository;
 import com.example.server.requests.TeamCreateRequest;
@@ -63,13 +64,28 @@ public class TeamController {
     @GetMapping("")
     public ResponseEntity<?> getAllTeams(){
         User user=userService.loadUser(securityUtils.getCurrentUsername());
+        HashMap<String,Object> h=new HashMap<>();
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        HashMap<String,Object> h=new HashMap<>();
-        h.put("teams",teamService.loadAllTeamResponses());
+        if(user.getProjectRole()== ProjectRole.PRODUCT_OWNER){
+            h.put("teams",teamService.loadAllTeamResponses());
+        }
+        else{
+            h.put("teams",teamService.loadTeamResponsesByUser());
+        }
         return ResponseEntity.ok(h);
     }
+//    @GetMapping("")
+//    public ResponseEntity<?> getAllTeams(){
+//        User user=userService.loadUser(securityUtils.getCurrentUsername());
+//        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
+//            throw new UnauthorizedAccessException("User does not have the required authority");
+//        }
+//        HashMap<String,Object> h=new HashMap<>();
+//        h.put("teams",teamService.loadAllTeamResponses());
+//        return ResponseEntity.ok(h);
+//    }
 
     @GetMapping("/search")
     public ResponseEntity<?> searchTeam(@RequestParam @NonNull String query){

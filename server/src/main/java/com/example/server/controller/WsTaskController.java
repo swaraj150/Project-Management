@@ -7,6 +7,7 @@ import com.example.server.service.TaskConsumerService;
 import com.example.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
@@ -21,8 +22,8 @@ import java.util.UUID;
 public class WsTaskController {
     private final TaskConsumerService taskConsumerService;
     private final UserService userService;
-    @MessageMapping("/task.handle")
-    public void handleTasks(WsTaskRequest taskRequest){
+    @MessageMapping("/task.update.{teamId}")
+    public void handleTasks(@DestinationVariable UUID teamId, WsTaskRequest taskRequest){
         User user=userService.loadAuthenticatedUser();
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS) || !user.getProjectRole().hasAuthority(ProjectAuthority.EDIT_TASKS) ) return;
         taskRequest.setTimestamp(LocalDateTime.now());
