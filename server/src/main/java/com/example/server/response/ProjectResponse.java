@@ -20,8 +20,8 @@ public class ProjectResponse {
     private UUID id;
     private String title;
     private String description;
-    private List<UUID> tasksIds;
-    private Set<TeamResponse> teams;
+    private List<UUID> tasks;
+    private Set<UUID> teams;
     private UUID projectManager;
     private LocalDate startDate;
     private LocalDate estimatedEndDate;
