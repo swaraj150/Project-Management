@@ -138,27 +138,23 @@ public class ProjectService {
 
     public ProjectResponse loadProjectResponse(@NonNull UUID projectId){
         Project project=projectRepository.findById(projectId).orElseThrow(()->new EntityNotFoundException("Project not found"));
-        Set<UUID> teamIds=new HashSet<>(projectRepository.findTeamsById(projectId));
-        Set<TeamResponse> teams=new HashSet<>();
-        for(UUID id:teamIds) {
-            teams.add(teamService.loadTeamResponse(id));
-        }
         return ProjectResponse.builder()
                 .id(projectId)
                 .title(project.getTitle())
                 .description(project.getDescription())
-                .tasksIds(project.getTasks())
+                .tasks(project.getTasks())
                 .projectManager(project.getProjectManagerId())
                 .startDate(project.getStartDate())
                 .estimatedEndDate(project.getEstimatedEndDate())
                 .endDate(project.getEndDate())
                 .budget(project.getBudget())
                 .completionStatus(project.getCompletionStatus())
-                .teams(teams)
+                .teams(project.getTeams())
                 .build();
     }
     public ProjectResponse loadProjectResponseByUser(){
         User user=userService.loadAuthenticatedUser();
+        if (user.getProjectId() == null) return null;
         return loadProjectResponse(user.getProjectId());
     }
 
