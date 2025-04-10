@@ -6,6 +6,7 @@ import com.example.server.entities.*;
 import com.example.server.enums.Level;
 import com.example.server.enums.ProjectAuthority;
 import com.example.server.enums.ProjectRole;
+import com.example.server.enums.ResponseType;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.*;
 import com.example.server.requests.TeamCreateRequest;
@@ -13,6 +14,7 @@ import com.example.server.response.TeamResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,6 +32,7 @@ public class TeamService {
     private final UserExpertiseService userExpertiseService;
     private final UserExpertiseRepository userExpertiseRepository;
     private final OrganizationRepository organizationRepository;
+    private final SimpMessagingTemplate messagingTemplate;
     private final ProjectRepository projectRepository;
     private static final double EXPERTISE_WEIGHT = 0.4;
     private static final double WORKLOAD_WEIGHT = 0.6;
@@ -84,6 +87,10 @@ public class TeamService {
         teamRepository.save(team);
         organization.getTeams().add(team.getId());
         organizationRepository.save(organization);
+        messagingTemplate.convertAndSend(
+                "/topic/organization."+organization.getId(),
+                Map.of("notification","Team "+team.getName()+" created in your organization","dataType", ResponseType.TEAM.name(),"data",team)
+        );
         return loadTeamResponse(team.getId());
     }
 

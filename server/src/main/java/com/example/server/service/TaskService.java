@@ -18,6 +18,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,7 +38,11 @@ public class TaskService {
     private final SecurityUtils securityUtils;
     private final NotificationService notificationService;
     private final DependencyRepository dependencyRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
+    public boolean exists(UUID id){
+        return taskRepository.existsById(id);
+    }
     public TaskResponse createTask(CreateTaskRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
@@ -79,7 +84,10 @@ public class TaskService {
         taskRepository.save(task);
         project.getTasks().add(task.getId());
         projectRepository.save(project);
-
+        messagingTemplate.convertAndSend(
+                "/topic/project."+user.getProjectId(),
+                Map.of("notification","Task "+task.getTitle()+" created in your project","dataType", ResponseType.TASK.name(),"data",task)
+        );
 //        notificationService.createNotification(NotificationEvent.builder()
 //                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
 //                        .actorId(user.getId())
@@ -510,6 +518,10 @@ public class TaskService {
         task.getAssignedTo().clear();
         taskRepository.save(task);
         taskRepository.delete(task);
+        messagingTemplate.convertAndSend(
+                "/topic/project."+user.getProjectId(),
+                Map.of("notification","Task "+task.getTitle()+"deleted")
+        );
 
     }
 
@@ -573,6 +585,10 @@ public class TaskService {
         taskRepository.save(task);
         project.getTasks().add(task.getId());
         projectRepository.save(project);
+        messagingTemplate.convertAndSend(
+                "/topic/project."+user.getProjectId(),
+                Map.of("notification","Task "+task.getTitle()+" updated","dataType", ResponseType.TASK.name(),"data",task)
+        );
 //        notificationService.createNotification(NotificationEvent.builder()
 //                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
 //                        .actorId(user.getId())

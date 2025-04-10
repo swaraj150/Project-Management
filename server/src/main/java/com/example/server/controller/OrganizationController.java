@@ -57,7 +57,7 @@ public class OrganizationController {
 //        h.put("message","request accepted");
 //        return ResponseEntity.ok(h);
 //    }
-    @PutMapping("/requests/accept")
+    @PatchMapping("/requests/accept")
     public ResponseEntity<?> acceptRequest(@RequestBody @NonNull ChangeJoinRequestStatusRequest request){
         UserDTO user=organizationService.respondToJoinRequest(request.getRequestId(),"accept");
         HashMap<String,Object> h=new HashMap<>();
@@ -65,7 +65,7 @@ public class OrganizationController {
         h.put("user",user);
         return ResponseEntity.ok(h);
     }
-    @PutMapping("/requests/reject")
+    @PatchMapping("/requests/reject")
     public ResponseEntity<?> rejectRequest(@RequestBody @NonNull ChangeJoinRequestStatusRequest request){
         organizationService.respondToJoinRequest(request.getRequestId(),"reject");
         HashMap<String,Object> h=new HashMap<>();

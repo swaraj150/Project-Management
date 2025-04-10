@@ -6,6 +6,7 @@ import com.example.server.entities.*;
 import com.example.server.enums.CompletionStatus;
 import com.example.server.enums.ProjectAuthority;
 import com.example.server.enums.ProjectRole;
+import com.example.server.enums.ResponseType;
 import com.example.server.exception.IllegalRoleException;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.OrganizationRepository;
@@ -19,6 +20,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -36,7 +38,7 @@ public class ProjectService {
     private final UserService userService;
     private final TeamService teamService;
     private final TaskService taskService;
-
+    private final SimpMessagingTemplate messagingTemplate;
     public boolean exists(@NonNull UUID projectId){
         return projectRepository.existsById(projectId);
     }
@@ -67,7 +69,12 @@ public class ProjectService {
         projectRepository.save(project);
         organization.getProjects().add(project.getId());
         organizationRepository.save(organization);
+        messagingTemplate.convertAndSend(
+                "/topic/organization."+user.getOrganizationId(),
+                Map.of("notification","Project "+project.getTitle()+" created in your project","dataType", ResponseType.PROJECT.name(),"data",project)
+        );
         return loadProjectResponse(project.getId());
+
     }
 
     Project loadProject(@NonNull UUID id){
@@ -113,6 +120,10 @@ public class ProjectService {
                userService.save(user);
             }
             teamRepository.save(team.get());
+            messagingTemplate.convertAndSend(
+                    "/topic/project."+project.getId(),
+                    Map.of("notification","Team "+team.get().getName()+" added to your project","dataType", ResponseType.PROJECT.name(),"data",project)
+            );
         }
         projectRepository.save(project);
     }

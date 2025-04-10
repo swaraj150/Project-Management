@@ -22,8 +22,8 @@ import java.util.UUID;
 public class WsTaskController {
     private final TaskConsumerService taskConsumerService;
     private final UserService userService;
-    @MessageMapping("/task.update.{teamId}")
-    public void handleTasks(@DestinationVariable UUID teamId, WsTaskRequest taskRequest){
+    @MessageMapping("/task.update.{projectId}")
+    public void handleTasks(@DestinationVariable UUID projectId, WsTaskRequest taskRequest){
         User user=userService.loadAuthenticatedUser();
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS) || !user.getProjectRole().hasAuthority(ProjectAuthority.EDIT_TASKS) ) return;
         taskRequest.setTimestamp(LocalDateTime.now());

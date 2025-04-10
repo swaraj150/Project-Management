@@ -5,10 +5,7 @@ import com.example.server.dto.JoinRequestDTO;
 import com.example.server.dto.OrganizationDTO;
 import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
-import com.example.server.enums.ProjectAuthority;
-import com.example.server.enums.ProjectRole;
-import com.example.server.enums.RequestStatus;
-import com.example.server.enums.WorkloadLimitType;
+import com.example.server.enums.*;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.JoinRequestRepository;
 import com.example.server.repositories.OrganizationRepository;
@@ -22,6 +19,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +40,11 @@ public class OrganizationService {
     private final UserRepository userRepository;
     private final SecurityUtils securityUtils;
     private final UserService userService;
+    private final SimpMessageSendingOperations messagingTemplate;
 
+    public boolean exists(UUID id){
+        return organizationRepository.existsById(id);
+    }
 
     public OrganizationDTO createOrganizationDTO(UUID id){
         Organization org = organizationRepository.findById(id)
@@ -181,6 +183,11 @@ public class OrganizationService {
 //            joinRequestRepository.save(joinRequest);
             joinRequestRepository.delete(joinRequest);
             userRepository.save(user);
+            UserDTO userDTO=UserDTO.mapToUserDTO(user);
+            messagingTemplate.convertAndSend(
+                    "/topic/organization."+organization.getId(),
+                    Map.of("notification","Member "+userDTO.getUsername()+" added in your organization","dataType", ResponseType.USER.name(),"data",userDTO)
+            );
             return UserDTO.mapToUserDTO(user);
         }
         else if(Objects.equals(status,"reject")){

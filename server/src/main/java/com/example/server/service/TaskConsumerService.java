@@ -135,6 +135,7 @@ public class TaskConsumerService {
                     messagingTemplate.convertAndSend(
                             "/topic/task.update."+t.getKey(),
                             t.getValue()
+
                     );
                 }
             }

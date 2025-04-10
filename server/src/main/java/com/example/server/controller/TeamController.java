@@ -71,6 +71,9 @@ public class TeamController {
         if(user.getProjectRole()==ProjectRole.PRODUCT_OWNER){
             h.put("teams",teamService.loadAllTeamResponses());
         }
+        else if(user.getProjectId()==null){
+            h.put("teams",teamService.loadTeamResponsesByUser());
+        }
         else {
             h.put("teams",teamService.loadTeamResponsesByProject());
         }
