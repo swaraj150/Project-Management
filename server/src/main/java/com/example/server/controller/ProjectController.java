@@ -56,7 +56,9 @@ public class ProjectController {
         if(user.getProjectRole()== ProjectRole.PRODUCT_OWNER){
             h.put("projects",projectService.loadAllProjectResponses());
         }else{
-            h.put("projects",projectService.loadProjectResponseByUser());
+            ProjectResponse res = projectService.loadProjectResponseByUser();
+            if (res == null) h.put("projects",null);
+            else h.put("projects",res);
         }
         return ResponseEntity.ok(h);
     }
