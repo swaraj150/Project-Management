@@ -77,7 +77,7 @@ public class TaskService {
         task.setProgress(0);
         Set<UUID> assignedTo=new HashSet<>();
         for(String s:request.getAssignedTo()){
-            assignedTo.add(userService.loadUser(s).getId());
+            assignedTo.add(userService.loadUser(UUID.fromString(s)).getId());
         }
         task.setAssignedTo(assignedTo);
         task.setCompletionStatus(CompletionStatus.PENDING);
@@ -160,10 +160,9 @@ public class TaskService {
 
         Set<UUID> assignedTo=new HashSet<>();
         if(request.getAssignedTo()!=null){
-            for(String s:request.getAssignedTo()){
+            for(String s:request.getAssignedTo()) {
                 assignedTo.add(userService.loadUser(s).getId());
             }
-
         }
         task.setAssignedTo(assignedTo);
         taskRepository.save(task);
@@ -237,12 +236,6 @@ public class TaskService {
 
     public TaskResponse loadTaskResponse(@NonNull UUID id){
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
-        Set<UserDTO> assignedToUsers=new HashSet<>();
-        for(UUID id1:task.getAssignedTo()){
-            User user=userService.loadUser(id1);
-            UserDTO userDTO=UserDTO.mapToUserDTO(user);
-            assignedToUsers.add(userDTO);
-        }
         List<Dependency> dependencies=dependencyRepository.findByFromTaskId(id);
 
         return TaskResponse.builder()
@@ -251,8 +244,8 @@ public class TaskService {
                 .description(task.getDescription())
                 .priority(task.getPriority())
                 .type(task.getType())
-                .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
-                .assignedToUsers(assignedToUsers)
+                .createdBy(task.getCreatedBy())
+                .assignedTo(task.getAssignedTo())
                 .createdAt(task.getCreatedAt())
                 .estimatedDays(task.getEstimatedDays())
                 .completedAt(task.getCompletedAt())
@@ -267,12 +260,6 @@ public class TaskService {
     }
     public TaskResponse loadTaskResponse(@NonNull UUID id,String clientId){
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
-        Set<UserDTO> assignedToUsers=new HashSet<>();
-        for(UUID id1:task.getAssignedTo()){
-            User user=userService.loadUser(id1);
-            UserDTO userDTO=UserDTO.mapToUserDTO(user);
-            assignedToUsers.add(userDTO);
-        }
         List<Dependency> dependencies=dependencyRepository.findByFromTaskId(id);
         return TaskResponse.builder()
                 .id(task.getId())
@@ -281,8 +268,8 @@ public class TaskService {
                 .description(task.getDescription())
                 .priority(task.getPriority())
                 .type(task.getType())
-                .createdByUser(UserDTO.mapToUserDTO(userService.loadUser(task.getCreatedBy())))
-                .assignedToUsers(assignedToUsers)
+                .createdBy(task.getCreatedBy())
+                .assignedTo(task.getAssignedTo())
                 .createdAt(task.getCreatedAt())
                 .estimatedDays(task.getEstimatedDays())
                 .completedAt(task.getCompletedAt())

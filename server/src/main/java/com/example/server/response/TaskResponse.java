@@ -26,8 +26,8 @@ public class TaskResponse {
     private String description;
     private Priority priority;
     private TaskType type;
-    private UserDTO createdByUser;
-    private Set<UserDTO> assignedToUsers;
+    private UUID createdBy;
+    private Set<UUID> assignedTo;
     private LocalDateTime createdAt;
     private Integer estimatedDays;
     private Integer progress;
