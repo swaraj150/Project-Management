@@ -1,8 +1,6 @@
 package com.example.server.service;
 
-import com.example.server.component.NotificationEvent;
 import com.example.server.component.SecurityUtils;
-import com.example.server.dto.UserDTO;
 import com.example.server.entities.*;
 import com.example.server.enums.*;
 import com.example.server.exception.InvalidStatusException;
@@ -251,7 +249,7 @@ public class TaskService {
                 .completedAt(task.getCompletedAt())
                 .startDate(task.getStartDate())
                 .endDate(task.getEndDate())
-                .completionStatus(task.getCompletionStatus())
+                .status(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
                 .dependencies(dependencies)
                 .progress(task.getProgress())
@@ -275,11 +273,11 @@ public class TaskService {
                 .completedAt(task.getCompletedAt())
                 .startDate(task.getStartDate())
                 .endDate(task.getEndDate())
-                .completionStatus(task.getCompletionStatus())
+                .status(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
                 .dependencies(dependencies)
                 .progress(task.getProgress())
-//                .dependencies(task.getDependencies())
+                .dependencies(dependencies)
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }

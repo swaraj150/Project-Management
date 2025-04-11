@@ -1,6 +1,5 @@
 package com.example.server.response;
 
-import com.example.server.dto.UserDTO;
 import com.example.server.entities.Dependency;
 import com.example.server.enums.CompletionStatus;
 import com.example.server.enums.Priority;
@@ -32,7 +31,7 @@ public class TaskResponse {
     private Integer estimatedDays;
     private Integer progress;
     private LocalDateTime completedAt;
-    private CompletionStatus completionStatus;
+    private CompletionStatus status;
     private List<TaskResponse> subTasks;
     private UUID parentTaskId;
     private UUID projectId;
