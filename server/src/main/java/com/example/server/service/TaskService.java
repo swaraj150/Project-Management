@@ -82,9 +82,10 @@ public class TaskService {
         taskRepository.save(task);
         project.getTasks().add(task.getId());
         projectRepository.save(project);
+        TaskResponse taskResponse=loadTaskResponse(task.getId());
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+" created in your project","dataType", ResponseType.TASK.name(),"data",task)
+                Map.of("notification","Task "+task.getTitle()+" created in your project","dataType", ResponseType.TASK.name(),"data",taskResponse)
         );
 //        notificationService.createNotification(NotificationEvent.builder()
 //                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
@@ -92,7 +93,7 @@ public class TaskService {
 //                        .userId(new ArrayList<>(task.getAssignedTo()))
 //                        .type(NotificationType.TASK_ASSIGNED)
 //                        .build());
-        return loadTaskResponse(task.getId());
+        return taskResponse;
     }
     public Task createTask(WsTaskRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
@@ -339,19 +340,18 @@ public class TaskService {
         }
         return taskResponses;
     }
-    public List<Task> getTasksByProject(){
+    public List<TaskResponse> getTasksByProject(){
         User user=userService.loadAuthenticatedUser();
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_PROJECT)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        List<Task> taskResponses=new ArrayList<>();
+        List<TaskResponse> taskResponses=new ArrayList<>();
         if(user.getProjectId()==null){
             return taskResponses;
         }
         Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
         for(UUID taskId:project.getTasks()){
-            Task task=loadTask(taskId);
-            taskResponses.add(task);
+            taskResponses.add(loadTaskResponse(taskId));
         }
         return taskResponses;
     }
@@ -570,9 +570,10 @@ public class TaskService {
         taskRepository.save(task);
         project.getTasks().add(task.getId());
         projectRepository.save(project);
+        var taskResponse=loadTaskResponse(task.getId());
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+" updated","dataType", ResponseType.TASK.name(),"data",task)
+                Map.of("notification","Task "+task.getTitle()+" updated","dataType", ResponseType.TASK.name(),"data",taskResponse)
         );
 //        notificationService.createNotification(NotificationEvent.builder()
 //                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())

@@ -69,11 +69,12 @@ public class ProjectService {
         projectRepository.save(project);
         organization.getProjects().add(project.getId());
         organizationRepository.save(organization);
+        var p=loadProjectResponse(project.getId());
         messagingTemplate.convertAndSend(
                 "/topic/organization."+user.getOrganizationId(),
-                Map.of("notification","Project "+project.getTitle()+" created in your project","dataType", ResponseType.PROJECT.name(),"data",project)
+                Map.of("notification","Project "+project.getTitle()+" created in your project","dataType", ResponseType.PROJECT.name(),"data",p)
         );
-        return loadProjectResponse(project.getId());
+        return p;
 
     }
 

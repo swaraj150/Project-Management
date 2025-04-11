@@ -87,11 +87,12 @@ public class TeamService {
         teamRepository.save(team);
         organization.getTeams().add(team.getId());
         organizationRepository.save(organization);
+        var teamResponse= loadTeamResponse(team.getId());
         messagingTemplate.convertAndSend(
                 "/topic/organization."+organization.getId(),
-                Map.of("notification","Team "+team.getName()+" created in your organization","dataType", ResponseType.TEAM.name(),"data",team)
+                Map.of("notification","Team "+team.getName()+" created in your organization","dataType", ResponseType.TEAM.name(),"data",teamResponse)
         );
-        return loadTeamResponse(team.getId());
+        return teamResponse;
     }
 
     public TeamResponse loadTeamResponse(@NonNull UUID id){

@@ -59,9 +59,8 @@ public class TaskController {
 //    }
     @GetMapping("")
     public ResponseEntity<?> fetch(){
-        List<Task> taskResponses=taskService.getTasksByProject();
         HashMap<String,Object> h=new HashMap<>();
-        h.put("tasks",taskResponses);
+        h.put("tasks",taskService.getTasksByProject());
         return ResponseEntity.ok(h);
     }
     @GetMapping("/project/{id}")
