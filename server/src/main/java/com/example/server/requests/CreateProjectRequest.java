@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,6 +15,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class CreateProjectRequest {
+    @Nullable
+    private UUID id;
     private String title;
     private String description;
     private LocalDate estimatedEndDate;

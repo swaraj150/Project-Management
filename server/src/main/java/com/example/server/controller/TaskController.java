@@ -36,11 +36,11 @@ public class TaskController {
         h.put("task",taskResponse);
         return ResponseEntity.ok(h);
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateTask(@PathVariable @NonNull UUID id,@RequestBody @NonNull CreateTaskRequest request){
-        TaskResponse taskResponse=taskService.createTask(request);
+    @PutMapping("")
+    public ResponseEntity<?> updateTask(@RequestBody CreateTaskRequest request){
+        TaskResponse taskResponse=taskService.updateTask(request.getId(),request);
         HashMap<String,Object> h=new HashMap<>();
-        h.put("message","Task updated successfully");
+        h.put("task",taskResponse);
         return ResponseEntity.ok(h);
     }
 //    @PutMapping("/change-status")
@@ -77,9 +77,11 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable @NonNull UUID taskId){ //jugaad for now
+    public ResponseEntity<?> deleteTask(@PathVariable @NonNull UUID taskId){
         taskService.deleteTask(taskId);
-        return ResponseEntity.ok("Deleted successfully");
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("message","Deleted successfully");
+        return ResponseEntity.ok(h);
     }
 
     @GetMapping("/{id}")

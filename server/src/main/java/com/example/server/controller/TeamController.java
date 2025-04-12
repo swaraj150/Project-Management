@@ -36,6 +36,7 @@ public class TeamController {
         return ResponseEntity.ok(h);
     }
 
+
 //    @GetMapping("/")
 //    public ResponseEntity<?> load(){
 //        User user=userService.loadUser(securityUtils.getCurrentUsername());
@@ -104,11 +105,14 @@ public class TeamController {
 //        return ResponseEntity.ok(h);
 //    }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@RequestParam @NonNull UUID teamId){
+    @DeleteMapping("")
+    public ResponseEntity<?> delete(@PathVariable @NonNull UUID teamId){
         teamService.deleteTeam(teamId);
-        return ResponseEntity.ok("Deleted Successfully");
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("message","team deleted successfully");
+        return ResponseEntity.ok(h);
     }
+
 
 
 

@@ -529,7 +529,7 @@ public class TaskService {
 
     }
 
-    public void updateTask(UUID id,CreateTaskRequest request){
+    public TaskResponse updateTask(UUID id,CreateTaskRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
             throw new UnauthorizedAccessException("User does not have the required authority");
@@ -594,6 +594,7 @@ public class TaskService {
                 "/topic/project."+user.getProjectId(),
                 Map.of("notification","Task "+task.getTitle()+" updated","dataType", ResponseType.TASK.name(),"data",taskResponse)
         );
+        return taskResponse;
 //        notificationService.createNotification(NotificationEvent.builder()
 //                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
 //                        .actorId(user.getId())

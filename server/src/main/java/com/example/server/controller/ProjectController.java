@@ -70,10 +70,12 @@ public class ProjectController {
         return ResponseEntity.ok(h);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@RequestParam @NonNull UUID projectId){
-        projectService.deleteProject(projectId);
-        return ResponseEntity.ok("Deleted Successfully");
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable @NonNull UUID id){
+        projectService.deleteProject(id);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("msg","Project deleted successfully");
+        return ResponseEntity.ok(h);
     }
 
 

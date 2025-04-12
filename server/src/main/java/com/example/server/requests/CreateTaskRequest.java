@@ -3,6 +3,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -14,6 +15,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class CreateTaskRequest {
+    @Nullable
+    private UUID id;
+
     private String title;
     private String description;
     private String priority;

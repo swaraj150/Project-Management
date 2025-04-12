@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +15,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class TeamCreateRequest {
+    @NonNull
+    private UUID id;
+
     private String name;
     private List<UUID> developers;
     private List<UUID> testers;

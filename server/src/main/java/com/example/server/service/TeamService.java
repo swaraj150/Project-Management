@@ -267,11 +267,13 @@ public class TeamService {
             throw new UnauthorizedAccessException("User doesn't have required authority");
         }
         Organization organization=organizationService.loadOrganization(user.getOrganizationId());
-        for(UUID id:organization.getProjects()){
-            Project project=projectRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        if(user.getProjectId()!=null){
+            Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
             project.getTeams().remove(teamId);
             projectRepository.save(project);
+
         }
+
         organization.getTeams().remove(teamId);
         organizationRepository.save(organization);
         Team team=loadTeam(teamId);
