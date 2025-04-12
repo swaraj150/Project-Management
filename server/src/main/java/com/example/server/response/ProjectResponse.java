@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public class ProjectResponse {
     private UUID id;
     private String title;
     private String description;
-    private List<UUID> tasks;
+    private Map<String,Object> tasks;
     private Set<UUID> teams;
     private UUID projectManager;
     private LocalDate startDate;
