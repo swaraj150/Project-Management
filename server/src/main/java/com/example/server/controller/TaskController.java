@@ -1,6 +1,8 @@
 package com.example.server.controller;
 
+import com.example.server.entities.Dependency;
 import com.example.server.entities.Task;
+import com.example.server.requests.CreateDependencyRequest;
 import com.example.server.requests.CreateTaskRequest;
 import com.example.server.response.TaskResponse;
 //import com.example.server.service.MilestoneService;
@@ -60,7 +62,10 @@ public class TaskController {
     @GetMapping("")
     public ResponseEntity<?> fetch(){
         HashMap<String,Object> h=new HashMap<>();
-        h.put("tasks",taskService.getTasksByProject());
+        HashMap<String,Object> data=new HashMap<>();
+        data.put("data",taskService.getTasksByProject());
+        data.put("links",taskService.getDependenciesByProject());
+        h.put("tasks",data);
         return ResponseEntity.ok(h);
     }
     @GetMapping("/project/{id}")
@@ -92,6 +97,20 @@ public class TaskController {
         return ResponseEntity.ok(h);
     }
 
+    @PostMapping("/link")
+    public ResponseEntity<?> addDependency(@RequestBody @NonNull CreateDependencyRequest request){
+        taskService.createDependency(request);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("message","Link created");
+        return ResponseEntity.ok(h);
+    }
+    @DeleteMapping("/link/{id}")
+    public ResponseEntity<?> deleteDependency(@PathVariable @NonNull UUID id){
+        taskService.deleteDependency(id);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("message","Link deleted");
+        return ResponseEntity.ok(h);
+    }
 
 
 

@@ -9,6 +9,7 @@ import com.example.server.repositories.DependencyRepository;
 import com.example.server.repositories.ProjectRepository;
 import com.example.server.repositories.TaskRepository;
 import com.example.server.repositories.TeamRepository;
+import com.example.server.requests.CreateDependencyRequest;
 import com.example.server.requests.CreateTaskRequest;
 import com.example.server.requests.WsTaskRequest;
 import com.example.server.response.TaskResponse;
@@ -355,6 +356,24 @@ public class TaskService {
         }
         return taskResponses;
     }
+    public List<Dependency> getDependenciesByProject(){
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_PROJECT)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        List<Dependency> dependencies=new ArrayList<>();
+        if(user.getProjectId()==null){
+            return dependencies;
+        }
+        Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        for(UUID taskId:project.getTasks()){
+            List<Dependency> dependencyList=dependencyRepository.findByFromTaskId(taskId);
+            if(!dependencyList.isEmpty()){
+                dependencies.addAll(dependencyList);
+            }
+        }
+        return dependencies;
+    }
 
     public TaskResponse loadNestedTasks(UUID taskId){
         List<UUID> subTasks=loadSubTasks(taskId);
@@ -583,5 +602,41 @@ public class TaskService {
 //                        .build());
 //        return loadTaskResponse(task.getId());
     }
+
+    public void createDependency(CreateDependencyRequest request){
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.EDIT_TASKS)){
+            throw new UnauthorizedAccessException("User doesn't have required authority");
+        }
+        if(!exists(request.getSource()) || !exists(request.getTarget())){
+            throw new EntityNotFoundException("Task not found");
+        }
+        DependencyType dependencyType;
+        switch (request.getType()){
+            case "0" -> dependencyType=DependencyType.FINISH_TO_START;
+            case "1" -> dependencyType=DependencyType.START_TO_START;
+            case "2" -> dependencyType=DependencyType.FINISH_TO_FINISH;
+            case "3" -> dependencyType=DependencyType.START_TO_FINISH;
+            default -> throw new IllegalArgumentException("Invalid dependency type");
+        }
+        Dependency dependency=Dependency.builder().fromTaskId(request.getSource()).toTaskId(request.getTarget()).dependencyType(dependencyType).lag(0).build();
+        dependencyRepository.save(dependency);
+        messagingTemplate.convertAndSend(
+                "/topic/project."+user.getProjectId(),
+                Map.of("notification","Link created","dataType", ResponseType.LINK.name(),"data",dependency)
+        );
+
+    }
+
+    public void deleteDependency(UUID id){
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.EDIT_TASKS)){
+            throw new UnauthorizedAccessException("User doesn't have required authority");
+        }
+        dependencyRepository.deleteById(id);
+    }
+
+
+
 
 }
