@@ -608,15 +608,7 @@ public class TaskService {
         if(!exists(request.getSource()) || !exists(request.getTarget())){
             throw new EntityNotFoundException("Task not found");
         }
-        DependencyType dependencyType;
-        switch (request.getType()){
-            case "0" -> dependencyType=DependencyType.FINISH_TO_START;
-            case "1" -> dependencyType=DependencyType.START_TO_START;
-            case "2" -> dependencyType=DependencyType.FINISH_TO_FINISH;
-            case "3" -> dependencyType=DependencyType.START_TO_FINISH;
-            default -> throw new IllegalArgumentException("Invalid dependency type");
-        }
-        Dependency dependency=Dependency.builder().fromTaskId(request.getSource()).toTaskId(request.getTarget()).dependencyType(dependencyType).lag(0).build();
+        Dependency dependency=Dependency.builder().fromTaskId(request.getSource()).toTaskId(request.getTarget()).dependencyType(DependencyType.valueOf(request.getType())).lag(0).build();
         dependencyRepository.save(dependency);
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
