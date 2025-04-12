@@ -37,6 +37,4 @@ public class TaskResponse {
     private UUID projectId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private List<Dependency> dependencies;
-
 }

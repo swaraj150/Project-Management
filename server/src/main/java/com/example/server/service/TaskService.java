@@ -236,8 +236,6 @@ public class TaskService {
 
     public TaskResponse loadTaskResponse(@NonNull UUID id){
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
-        List<Dependency> dependencies=dependencyRepository.findByFromTaskId(id);
-
         return TaskResponse.builder()
                 .id(task.getId())
                 .title(task.getTitle())
@@ -253,14 +251,12 @@ public class TaskService {
                 .endDate(task.getEndDate())
                 .status(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
-                .dependencies(dependencies)
                 .progress(task.getProgress())
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
     public TaskResponse loadTaskResponse(@NonNull UUID id,String clientId){
         Task task=taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task not found"));
-        List<Dependency> dependencies=dependencyRepository.findByFromTaskId(id);
         return TaskResponse.builder()
                 .id(task.getId())
                 .clientTaskId(clientId)
@@ -277,9 +273,7 @@ public class TaskService {
                 .endDate(task.getEndDate())
                 .status(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
-                .dependencies(dependencies)
                 .progress(task.getProgress())
-                .dependencies(dependencies)
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
