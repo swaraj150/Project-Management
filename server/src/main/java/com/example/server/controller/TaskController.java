@@ -99,9 +99,9 @@ public class TaskController {
 
     @PostMapping("/link")
     public ResponseEntity<?> addDependency(@RequestBody @NonNull CreateDependencyRequest request){
-        taskService.createDependency(request);
+        Dependency dependency=taskService.createDependency(request);
         HashMap<String,Object> h=new HashMap<>();
-        h.put("message","Link created");
+        h.put("link",dependency);
         return ResponseEntity.ok(h);
     }
     @DeleteMapping("/link/{id}")

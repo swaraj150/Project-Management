@@ -603,7 +603,7 @@ public class TaskService {
 //        return loadTaskResponse(task.getId());
     }
 
-    public void createDependency(CreateDependencyRequest request){
+    public Dependency createDependency(CreateDependencyRequest request){
         User user=userService.loadAuthenticatedUser();
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.EDIT_TASKS)){
             throw new UnauthorizedAccessException("User doesn't have required authority");
@@ -625,7 +625,7 @@ public class TaskService {
                 "/topic/project."+user.getProjectId(),
                 Map.of("notification","Link created","dataType", ResponseType.LINK.name(),"data",dependency)
         );
-
+        return dependency;
     }
 
     public void deleteDependency(UUID id){
