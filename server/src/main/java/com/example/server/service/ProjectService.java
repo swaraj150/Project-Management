@@ -152,7 +152,7 @@ public class ProjectService {
         Project project=projectRepository.findById(projectId).orElseThrow(()->new EntityNotFoundException("Project not found"));
         Map<String,Object> tasks=new HashMap<>();
         tasks.put("data",project.getTasks());
-        tasks.put("links",taskService.getDependenciesByProject());
+        tasks.put("links",taskService.getDependencyIdsByProject());
         return ProjectResponse.builder()
                 .id(projectId)
                 .title(project.getTitle())

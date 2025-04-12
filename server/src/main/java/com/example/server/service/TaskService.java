@@ -368,6 +368,24 @@ public class TaskService {
         }
         return dependencies;
     }
+    public List<UUID> getDependencyIdsByProject(){
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_PROJECT)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        List<UUID> dependencies=new ArrayList<>();
+        if(user.getProjectId()==null){
+            return dependencies;
+        }
+        Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        for(UUID taskId:project.getTasks()){
+            List<UUID> dependencyList=dependencyRepository.findIdByFromTaskId(taskId);
+            if(!dependencyList.isEmpty()){
+                dependencies.addAll(dependencyList);
+            }
+        }
+        return dependencies;
+    }
 
     public TaskResponse loadNestedTasks(UUID taskId){
         List<UUID> subTasks=loadSubTasks(taskId);

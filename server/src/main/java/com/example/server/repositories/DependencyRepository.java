@@ -18,9 +18,12 @@ public interface DependencyRepository extends JpaRepository<Dependency, UUID> {
 
     List<Dependency> findByFromTaskId(UUID id);
     List<Dependency> findByToTaskId(UUID id);
+    @Query("select d.id from Dependency d where d.fromTaskId=:fromTaskId")
+    List<UUID> findIdByFromTaskId(@Param("fromTaskId") UUID id);
 
     @Query("select d from Dependency d where d.fromTaskId=:fromTaskId and d.toTaskId=:toTaskId and d.dependencyType=:type")
     Optional<Dependency> doesExist(@Param("fromTaskId") UUID id1, @Param("toTaskId") UUID id2, @Param("type") DependencyType dependencyType);
+
     @Modifying
     @Transactional
     @Query("delete from Dependency where fromTaskId=:fromTaskId")
