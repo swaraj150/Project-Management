@@ -28,6 +28,7 @@ public enum ProjectRole {
             ProjectAuthority.CREATE_ORGANIZATION,
             ProjectAuthority.VIEW_PROJECT,
             ProjectAuthority.EDIT_PROJECT,
+            ProjectAuthority.EDIT_TASKS,
             ProjectAuthority.ASSIGN_TASKS,
             ProjectAuthority.VIEW_REPORTS,
             ProjectAuthority.ACCEPT_MEMBERS,
