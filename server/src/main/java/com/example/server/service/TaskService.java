@@ -577,7 +577,9 @@ public class TaskService {
                 );
         Optional.ofNullable(request.getProjectId())
                 .ifPresent(task::setProjectId);
-
+        Optional.ofNullable(request.getStatus())
+                .map(CompletionStatus::valueOf)
+                .ifPresent(task::setCompletionStatus);
 
         Set<UUID> assignedTo=new HashSet<>();
         if(request.getAssignedTo()!=null){

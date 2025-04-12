@@ -31,5 +31,7 @@ public class CreateTaskRequest {
     private String endDate;
     private Integer progress;
     private UUID projectId;
+    @Nullable
+    private String status;
 
 }
