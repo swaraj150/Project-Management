@@ -43,7 +43,7 @@ public class TaskService {
     public boolean exists(UUID id){
         return taskRepository.existsById(id);
     }
-    public TaskResponse createTask(CreateTaskRequest request){
+    public TaskResponse createTask(@NonNull CreateTaskRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
             throw new UnauthorizedAccessException("User does not have the required authority");
@@ -76,11 +76,12 @@ public class TaskService {
 //        }
         task.setProgress(0);
         Set<UUID> assignedTo=new HashSet<>();
-        for(String s:request.getAssignedTo()){
-            assignedTo.add(userService.loadUser(UUID.fromString(s)).getId());
+        for(UUID s:request.getAssignedTo()){
+            assignedTo.add(userService.loadUser(s).getId());
         }
         task.setAssignedTo(assignedTo);
         task.setCompletionStatus(CompletionStatus.PENDING);
+
         taskRepository.save(task);
         project.getTasks().add(task.getId());
         projectRepository.save(project);
@@ -89,12 +90,6 @@ public class TaskService {
                 "/topic/project."+user.getProjectId(),
                 Map.of("notification","Task "+task.getTitle()+" created in your project","dataType", ResponseType.TASK.name(),"data",taskResponse)
         );
-//        notificationService.createNotification(NotificationEvent.builder()
-//                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
-//                        .actorId(user.getId())
-//                        .userId(new ArrayList<>(task.getAssignedTo()))
-//                        .type(NotificationType.TASK_ASSIGNED)
-//                        .build());
         return taskResponse;
     }
     public Task createTask(WsTaskRequest request){
@@ -603,15 +598,19 @@ public class TaskService {
         Optional.ofNullable(request.getStatus())
                 .map(CompletionStatus::valueOf)
                 .ifPresent(task::setCompletionStatus);
+        Optional.ofNullable(request.getCreatedBy())
+                .ifPresent(task::setCreatedBy);
         if(task.getCompletionStatus()==CompletionStatus.COMPLETED){
             task.setEndDate(LocalDate.now().atStartOfDay());
         }
         Set<UUID> assignedTo=new HashSet<>();
         if(request.getAssignedTo()!=null){
-            for(String s:request.getAssignedTo()){
+            for(UUID s:request.getAssignedTo()){
                 assignedTo.add(userService.loadUser(s).getId());
             }
         }
+
+
         task.setAssignedTo(assignedTo);
         taskRepository.save(task);
         project.getTasks().add(task.getId());

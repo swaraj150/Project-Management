@@ -17,21 +17,27 @@ import java.util.UUID;
 public class CreateTaskRequest {
     @Nullable
     private UUID id;
-
     private String title;
     private String description;
     private String priority;
     private String type;
     private String level;
-    private Date createdAt;
     private Integer estimatedDays;
-    private UUID parentTaskId;
-    private List<String> assignedTo;
+    private List<UUID> assignedTo;
     private String startDate;
-    private String endDate;
+    @Nullable
     private Integer progress;
+    @Nullable
+    private Date createdAt;
+    @Nullable
+    private String endDate;
+    @Nullable
     private UUID projectId;
     @Nullable
+    private UUID parentTaskId;
+    @Nullable
     private String status;
+    @Nullable
+    private UUID createdBy;
 
 }
