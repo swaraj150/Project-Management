@@ -2,6 +2,7 @@ package com.example.server.response;
 
 import com.example.server.entities.Dependency;
 import com.example.server.enums.CompletionStatus;
+import com.example.server.enums.Level;
 import com.example.server.enums.Priority;
 import com.example.server.enums.TaskType;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class TaskResponse {
     private String description;
     private Priority priority;
     private TaskType type;
+    private Level level;
     private UUID createdBy;
     private Set<UUID> assignedTo;
     private LocalDateTime createdAt;

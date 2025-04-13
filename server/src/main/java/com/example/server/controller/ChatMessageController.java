@@ -46,15 +46,13 @@ public class ChatMessageController {
             h.put("taskChats",chatMessageService.loadChatsByUser());
             if (user.getProjectId() == null) {
                 h.put("projectChats",new ArrayList<>());
-
             }
             else{
                 h.put("projectChats",chatMessageService.loadChats(user.getProjectId()));
-
             }
 
         }
-
+        h.put("organizationChat",chatMessageService.loadChats(user.getOrganizationId()));
         return ResponseEntity.ok(h);
     }
 
