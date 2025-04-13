@@ -42,7 +42,7 @@ public class ChatMessageController {
         else{
             h.put("taskChats",chatMessageService.loadChatsByUser());
             if (user.getProjectId() == null) {
-                h.put("projectChats",new ArrayList<>());
+                h.put("projectChats",new HashMap<>());
             }
             else{
                 h.put("projectChats", Map.of(user.getProjectId(),chatMessageService.loadChats(user.getProjectId())));
