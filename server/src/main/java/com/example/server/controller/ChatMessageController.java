@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -38,17 +39,13 @@ public class ChatMessageController {
         if(user.getProjectRole()==ProjectRole.PRODUCT_OWNER){
             h.put("projectChats",chatMessageService.loadChatsByOrganization());
         }
-//        else if(user.getProjectRole()== ProjectRole.PROJECT_MANAGER){
-//            h.put("taskChats",chatMessageService.loadChatsByUser());
-//            h.put("projectChats",chatMessageService.loadChatsByUser());
-//        }
         else{
             h.put("taskChats",chatMessageService.loadChatsByUser());
             if (user.getProjectId() == null) {
                 h.put("projectChats",new ArrayList<>());
             }
             else{
-                h.put("projectChats",chatMessageService.loadChats(user.getProjectId()));
+                h.put("projectChats", Map.of(user.getProjectId(),chatMessageService.loadChats(user.getProjectId())));
             }
 
         }

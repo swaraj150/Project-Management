@@ -92,6 +92,94 @@ public class TaskService {
         );
         return taskResponse;
     }
+    public TaskResponse updateTask(UUID id,CreateTaskRequest request){
+        User user= userService.loadUser(securityUtils.getCurrentUsername());
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        Task task=loadTask(id);
+        Project project=projectRepository.findById(task.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        Optional.ofNullable(request.getTitle())
+                .ifPresent(task::setTitle);
+        Optional.ofNullable(request.getDescription())
+                .ifPresent(task::setDescription);
+        Optional.ofNullable(request.getPriority())
+                .map(Priority::valueOf)
+                .ifPresent(task::setPriority);
+
+        Optional.ofNullable(request.getLevel())
+                .map(Level::valueOf)
+                .ifPresent(task::setLevel);
+
+        Optional.ofNullable(request.getProgress())
+                .ifPresent(task::setProgress);
+
+        if(request.getStartDate()!=null){
+//            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
+//            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+//            task.setStartDate(localDateTime);
+            task.setStartDate(LocalDate.parse(request.getStartDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
+
+
+        }
+//        if(request.getEndDate()!=null){
+////            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
+////            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+////            task.setEndDate(localDateTime);
+//            task.setEndDate(LocalDate.parse(request.getEndDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
+//
+//        }
+//        Optional.ofNullable(request.getEndDate())
+//                .ifPresent(task::setEndDate); // achieved at
+
+        Optional.ofNullable(request.getEstimatedDays())
+                .ifPresent(task::setEstimatedDays);
+
+
+        // validation checks are remaining
+        Optional.ofNullable(request.getParentTaskId())
+                .ifPresentOrElse(
+                        task::setParentTaskId,
+                        () -> task.setParentTaskId(null)
+                );
+        Optional.ofNullable(request.getProjectId())
+                .ifPresent(task::setProjectId);
+        Optional.ofNullable(request.getStatus())
+                .map(CompletionStatus::valueOf)
+                .ifPresent(task::setCompletionStatus);
+        Optional.ofNullable(request.getCreatedBy())
+                .ifPresent(task::setCreatedBy);
+
+
+        if(task.getCompletionStatus()==CompletionStatus.COMPLETED){
+            task.setEndDate(LocalDate.now().atStartOfDay());
+        }
+        Set<UUID> assignedTo=new HashSet<>();
+        if(request.getAssignedTo()!=null){
+            for(UUID s:request.getAssignedTo()){
+                assignedTo.add(userService.loadUser(s).getId());
+            }
+        }
+
+
+        task.setAssignedTo(assignedTo);
+        taskRepository.save(task);
+        project.getTasks().add(task.getId());
+        projectRepository.save(project);
+        var taskResponse=loadTaskResponse(task.getId());
+        messagingTemplate.convertAndSend(
+                "/topic/project."+user.getProjectId(),
+                Map.of("notification","Task "+task.getTitle()+" updated","dataType", ResponseType.TASK.name(),"data",taskResponse)
+        );
+        return taskResponse;
+//        notificationService.createNotification(NotificationEvent.builder()
+//                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
+//                        .actorId(user.getId())
+//                        .userId(new ArrayList<>(task.getAssignedTo()))
+//                        .type(NotificationType.TASK_ASSIGNED)
+//                        .build());
+//        return loadTaskResponse(task.getId());
+    }
     public Task createTask(WsTaskRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
@@ -543,92 +631,7 @@ public class TaskService {
 
     }
 
-    public TaskResponse updateTask(UUID id,CreateTaskRequest request){
-        User user= userService.loadUser(securityUtils.getCurrentUsername());
-        if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
-            throw new UnauthorizedAccessException("User does not have the required authority");
-        }
-        Task task=loadTask(id);
-        Project project=projectRepository.findById(task.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
-        Optional.ofNullable(request.getTitle())
-                .ifPresent(task::setTitle);
-        Optional.ofNullable(request.getDescription())
-                .ifPresent(task::setDescription);
-        Optional.ofNullable(request.getPriority())
-                .map(Priority::valueOf)
-                .ifPresent(task::setPriority);
 
-        Optional.ofNullable(request.getLevel())
-                .map(Level::valueOf)
-                .ifPresent(task::setLevel);
-
-        Optional.ofNullable(request.getProgress())
-                .ifPresent(task::setProgress);
-
-        if(request.getStartDate()!=null){
-//            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
-//            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-//            task.setStartDate(localDateTime);
-            task.setStartDate(LocalDate.parse(request.getStartDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
-
-
-        }
-//        if(request.getEndDate()!=null){
-////            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
-////            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-////            task.setEndDate(localDateTime);
-//            task.setEndDate(LocalDate.parse(request.getEndDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
-//
-//        }
-//        Optional.ofNullable(request.getEndDate())
-//                .ifPresent(task::setEndDate); // achieved at
-
-        Optional.ofNullable(request.getEstimatedDays())
-                .ifPresent(task::setEstimatedDays);
-
-
-        // validation checks are remaining
-        Optional.ofNullable(request.getParentTaskId())
-                .ifPresentOrElse(
-                        task::setParentTaskId,
-                        () -> task.setParentTaskId(null)
-                );
-        Optional.ofNullable(request.getProjectId())
-                .ifPresent(task::setProjectId);
-        Optional.ofNullable(request.getStatus())
-                .map(CompletionStatus::valueOf)
-                .ifPresent(task::setCompletionStatus);
-        Optional.ofNullable(request.getCreatedBy())
-                .ifPresent(task::setCreatedBy);
-        if(task.getCompletionStatus()==CompletionStatus.COMPLETED){
-            task.setEndDate(LocalDate.now().atStartOfDay());
-        }
-        Set<UUID> assignedTo=new HashSet<>();
-        if(request.getAssignedTo()!=null){
-            for(UUID s:request.getAssignedTo()){
-                assignedTo.add(userService.loadUser(s).getId());
-            }
-        }
-
-
-        task.setAssignedTo(assignedTo);
-        taskRepository.save(task);
-        project.getTasks().add(task.getId());
-        projectRepository.save(project);
-        var taskResponse=loadTaskResponse(task.getId());
-        messagingTemplate.convertAndSend(
-                "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+" updated","dataType", ResponseType.TASK.name(),"data",taskResponse)
-        );
-        return taskResponse;
-//        notificationService.createNotification(NotificationEvent.builder()
-//                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
-//                        .actorId(user.getId())
-//                        .userId(new ArrayList<>(task.getAssignedTo()))
-//                        .type(NotificationType.TASK_ASSIGNED)
-//                        .build());
-//        return loadTaskResponse(task.getId());
-    }
 
     public Dependency createDependency(CreateDependencyRequest request){
         User user=userService.loadAuthenticatedUser();
