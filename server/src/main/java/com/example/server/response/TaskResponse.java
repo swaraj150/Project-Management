@@ -32,11 +32,11 @@ public class TaskResponse {
     private LocalDateTime createdAt;
     private Integer estimatedDays;
     private Integer progress;
-    private LocalDateTime completedAt;
+//    private LocalDateTime completedAt;
     private CompletionStatus status;
     private List<TaskResponse> subTasks;
     private UUID parentTaskId;
     private UUID projectId;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String startDate;
+    private String endDate;
 }

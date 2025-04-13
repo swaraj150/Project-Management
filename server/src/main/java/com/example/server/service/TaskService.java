@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -62,17 +63,17 @@ public class TaskService {
         task.setProjectId(project.getId());
 //        task.setStartDate(request.getStartDate());
 //        task.setEndDate(request.getEndDate());
-
-        if(request.getStartDate()!=null){
-            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
-            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-            task.setStartDate(localDateTime);
-        }
-        if(request.getEndDate()!=null){
-            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
-            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-            task.setEndDate(localDateTime);
-        }
+        task.setStartDate(LocalDate.parse(request.getStartDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
+//        if(request.getStartDate()!=null){
+//            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
+//            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+//            task.setStartDate(localDateTime);
+//        }
+//        if(request.getEndDate()!=null){
+//            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
+//            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+//            task.setEndDate(localDateTime);
+//        }
         task.setProgress(0);
         Set<UUID> assignedTo=new HashSet<>();
         for(String s:request.getAssignedTo()){
@@ -246,9 +247,9 @@ public class TaskService {
                 .assignedTo(task.getAssignedTo())
                 .createdAt(task.getCreatedAt())
                 .estimatedDays(task.getEstimatedDays())
-                .completedAt(task.getCompletedAt())
-                .startDate(task.getStartDate())
-                .endDate(task.getEndDate())
+//                .completedAt(task.getCompletedAt())
+                .startDate(task.getStartDate().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+                .endDate(task.getEndDate().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .status(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
                 .progress(task.getProgress())
@@ -269,9 +270,9 @@ public class TaskService {
                 .assignedTo(task.getAssignedTo())
                 .createdAt(task.getCreatedAt())
                 .estimatedDays(task.getEstimatedDays())
-                .completedAt(task.getCompletedAt())
-                .startDate(task.getStartDate())
-                .endDate(task.getEndDate())
+//                .completedAt(task.getCompletedAt())
+                .startDate(task.getStartDate().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+                .endDate(task.getEndDate().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .status(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
                 .progress(task.getProgress())
@@ -567,20 +568,24 @@ public class TaskService {
                 .ifPresent(task::setProgress);
 
         if(request.getStartDate()!=null){
-            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
-            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-            task.setStartDate(localDateTime);
+//            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
+//            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+//            task.setStartDate(localDateTime);
+            task.setStartDate(LocalDate.parse(request.getStartDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
+
+
         }
-        if(request.getEndDate()!=null){
-            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
-            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-            task.setEndDate(localDateTime);
-        }
+//        if(request.getEndDate()!=null){
+////            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getEndDate(), DateTimeFormatter.ISO_DATE_TIME);
+////            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+////            task.setEndDate(localDateTime);
+//            task.setEndDate(LocalDate.parse(request.getEndDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
+//
+//        }
 //        Optional.ofNullable(request.getEndDate())
 //                .ifPresent(task::setEndDate); // achieved at
 
         Optional.ofNullable(request.getEstimatedDays())
-                .map(Integer::valueOf)
                 .ifPresent(task::setEstimatedDays);
 
 
@@ -595,7 +600,9 @@ public class TaskService {
         Optional.ofNullable(request.getStatus())
                 .map(CompletionStatus::valueOf)
                 .ifPresent(task::setCompletionStatus);
-
+        if(task.getCompletionStatus()==CompletionStatus.COMPLETED){
+            task.setEndDate(LocalDate.now().atStartOfDay());
+        }
         Set<UUID> assignedTo=new HashSet<>();
         if(request.getAssignedTo()!=null){
             for(String s:request.getAssignedTo()){
