@@ -253,7 +253,8 @@ public class TaskService {
                 .status(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
                 .progress(task.getProgress())
-                .level(task.getLevel())
+                .level(task.getLevel())gi
+                .projectId(task.getProjectId())
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
     }
@@ -277,6 +278,8 @@ public class TaskService {
                 .parentTaskId(task.getParentTaskId())
                 .progress(task.getProgress())
                 .level(task.getLevel())
+                .projectId(task.getProjectId())
+
 
 //                .subTasks(loadSubTasks(task.getId()).stream().map(this::loadTaskResponse).collect(Collectors.toList()))
                 .build();
