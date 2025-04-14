@@ -63,7 +63,8 @@ public class TaskService {
         task.setProjectId(project.getId());
 //        task.setStartDate(request.getStartDate());
 //        task.setEndDate(request.getEndDate());
-        task.setStartDate(LocalDate.parse(request.getStartDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
+        task.setStartDate(LocalDateTime.parse(request.getStartDate(),DateTimeFormatter.ISO_DATE_TIME));
+//        task.setStartDate(LocalDate.parse(request.getStartDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
 //        if(request.getStartDate()!=null){
 //            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
 //            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
@@ -118,7 +119,8 @@ public class TaskService {
 //            ZonedDateTime utcZonedDateTime = ZonedDateTime.parse(request.getStartDate(), DateTimeFormatter.ISO_DATE_TIME);
 //            LocalDateTime localDateTime = utcZonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
 //            task.setStartDate(localDateTime);
-            task.setStartDate(LocalDate.parse(request.getStartDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
+            task.setStartDate(LocalDateTime.parse(request.getStartDate(),DateTimeFormatter.ISO_DATE_TIME));
+//            task.setStartDate(LocalDate.parse(request.getStartDate(),DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay());
 
 
         }
@@ -331,8 +333,8 @@ public class TaskService {
                 .createdAt(task.getCreatedAt())
                 .estimatedDays(task.getEstimatedDays())
 //                .completedAt(task.getCompletedAt())
-                .startDate(task.getStartDate()!=null?task.getStartDate().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE):null)
-                .endDate(task.getEndDate()!=null?task.getEndDate().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE):null)
+                .startDate(task.getStartDate()!=null?task.getStartDate().format(DateTimeFormatter.ISO_DATE_TIME):null)
+                .endDate(task.getEndDate()!=null?task.getEndDate().format(DateTimeFormatter.ISO_DATE_TIME):null)
                 .status(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
                 .progress(task.getProgress())
@@ -355,8 +357,8 @@ public class TaskService {
                 .createdAt(task.getCreatedAt())
                 .estimatedDays(task.getEstimatedDays())
 //                .completedAt(task.getCompletedAt())
-                .startDate(task.getStartDate().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
-                .endDate(task.getEndDate()!=null?task.getEndDate().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE):null)
+                .startDate(task.getStartDate()!=null?task.getStartDate().format(DateTimeFormatter.ISO_DATE_TIME):null)
+                .endDate(task.getEndDate()!=null?task.getEndDate().format(DateTimeFormatter.ISO_DATE_TIME):null)
                 .status(task.getCompletionStatus())
                 .parentTaskId(task.getParentTaskId())
                 .progress(task.getProgress())
