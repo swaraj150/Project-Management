@@ -76,7 +76,7 @@ public class TaskController {
         return ResponseEntity.ok(h);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{taskId}")
     public ResponseEntity<?> deleteTask(@PathVariable @NonNull UUID taskId){
         taskService.deleteTask(taskId);
         HashMap<String,Object> h=new HashMap<>();

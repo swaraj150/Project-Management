@@ -166,8 +166,6 @@ public class TaskService {
 
         task.setAssignedTo(assignedTo);
         taskRepository.save(task);
-        project.getTasks().add(task.getId());
-        projectRepository.save(project);
         var taskResponse=loadTaskResponse(task.getId());
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
