@@ -53,5 +53,5 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     @Query("select count(t) from Task t where t.priority=:priority and t.projectId=:projectId")
     Integer getTaskCountByPriorityWithinProject(@Param(("priority")) Priority priority, @Param("projectId") UUID id);
 
-
+    List<Task> findByParentTaskId(UUID id);
 }

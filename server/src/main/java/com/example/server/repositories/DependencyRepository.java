@@ -28,4 +28,6 @@ public interface DependencyRepository extends JpaRepository<Dependency, UUID> {
     @Transactional
     @Query("delete from Dependency where fromTaskId=:fromTaskId")
     void deleteByFromTaskId(@Param("fromTaskId") UUID id);
+
+    void deleteByToTaskId(UUID id);
 }

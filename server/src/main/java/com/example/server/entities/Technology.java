@@ -24,4 +24,5 @@ public class Technology {
     private Set<String> techName;
     private Set<String> domain;
     private UUID projectId;
+    
 }

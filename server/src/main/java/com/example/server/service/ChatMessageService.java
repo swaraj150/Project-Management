@@ -79,6 +79,19 @@ public class ChatMessageService {
         }
         return chats;
     }
+    public Map<UUID,List<ChatMessage>> loadTaskChatsByProject(){
+        User user=userService.loadAuthenticatedUser();
+        Map<UUID,List<ChatMessage>> chats=new HashMap<>();
+        if(user.getProjectId()==null){
+            return chats;
+        }
+        Project project=projectService.loadProject(user.getProjectId());
+        List<UUID> tasks=project.getTasks();
+        for(UUID taskId:tasks){
+            chats.put(taskId, loadChats(taskId));
+        }
+        return chats;
+    }
     public Map<UUID,List<ChatMessage>> loadChatsByOrganization(){
         User user=userService.loadAuthenticatedUser();
         Organization organization=organizationService.loadOrganization(user.getOrganizationId());

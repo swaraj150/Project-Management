@@ -616,14 +616,17 @@ public class TaskService {
 //        }
         Task task=loadTask(taskId);
         Project project=projectRepository.findById(task.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
-        dependencyRepository.deleteByFromTaskId(taskId);
-        project.getTasks().remove(taskId);
+        List<Task> taskList=taskRepository.findByParentTaskId(task.getId());
+        taskList.add(task);
+        for(Task t:taskList){
+            dependencyRepository.deleteByFromTaskId(t.getId());
+            dependencyRepository.deleteByToTaskId(t.getId());
+            project.getTasks().remove(taskId);
+            task.getAssignedTo().clear();
+            taskRepository.save(task);
+            taskRepository.delete(task);
+        }
         projectRepository.save(project);
-
-        // delete assigned to users
-        task.getAssignedTo().clear();
-        taskRepository.save(task);
-        taskRepository.delete(task);
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
                 Map.of("notification","Task "+task.getTitle()+"deleted")
@@ -656,6 +659,7 @@ public class TaskService {
             throw new UnauthorizedAccessException("User doesn't have required authority");
         }
         dependencyRepository.deleteById(id);
+
     }
 
 

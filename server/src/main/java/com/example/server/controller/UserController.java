@@ -103,7 +103,7 @@ public class UserController {
         return ResponseEntity.ok(h);
     }
 
-    @GetMapping("/logout-user")
+    @GetMapping("/logout")
     public ResponseEntity<ApiResponse<?>> logout(HttpServletRequest request) {
         String token=jwtService.extractToken(request);
         tokenBlacklistService.addToken(token);
@@ -111,7 +111,7 @@ public class UserController {
 
 
     }
-    @PutMapping("/add-skills")
+    @PutMapping("/skills")
     public ResponseEntity<?> addSkills(@RequestBody @NonNull AddSkillsToUserRequest request){
         userService.addSkills(request);
         return ResponseEntity.ok("skills added");
@@ -154,8 +154,8 @@ public class UserController {
     }
 
     @PostMapping("/add-expertise")
-    public ResponseEntity<?> addExpertise(@RequestParam @NonNull UUID projectID){
-        userExpertiseService.create(projectID);
+    public ResponseEntity<?> addExpertise(){
+        userExpertiseService.create();
         return ResponseEntity.ok("user expertise added");
     }
     @GetMapping("/getExpertise")

@@ -134,6 +134,7 @@ public class OrganizationService {
             }
         }
         return OrganizationResponse.builder()
+                .id(organizationDTO.getId())
                 .name(organizationDTO.getName())
                 .productOwner(organizationDTO.getProductOwnerId())
                 .stakeholders(stakeholders)

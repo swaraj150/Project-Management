@@ -49,6 +49,10 @@ public class Project {
     @Column(name = "task_id")
     private List<UUID> tasks = new ArrayList<>();
 
+
+
+    private List<String> technologies;
+
     private BigDecimal budget;// in INR
 
 //    @ManyToMany
