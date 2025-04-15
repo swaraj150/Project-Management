@@ -49,7 +49,7 @@ public class ChatMessageController {
             }
 
         }
-        h.put("organizationChat",chatMessageService.loadChats(user.getOrganizationId()));
+        h.put("organizationChats",chatMessageService.loadChats(user.getOrganizationId()));
         return ResponseEntity.ok(h);
     }
 
