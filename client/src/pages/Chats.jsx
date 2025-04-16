@@ -5,6 +5,7 @@ import Select from 'react-select'
 import Menu from '../components/common/Menu'
 import ChatBoard from '../components/common/ChatBoard'
 
+import { useSocket } from '../contexts/SocketContext'
 import { useProject } from '../contexts/ProjectContext'
 
 import { setActive } from '../redux/features/menuSlice'
@@ -22,6 +23,7 @@ const Chats = () => {
   const { projects, projectsMap } = useSelector((state) => state.projects)
   const { organizationChats, projectChats, taskChats } = useSelector((state) => state.chats)
 
+  const { sendMessageInChat } = useSocket()
   const { selectedProject, selectedTask, setSelectedProject, setSelectedTask } = useProject()
 
   const [chatOption, setChatOption] = useState(0)
@@ -35,6 +37,10 @@ const Chats = () => {
       setSelectedProject(projectsMap[projects[0]])
     }
   }, [user, projects])
+
+  useEffect(() => {
+    if (organization) sendMessageInChat({ id: "7edf0819-89f4-4a81-b627-04f847c2a70", payload: { taskId: "7edf0819-89f4-4a81-b627-04f847c2a70", content: "hello", senderId: "7c4d65cb-d546-42ac-84c5-feaa421eaee2", roomId: "7edf0819-89f4-4a81-b627-04f847c2a70" } })
+  }, [organization])
 
   const getChatBoard = () => {
     switch (chatOption) {
