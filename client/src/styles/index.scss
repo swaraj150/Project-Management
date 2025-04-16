@@ -437,7 +437,7 @@ main {
 #menu {
     width: 15%;
     height: 100%;
-    padding: 2% 1%;
+    padding: 2% 1% 1%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -507,6 +507,57 @@ main {
             background-color: $white-500;
         }
     }
+
+    .menu-user-settings {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .profile {
+            width: 100%;
+            padding: 3%;
+            padding-left: 10%;
+            border-radius: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 1.3rem;
+
+            .profile-img {
+                height: 25px;
+                width: 25px;
+            }
+        }
+
+        .logout {
+            width: 100%;
+            padding: 3%;
+            padding-left: 10%;
+            border-radius: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 1.3rem;
+            color: $error;
+
+            svg {
+                font-size: 1.5rem;
+                font-weight: 700;
+            }
+        }
+
+        .profile:hover,
+        .logout:hover,
+        .active {
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), -2px 2px 5px rgba(0, 0, 0, 0.3);
+            color: $black;
+            background-color: $white-500;
+        }
+
+        .logout:hover {
+            color: $error;
+        }
+    }
 }
 
 #dashboard,
@@ -518,7 +569,10 @@ main {
 #create-project,
 #project-details,
 #tasks,
-#create-task {
+#create-task,
+#update-task,
+#chats,
+#profile {
     height: 100vh;
     display: flex;
     align-items: center;
@@ -535,6 +589,17 @@ main {
 
         .menu-items {
             li {
+                padding: 25% !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50% !important;
+            }
+        }
+
+        .menu-user-settings {
+            .profile,
+            .logout {
                 padding: 25% !important;
                 display: flex;
                 align-items: center;
@@ -838,14 +903,6 @@ main {
                         padding: 1%;
                         text-align: center;
                     }
-
-                    svg {
-                        position: absolute;
-                        right: 1%;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        font-size: 1.5rem;
-                    }
                 }
 
                 .teams-list-info:nth-child(odd) {
@@ -926,7 +983,7 @@ main {
             justify-content: space-evenly;
 
             .project-info {
-                padding: 1%;
+                padding: 2%;
                 width: 30%;
                 height: 48%;
                 border-radius: 20px;
@@ -1030,25 +1087,6 @@ main {
         flex-direction: column;
         align-items: center;
 
-        .cta {
-            align-self: flex-end;
-            width: 30%;
-            display: flex;
-            gap: 5%;
-            align-items: center;
-
-            button {
-                flex-grow: 1;
-                padding: 3% 5%;
-                outline: none;
-                border: none;
-                border-radius: 10px;
-                background-color: $white-500;
-                font-size: 1rem;
-                font-weight: 500;
-            }
-        }
-
         .information {
             margin-top: 5%;
             padding: 2% 5%;
@@ -1079,6 +1117,39 @@ main {
             }
 
             .teams {
+                .cta {
+                    padding: 1%;
+                    width: 100%;
+                    display: flex;
+                    gap: 2%;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .select {
+                        flex-grow: 1;
+                    }
+
+                    button {
+                        width: 20%;
+                        padding: 1% 0;
+                        outline: none;
+                        border: none;
+                        border-radius: 10px;
+                        display: flex;
+                        gap: 10px;
+                        align-items: center;
+                        justify-content: center;
+
+                        p {
+                            font-size: 1.2rem;
+                        }
+
+                        svg {
+                            font-size: 1.5rem;
+                        }
+                    }
+                }
+
                 .teams-list {
                     list-style: none;
 
@@ -1098,7 +1169,7 @@ main {
                     }
 
                     .teams-list-items {
-                        height: 25vh;
+                        height: 20vh;
 
                         .teams-list-info {
                             height: 20%;
@@ -1131,6 +1202,11 @@ main {
                     }
                 }
             }
+
+            .tasks {
+                text-decoration: none;
+                color: $black;
+            }
         }
     }
 }
@@ -1140,27 +1216,55 @@ main {
         display: flex;
         flex-direction: column;
 
-        .task-options {
-            margin: 1% 1% 0;
-            width: 98%;
+        .heading {
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
 
-            .select {
-                flex-grow: 1;
-                padding: 0.5%;
-            }
-
-            .view-options {
-                width: 70%;
+            .task-options {
+                width: 75%;
                 display: flex;
-                gap: 2%;
+                gap: 5%;
                 align-items: center;
                 justify-content: flex-end;
 
-                button {
+                .select {
                     width: 40%;
+                    padding: 0.5%;
+                }
+
+                .view-options {
+                    width: 60%;
+                    justify-self: flex-end;
+                    display: flex;
+                    gap: 4%;
+                    align-items: center;
+                    justify-content: flex-end;
+
+                    button {
+                        width: 48%;
+                        padding: 2% 0;
+                        border: none;
+                        outline: none;
+                        border-radius: 10px;
+                        display: flex;
+                        gap: 5%;
+                        align-items: center;
+                        justify-content: center;
+
+                        svg {
+                            font-size: 1.5rem;
+                        }
+
+                        p {
+                            font-size: 1.2rem;
+                        }
+                    }
+                }
+
+                .cta {
+                    width: 30%;
                     padding: 1% 0;
                     border: none;
                     outline: none;
@@ -1182,15 +1286,34 @@ main {
         }
 
         .task-container {
-            height: 100%;
-            margin: 3% 2% 1%;
+            height: 90%;
+            padding: 0 1%;
 
             .gantt-chart-container {
-                height: 100% !important;
+                height: 100%;
+                display: flex;
+                gap: 2%;
+                flex-direction: column;
+
+                .select {
+                    align-self: flex-end;
+                    width: 15%;
+                    padding: 0.2% !important;
+                }
+
+                .gantt-chart {
+                    height: 100%;
+                }
+
+                .hide-add-column .gantt_add,
+                .hide-add-column .gantt_grid_head_add {
+                    display: none !important;
+                }
             }
 
             .kanban-board-container {
                 height: 100%;
+                padding: 1% 0;
                 display: flex;
                 gap: 2%;
                 align-items: center;
@@ -1198,9 +1321,80 @@ main {
 
                 .kanban-column {
                     height: 100%;
-                    flex-grow: 1;
+                    width: 32%;
                     border-radius: 10px;
                     padding: 1%;
+                    display: flex;
+                    flex-direction: column;
+
+                    h2 {
+                        text-align: center;
+                    }
+
+                    &:first-child {
+                        background-color: $pending;
+                    }
+
+                    &:nth-child(2) {
+                        background-color: $in-progress;
+                    }
+
+                    &:last-child {
+                        background-color: $completed;
+                    }
+
+                    .tasks {
+                        height: 100%;
+                        margin-top: 2%;
+                        display: flex;
+                        gap: 1%;
+                        flex-direction: column;
+
+                        .kanban-task {
+                            width: 100%;
+                            padding: 3%;
+                            background-color: $white-500;
+                            border-radius: 15px;
+                            display: flex;
+                            flex-direction: column;
+
+                            .description {
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
+
+                            .task-meta-group {
+                                display: flex;
+                                gap: 10px;
+                                align-items: center;
+
+                                .priority-low {
+                                    color: $priority-low;
+                                }
+
+                                .priority-normal {
+                                    color: $priority-normal;
+                                }
+
+                                .priority-high {
+                                    color: $priority-high;
+                                }
+
+                                .level-beginner {
+                                    color: $level-beginner;
+                                }
+
+                                .level-intermediate {
+                                    color: $level-intermediate;
+                                }
+
+                                .level-expert {
+                                    color: $level-expert;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1208,8 +1402,7 @@ main {
 }
 
 #teams,
-#projects,
-#tasks {
+#projects {
     .content {
         .heading {
             width: 100%;
@@ -1239,7 +1432,8 @@ main {
 
 #create-team,
 #create-project,
-#create-task {
+#create-task,
+#update-task {
     .content {
         position: relative;
         display: flex;
@@ -1262,6 +1456,7 @@ main {
             }
 
             .input-field {
+
                 input,
                 textarea {
                     padding: 1%;
@@ -1274,6 +1469,26 @@ main {
 
                 .select {
                     width: 100%;
+                }
+            }
+
+            .date-duration-group,
+            .task-meta-group {
+                width: 100%;
+                display: flex;
+                gap: 2%;
+                align-items: center;
+
+                .input-field {
+                    flex-grow: 1;
+
+                    input {
+                        padding: 2%;
+                    }
+
+                    .select {
+                        padding: 1.5%;
+                    }
                 }
             }
 
@@ -1292,11 +1507,46 @@ main {
                     border-radius: 10px;
                     background-color: $white-100;
                     font-size: 1.2rem;
-                }
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    justify-content: center;
 
-                button:last-child {
-                    color: $white-500;
-                    background-color: $primary-900;
+                    &:nth-child(2) {
+                        color: $white-500;
+                        background-color: $error;
+                    }
+                }
+            }
+        }
+    }
+}
+
+#chats {
+    .content {
+        .chat-context {
+            width: 100%;
+            display: flex;
+            align-items: center;
+
+            .select {
+                width: 30%;
+            }
+
+            .chat-options {
+                width: 50%;
+                margin-left: auto;
+                display: flex;
+                gap: 5%;
+                align-items: center;
+                justify-content: flex-end;
+
+                button {
+                    width: 30%;
+                    padding: 1.5% 0;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 1.2rem;
                 }
             }
         }

@@ -375,7 +375,7 @@ main {
 #menu {
   width: 15%;
   height: 100%;
-  padding: 2% 1%;
+  padding: 2% 1% 1%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -437,6 +437,50 @@ main {
   color: rgb(0, 0, 0);
   background-color: rgb(255, 255, 255);
 }
+#menu .menu-user-settings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#menu .menu-user-settings .profile {
+  width: 100%;
+  padding: 3%;
+  padding-left: 10%;
+  border-radius: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 1.3rem;
+}
+#menu .menu-user-settings .profile .profile-img {
+  height: 25px;
+  width: 25px;
+}
+#menu .menu-user-settings .logout {
+  width: 100%;
+  padding: 3%;
+  padding-left: 10%;
+  border-radius: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 1.3rem;
+  color: red;
+}
+#menu .menu-user-settings .logout svg {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+#menu .menu-user-settings .profile:hover,
+#menu .menu-user-settings .logout:hover,
+#menu .menu-user-settings .active {
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), -2px 2px 5px rgba(0, 0, 0, 0.3);
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+}
+#menu .menu-user-settings .logout:hover {
+  color: red;
+}
 
 #dashboard,
 #organization,
@@ -447,7 +491,10 @@ main {
 #create-project,
 #project-details,
 #tasks,
-#create-task {
+#create-task,
+#update-task,
+#chats,
+#profile {
   height: 100vh;
   display: flex;
   align-items: center;
@@ -462,7 +509,10 @@ main {
 #create-project .content,
 #project-details .content,
 #tasks .content,
-#create-task .content {
+#create-task .content,
+#update-task .content,
+#chats .content,
+#profile .content {
   width: 85%;
   padding: 1%;
   height: 100vh;
@@ -476,7 +526,10 @@ main {
 #create-project .collapsed,
 #project-details .collapsed,
 #tasks .collapsed,
-#create-task .collapsed {
+#create-task .collapsed,
+#update-task .collapsed,
+#chats .collapsed,
+#profile .collapsed {
   width: 5% !important;
 }
 #dashboard .collapsed .menu-items li,
@@ -488,7 +541,42 @@ main {
 #create-project .collapsed .menu-items li,
 #project-details .collapsed .menu-items li,
 #tasks .collapsed .menu-items li,
-#create-task .collapsed .menu-items li {
+#create-task .collapsed .menu-items li,
+#update-task .collapsed .menu-items li,
+#chats .collapsed .menu-items li,
+#profile .collapsed .menu-items li {
+  padding: 25% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+}
+#dashboard .collapsed .menu-user-settings .profile,
+#dashboard .collapsed .menu-user-settings .logout,
+#organization .collapsed .menu-user-settings .profile,
+#organization .collapsed .menu-user-settings .logout,
+#teams .collapsed .menu-user-settings .profile,
+#teams .collapsed .menu-user-settings .logout,
+#create-team .collapsed .menu-user-settings .profile,
+#create-team .collapsed .menu-user-settings .logout,
+#team-details .collapsed .menu-user-settings .profile,
+#team-details .collapsed .menu-user-settings .logout,
+#projects .collapsed .menu-user-settings .profile,
+#projects .collapsed .menu-user-settings .logout,
+#create-project .collapsed .menu-user-settings .profile,
+#create-project .collapsed .menu-user-settings .logout,
+#project-details .collapsed .menu-user-settings .profile,
+#project-details .collapsed .menu-user-settings .logout,
+#tasks .collapsed .menu-user-settings .profile,
+#tasks .collapsed .menu-user-settings .logout,
+#create-task .collapsed .menu-user-settings .profile,
+#create-task .collapsed .menu-user-settings .logout,
+#update-task .collapsed .menu-user-settings .profile,
+#update-task .collapsed .menu-user-settings .logout,
+#chats .collapsed .menu-user-settings .profile,
+#chats .collapsed .menu-user-settings .logout,
+#profile .collapsed .menu-user-settings .profile,
+#profile .collapsed .menu-user-settings .logout {
   padding: 25% !important;
   display: flex;
   align-items: center;
@@ -504,7 +592,10 @@ main {
 #create-project .expanded,
 #project-details .expanded,
 #tasks .expanded,
-#create-task .expanded {
+#create-task .expanded,
+#update-task .expanded,
+#chats .expanded,
+#profile .expanded {
   width: 95% !important;
 }
 
@@ -748,13 +839,6 @@ main {
   padding: 1%;
   text-align: center;
 }
-#teams .content .teams-list .teams-list-items .teams-list-info svg {
-  position: absolute;
-  right: 1%;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.5rem;
-}
 #teams .content .teams-list .teams-list-items .teams-list-info:nth-child(odd) {
   box-shadow: none !important;
 }
@@ -815,7 +899,7 @@ main {
   justify-content: space-evenly;
 }
 #projects .content .projects-list .project-info {
-  padding: 1%;
+  padding: 2%;
   width: 30%;
   height: 48%;
   border-radius: 20px;
@@ -900,23 +984,6 @@ main {
   flex-direction: column;
   align-items: center;
 }
-#project-details .content .cta {
-  align-self: flex-end;
-  width: 30%;
-  display: flex;
-  gap: 5%;
-  align-items: center;
-}
-#project-details .content .cta button {
-  flex-grow: 1;
-  padding: 3% 5%;
-  outline: none;
-  border: none;
-  border-radius: 10px;
-  background-color: rgb(255, 255, 255);
-  font-size: 1rem;
-  font-weight: 500;
-}
 #project-details .content .information {
   margin-top: 5%;
   padding: 2% 5%;
@@ -941,6 +1008,34 @@ main {
   text-decoration: none;
   color: inherit;
 }
+#project-details .content .information .teams .cta {
+  padding: 1%;
+  width: 100%;
+  display: flex;
+  gap: 2%;
+  align-items: center;
+  justify-content: space-between;
+}
+#project-details .content .information .teams .cta .select {
+  flex-grow: 1;
+}
+#project-details .content .information .teams .cta button {
+  width: 20%;
+  padding: 1% 0;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+#project-details .content .information .teams .cta button p {
+  font-size: 1.2rem;
+}
+#project-details .content .information .teams .cta button svg {
+  font-size: 1.5rem;
+}
 #project-details .content .information .teams .teams-list {
   list-style: none;
 }
@@ -958,7 +1053,7 @@ main {
   text-align: center;
 }
 #project-details .content .information .teams .teams-list .teams-list-items {
-  height: 25vh;
+  height: 20vh;
 }
 #project-details .content .information .teams .teams-list .teams-list-items .teams-list-info {
   height: 20%;
@@ -984,31 +1079,59 @@ main {
 #project-details .content .information .teams .teams-list .teams-list-items .teams-list-info:nth-child(even) {
   background-color: rgb(230, 230, 230);
 }
+#project-details .content .information .tasks {
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+}
 
 #tasks .content {
   display: flex;
   flex-direction: column;
 }
-#tasks .content .task-options {
-  margin: 1% 1% 0;
-  width: 98%;
+#tasks .content .heading {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-#tasks .content .task-options .select {
-  flex-grow: 1;
-  padding: 0.5%;
-}
-#tasks .content .task-options .view-options {
-  width: 70%;
+#tasks .content .heading .task-options {
+  width: 75%;
   display: flex;
-  gap: 2%;
+  gap: 5%;
   align-items: center;
   justify-content: flex-end;
 }
-#tasks .content .task-options .view-options button {
+#tasks .content .heading .task-options .select {
   width: 40%;
+  padding: 0.5%;
+}
+#tasks .content .heading .task-options .view-options {
+  width: 60%;
+  justify-self: flex-end;
+  display: flex;
+  gap: 4%;
+  align-items: center;
+  justify-content: flex-end;
+}
+#tasks .content .heading .task-options .view-options button {
+  width: 48%;
+  padding: 2% 0;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  display: flex;
+  gap: 5%;
+  align-items: center;
+  justify-content: center;
+}
+#tasks .content .heading .task-options .view-options button svg {
+  font-size: 1.5rem;
+}
+#tasks .content .heading .task-options .view-options button p {
+  font-size: 1.2rem;
+}
+#tasks .content .heading .task-options .cta {
+  width: 30%;
   padding: 1% 0;
   border: none;
   outline: none;
@@ -1018,21 +1141,37 @@ main {
   align-items: center;
   justify-content: center;
 }
-#tasks .content .task-options .view-options button svg {
+#tasks .content .heading .task-options .cta svg {
   font-size: 1.5rem;
 }
-#tasks .content .task-options .view-options button p {
+#tasks .content .heading .task-options .cta p {
   font-size: 1.2rem;
 }
 #tasks .content .task-container {
-  height: 100%;
-  margin: 3% 2% 1%;
+  height: 90%;
+  padding: 0 1%;
 }
 #tasks .content .task-container .gantt-chart-container {
-  height: 100% !important;
+  height: 100%;
+  display: flex;
+  gap: 2%;
+  flex-direction: column;
+}
+#tasks .content .task-container .gantt-chart-container .select {
+  align-self: flex-end;
+  width: 15%;
+  padding: 0.2% !important;
+}
+#tasks .content .task-container .gantt-chart-container .gantt-chart {
+  height: 100%;
+}
+#tasks .content .task-container .gantt-chart-container .hide-add-column .gantt_add,
+#tasks .content .task-container .gantt-chart-container .hide-add-column .gantt_grid_head_add {
+  display: none !important;
 }
 #tasks .content .task-container .kanban-board-container {
   height: 100%;
+  padding: 1% 0;
   display: flex;
   gap: 2%;
   align-items: center;
@@ -1040,22 +1179,77 @@ main {
 }
 #tasks .content .task-container .kanban-board-container .kanban-column {
   height: 100%;
-  flex-grow: 1;
+  width: 32%;
   border-radius: 10px;
   padding: 1%;
+  display: flex;
+  flex-direction: column;
+}
+#tasks .content .task-container .kanban-board-container .kanban-column h2 {
+  text-align: center;
+}
+#tasks .content .task-container .kanban-board-container .kanban-column:first-child {
+  background-color: rgb(250, 204, 21);
+}
+#tasks .content .task-container .kanban-board-container .kanban-column:nth-child(2) {
+  background-color: rgb(59, 130, 246);
+}
+#tasks .content .task-container .kanban-board-container .kanban-column:last-child {
+  background-color: rgb(34, 197, 94);
+}
+#tasks .content .task-container .kanban-board-container .kanban-column .tasks {
+  height: 100%;
+  margin-top: 2%;
+  display: flex;
+  gap: 1%;
+  flex-direction: column;
+}
+#tasks .content .task-container .kanban-board-container .kanban-column .tasks .kanban-task {
+  width: 100%;
+  padding: 3%;
+  background-color: rgb(255, 255, 255);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+}
+#tasks .content .task-container .kanban-board-container .kanban-column .tasks .kanban-task .description {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#tasks .content .task-container .kanban-board-container .kanban-column .tasks .kanban-task .task-meta-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+#tasks .content .task-container .kanban-board-container .kanban-column .tasks .kanban-task .task-meta-group .priority-low {
+  color: rgb(37, 99, 235);
+}
+#tasks .content .task-container .kanban-board-container .kanban-column .tasks .kanban-task .task-meta-group .priority-normal {
+  color: rgb(202, 138, 4);
+}
+#tasks .content .task-container .kanban-board-container .kanban-column .tasks .kanban-task .task-meta-group .priority-high {
+  color: rgb(220, 38, 38);
+}
+#tasks .content .task-container .kanban-board-container .kanban-column .tasks .kanban-task .task-meta-group .level-beginner {
+  color: rgb(56, 189, 248);
+}
+#tasks .content .task-container .kanban-board-container .kanban-column .tasks .kanban-task .task-meta-group .level-intermediate {
+  color: rgb(59, 130, 246);
+}
+#tasks .content .task-container .kanban-board-container .kanban-column .tasks .kanban-task .task-meta-group .level-expert {
+  color: rgb(126, 34, 206);
 }
 
 #teams .content .heading,
-#projects .content .heading,
-#tasks .content .heading {
+#projects .content .heading {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 #teams .content .heading .cta,
-#projects .content .heading .cta,
-#tasks .content .heading .cta {
+#projects .content .heading .cta {
   width: 15%;
   border: none;
   outline: none;
@@ -1068,14 +1262,14 @@ main {
   justify-content: center;
 }
 #teams .content .heading .cta svg,
-#projects .content .heading .cta svg,
-#tasks .content .heading .cta svg {
+#projects .content .heading .cta svg {
   font-size: 1.2rem;
 }
 
 #create-team .content,
 #create-project .content,
-#create-task .content {
+#create-task .content,
+#update-task .content {
   position: relative;
   display: flex;
   align-items: center;
@@ -1083,7 +1277,8 @@ main {
 }
 #create-team .content form,
 #create-project .content form,
-#create-task .content form {
+#create-task .content form,
+#update-task .content form {
   height: 100%;
   width: 80%;
   margin-top: 2%;
@@ -1096,7 +1291,8 @@ main {
 }
 #create-team .content form h1,
 #create-project .content form h1,
-#create-task .content form h1 {
+#create-task .content form h1,
+#update-task .content form h1 {
   font-size: 2rem;
 }
 #create-team .content form .input-field input,
@@ -1104,7 +1300,9 @@ main {
 #create-project .content form .input-field input,
 #create-project .content form .input-field textarea,
 #create-task .content form .input-field input,
-#create-task .content form .input-field textarea {
+#create-task .content form .input-field textarea,
+#update-task .content form .input-field input,
+#update-task .content form .input-field textarea {
   padding: 1%;
   width: 100%;
   outline: none;
@@ -1114,12 +1312,57 @@ main {
 }
 #create-team .content form .input-field .select,
 #create-project .content form .input-field .select,
-#create-task .content form .input-field .select {
+#create-task .content form .input-field .select,
+#update-task .content form .input-field .select {
   width: 100%;
+}
+#create-team .content form .date-duration-group,
+#create-team .content form .task-meta-group,
+#create-project .content form .date-duration-group,
+#create-project .content form .task-meta-group,
+#create-task .content form .date-duration-group,
+#create-task .content form .task-meta-group,
+#update-task .content form .date-duration-group,
+#update-task .content form .task-meta-group {
+  width: 100%;
+  display: flex;
+  gap: 2%;
+  align-items: center;
+}
+#create-team .content form .date-duration-group .input-field,
+#create-team .content form .task-meta-group .input-field,
+#create-project .content form .date-duration-group .input-field,
+#create-project .content form .task-meta-group .input-field,
+#create-task .content form .date-duration-group .input-field,
+#create-task .content form .task-meta-group .input-field,
+#update-task .content form .date-duration-group .input-field,
+#update-task .content form .task-meta-group .input-field {
+  flex-grow: 1;
+}
+#create-team .content form .date-duration-group .input-field input,
+#create-team .content form .task-meta-group .input-field input,
+#create-project .content form .date-duration-group .input-field input,
+#create-project .content form .task-meta-group .input-field input,
+#create-task .content form .date-duration-group .input-field input,
+#create-task .content form .task-meta-group .input-field input,
+#update-task .content form .date-duration-group .input-field input,
+#update-task .content form .task-meta-group .input-field input {
+  padding: 2%;
+}
+#create-team .content form .date-duration-group .input-field .select,
+#create-team .content form .task-meta-group .input-field .select,
+#create-project .content form .date-duration-group .input-field .select,
+#create-project .content form .task-meta-group .input-field .select,
+#create-task .content form .date-duration-group .input-field .select,
+#create-task .content form .task-meta-group .input-field .select,
+#update-task .content form .date-duration-group .input-field .select,
+#update-task .content form .task-meta-group .input-field .select {
+  padding: 1.5%;
 }
 #create-team .content form .cta,
 #create-project .content form .cta,
-#create-task .content form .cta {
+#create-task .content form .cta,
+#update-task .content form .cta {
   margin-top: 2%;
   width: 100%;
   display: flex;
@@ -1128,7 +1371,8 @@ main {
 }
 #create-team .content form .cta button,
 #create-project .content form .cta button,
-#create-task .content form .cta button {
+#create-task .content form .cta button,
+#update-task .content form .cta button {
   flex-grow: 1;
   padding: 1%;
   border: none;
@@ -1136,10 +1380,39 @@ main {
   border-radius: 10px;
   background-color: rgb(230, 230, 230);
   font-size: 1.2rem;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
 }
-#create-team .content form .cta button:last-child,
-#create-project .content form .cta button:last-child,
-#create-task .content form .cta button:last-child {
+#create-team .content form .cta button:nth-child(2),
+#create-project .content form .cta button:nth-child(2),
+#create-task .content form .cta button:nth-child(2),
+#update-task .content form .cta button:nth-child(2) {
   color: rgb(255, 255, 255);
-  background-color: rgb(4, 15, 47);
+  background-color: red;
+}
+
+#chats .content .chat-context {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+#chats .content .chat-context .select {
+  width: 30%;
+}
+#chats .content .chat-context .chat-options {
+  width: 50%;
+  margin-left: auto;
+  display: flex;
+  gap: 5%;
+  align-items: center;
+  justify-content: flex-end;
+}
+#chats .content .chat-context .chat-options button {
+  width: 30%;
+  padding: 1.5% 0;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
 }

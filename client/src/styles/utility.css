@@ -22,6 +22,11 @@
   user-select: none;
 }
 
+button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
 .dark-btn {
   color: rgb(255, 255, 255) !important;
   background-color: rgb(4, 15, 47) !important;
@@ -94,7 +99,7 @@ textarea,
 .profile-img {
   height: 30px;
   width: 30px;
-  border-radius: 10px;
+  border-radius: 50%;
 }
 
 .animated-btn {
@@ -170,7 +175,50 @@ textarea,
   align-items: center;
   justify-content: center;
   gap: 10px;
+  z-index: 100;
 }
 .go-back svg {
+  font-size: 1rem;
+}
+
+.no-back {
+  margin-top: 0 !important;
+  height: 100% !important;
+}
+
+.custom-slider {
+  width: 100%;
+  height: 8px;
+  margin-top: 0.5rem;
+}
+
+.custom-track {
+  background: rgb(230, 230, 230);
+  height: 100%;
+  border-radius: 4px;
+}
+
+.custom-thumb {
+  height: 20px;
+  width: 20px;
+  background-color: rgb(10, 36, 114);
+  border-radius: 50%;
+  cursor: grab;
+  margin-top: -6px;
+  transition: background-color 0.2s;
+}
+
+.custom-thumb:active {
+  cursor: grabbing;
+  background-color: rgb(4, 15, 47);
+}
+
+.range-slider-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.slider-label {
   font-size: 1rem;
 }
