@@ -35,10 +35,6 @@ const AuthOptions = () => {
     onError: (error) => toast.error(typeof error === 'string' ? error : 'Google login failed!')
   })
 
-  const handleGithubLogin = () => {
-    window.location.assign(`https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_OAUTH2_GITHUB_CLIENT_ID}`)
-  }
-
   return (
     <div className='auth-options'>
       <div className='divider-text'>
@@ -51,10 +47,6 @@ const AuthOptions = () => {
           <img src={GoogleLogo} alt='' />
           <p>Continue with Google</p>
         </div>
-        {/* <div className='option paper pointer' onClick={handleGithubLogin}>
-          <img src={GithubLogo} alt='' />
-          <p>Continue with Github</p>
-        </div> */}
       </div>
     </div>
   )
