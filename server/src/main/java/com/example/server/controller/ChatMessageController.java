@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
@@ -33,24 +31,21 @@ public class ChatMessageController {
 
         User user=userService.loadAuthenticatedUser();
         HashMap<String,Object> h=new HashMap<>();
+        Map<UUID, List<ChatMessage>> chats=new HashMap<>();
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_TEAM)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         };
         if(user.getProjectRole()==ProjectRole.PRODUCT_OWNER){
-            h.put("projectChats",chatMessageService.loadChatsByOrganization());
+            chats.putAll(chatMessageService.loadChatsByOrganization());
         }
         else{
-            h.put("taskChats",chatMessageService.loadTaskChatsByProject());
-//            h.put("taskChats",chatMessageService.loadChatsByUser());
-            if (user.getProjectId() == null) {
-                h.put("projectChats",new HashMap<>());
+            chats.putAll(chatMessageService.loadTaskChatsByProject());
+            if (user.getProjectId() != null) {
+                chats.put(user.getProjectId(),chatMessageService.loadChats(user.getProjectId()));
             }
-            else{
-                h.put("projectChats", Map.of(user.getProjectId(),chatMessageService.loadChats(user.getProjectId())));
-            }
-
         }
-        h.put("organizationChats",chatMessageService.loadChats(user.getOrganizationId()));
+        chats.put(user.getOrganizationId(),chatMessageService.loadChats(user.getOrganizationId()));
+        h.put("chats",chats);
         return ResponseEntity.ok(h);
     }
 
