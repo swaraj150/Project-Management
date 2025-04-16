@@ -4,7 +4,7 @@ export const projectsSlice = createSlice({
   name: 'Projects',
   initialState: {
     projects: [],
-    projectsMap: null
+    projectsMap: {}
   },
   reducers: {
     setProjects: (state, action) => {
@@ -15,19 +15,45 @@ export const projectsSlice = createSlice({
       }, {})
     },
     addProject: (state, action) => {
-      const { projectId } = action.payload
-      state.projects = [...state.projects, projectId]
-      state.projectsMap = {
-        ...state.projectsMap,
-        [projectId]: { ...action.payload }
-      }
+      const { id } = action.payload
+      state.projects.push(id)
+      state.projectsMap[id] = action.payload
+    },
+    addTeamsToProject: (state, action) => {
+      const { teams, id } = action.payload
+      teams.forEach(team => {
+        state.projectsMap[id].teams.push(team)
+      })
+    },
+    addTaskToProject: (state, action) => {
+      const { projectId, taskId } = action.payload
+      state.projectsMap[projectId].tasks.data.push(taskId)
+    },
+    deleteTaskFromProject: (state, action) => {
+      const { projectId, taskId } = action.payload
+      state.projectsMap[projectId].tasks.data = 
+        state.projectsMap[projectId].tasks.data.filter((id) => id !== taskId)
+    },
+    addLinkToProject: (state, action) => {
+      const { projectId, linkId } = action.payload
+      state.projectsMap[projectId].tasks.links.push(linkId)
+    },
+    deleteLinkFromProject: (state, action) => {
+      const { projectId, linkId } = action.payload
+      state.projectsMap[projectId].tasks.links = 
+        state.projectsMap[projectId].tasks.links.filter((id) => id !== linkId)
     }
   }
 })
 
 export const {
   setProjects,
-  addProject
+  addProject,
+  addTeamsToProject,
+  addTaskToProject,
+  deleteTaskFromProject,
+  addLinkToProject,
+  deleteLinkFromProject
 } = projectsSlice.actions
 
 export default projectsSlice.reducer
