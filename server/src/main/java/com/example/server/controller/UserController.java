@@ -103,7 +103,7 @@ public class UserController {
         return ResponseEntity.ok(h);
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public ResponseEntity<ApiResponse<?>> logout(HttpServletRequest request) {
         String token=jwtService.extractToken(request);
         tokenBlacklistService.addToken(token);
