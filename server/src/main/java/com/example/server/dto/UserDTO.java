@@ -47,7 +47,7 @@ public class UserDTO {
                 .profilePageUrl(user.getProfilePageUrl())
                 .phoneNumber(user.getPhoneNumber())
                 .gender(user.getGender())
-                .dob(user.getDob().format(DateTimeFormatter.ISO_DATE)) // parse to LocalDate if needed
+                .dob(user.getDob()!=null?user.getDob().format(DateTimeFormatter.ISO_DATE):null) // parse to LocalDate if needed
                 .addressLine1(user.getAddressLine1())
                 .addressLine2(user.getAddressLine2())
                 .city(user.getCity())
