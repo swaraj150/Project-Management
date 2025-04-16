@@ -65,13 +65,13 @@ const organizationApi = {
         organizationEndpoints.fetchRequests,
       )
       return { res }
-    } catch (error) {
+    } catch (err) {
       return { err }
     }
   },
   accept: async ({ requestId }) => {
     try {
-      const res = await privateClient.put(
+      const res = await privateClient.patch(
         organizationEndpoints.accept,
         { requestId }
       )
@@ -82,7 +82,7 @@ const organizationApi = {
   },
   reject: async ({ requestId }) => {
     try {
-      const res = await privateClient.put(
+      const res = await privateClient.patch(
         organizationEndpoints.reject,
         { requestId }
       )

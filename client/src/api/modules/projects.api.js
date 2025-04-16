@@ -4,15 +4,15 @@ const projectsEndpoints = {
   create: 'projects',
   getInfo: (projectId) => `projects/${projectId}`,
   getAll: 'projects',
-  addTeam: 'projects/teams'
+  addTeams: 'projects/teams'
 }
 
 const projectsApi = {
-  create: async ({ title, description, estimatedEndDate, budget, projectManagerId }) => {
+  create: async ({ title, description, projectManagerId, technologies, estimatedEndDate, budget }) => {
     try {
       const res = await privateClient.post(
         projectsEndpoints.create,
-        { title, description, estimatedEndDate, budget, projectManagerId }
+        { title, description, projectManagerId, technologies, estimatedEndDate, budget }
       )
       return { res }
     } catch (err) {
@@ -35,10 +35,10 @@ const projectsApi = {
       return { err }
     }
   },
-  addTeam: async ({ projectId, teams }) => {
+  addTeams: async ({ projectId, teams }) => {
     try {
       const res = await privateClient.patch(
-        projectsEndpoints.addTeam,
+        projectsEndpoints.addTeams,
         { projectId, teams }
       )
       return { res }
