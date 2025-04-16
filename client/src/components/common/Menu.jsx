@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { MdDashboard, MdGroups, MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from "react-icons/md"
-import { FaBuilding, FaProjectDiagram, FaRocketchat, FaTasks } from "react-icons/fa"
+import { toast } from 'react-toastify'
+import { MdDashboard, MdGroups, MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md'
+import { FaBuilding, FaProjectDiagram, FaTasks } from 'react-icons/fa'
+import { IoMdChatboxes } from 'react-icons/io'
+import { CiLogout } from 'react-icons/ci'
+
+import userApi from '../../api/modules/user.api'
 
 import Logo from '../../assets/logo.png'
 
 import { setActive, setCollapsed } from '../../redux/features/menuSlice'
-// import { toggleProjectTaskModal } from '../../redux/features/tasksSlice'
+import { setUser } from '../../redux/features/userSlice'
 
 const menuItems = [
   {
@@ -36,14 +41,14 @@ const menuItems = [
     path: '/tasks'
   },
   {
-    name: 'ChatSection',
-    icon: <FaRocketchat />,
-    path: '/chat'
+    name: 'Chats',
+    icon: <IoMdChatboxes />,
+    path: '/chats'
   },
   {
-    name: 'Reference',
-    icon: <FaProjectDiagram />,
-    path: '/reference'
+    name: 'Your Profile',
+    icon: <img className='profile-img' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' alt='' />,
+    path: '/profile/me'
   }
 ]
 
@@ -58,36 +63,50 @@ const Menu = () => {
     navigate(menuItems[index].path)
   }
 
+  const handleLogout = async () => {
+    const { res, err } = await userApi.logout()
+    if (res) {
+      localStorage.removeItem('token')
+      dispatch(setUser(null))
+      toast.success('You have successfully logged out.')
+    }
+    if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+  }
+
   return (
-    <section id="menu" className={collapsed ? "collapsed" : null} >
-      <div className="collapse-btn pointer paper-1" onClick={() => dispatch(setCollapsed(!collapsed))}>
-        {
-          collapsed ? <MdOutlineKeyboardArrowRight /> : <MdOutlineKeyboardArrowLeft />
-        }
+    <section id='menu' className={collapsed ? 'collapsed' : null} >
+      <div className='collapse-btn pointer paper-1' onClick={() => dispatch(setCollapsed(!collapsed))}>
+        {collapsed ? <MdOutlineKeyboardArrowRight /> : <MdOutlineKeyboardArrowLeft />}
       </div>
-      <div className="menu-title">
-        <img src={Logo} alt="logo" />
-        {
-          collapsed ? null : <p>Project Maestro</p>
-        }
+      <div className='menu-title'>
+        <img src={Logo} alt='logo' />
+        {collapsed ? null : <p>Project Maestro</p>}
       </div>
-      <ul className="menu-items">
+      <ul className='menu-items'>
         {
-          menuItems.map((item, index) => (
-            <li key={index} className={active === index ? "active pointer paper" : "pointer"}
-              onClick={() => {
-                handleChange(index)
-                // if (index == 4) {
-                //   dispatch(toggleProjectTaskModal())
-                // }
-              }}>
+          menuItems.slice(0, 6).map((item, index) => (
+            <li
+              key={index}
+              className={`pointer ${active === index ? 'active paper' : null}`}
+              onClick={() => handleChange(index)}
+            >
               {item.icon} {collapsed ? null : item.name}
             </li>
           ))
         }
       </ul>
-      <ul className="menu-user-settings">
-
+      <ul className='menu-user-settings'>
+        <div
+          className={`profile pointer ${active === 6 ? 'active paper' : null}`}
+          onClick={() => handleChange(6)}
+        >
+          {menuItems[6].icon}
+          {collapsed ? null : <p>{menuItems[6].name}</p>}
+        </div>
+        <div className="logout pointer" onClick={handleLogout}>
+          <CiLogout />
+          {collapsed ? null : <p>Logout</p>}
+        </div>
       </ul>
     </section>
   )
