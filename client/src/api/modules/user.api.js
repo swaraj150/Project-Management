@@ -8,7 +8,8 @@ const userEndpoints = {
   githubSignin: 'users/github',
   getInfo: 'users/me',
   getInfoById: (userId) => `users/${userId}`,
-  updateProjectRole: 'users/project-role'
+  updateProjectRole: 'users/project-role',
+  logout: 'users/logout'
 }
 
 const userApi = {
@@ -79,6 +80,14 @@ const userApi = {
         userEndpoints.updateProjectRole,
         { userId, role }
       )
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  logout: async () => {
+    try {
+      const res = await privateClient.post(userEndpoints.logout)
       return { res }
     } catch (err) {
       return { err }
