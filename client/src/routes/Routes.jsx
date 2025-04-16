@@ -1,6 +1,7 @@
 import LandingPage from '../pages/LandingPage'
 import SigninPage from '../pages/SigninPage'
 import SignupPage from '../pages/SignupPage'
+import Profile from '../pages/Profile'
 import Discover from '../pages/Discover'
 import Dashboard from '../pages/DashBoard'
 import Organization from '../pages/Organization'
@@ -12,6 +13,8 @@ import CreateProject from '../pages/CreateProject'
 import ProjectDetails from '../pages/ProjectDetails'
 import Tasks from '../pages/Tasks'
 import CreateTask from '../pages/CreateTask'
+import UpdateTask from '../pages/UpdateTask'
+import Chats from '../pages/Chats'
 
 export const publicRoutes = [
   {
@@ -29,6 +32,10 @@ export const publicRoutes = [
 ]
 
 export const privateRoutes = [
+  {
+    path: 'profile/:profileName',
+    element: <Profile />
+  },
   {
     path: 'discover',
     element: <Discover />
@@ -72,5 +79,13 @@ export const privateRoutes = [
   {
     path: 'tasks/create',
     element: <CreateTask />
+  },
+  {
+    path: 'tasks/update',
+    element: <UpdateTask />
+  },
+  {
+    path: 'chats',
+    element: <Chats />
   }
 ]
