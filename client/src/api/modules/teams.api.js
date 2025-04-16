@@ -5,6 +5,7 @@ const teamsEndpoints = {
   getInfo: (teamId) => `teams/${teamId}`,
   getAll: 'teams',
   suggest: 'teams/suggestions',
+  addTeams: 'teams'
 }
 
 const teamsApi = {
@@ -35,15 +36,25 @@ const teamsApi = {
       return { err }
     }
   },
-  suggest: async (projectId) => {
+  suggest: async ({ projectId }) => {
     try {
       const res = await privateClient.get(
         teamsEndpoints.suggest,
-        { params: { projectId: projectId } }
+        { params: { projectId } }
       )
       return { res }
     }
     catch (err) {
+      return { err }
+    }
+  },
+  addTeams: async ({ teams }) => {
+    try {
+      const res = await privateClient.patch(
+        teamsEndpoints.addTeams,
+        { teams }
+      )
+    } catch (err) {
       return { err }
     }
   }
