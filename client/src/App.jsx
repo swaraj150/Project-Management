@@ -12,15 +12,15 @@ import { publicRoutes, privateRoutes } from './routes/Routes'
 import usePrevious from './hooks/usePrevious'
 
 const App = () => {
-
   const { active } = useSelector((state) => state.menu)
+
   const previousActive = usePrevious(active)
 
   return (
     <>
       <ToastContainer
-        position='bottom-left'
-        autoClose={5000}
+        position='top-center'
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop
         closeOnClick
