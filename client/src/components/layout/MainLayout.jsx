@@ -8,17 +8,19 @@ import organizationApi from '../../api/modules/organization.api'
 import teamsApi from '../../api/modules/teams.api'
 import projectsApi from '../../api/modules/projects.api'
 import tasksApi from '../../api/modules/tasks.api'
-import metricApi from '../../api/modules/metrics.api'
+import chatsApi from '../../api/modules/chats.api'
 
-import { setOrganization, setRequests } from '../../redux/features/organizationSlice'
-import { setProjects } from '../../redux/features/projectsSlice'
-import { setTeams } from '../../redux/features/teamsSlice'
+import { useSocket } from '../../contexts/SocketContext'
+import { ProjectProvider } from '../../contexts/ProjectContext'
+
 import { setUser } from '../../redux/features/userSlice'
+import { setOrganization, setRequests } from '../../redux/features/organizationSlice'
+import { setTeams } from '../../redux/features/teamsSlice'
+import { addProject, setProjects } from '../../redux/features/projectsSlice'
+import { setTasks } from '../../redux/features/tasksSlice'
+import { setChats } from '../../redux/features/chatsSlice'
 
-// import { setCurrentProject } from '../../redux/features/tasksSlice'
-// import { setTaskStatusData, setTimeLogData } from '../../redux/features/metricsSlice'
-// import { setupTasks } from '../../utils/task.utils'
-// import { connectWebSocket } from '../../utils/websocket.utils'
+import { roles } from '../../utils/organization.utils'
 
 const MainLayout = () => {
   const dispatch = useDispatch()
@@ -26,10 +28,16 @@ const MainLayout = () => {
 
   const { user } = useSelector((state) => state.user)
   const { organization } = useSelector((state) => state.organization)
+  const { projects } = useSelector((state) => state.projects)
+  const { tasks } = useSelector((state) => state.tasks)
+
+  const { subscribeToChat, subscribeToTaskUpdates, sendMessageInChat } = useSocket()
 
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (user) return
+
     const fetchUserDetails = async () => {
       const token = localStorage.getItem('token')
       if (!token) {
@@ -37,35 +45,42 @@ const MainLayout = () => {
         setLoading(false)
         return
       }
+
       const { res, err } = await userApi.getInfo()
       if (res?.user) {
         dispatch(setUser(res.user))
         toast.success('Login successful. Welcome back!')
       } else {
+        if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
         localStorage.removeItem('token')
         navigate('/sign-in')
         setLoading(false)
       }
     }
 
-    if (!user) fetchUserDetails()
+    fetchUserDetails()
   }, [user, dispatch, navigate])
 
   useEffect(() => {
+    if (!user || organization) return
+
     const fetchOrganization = async () => {
       const { res, err } = await organizationApi.getInfo()
       if (res?.organization) {
         dispatch(setOrganization(res.organization))
       } else {
+        if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
         navigate('/discover')
         setLoading(false)
       }
     }
 
-    if (user && organization === null) fetchOrganization()
+    fetchOrganization()
   }, [user, organization, dispatch, navigate])
 
   useEffect(() => {
+    if (!organization) return
+
     const fetchRequests = async () => {
       const { res, err } = await organizationApi.fetchRequests()
       if (res?.requests) dispatch(setRequests(res.requests))
@@ -80,67 +95,69 @@ const MainLayout = () => {
 
     const fetchProjects = async () => {
       const { res, err } = await projectsApi.getAll()
-      if (res?.projects) dispatch(setProjects(res.projects))
+      if (res?.projects) {
+        if (user.projectRole === roles.productOwner) dispatch(setProjects(res.projects))
+        else dispatch(addProject(res.projects))
+      }
+      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+    }
+
+    const fetchTasks = async () => {
+      const { res, err } = await tasksApi.getAll()
+      if (res?.tasks) dispatch(setTasks(res.tasks))
+      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+    }
+
+    const fetchChats = async () => {
+      const { res, err } = await chatsApi.getAll()
+      if (user.projectRole === roles.productOwner) {
+        if (res.organizationChats && res.projectChats) dispatch(setChats(res))
+      } else {
+        if (res.organizationChats && res.projectChats && res.taskChats) dispatch(setChats(res))
+      }
       if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
 
     const fetchData = async () => {
-      await Promise.all([fetchRequests(), fetchTeams(), fetchProjects()])
+      if (user.projectRole === roles.productOwner) await Promise.all([fetchRequests(), fetchTeams(), fetchProjects(), fetchTasks(), fetchChats()])
+      else await Promise.all([fetchTeams(), fetchProjects(), fetchTasks(), fetchChats()])
       setLoading(false)
     }
 
-    if (organization) {
-      fetchData()
+    fetchData()
+    const organizationChatSubscription = subscribeToChat({ id: organization.id })
+
+    return () => {
+      if (organizationChatSubscription) organizationChatSubscription.unsubscribe()
     }
   }, [organization, dispatch])
 
   // useEffect(() => {
-  //   const fetchTasks = async () => {
-  //     const { res, err } = await tasksApi.fetchByProject(projects[0].id)
-
-  //     if (res?.tasks) {
-  //       setupTasks(res.tasks, dispatch);
-  //       dispatch(setCurrentProject(projects[0]))
-  //     }
-
-  //     if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
-  //   }
-
-  //   const fetchMetrics = async () => {
-  //     const { res, err } = await metricApi.load(projects[0].id)
-  //     const taskStatusData={
-  //       name:"Pending Tasks",value:res[pendingTasks],
-  //       name:"In Progress Tasks",value:res[in_progressTasks],
-  //       name:"Completed Tasks",value:res[completedTasks],
-  //     };
-  //     const timeLogData={
-  //       category:"Total Timelogs",value:res[timeLogs],
-  //       category:"Estimated Time",value:res[estimatedTime],
-  //     };
-
-  //     dispatch(setTimeLogData(timeLogData))
-  //     dispatch(setTaskStatusData(taskStatusData))
-
-  //   }
   //   if (projects) {
-  //     fetchTasks();
-  //     fetchMetrics();
+  //     const chatSubscriptions = projects.forEach((projectId) => subscribeToProjectChat({ projectId }))
+  //     sendMessageInProjectChat({ projectId: projects[0], payload: { message: "hello" } })
+  //     return () => {
+  //       if (chatSubscriptions) chatSubscriptions.forEach((subscription) => subscription.unsubscribe())
+  //     }
   //   }
   // }, [projects])
 
   // useEffect(() => {
-  //   const webSocketUrl = import.meta.env.VITE_WEBSOCKET_URL;
-  //   dispatch(connectWebSocket(webSocketUrl + '/ws', localStorage.getItem('token')));
-  //   return () => {
-  //     dispatch(disonnectWebSocket(client))
+  //   if (tasks) {
+  //     const chatSubscriptions = tasks.forEach((taskId) => subscribeToTaskChat({ taskId }))
+  //     const updateSubscriptions = tasks.forEach((taskId) => subscribeToTaskUpdates({ taskId }))
+  //     return () => {
+  //       if (chatSubscriptions) chatSubscriptions.forEach((subscription) => subscription.unsubscribe())
+  //       if (updateSubscriptions) updateSubscriptions.forEach((subscription) => subscription.unsubscribe())
+  //     }
   //   }
-  // }, [dispatch])
+  // }, [tasks])
 
   return (
     <main>
-      {
-        loading ? <p>Loading...</p> : <Outlet />
-      }
+      <ProjectProvider>
+        {loading ? <p>Loading...</p> : user && <Outlet />}
+      </ProjectProvider>
     </main>
   )
 }
