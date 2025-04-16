@@ -62,8 +62,14 @@ public class User implements UserDetails {
     private String gender;
     private LocalDate dob;
     private String phoneNumber;
-    private String profilePageUrl;
-    private String address;
+
+    private String profilePageUrl="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+    private String addressLine1;
+    private String addressLine2;
+    private String city;
+    private String code;
+    private String country;
+    private String state;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

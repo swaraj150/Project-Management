@@ -43,7 +43,6 @@ public class ChatMessageService {
                 .roomId(roomId)
                 .timestamp(LocalDateTime.now())
                 .senderId(user.getId())
-                .taskId(UUID.randomUUID())
                 .build();
 
         chatMessageRepository.save(chatMessage);

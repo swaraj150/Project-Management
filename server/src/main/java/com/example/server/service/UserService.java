@@ -10,10 +10,7 @@ import com.example.server.entities.User;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.pojo.GitHubUserInfo;
 import com.example.server.repositories.UserRepository;
-import com.example.server.requests.AddSkillsToUserRequest;
-import com.example.server.requests.ChangeUserRoleRequest;
-import com.example.server.requests.LoginRequest;
-import com.example.server.requests.RegisterRequest;
+import com.example.server.requests.*;
 import com.example.server.response.AuthResponse;
 import com.example.server.component.UserValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +28,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -171,6 +170,58 @@ public class UserService {
         user.setSkills(request.getSkills());
         user.setDomain(request.getDomains());
         userRepository.save(user);
+    }
+
+
+    public UserDTO updateUser(UserProfileUpdateRequest request){
+        User user=loadAuthenticatedUser();
+        if (request.getName() != null) {
+            var data = request.getName().split(" ");
+            user.setFirstName(data[0]);
+            user.setLastName(data.length == 1 ? null : data[1]);
+        }
+
+        if (request.getUrl() != null) {
+            user.setProfilePageUrl(request.getUrl());
+        }
+
+        if (request.getPhone() != null) {
+            user.setPhoneNumber(request.getPhone());
+        }
+
+        if (request.getGender() != null) {
+            user.setGender(request.getGender());
+        }
+
+        if (request.getDob() != null) {
+            user.setDob(LocalDate.parse(request.getDob(), DateTimeFormatter.ISO_DATE)); // Consider parsing if type is LocalDate
+        }
+
+        if (request.getAddressLine1() != null) {
+            user.setAddressLine1(request.getAddressLine1());
+        }
+
+        if (request.getAddressLine2() != null) {
+            user.setAddressLine2(request.getAddressLine2());
+        }
+
+        if (request.getCity() != null) {
+            user.setCity(request.getCity());
+        }
+
+        if (request.getCode() != null) {
+            user.setCode(request.getCode());
+        }
+
+        if (request.getCountry() != null) {
+            user.setCountry(request.getCountry());
+        }
+
+        if (request.getState() != null) {
+            user.setState(request.getState());
+        }
+        userRepository.save(user);
+        return UserDTO.mapToUserDTO(user);
     }
 
 

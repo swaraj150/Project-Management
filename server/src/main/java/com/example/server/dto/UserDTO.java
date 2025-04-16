@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +24,17 @@ public class UserDTO {
 //    private String password;
     private Role role;
     private ProjectRole projectRole;
+    private String gender;
+    private String dob;
+    private String profilePageUrl;
+    private String phoneNumber;
+    private String addressLine1;
+    private String addressLine2;
+    private String city;
+    private String code;
+    private String country;
+    private String state;
+
 
     public static UserDTO mapToUserDTO(User user) {
         return UserDTO.builder()
@@ -32,6 +44,16 @@ public class UserDTO {
                 .emails(user.getEmails())
                 .role(user.getRole())
                 .projectRole(user.getProjectRole())
+                .profilePageUrl(user.getProfilePageUrl())
+                .phoneNumber(user.getPhoneNumber())
+                .gender(user.getGender())
+                .dob(user.getDob().format(DateTimeFormatter.ISO_DATE)) // parse to LocalDate if needed
+                .addressLine1(user.getAddressLine1())
+                .addressLine2(user.getAddressLine2())
+                .city(user.getCity())
+                .code(user.getCode())
+                .country(user.getCountry())
+                .state(user.getState())
                 .build();
     }
 }
