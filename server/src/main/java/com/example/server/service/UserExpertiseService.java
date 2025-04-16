@@ -28,8 +28,9 @@ public class UserExpertiseService {
     private static final double DOMAIN_WEIGHT = 0.4;
 
 
-    public void create(@NonNull UUID projectId){
+    public void create(){
         User user=userService.loadUser(securityUtils.getCurrentUsername());
+        UUID projectId=user.getProjectId();
         Optional<Level> userExpertiseOptional=userExpertiseRepository.findExpertise(user.getId(),projectId);
         if(userExpertiseOptional.isPresent()){
             return;
@@ -54,9 +55,10 @@ public class UserExpertiseService {
 
         return userExpertiseRepository.findExpertise(userId,projectId).orElseThrow(()->new EntityNotFoundException("expertise level not found"));
     }
-    public double calculateSimilarityScore(@NonNull UUID projectId, @NonNull Set<String> tech, @NonNull Set<String> domain){
+    public double calculateSimilarityScore(@NonNull UUID projectId, @NonNull Set<String> tech,  Set<String> domain){
         Technology technology=technologyService.findByProject(projectId);
         double techSimilarity = calculateSetSimilarity(tech, technology.getTechName());
+        if(domain==null || domain.isEmpty()) return techSimilarity;
         double domainSimilarity = calculateSetSimilarity(domain, technology.getDomain());
         return (techSimilarity * TECH_WEIGHT) + (domainSimilarity * DOMAIN_WEIGHT);
 

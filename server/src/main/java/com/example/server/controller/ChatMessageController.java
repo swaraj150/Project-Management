@@ -40,7 +40,8 @@ public class ChatMessageController {
             h.put("projectChats",chatMessageService.loadChatsByOrganization());
         }
         else{
-            h.put("taskChats",chatMessageService.loadChatsByUser());
+            h.put("taskChats",chatMessageService.loadTaskChatsByProject());
+//            h.put("taskChats",chatMessageService.loadChatsByUser());
             if (user.getProjectId() == null) {
                 h.put("projectChats",new HashMap<>());
             }

@@ -8,6 +8,7 @@ import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -22,4 +23,7 @@ public class CreateProjectRequest {
     private LocalDate estimatedEndDate;
     private BigDecimal budget;
     private UUID projectManagerId;
+
+    @Nullable
+    private List<String> technologies;
 }

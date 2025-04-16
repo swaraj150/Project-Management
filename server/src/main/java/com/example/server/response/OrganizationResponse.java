@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 public class OrganizationResponse {
+    private UUID id;
     private String name;
     private UUID productOwner;
     private Set<UUID> stakeholders;

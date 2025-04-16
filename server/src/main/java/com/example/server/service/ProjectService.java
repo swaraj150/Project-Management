@@ -66,6 +66,7 @@ public class ProjectService {
         project.setEstimatedEndDate(request.getEstimatedEndDate());
         project.setOrganizationId(user.getOrganizationId());
         project.setCompletionStatus(CompletionStatus.PENDING);
+        project.setTechnologies(request.getTechnologies());
         projectRepository.save(project);
         organization.getProjects().add(project.getId());
         organizationRepository.save(organization);
