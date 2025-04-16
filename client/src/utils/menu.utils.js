@@ -5,5 +5,5 @@ export const menuIndices = {
   projects: 3,
   tasks: 4,
   chats: 5,
-  reference: 6 
+  profile: 6 
 }
