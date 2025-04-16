@@ -16,7 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatMessageWsController {
     private final ChatMessageService chatMessageService;
-    @MessageMapping("/chat.task.{roomId}")
+    @MessageMapping("/chat.{roomId}")
     public void handleChats(@DestinationVariable UUID roomId, @NonNull WsChatRequest request) {
         ChatMessage chatMessage=chatMessageService.createChatMessage(request);
     }
