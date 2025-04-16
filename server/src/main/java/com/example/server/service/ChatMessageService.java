@@ -23,16 +23,16 @@ public class ChatMessageService {
     private final ProjectService projectService;
     private final TaskService taskService;
     private final SimpMessagingTemplate messagingTemplate;
-    public ChatMessage createChatMessage(WsChatRequest request){
+    public ChatMessage createChatMessage(WsChatRequest request,UUID roomId){
         User user=userService.loadAuthenticatedUser();
         String room;
-        if(organizationService.exists(request.getRoomId())){
+        if(organizationService.exists(roomId)){
             room="Organization";
         }
-        else if(taskService.exists(request.getRoomId())){
+        else if(taskService.exists(roomId)){
             room="Task";
         }
-        else if(projectService.exists(request.getRoomId())){
+        else if(projectService.exists(roomId)){
             room="Project";
         }
         else{
@@ -40,15 +40,15 @@ public class ChatMessageService {
         }
         ChatMessage chatMessage=ChatMessage.builder()
                 .content(request.getContent())
-                .roomId(request.getRoomId())
+                .roomId(roomId)
                 .timestamp(LocalDateTime.now())
                 .senderId(user.getId())
-                .sender(user.getFirstName()+((user.getLastName()==null)?"":" ")+(user.getLastName()==null?"":user.getLastName()))
+                .taskId(UUID.randomUUID())
                 .build();
 
         chatMessageRepository.save(chatMessage);
         messagingTemplate.convertAndSend(
-                "/topic/chat."+request.getRoomId(),
+                "/topic/chat."+roomId,
                 Map.of("notification","New message in your "+room+" group","dataType", ResponseType.CHAT.name(),"data",chatMessage)
         );
 //        notificationService.createNotification(NotificationEvent.builder()

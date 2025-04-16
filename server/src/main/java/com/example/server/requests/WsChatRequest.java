@@ -12,9 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class WsChatRequest {
-    private UUID taskId;
     private String content;
-    private UUID senderId;
-    private UUID roomId;
 
 }

@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -58,6 +59,11 @@ public class User implements UserDetails {
     private Integer yearsOfExp;
     @Column(name="project_id")
     private UUID projectId;
+    private String gender;
+    private LocalDate dob;
+    private String phoneNumber;
+    private String profilePageUrl;
+    private String address;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
