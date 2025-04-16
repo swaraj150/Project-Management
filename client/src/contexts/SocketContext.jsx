@@ -57,7 +57,7 @@ export const SocketProvider = ({ children }) => {
   const sendMessageInChat = ({ id, payload }) => {
     console.log(id, payload, stompClient?.connected)
     if (stompClient?.connected) {
-      stompClient.publish(`/app/chat.${id}`, {}, JSON.stringify(payload))
+      stompClient.publish({ destination: `/app/chat.${id}`, headers: {}, body: JSON.stringify(payload) })
     }
   }
 

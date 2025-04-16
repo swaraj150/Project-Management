@@ -39,7 +39,7 @@ const Chats = () => {
   }, [user, projects])
 
   useEffect(() => {
-    if (organization) sendMessageInChat({ id: "7edf0819-89f4-4a81-b627-04f847c2a70", payload: { taskId: "7edf0819-89f4-4a81-b627-04f847c2a70", content: "hello", senderId: "7c4d65cb-d546-42ac-84c5-feaa421eaee2", roomId: "7edf0819-89f4-4a81-b627-04f847c2a70" } })
+    if (organization) sendMessageInChat({ id: organization.id, payload: { content: "hello" } })
   }, [organization])
 
   const getChatBoard = () => {
