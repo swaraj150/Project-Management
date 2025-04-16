@@ -6,15 +6,11 @@ import KanbanColumn from './KanbanColumn'
 
 import { taskStatusLabels } from '../../utils/task.utils'
 
-const KanbanBoard = ({ tasks, updateTask }) => {
-  const updateStatus = ({ taskId, newStatus }) => {
-    console.log(taskId, newStatus)
-  }
-
+const KanbanBoard = () => {  
   return (
     <div className="kanban-board-container">
       <DndProvider backend={HTML5Backend}>
-        {taskStatusLabels.map((status, index) => <KanbanColumn key={index} status={status} updateStatus={updateStatus} />)}
+        {taskStatusLabels.map((status, index) => <KanbanColumn key={index} status={status} />)}
       </DndProvider>
     </div>
   )

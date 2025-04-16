@@ -1,37 +1,66 @@
-// import React from "react"
-// import { useDrag } from 'react-dnd';
-// const KanbanTask = ({ task, kanbanIndex, status }) => {
-//   const [{ isDragging }, drag] = useDrag(() => ({
-//     type: "task",
-//     item: { ...task, currentStatus: status,kanbanIndex:kanbanIndex },
-//     collect: (monitor) => ({
-//       isDragging: !!monitor.isDragging(),
-//     }),
-//   }));
-//   return (
-//     <li
-//       ref={drag}
-//       className="task"
-//       id={task.taskId}
-//       style={{
-//         opacity: isDragging ? 0.5 : 1,
-//         cursor: "move",
-//       }}
-//     >
-//       <h3>{task.name}</h3>
-//       <p>progress:{task.progress}</p>
-//       <p>estimated hours {task.estimatedHours}</p>
-//       <p>level {task.level}</p>
-//     </li>
-//   )
-// }
-// export default KanbanTask
-
 import React from 'react'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { useDrag } from 'react-dnd'
 
-const KanbanTask = () => {
+import { useProject } from '../../contexts/ProjectContext'
+
+import { roles } from '../../utils/organization.utils'
+import { taskLevelLabels, taskPriorities, taskPriorityLabels } from '../../utils/task.utils'
+
+const KanbanTask = ({ task }) => {
+  const navigate = useNavigate()
+
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: 'TASK',
+    item: { task },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }))
+
+  const { user } = useSelector((state) => state.user)
+
+  const { setSelectedTask } = useProject()
+
+  const handleClick = () => {
+    if (user.projectRole === roles.teamLead || user.projectRole === roles.developer || user.projectRole === roles.qa) return
+    setSelectedTask(task)
+    navigate('update')
+  }
+
+  const formatDate = (dateStr) => new Date(dateStr).toISOString().split('T')[0]
+
+  const startDate = new Date(task.startDate)
+  const endDate = new Date(startDate)
+
+  endDate.setDate(startDate.getDate() + (task.estimatedDays || 0))
+
   return (
-    <div>KanbanTask</div>
+    <div
+      ref={drag}
+      className='kanban-task pointer'
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+      onClick={handleClick}
+    >
+      <h4>{task.title}</h4>
+      <p className='description'>{task.description}</p>
+      <div className="task-meta-group">
+        <p>
+          Priority:&nbsp;
+          <strong className={`priority-${task.priority.toLowerCase()}`}>
+            {taskPriorityLabels.find((l) => l.value === task.priority).label}
+          </strong>
+        </p>
+        <p>
+          Level:&nbsp;
+          <strong className={`level-${task.level.toLowerCase()}`}>
+            {taskLevelLabels.find((l) => l.value === task.level).label}
+          </strong>
+        </p>
+      </div>
+      <small>{`${formatDate(startDate)} – ${formatDate(endDate)}`}</small>
+    </div>
   )
 }
 
