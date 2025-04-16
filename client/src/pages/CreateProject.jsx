@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Select from 'react-select'
-import { IoMdArrowBack } from 'react-icons/io'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { toast } from 'react-toastify'
+import { IoMdArrowBack } from 'react-icons/io'
+import { MdOutlineCancel } from 'react-icons/md'
+import { IoMdCreate } from 'react-icons/io'
 
 import projectsApi from '../api/modules/projects.api'
 
@@ -15,7 +17,7 @@ import { setActive } from '../redux/features/menuSlice'
 import { addProject } from '../redux/features/projectsSlice'
 
 import { menuIndices } from '../utils/menu.utils'
-import { setInputType } from '../utils/input.utils'
+import { technologyLabels } from '../utils/project.utils'
 
 const CreateProject = () => {
   const dispatch = useDispatch()
@@ -24,29 +26,21 @@ const CreateProject = () => {
   const { collapsed } = useSelector((state) => state.menu)
   const { managers, membersMap } = useSelector((state) => state.organization)
 
+  const startDateRef = useRef(null)
+
+  const [startDateType, setStartDateType] = useState('text')
   const [managerOptions, setManagerOptions] = useState([])
 
   const handleGoBack = () => {
     navigate(-1)
   }
 
-  useEffect(() => {
-    dispatch(setActive(menuIndices.projects))
-  }, [])
-
-  useEffect(() => {
-    setManagerOptions(managers.map((manager) => ({
-      value: manager,
-      label: membersMap[manager].name
-    })))
-  }, [managers])
-
-
   const createProjectForm = useFormik({
     initialValues: {
       title: '',
       description: '',
       manager: null,
+      technologies: [],
       estimatedEndDate: '',
       budget: ''
     },
@@ -60,6 +54,7 @@ const CreateProject = () => {
         .max(500, 'Description must be at most 500 characters'),
       manager: Yup.object()
         .required('Project manager is required'),
+      technologies: Yup.array(),
       estimatedEndDate: Yup.string()
         .required('Estimated end date is required')
         .test('future-date', 'Estimated end date must be in the future', (value) => {
@@ -69,16 +64,41 @@ const CreateProject = () => {
         .required('Budget is required')
         .moreThan(0, 'Budget must be greater than 0')
     }),
-    onSubmit: async ({ title, description, estimatedEndDate, budget, manager }) => {
-      const { res, err } = await projectsApi.create({ title, description, estimatedEndDate, budget, projectManagerId: manager.value })
+    onSubmit: async ({ title, description, manager, technologies, estimatedEndDate, budget }) => {
+      const { res, err } = await projectsApi.create({
+        title,
+        description,
+        projectManagerId: manager.value,
+        technologies: technologies.map((technology) => technology.value),
+        estimatedEndDate,
+        budget
+      })
       if (res && res.project) {
         dispatch(addProject(res.project))
         toast.success('Project created successfully!')
         createProjectForm.resetForm()
+        setStartDateType('text')
       }
       if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
   })
+
+  useEffect(() => {
+    dispatch(setActive(menuIndices.projects))
+  }, [])
+
+  useEffect(() => {
+    setManagerOptions(managers.map((manager) => ({
+      value: manager,
+      label: membersMap[manager].name
+    })))
+  }, [managers])
+
+  useEffect(() => {
+    if (startDateType === 'date' && startDateRef.current) {
+      startDateRef.current.showPicker?.()
+    }
+  }, [startDateType])
 
   return (
     <section id="create-project">
@@ -108,7 +128,6 @@ const CreateProject = () => {
           <div className="input-field">
             <textarea
               className='paper-1 no-scrollbar'
-              type='textarea'
               rows={1}
               name='description'
               required
@@ -131,25 +150,44 @@ const CreateProject = () => {
               placeholder="Select project manager"
               value={createProjectForm.values.manager}
               onChange={(option) => createProjectForm.setFieldValue('manager', option)}
-              onBlur={createProjectForm.handleBlur}
+              onBlur={() => createProjectForm.setFieldTouched('manager', true)}
             />
             <p className="helper-text opacity-5">
               {createProjectForm.touched.manager && createProjectForm.errors.manager ? createProjectForm.errors.manager : ''}
             </p>
           </div>
           <div className="input-field">
+            <Select
+              className="paper-1 select"
+              isMulti
+              isSearchable
+              isClearable
+              options={technologyLabels}
+              name='technologies'
+              placeholder="Select technologies"
+              value={createProjectForm.values.technologies}
+              onChange={(option) => createProjectForm.setFieldValue('technologies', option)}
+              onBlur={() => createProjectForm.setFieldTouched('technologies', true)}
+            />
+            <p className="helper-text opacity-5">
+              {createProjectForm.touched.technologies && createProjectForm.errors.technologies ? createProjectForm.errors.technologies : ''}
+            </p>
+          </div>
+          <div className="input-field">
             <input
+              ref={startDateRef}
               className='paper-1'
-              type='text'
+              type={startDateType}
               name='estimatedEndDate'
               required
               placeholder='Enter estimated end date'
               value={createProjectForm.values.estimatedEndDate}
               onChange={createProjectForm.handleChange}
               onBlur={(e) => {
-                if (!e.target.value) setInputType({ e, newType: 'text' })
+                createProjectForm.handleBlur(e)
+                if (!createTaskForm.values.startDate) setStartDateType('text')
               }}
-              onFocus={(e) => setInputType({ e, newType: 'date' })}
+              onFocus={() => setStartDateType('date')}
             />
             <p className="helper-text opacity-5">
               {createProjectForm.touched.estimatedEndDate && createProjectForm.errors.estimatedEndDate ? createProjectForm.errors.estimatedEndDate : ''}
@@ -172,12 +210,16 @@ const CreateProject = () => {
             </p>
           </div>
           <div className="cta">
-            <button className="pointer paper-1" onClick={handleGoBack}>Cancel</button>
+            <button className="pointer paper-1" type='button' onClick={handleGoBack}>
+              <MdOutlineCancel />
+              Cancel
+            </button>
             <button
-              className="pointer paper-1"
+              className="dark-btn pointer paper-1"
               type='submit'
               disabled={createProjectForm.isSubmitting || !createProjectForm.isValid}
             >
+              <IoMdCreate />
               Create
             </button>
           </div>

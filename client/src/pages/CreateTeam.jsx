@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Select from 'react-select'
-import { IoMdArrowBack } from 'react-icons/io'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { toast } from 'react-toastify'
+import { IoMdArrowBack } from 'react-icons/io'
+import { MdOutlineCancel } from 'react-icons/md'
+import { IoMdCreate } from 'react-icons/io'
 
 import teamsApi from '../api/modules/teams.api'
 
@@ -43,16 +45,24 @@ const CreateTeam = () => {
         .min(3, 'Name must be at least 3 characters')
         .max(100, 'Name must be at most 100 characters'),
       teamLead: Yup.object()
-        .required('Project manager is required'),
-      developers: Yup.array(),
-      testers: Yup.array()
-    }).test(
-      'at-least-one-member',
-      'At least one developer or tester is required',
-      function (values) {
-        return values.developers.length > 0 || values.testers.length > 0;
-      }
-    ),
+        .required('Team lead is required'),
+      developers: Yup.array().test(
+        'at-least-one-member',
+        'At least one developer or tester is required',
+        function (value) {
+          const { testers } = this.parent
+          return (value?.length || 0) > 0 || (testers?.length || 0) > 0
+        }
+      ),
+      testers: Yup.array().test(
+        'at-least-one-member',
+        'At least one developer or tester is required',
+        function (value) {
+          const { developers } = this.parent
+          return (value?.length || 0) > 0 || (developers?.length || 0) > 0
+        }
+      ),
+    }),
     onSubmit: async ({ name, teamLead, developers, testers }) => {
       const { res, err } = await teamsApi.create({
         name,
@@ -60,7 +70,6 @@ const CreateTeam = () => {
         developers: developers?.map((developer) => developer.value) || [],
         testers: testers?.map((tester) => tester.value) || [],
       })
-      console.log(res)
       if (res) {
         dispatch(addTeam(res.team))
         toast.success('Team created successfully!')
@@ -127,7 +136,7 @@ const CreateTeam = () => {
               placeholder="Select team lead"
               value={createTeamForm.values.teamLead}
               onChange={(option) => createTeamForm.setFieldValue('teamLead', option)}
-              onBlur={createTeamForm.handleBlur}
+              onBlur={() => createTeamForm.setFieldTouched('teamLead', true)}
             />
             <p className="helper-text opacity-5">
               {createTeamForm.touched.teamLead && createTeamForm.errors.teamLead ? createTeamForm.errors.teamLead : ''}
@@ -149,7 +158,7 @@ const CreateTeam = () => {
               placeholder="Select developers"
               value={createTeamForm.values.developers}
               onChange={(option) => createTeamForm.setFieldValue('developers', option)}
-              onBlur={createTeamForm.handleBlur}
+              onBlur={() => createTeamForm.setFieldTouched('developers', true)}
             />
             <p className="helper-text opacity-5">
               {createTeamForm.touched.developers && createTeamForm.errors.developers ? createTeamForm.errors.developers : ''}
@@ -171,19 +180,23 @@ const CreateTeam = () => {
               placeholder="Select testers"
               value={createTeamForm.values.testers}
               onChange={(option) => createTeamForm.setFieldValue('testers', option)}
-              onBlur={createTeamForm.handleBlur}
+              onBlur={() => createTeamForm.setFieldTouched('testers', true)}
             />
             <p className="helper-text opacity-5">
               {createTeamForm.touched.testers && createTeamForm.errors.testers ? createTeamForm.errors.testers : ''}
             </p>
           </div>
           <div className="cta">
-            <button className="pointer paper-1" onClick={handleGoBack}>Cancel</button>
+            <button className="pointer paper-1" type='button' onClick={handleGoBack}>
+              <MdOutlineCancel />
+              Cancel
+            </button>
             <button
-              className="pointer paper-1"
+              className="dark-btn pointer paper-1"
               type='submit'
               disabled={createTeamForm.isSubmitting || !createTeamForm.isValid}
             >
+              <IoMdCreate />
               Create
             </button>
           </div>

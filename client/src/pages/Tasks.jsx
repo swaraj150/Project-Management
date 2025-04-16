@@ -6,18 +6,16 @@ import { IoMdAdd } from 'react-icons/io'
 import { LuGanttChartSquare } from 'react-icons/lu'
 import { MdOutlineViewKanban } from 'react-icons/md'
 
-import tasksApi from '../api/modules/tasks.api'
-
 import Menu from '../components/common/Menu'
 import GanttChart from '../components/common/GanttChart'
 import KanbanBoard from '../components/common/KanbanBoard'
 
+import { useProject } from '../contexts/ProjectContext'
+
 import { setActive } from '../redux/features/menuSlice'
-import { setTasks } from '../redux/features/tasksSlice'
 
 import { menuIndices } from '../utils/menu.utils'
 import { roles } from '../utils/organization.utils'
-import { extendTask } from '../utils/task.utils'
 
 const Tasks = () => {
   const dispatch = useDispatch()
@@ -25,36 +23,24 @@ const Tasks = () => {
 
   const { user } = useSelector((state) => state.user)
   const { projects, projectsMap } = useSelector((state) => state.projects)
-  const { tasks } = useSelector((state) => state.tasks)
   const { collapsed } = useSelector((state) => state.menu)
 
-  const [viewMode, setViewMode] = useState(0)
-  const [extendedTasks, setExtendedTasks] = useState({ data: [], links: [] })
-  const [selectedProject, setSelectedProject] = useState(null)
+  const { selectedProject, setSelectedProject, setParentTaskId, taskViewMode, setTaskViewMode } = useProject()
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const { res, err } = await tasksApi.fetch()
-      if (res) {
-        dispatch(setTasks(res.tasks))
-        setExtendedTasks([...res.tasks.map((task) => extendTask(task))])
-      }
-      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
-    }
-
-    fetchTasks()
-  }, [])
-
-  const updateTask = ({ taskId, updatedTask }) => {
-    setTasks((prev) => ({
-      ...prev,
-      data: prev.data.map((task) => (task.id === taskId ? updatedTask : task)),
-    }))
+  const handleCreateTask = ({ parentTaskId }) => {
+    setParentTaskId(parentTaskId)
+    navigate('create')
   }
 
   useEffect(() => {
     dispatch(setActive(menuIndices.tasks))
   }, [])
+
+  useEffect(() => {
+    if (user.projectRole !== roles.productOwner && projects.length === 1) {
+      setSelectedProject(projectsMap[projects[0]])
+    }
+  }, [user, projects])
 
   return (
     <section id="tasks">
@@ -62,49 +48,55 @@ const Tasks = () => {
       <section className={`content ${collapsed ? "expanded" : null}`} >
         <div className="heading">
           <h2 className="title h1">Tasks</h2>
-          {
+          <div className="task-options">
+            {
+              user.projectRole === roles.productOwner && (
+                <Select
+                  className="paper-1 select"
+                  isSearchable
+                  isClearable
+                  options={projects.map((project) => ({ value: project, label: projectsMap[project].title }))}
+                  name='project'
+                  placeholder="Select project"
+                  value={selectedProject ? { value: selectedProject.id, label: selectedProject.title } : null}
+                  onChange={(option) => setSelectedProject(option ? projectsMap[option.value] : null)}
+                />
+              )
+            }
+            <div className="view-options">
+              <button
+                className={`pointer paper-1 ${taskViewMode === 0 ? 'dark-btn' : ''}`}
+                onClick={() => setTaskViewMode(0)}
+              >
+                <LuGanttChartSquare />
+                <p>Gantt Chart</p>
+              </button>
+              <button
+                className={`pointer paper-1 ${taskViewMode === 1 ? 'dark-btn' : ''}`}
+                onClick={() => setTaskViewMode(1)}
+              >
+                <MdOutlineViewKanban />
+                <p>Kanban Board</p>
+              </button>
+            </div>
+            {
             user.projectRole === roles.productOwner && selectedProject !== null ? (
-              <button className="cta pointer dark-btn paper-1" onClick={() => navigate('create', { state: { parentTaskId: null, projectId: selectedProject.value } })}>
+              <button className="cta pointer dark-btn paper-1" onClick={() => handleCreateTask({ parentTaskId: null })}>
                 <IoMdAdd />
                 <p>Create Task</p>
               </button>
             ) : null
           }
-        </div>
-        <p className="opacity-7">Tasks Count: {tasks.length}</p>
-        <div className="task-options">
-          <Select
-            className="paper-1 select"
-            isSearchable
-            isClearable
-            options={projects.map((project) => ({ value: project, label: projectsMap[project].title }))}
-            name='project'
-            placeholder="Select project"
-            value={selectedProject}
-            onChange={setSelectedProject}
-          />
-          <div className="view-options">
-            <button
-              className={`pointer paper-1 ${viewMode === 0 ? 'dark-btn' : ''}`}
-              onClick={() => setViewMode(0)}
-            >
-              <LuGanttChartSquare />
-              <p>Gantt Chart</p>
-            </button>
-            <button
-              className={`pointer paper-1 ${viewMode === 1 ? 'dark-btn' : ''}`}
-              onClick={() => setViewMode(1)}
-            >
-              <MdOutlineViewKanban />
-              <p>Kanban Board</p>
-            </button>
           </div>
         </div>
+        {selectedProject && (<p className="opacity-7">Tasks Count: {selectedProject.tasks.data.length}</p>)}
         <div className="task-container">
           {
             selectedProject
-              ? viewMode === 0 ? <GanttChart tasks={extendedTasks} projectId={selectedProject.value} /> : <KanbanBoard tasks={extendedTasks} updateTask={updateTask} />
-              : <p>Select a project to view tasks</p>
+              ? taskViewMode === 0 ? <GanttChart /> : <KanbanBoard />
+              : user.projectRole !== roles.productOwner
+                ? <p>You are currently not part of any project</p>
+                : <p>Select a project to view tasks</p>
           }
         </div>
       </section>

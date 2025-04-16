@@ -3,12 +3,21 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { FaRegCalendarAlt, FaRupeeSign } from 'react-icons/fa'
 
+import { useProject } from '../../contexts/ProjectContext'
+
 import { formatDate, formatBudget } from '../../utils/project.utils'
 
 const Project = ({ project }) => {
   const navigate = useNavigate()
 
   const { membersMap } = useSelector((state) => state.organization)
+
+  const { setSelectedProject } = useProject()
+
+  const handleGoToDetails = () => {
+    setSelectedProject(project)
+    navigate(`/projects/${project.title}`)
+  }
 
   return (
     <li className="project-info paper-1">
@@ -31,7 +40,7 @@ const Project = ({ project }) => {
           </a>
         </div>
       </div>
-      <small className="opacity-7 pointer" onClick={() => navigate(`/projects/${project.title}`, { state: { project } })} >See project details and progress</small>
+      <small className="opacity-7 pointer" onClick={handleGoToDetails}>See project details and progress</small>
     </li>
   )
 }

@@ -54,9 +54,9 @@ const SignupForm = () => {
     }),
     onSubmit: async ({ firstname, lastname, email, password }) => {
       const { res, err } = await userApi.signup({ firstname, lastname, email, password })
-      if (res) {
-        if (res.token) localStorage.setItem('token', res.token)
-        dispatch(setUser(res))
+      if (res && res.token && res.user) {
+        localStorage.setItem('token', res.token)
+        dispatch(setUser(res.user))
         toast.success('Registration successful! Welcome aboard.')
         navigate('/dashboard')
       }

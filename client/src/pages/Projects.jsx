@@ -6,6 +6,8 @@ import { IoMdAdd } from 'react-icons/io'
 import Menu from '../components/common/Menu'
 import ProjectsList from '../components/common/ProjectsList'
 
+import { useProject } from '../contexts/ProjectContext'
+
 import { setActive } from '../redux/features/menuSlice'
 
 import { menuIndices } from '../utils/menu.utils'
@@ -16,30 +18,43 @@ const Projects = () => {
   const navigate = useNavigate()
 
   const { user } = useSelector((state) => state.user)
-  const { projects } = useSelector((state) => state.projects)
+  const { projects, projectsMap } = useSelector((state) => state.projects)
   const { collapsed } = useSelector((state) => state.menu)
+
+  const { setSelectedProject } = useProject()
 
   useEffect(() => {
     dispatch(setActive(menuIndices.projects))
+  }, [])
+
+  useEffect(() => {
+    if (user.projectRole !== roles.productOwner && projects.length === 1) {
+      setSelectedProject(projectsMap[projects[0]])
+      navigate(`/projects/${projectsMap[projects[0]].title}`)
+    }
   }, [])
 
   return (
     <section id="projects">
       <Menu />
       <section className={`content ${collapsed ? "expanded" : null}`} >
-        <div className="heading">
-          <h2 className="title h1">Projects</h2>
-          {
-            user.projectRole === roles.productOwner ? (
-              <button className="cta pointer dark-btn paper-1" onClick={() => navigate('create')}>
-                <IoMdAdd />
-                <p>Create Project</p>
-              </button>
-            ) : null
-          }
-        </div>
-        <p className="opacity-7">Projects Count: {projects.length}</p>
-        <ProjectsList />
+        {
+          user.projectRole === roles.productOwner ? (
+            <>
+              <div className="heading">
+                <h2 className="title h1">Projects</h2>
+                <button className="cta pointer dark-btn paper-1" onClick={() => navigate('create')}>
+                  <IoMdAdd />
+                  <p>Create Project</p>
+                </button>
+              </div>
+              <p className="opacity-7">Projects Count: {projects.length}</p>
+              <ProjectsList />
+            </>
+          ) : (
+            <p>You are currently not part of any project</p>
+          )
+        }
       </section>
     </section>
   )

@@ -150,10 +150,6 @@ const Dashboard = () => {
     setSelectedTeam(null)
   }, [selectedProject])
 
-  useEffect(() => {
-    console.log(expertiseDistribution[selectedProject?.value], selectedTeam?.value)
-  }, [selectedTeam])
-
   return (
     <section id="dashboard">
       <Menu />
@@ -183,7 +179,7 @@ const Dashboard = () => {
             />
           }
         </div>
-        <div className="charts no-scrollbar">
+        {/* <div className="charts no-scrollbar">
           <PriorityDistribution priorityDistribution={priorityDistribution} />
           <StatusDistribution statusDistribution={statusDistribution} />
           {selectedProject && (
@@ -195,7 +191,7 @@ const Dashboard = () => {
               expertise={expertiseDistribution[selectedProject.value][selectedTeam.value]}
             />
           )}
-        </div>
+        </div> */}
       </section>
     </section>
   )

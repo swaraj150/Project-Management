@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { fetchTaskComments } from "../../utils/task.utils"
 import { useDispatch, useSelector } from "react-redux";
 import { setupChatSubscription } from "../../utils/websocket.utils";
@@ -6,9 +6,10 @@ import { setComments } from "../../redux/features/taskSlice";
 
 const TaskList = ({ filteredTasks,currentTask,setCurrentTask }) => {
     const dispatch = useDispatch()
+
     const client = useSelector((state) => state.webSocket.client);
     const user = useSelector((state) => state.user.user)
-    // const [currentTask, setCurrentTask] = useState(filteredTasks.length > 0 ? filteredTasks[0] : null);
+
     useEffect(() => {
         if (filteredTasks.length > 0) {
             setCurrentTask(filteredTasks[0]);
@@ -16,11 +17,10 @@ const TaskList = ({ filteredTasks,currentTask,setCurrentTask }) => {
                 dispatch(setComments(comments));
             });
         } else {
-            setCurrentTask(null); // Handle no tasks scenario
+            setCurrentTask(null);
         }
     }, [filteredTasks]);
     useEffect(()=>{
-        // useState opeation is still underway
        if(currentTask){
            setupChatSubscription(client,dispatch,user.userId,currentTask?.id);
        }

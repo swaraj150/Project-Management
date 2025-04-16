@@ -6,10 +6,6 @@ import Project from './Project'
 const ProjectsList = () => {
   const { projects, projectsMap } = useSelector((state) => state.projects)
 
-  useEffect(() => {
-    console.log(projects, projectsMap)
-  }, [projects, projectsMap])
-
   return (
     <ul className="projects-list no-scrollbar">
       {

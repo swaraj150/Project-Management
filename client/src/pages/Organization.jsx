@@ -28,9 +28,9 @@ const Organization = () => {
       <Menu />
       <section className={`content ${collapsed ? 'expanded' : null}`} >
         <div className='organization-heading'>
-          <h2 className='title h1'>{organization.name}</h2>
+          <h2 className='title h1'>{organization?.name}</h2>
           {
-            user.projectRole === roles.productOwner ? (
+            user?.projectRole === roles.productOwner ? (
               <div className='cta'>
                 <button
                   className={`pointer ${activeSection === 0 ? 'dark-btn' : null}`}

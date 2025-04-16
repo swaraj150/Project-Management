@@ -78,7 +78,7 @@ const JoinOrganization = () => {
             return newValue
           }}
           onChange={handleChange}
-          onBlur={joinOrganizationForm.handleBlur}
+          onBlur={() => createTaskForm.setFieldTouched('searchQuery', true)}
         />
         <p className="helper-text opacity-5">
           {joinOrganizationForm.touched.searchQuery && joinOrganizationForm.errors.searchQuery ? joinOrganizationForm.errors.searchQuery : ''}

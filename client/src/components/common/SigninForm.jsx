@@ -56,13 +56,12 @@ const SigninForm = () => {
 
       const { res, err } = await userApi.signin({ username: usernameOrEmail, password})
 
-      if (res) {
-        if (res.token) localStorage.setItem('token', res.token)
-        dispatch(setUser(res))
+      if (res && res.token && res.user) {
+        localStorage.setItem('token', res.token)
+        dispatch(setUser(res.user))
         toast.success('Login successful. Welcome back!')
         navigate('/dashboard')
       }
-
       if (err) {
         localStorage.removeItem('token')
         toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
@@ -74,31 +73,6 @@ const SigninForm = () => {
     if (localStorage.getItem('rememberMe') != null) setRememberMe(true)
     const savedUsername = localStorage.getItem('username')
     if (savedUsername) signinForm.setFieldValue('usernameOrEmail', savedUsername)
-  }, [])
-
-  
-  useEffect(() => {
-    const queryString = window.location.search
-    const urlParams = new URLSearchParams(queryString)
-    const code = urlParams.get('code')
-
-    const githubLogin = async () => {
-      const { res, err } = await userApi.githubSignin({ code })
-
-      if (res) {
-        dispatch(setUser(res))
-        toast.success('Login successful. Welcome back!')
-        navigate('/')
-      }
-
-      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
-    }
-    
-    if (code != null) {
-      githubLogin().then(() => {
-        window.history.replaceState({}, document.title, window.location.pathname)
-      })
-    }
   }, [])
 
   return (
