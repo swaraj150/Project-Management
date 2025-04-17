@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,6 +35,7 @@ public class UserDTO {
     private String code;
     private String country;
     private String state;
+    private Set<String> skills;
 
 
     public static UserDTO mapToUserDTO(User user) {
@@ -54,6 +56,7 @@ public class UserDTO {
                 .code(user.getCode())
                 .country(user.getCountry())
                 .state(user.getState())
+                .skills(user.getSkills())
                 .build();
     }
 }

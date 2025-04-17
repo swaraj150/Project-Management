@@ -173,6 +173,13 @@ public class UserController {
         return ResponseEntity.ok(h);
     }
 
+    @PatchMapping("")
+    public ResponseEntity<?> updateUserProfile(@RequestBody UserProfileUpdateRequest request){
+        UserDTO userDTO = userService.updateUser(request);
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("user",userDTO);
+        return ResponseEntity.ok(h);
+    }
 
 
 
