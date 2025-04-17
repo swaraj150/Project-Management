@@ -9,6 +9,7 @@ const userEndpoints = {
   getInfo: 'users/me',
   getInfoById: (userId) => `users/${userId}`,
   updateProjectRole: 'users/project-role',
+  updateProfile: 'users',
   logout: 'users/logout'
 }
 
@@ -69,6 +70,17 @@ const userApi = {
   getInfoById: async ({ userId }) => {
     try {
       const res = await privateClient.get(userEndpoints.getInfoById(userId))
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  updateProfile: async (user) => {
+    try {
+      const res = await privateClient.patch(
+        userEndpoints.updateProfile,
+        { user }
+      )
       return { res }
     } catch (err) {
       return { err }
