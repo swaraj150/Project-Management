@@ -3,8 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import { toast } from 'react-toastify'
 import { MdEdit, MdCancel } from 'react-icons/md'
 import { FaSave } from 'react-icons/fa'
+
+import userApi from '../api/modules/user.api'
 
 import Menu from '../components/common/Menu'
 import ProfileDetails from '../components/common/ProfileDetails'
@@ -13,6 +16,7 @@ import ProfileForm from '../components/common/ProfileForm'
 import { useSelection } from '../contexts/SelectionContext'
 
 import { setActive } from '../redux/features/menuSlice'
+import { setUser } from '../redux/features/userSlice'
 
 import { menuIndices } from '../utils/menu.utils'
 
@@ -90,7 +94,31 @@ const Profile = () => {
             proficiency: Yup.string().required('Proficiency is required')
           })
         )
-    })
+    }),
+    onSubmit: async ({ firstname, lastname, gender, dob, phoneNumber, addressLine1, addressLine2, city, code, state, country, skills }) => {
+      console.log('hello')
+      const { res, err } = await userApi.updateProfile({
+        ...user,
+        firstname,
+        lastname,
+        gender,
+        dob,
+        phoneNumber,
+        addressLine1,
+        addressLine2,
+        city,
+        code,
+        state,
+        country,
+        skills: skills.map((skill) => skill.value)
+      })
+      if (res.user) {
+        dispatch(setUser(res.user))
+        toast.success('Profile updated successfully!')
+        setIsEditing(false)
+      }
+      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+    }
   })
 
   useEffect(() => {
@@ -139,6 +167,7 @@ const Profile = () => {
                       <p>Cancel</p>
                     </button>
                     <button
+                      type='button'
                       className='pointer dark-btn paper-1'
                       onClick={profileForm.handleSubmit}
                     >
