@@ -68,9 +68,14 @@ public class ProjectService {
         organization.getProjects().add(project.getId());
         organizationRepository.save(organization);
         var p=loadProjectResponse(project.getId());
+
         messagingTemplate.convertAndSend(
-                "/topic/organization."+user.getOrganizationId(),
-                Map.of("notification","Project "+project.getTitle()+" created in your project","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.PROJECT.name(),"data",p)
+                "/topic/user."+user.getId(),
+                Map.of("notification","Project "+project.getTitle()+" created","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.PROJECT.name(),"data",p)
+        );
+        messagingTemplate.convertAndSend(
+                "/topic/user."+projectManager.getId(),
+                Map.of("notification","Project "+project.getTitle()+" created","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.PROJECT.name(),"data",p)
         );
         return p;
 
@@ -120,9 +125,10 @@ public class ProjectService {
             }
             teamRepository.save(team.get());
             messagingTemplate.convertAndSend(
-                    "/topic/project."+project.getId(),
+                    "/topic/team."+teamId,
                     Map.of("notification","Team "+team.get().getName()+" added to your project","method",ResponseMethod.UPDATE.name(),"dataType", ResponseType.PROJECT.name(),"data",project)
             );
+
         }
         projectRepository.save(project);
     }

@@ -85,10 +85,22 @@ public class TeamService {
         organization.getTeams().add(team.getId());
         organizationRepository.save(organization);
         var teamResponse= loadTeamResponse(team.getId());
+        for(UUID memberId:team.getMemberIds()){
+            messagingTemplate.convertAndSend(
+                    "/topic/user."+memberId,
+                    Map.of("notification","Team "+team.getName()+" created","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.TEAM.name(),"data",teamResponse)
+            );
+        }
         messagingTemplate.convertAndSend(
-                "/topic/organization."+organization.getId(),
-                Map.of("notification","Team "+team.getName()+" created in your organization","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.TEAM.name(),"data",teamResponse)
+                "/topic/user."+organization.getProductOwnerId(),
+                Map.of("notification","Team "+team.getName()+" created","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.TEAM.name(),"data",teamResponse)
         );
+        if(organization.getProductOwnerId()!= user1.getId()){
+            messagingTemplate.convertAndSend(
+                    "/topic/user."+user1.getId(),
+                    Map.of("notification","Team "+team.getName()+" created","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.TEAM.name(),"data",teamResponse)
+            );
+        }
         return teamResponse;
     }
 
