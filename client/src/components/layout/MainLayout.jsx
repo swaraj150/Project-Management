@@ -31,7 +31,7 @@ const MainLayout = () => {
   const { projects } = useSelector((state) => state.projects)
   const { tasks } = useSelector((state) => state.tasks)
 
-  const { subscribeToChat, subscribeToTaskUpdates, sendMessageInChat } = useSocket()
+  const { subscribeToChat, subscribeToOrganization, subscribeToProject, sendMessageInChat } = useSocket()
 
   const [loading, setLoading] = useState(true)
 
@@ -110,11 +110,7 @@ const MainLayout = () => {
 
     const fetchChats = async () => {
       const { res, err } = await chatsApi.getAll()
-      if (user.projectRole === roles.productOwner) {
-        if (res.organizationChats && res.projectChats) dispatch(setChats(res))
-      } else {
-        if (res.organizationChats && res.projectChats && res.taskChats) dispatch(setChats(res))
-      }
+      if (res.chats) dispatch(setChats(res.chats))
       if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
 
@@ -125,33 +121,37 @@ const MainLayout = () => {
     }
 
     fetchData()
-    const organizationChatSubscription = subscribeToChat({ id: organization.id })
+
+    const organizationSubscriptions = [
+      subscribeToChat({ id: organization.id }),
+      subscribeToOrganization({ organizationId: organization.id })
+    ]
 
     return () => {
-      if (organizationChatSubscription) organizationChatSubscription.unsubscribe()
+      if (organizationSubscriptions) organizationSubscriptions.map((subscription) => subscription.unsubscribe())
     }
   }, [organization, dispatch])
 
-  // useEffect(() => {
-  //   if (projects) {
-  //     const chatSubscriptions = projects.forEach((projectId) => subscribeToProjectChat({ projectId }))
-  //     sendMessageInProjectChat({ projectId: projects[0], payload: { message: "hello" } })
-  //     return () => {
-  //       if (chatSubscriptions) chatSubscriptions.forEach((subscription) => subscription.unsubscribe())
-  //     }
-  //   }
-  // }, [projects])
+  useEffect(() => {
+    if (projects) {
+      const projectSubscriptions = [
+        ...projects.map((projectId) => subscribeToChat({ id: projectId })),
+        ...projects.map((projectId) => subscribeToProject({ projectId }))
+      ]
+      return () => {
+        if (projectSubscriptions) projectSubscriptions.forEach((subscription) => subscription.unsubscribe())
+      }
+    }
+  }, [projects])
 
-  // useEffect(() => {
-  //   if (tasks) {
-  //     const chatSubscriptions = tasks.forEach((taskId) => subscribeToTaskChat({ taskId }))
-  //     const updateSubscriptions = tasks.forEach((taskId) => subscribeToTaskUpdates({ taskId }))
-  //     return () => {
-  //       if (chatSubscriptions) chatSubscriptions.forEach((subscription) => subscription.unsubscribe())
-  //       if (updateSubscriptions) updateSubscriptions.forEach((subscription) => subscription.unsubscribe())
-  //     }
-  //   }
-  // }, [tasks])
+  useEffect(() => {
+    if (tasks) {
+      const taskSubscriptions = tasks.map((taskId) => subscribeToChat({ id: taskId }))
+      return () => {
+        if (taskSubscriptions) taskSubscriptions.forEach((subscription) => subscription.unsubscribe())
+      }
+    }
+  }, [tasks])
 
   return (
     <main>
