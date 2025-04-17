@@ -620,6 +620,14 @@ main {
   display: flex;
   flex-wrap: wrap;
 }
+#dashboard .content .charts .organization-workload {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 #dashboard .content .charts .priority-distribution {
   height: 100%;
   width: 100%;
@@ -873,6 +881,9 @@ main {
 #team-details .content .information .testers .list {
   list-style: none;
   max-height: 25vh;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 #team-details .content .information .developers .list li,
 #team-details .content .information .testers .list li {
@@ -1094,6 +1105,9 @@ main {
   align-items: center;
   justify-content: space-between;
 }
+#tasks .content .heading h2 {
+  color: rgb(10, 36, 114);
+}
 #tasks .content .heading .task-options {
   width: 75%;
   display: flex;
@@ -1247,6 +1261,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color: rgb(10, 36, 114);
 }
 #teams .content .heading .cta,
 #projects .content .heading .cta {
@@ -1465,4 +1480,156 @@ main {
   border: none;
   border-radius: 10px;
   font-size: 1rem;
+}
+
+#profile .content {
+  display: flex;
+  flex-direction: column;
+}
+#profile .content .profile-welcome {
+  font-size: 2rem;
+  color: rgb(10, 36, 114);
+}
+#profile .content .profile-info {
+  height: 100%;
+  flex-grow: 1;
+  margin: 1% 1%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+#profile .content .profile-info .gradient {
+  height: 10%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-image: linear-gradient(to right, rgb(114, 146, 243), rgb(251, 208, 242));
+}
+#profile .content .profile-info .hero-section {
+  width: 100%;
+  padding: 1% 2% 0;
+  display: flex;
+  align-items: center;
+}
+#profile .content .profile-info .hero-section .profile-img {
+  width: 70px;
+  height: 70px;
+  margin-right: 2%;
+}
+#profile .content .profile-info .hero-section .profile-heading .name {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+#profile .content .profile-info .hero-section .cta {
+  margin-left: auto;
+  width: 20%;
+  display: flex;
+  gap: 6%;
+  align-items: center;
+  justify-content: flex-end;
+}
+#profile .content .profile-info .hero-section .cta button {
+  width: 47%;
+  padding: 5% 0;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+#profile .content .profile-info .hero-section .cta button svg {
+  font-size: 1.2rem;
+}
+#profile .content .profile-info .profile-details {
+  flex-grow: 1;
+  padding: 0 2%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+#profile .content .profile-info .profile-details .group {
+  display: flex;
+  gap: 2%;
+  align-items: center;
+}
+#profile .content .profile-info .profile-details .group .field {
+  width: 49%;
+}
+#profile .content .profile-info .profile-details .group .field p {
+  padding: 1% 2%;
+}
+#profile .content .profile-info .profile-details .group .field .label {
+  padding: 0;
+}
+#profile .content .profile-info .profile-details .field {
+  width: 100%;
+}
+#profile .content .profile-info .profile-details .field p {
+  padding: 0.5% 1%;
+  border-radius: 10px;
+}
+#profile .content .profile-info .profile-details .field .label {
+  padding: 0;
+  font-size: small;
+}
+#profile .content .profile-info .profile-form {
+  flex-grow: 1;
+  padding: 0 2%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+#profile .content .profile-info .profile-form .group {
+  display: flex;
+  gap: 2%;
+  align-items: center;
+}
+#profile .content .profile-info .profile-form .group .input-field {
+  flex-grow: 1;
+}
+#profile .content .profile-info .profile-form .group .input-field input {
+  padding: 2%;
+}
+#profile .content .profile-info .profile-form .group .radio {
+  flex-grow: 1;
+  padding: 2%;
+}
+#profile .content .profile-info .profile-form .input-field input {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 1%;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+#profile .content .profile-info .profile-form .input-field .select {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 0.5%;
+  border-radius: 10px;
+}
+#profile .content .profile-info .profile-form .radio {
+  width: 100%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 5%;
+  font-size: 0.9rem;
+}
+#profile .content .profile-info .profile-form .radio label {
+  padding-left: 2%;
+}
+#profile .content .profile-info .profile-form .radio .radio-group {
+  display: flex;
+  gap: 20%;
+}
+#profile .content .profile-info .profile-form .radio .radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }

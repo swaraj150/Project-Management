@@ -639,6 +639,15 @@ main {
             display: flex;
             flex-wrap: wrap;
 
+            .organization-workload {
+                height: 100%;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
             .priority-distribution {
                 height: 100%;
                 width: 100%;
@@ -948,10 +957,12 @@ main {
 
             .developers,
             .testers {
-
                 .list {
                     list-style: none;
                     max-height: 25vh;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
 
                     li {
                         height: 20%;
@@ -1222,6 +1233,10 @@ main {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            
+            h2 {
+                color: $primary-500;
+            }
 
             .task-options {
                 width: 75%;
@@ -1410,6 +1425,7 @@ main {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            color: $primary-500;
 
             .cta {
                 width: 15%;
@@ -1608,6 +1624,192 @@ main {
                     border: none;
                     border-radius: 10px;
                     font-size: 1rem;
+                }
+            }
+        }
+    }
+}
+
+#profile {
+    .content {
+        display: flex;
+        flex-direction: column;
+
+        .profile-welcome {
+            font-size: $mukta-h1-medium;
+            color: $primary-500;
+        }
+
+        .profile-info {
+            height: 100%;
+            flex-grow: 1;
+            margin: 1% 1%;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .gradient {
+                height: 10%;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                background-image: linear-gradient(to right, $primary-300, $contrast-100);
+            }
+
+            .hero-section {
+                width: 100%;
+                padding: 1% 2% 0;
+                display: flex;
+                align-items: center;
+
+                .profile-img {
+                    width: 70px;
+                    height: 70px;
+                    margin-right: 2%;
+                }
+
+                .profile-heading {
+                    .name {
+                        font-size: 1.2rem;
+                        font-weight: 700;
+                    }
+                }
+
+                .cta {
+                    margin-left: auto;
+                    width: 20%;
+                    display: flex;
+                    gap: 6%;
+                    align-items: center;
+                    justify-content: flex-end;
+
+                    button {
+                        width: 47%;
+                        padding: 5% 0;
+                        border: none;
+                        border-radius: 10px;
+                        font-size: 1.1rem;
+                        display: flex;
+                        gap: 5px;
+                        align-items: center;
+                        justify-content: center;
+    
+                        svg {
+                            font-size: 1.2rem;
+                        }
+                    }
+                }
+            }
+
+            .profile-details {
+                flex-grow: 1;
+                padding: 0 2%;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                justify-content: center;
+
+                .group {
+                    display: flex;
+                    gap: 2%;
+                    align-items: center;
+
+                    .field {
+                        width: 49%;
+
+                        p {
+                            padding: 1% 2%;
+                        }
+
+                        .label {
+                            padding: 0;
+                        }
+                    }
+                }
+
+                .field {
+                    width: 100%;
+
+                    p {
+                        padding: 0.5% 1%;
+                        border-radius: 10px;
+                    }
+
+                    .label {
+                        padding: 0;
+                        font-size: small;
+                    }
+                }
+            }
+
+            .profile-form {
+                flex-grow: 1;
+                padding: 0 2%;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                justify-content: center;
+
+                .group {
+                    display: flex;
+                    gap: 2%;
+                    align-items: center;
+
+                    .input-field {
+                        flex-grow: 1;
+
+                        input {
+                            padding: 2%;
+                        }
+                    }
+
+                    .radio {
+                        flex-grow: 1;
+                        padding: 2%;
+                    }
+                }
+
+                .input-field {
+                    input {
+                        width: 100%;
+                        border: none;
+                        outline: none;
+                        padding: 1%;
+                        border-radius: 10px;
+                        font-size: 0.9rem;
+                    }
+
+                    .select {
+                        width: 100%;
+                        border: none;
+                        outline: none;
+                        padding: 0.5%;
+                        border-radius: 10px;
+                    }
+                }
+
+                .radio {
+                    width: 100%;
+                    border-radius: 10px;
+                    display: flex;
+                    flex-direction: row;
+                    gap: 5%;
+                    font-size: 0.9rem;
+
+                    label {
+                        padding-left: 2%;
+                    }
+
+                    .radio-group {
+                        display: flex;
+                        gap: 20%;
+
+                        label {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+                    }
                 }
             }
         }
