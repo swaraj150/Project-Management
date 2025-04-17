@@ -5,7 +5,6 @@ import Select from 'react-select'
 import Menu from '../components/common/Menu'
 import ChatBoard from '../components/common/ChatBoard'
 
-import { useSocket } from '../contexts/SocketContext'
 import { useProject } from '../contexts/ProjectContext'
 
 import { setActive } from '../redux/features/menuSlice'
@@ -21,9 +20,7 @@ const Chats = () => {
   const { organization } = useSelector((state) => state.organization)
   const { tasks, tasksMap } = useSelector((state) => state.tasks)
   const { projects, projectsMap } = useSelector((state) => state.projects)
-  const { organizationChats, projectChats, taskChats } = useSelector((state) => state.chats)
 
-  const { sendMessageInChat } = useSocket()
   const { selectedProject, selectedTask, setSelectedProject, setSelectedTask } = useProject()
 
   const [chatOption, setChatOption] = useState(0)
@@ -38,18 +35,14 @@ const Chats = () => {
     }
   }, [user, projects])
 
-  useEffect(() => {
-    if (organization) sendMessageInChat({ id: organization.id, payload: { content: "hello" } })
-  }, [organization])
-
   const getChatBoard = () => {
     switch (chatOption) {
       case 0:
-        return <ChatBoard chats={organizationChats} />
+        return <ChatBoard id={organization.id} />
       case 1:
-        return selectedProject ? <ChatBoard chats={projectChats[selectedProject.id]} /> : null
+        return selectedProject ? <ChatBoard id={selectedProject.id} /> : null
       case 2:
-        return selectedTask ? <ChatBoard chats={taskChats[selectedTask.id]} /> : null
+        return selectedTask ? <ChatBoard id={selectedTask.id} /> : null
     }
   }
 
