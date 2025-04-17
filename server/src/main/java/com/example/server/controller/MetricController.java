@@ -34,33 +34,33 @@ public class MetricController {
 //    }
 
     @GetMapping("/projects/workload")
-    ResponseEntity<?> loadProjectWorkload(@RequestBody MetricRequest request){
+    ResponseEntity<?> loadProjectWorkload(@RequestParam @NonNull UUID projectId){
         Map<String,Object> h=new HashMap<>();
-        var result=metricsService.loadTeamWiseWorkload(request.getProjectId());
+        var result=metricsService.loadTeamWiseWorkload(projectId);
         h.put("workload",result);
         return ResponseEntity.ok(h);
     }
 
     @GetMapping("/projects/expertise")
-    ResponseEntity<?> loadProjectExpertise(@RequestBody MetricRequest request){
+    ResponseEntity<?> loadProjectExpertise(@RequestParam @NonNull UUID projectId){
         Map<String,Object> h=new HashMap<>();
-        var result=metricsService.loadTeamWiseExpertise(request.getProjectId());
+        var result=metricsService.loadTeamWiseExpertise(projectId);
         h.put("expertise",result);
         return ResponseEntity.ok(h);
     }
 
     @GetMapping("/users/performance")
-    ResponseEntity<?> loadEmployeePerformance(@RequestBody MetricRequest request){
+    ResponseEntity<?> loadEmployeePerformance(@RequestParam @NonNull UUID userId,@RequestParam @NonNull UUID projectId){
         Map<String,Object> h=new HashMap<>();
-        var result=metricsService.employeePerformance(request.getUserId(),request.getProjectId());
+        var result=metricsService.employeePerformance(userId,projectId);
         h.put("performance",result);
         return ResponseEntity.ok(h);
     }
 
     @GetMapping("/projects/status")
-    ResponseEntity<?> loadProjectTaskStatus(@RequestBody MetricRequest request){
+    ResponseEntity<?> loadProjectTaskStatus(@RequestParam @NonNull UUID projectId){
         Map<String,Object> h=new HashMap<>();
-        var result=metricsService.loadProjectCompletionStatuses(request.getProjectId());
+        var result=metricsService.loadProjectCompletionStatuses(projectId);
         h.put("status",result);
         return ResponseEntity.ok(h);
     }
@@ -74,9 +74,9 @@ public class MetricController {
     }
 
     @GetMapping("/teams/expertise")
-    ResponseEntity<?> loadTeamExpertise(@RequestBody MetricRequest request){
+    ResponseEntity<?> loadTeamExpertise(@RequestParam @NonNull UUID projectId,@RequestParam @NonNull UUID teamId){
         Map<String,Object> h=new HashMap<>();
-        var result =metricsService.loadTeamExpertise(request.getProjectId(),request.getTeamId());
+        var result =metricsService.loadTeamExpertise(projectId,teamId);
         h.put("expertise", result);
         return ResponseEntity.ok(h);
     }

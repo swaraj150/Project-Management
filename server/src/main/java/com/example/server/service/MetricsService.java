@@ -4,6 +4,7 @@ import com.example.server.entities.Project;
 import com.example.server.entities.Task;
 import com.example.server.entities.User;
 import com.example.server.enums.CompletionStatus;
+import com.example.server.enums.Level;
 import com.example.server.enums.Priority;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -56,8 +57,8 @@ public class MetricsService {
         return priority;
     }
 
-    public Map<String,Double> employeePerformance(@NonNull UUID projectId,@NonNull UUID userId){
-        Map<String,Double> metrics=new HashMap<>();
+    public Map<String,Object> employeePerformance(@NonNull UUID projectId,@NonNull UUID userId){
+        Map<String,Object> metrics=new HashMap<>();
         List<Task> taskList=taskService.getCompletedTasksByUser(userId,projectId);
         // rate of task completion before deadline
         int totalTasks = taskList.size();
@@ -66,12 +67,12 @@ public class MetricsService {
 
             metrics.put("No. of tasks completed",0.0);
 
-            metrics.put("Average level of tasks completed",0.0);
+            metrics.put("Average level of tasks completed",Level.BEGINNER);
             return metrics;
         }
         int onTimeTasks = 0;
         int totalDaysDifference = 0;
-        int beginner=0,intermediate=0,expert=0;
+        int taskLevel=0;
 
         for (Task task : taskList) {
             LocalDateTime startDate = task.getStartDate();
@@ -86,23 +87,22 @@ public class MetricsService {
                 onTimeTasks++;
             }
             switch (task.getLevel()){
-                case BEGINNER -> beginner++;
-                case INTERMEDIATE -> intermediate++;
-                case EXPERT -> expert++;
+                case BEGINNER -> taskLevel++;
+                case INTERMEDIATE -> taskLevel+=2;
+                case EXPERT -> taskLevel+=3;
             }
         }
 
         double onTimeCompletionRate = ((double) onTimeTasks / totalTasks) * 100;
         double avgDaysEarlyLate = (double) totalDaysDifference / totalTasks;
-
+        double avgLevel = (double) taskLevel / taskList.size();
         double performanceScore = onTimeCompletionRate + (avgDaysEarlyLate * 2);
         metrics.put("Tasks completed within deadline",performanceScore);
-
-
+        Level level=Level.BEGINNER;
+        if(avgLevel>=1.5 && avgLevel<2.5) level=Level.INTERMEDIATE;
+        if(avgLevel>=2.5 && avgLevel<=3.0) level=Level.EXPERT;
         metrics.put("No. of tasks completed",(double)taskList.size());
-
-        metrics.put("Average level of tasks completed",(double)(beginner+intermediate+expert)/taskList.size());
-
+        metrics.put("Average level of tasks completed",level.name());
         return metrics;
     }
 
