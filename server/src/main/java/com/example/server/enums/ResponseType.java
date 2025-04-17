@@ -9,5 +9,5 @@ public enum ResponseType {
     PROJECTS,
     TASK,
     TASKS, CHAT,
-    LINK,
+    LINK, ID,
 }

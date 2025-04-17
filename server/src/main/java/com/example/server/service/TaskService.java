@@ -629,7 +629,7 @@ public class TaskService {
         projectRepository.save(project);
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+"deleted")
+                Map.of("notification","Task "+task.getTitle()+"deleted","dataType",ResponseType.ID.name(),"data",task.getId())
         );
 
     }
@@ -658,6 +658,10 @@ public class TaskService {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.EDIT_TASKS)){
             throw new UnauthorizedAccessException("User doesn't have required authority");
         }
+        messagingTemplate.convertAndSend(
+                "/topic/project."+user.getProjectId(),
+                Map.of("notification","Link deleted","dataType", ResponseType.ID.name(),"data",id)
+        );
         dependencyRepository.deleteById(id);
 
     }

@@ -210,6 +210,11 @@ public class ProjectService {
         projectRepository.save(project);
 
         projectRepository.delete(project);
+        messagingTemplate.convertAndSend(
+                "/topic/organization."+user.getOrganizationId(),
+                Map.of("notification","Project "+project.getTitle()+" deleted","dataType", ResponseType.PROJECT.name(),"data",projectId)
+        );
+
     }
 
 
