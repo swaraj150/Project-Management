@@ -3,42 +3,25 @@ import { createSlice } from '@reduxjs/toolkit'
 export const chatsSlice = createSlice({
   name: 'Chats',
   initialState: {
-    organizationChats: [],
-    projectChats: {}, 
-    taskChats: {}
+    chats: null
   },
   reducers: {
     setChats: (state, action) => {
-      state.organizationChats = action.payload.organizationChats
-      state.projectChats = action.payload.projectChats
-      state.taskChats = action.payload.taskChats
+      state.chats = action.payload
     },
-    addChatToOrganization: (state, action) => {
-      const { chat } = action.payload
-      state.organizationChats.push(chat)
-    },
-    addChatToProject: (state, action) => {
-      const { projectId, chat } = action.payload
-      if (!state.projectChats[projectId]) {
-        state.projectChats[projectId] = []
+    addChat: (state, action) => {
+      const { id, chat } = action.payload
+      if (!state.chats[id]) {
+        state.chats[id] = []
       }
-      state.projectChats[projectId].push(chat)
-    },
-    addChatToTask: (state, action) => {
-      const { taskId, chat } = action.payload
-      if (!state.taskChats[taskId]) {
-        state.taskChats[taskId] = []
-      }
-      state.taskChats[taskId].push(chat)
+      state.chats[id].push(chat)
     }
   }
 })
 
 export const { 
   setChats,
-  addChatToOrganization,
-  addChatToProject,
-  addChatToTask
+  addChat
 } = chatsSlice.actions
 
 export default chatsSlice.reducer
