@@ -98,7 +98,7 @@ const Profile = () => {
     onSubmit: async ({ firstname, lastname, gender, dob, phoneNumber, addressLine1, addressLine2, city, code, state, country, skills }) => {
       console.log('hello')
       const { res, err } = await userApi.updateProfile({
-        ...user,
+        // ...user,
         firstname,
         lastname,
         gender,
