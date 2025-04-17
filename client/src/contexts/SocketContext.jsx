@@ -1,12 +1,20 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Client } from '@stomp/stompjs'
+
+import { addChat } from '../redux/features/chatsSlice'
+
+const dataTypes = {
+  chat: 'CHAT'
+}
 
 const SOCKET_URL = import.meta.env.VITE_WEBSOCKET_URL
 
 const SocketContext = createContext(null)
 
 export const SocketProvider = ({ children }) => {
+  const dispatch = useDispatch()
+
   const { user } = useSelector((state) => state.user)
 
   const [stompClient, setStompClient] = useState(null)
@@ -41,21 +49,33 @@ export const SocketProvider = ({ children }) => {
   const subscribeToChat = ({ id }) => {
     if (stompClient?.connected) {
       return stompClient.subscribe(`/topic/chat.${id}`, (message) => {
-        console.log(id, message)
+        const { dataType, notification, data } = JSON.parse(message.body)
+        switch (dataType) {
+          case dataTypes.chat:
+            dispatch(addChat({ id, chat: data }))
+            break
+        }
       })
     }
   }
 
-  const subscribeToTaskUpdates = ({ taskId }) => {
+  const subscribeToOrganization = ({ organizationId }) => {
     if (stompClient?.connected) {
-      return stompClient.subscribe(`/topic/task.update.${taskId}`, (task) => {
+      return stompClient.subscribe(`/topic/organization.${organizationId}`, (task) => {
+        console.log(task)
+      })
+    }
+  }
+
+  const subscribeToProject = ({ projectId }) => {
+    if (stompClient?.connected) {
+      return stompClient.subscribe(`/topic/project.${projectId}`, (task) => {
         console.log(task)
       })
     }
   }
 
   const sendMessageInChat = ({ id, payload }) => {
-    console.log(id, payload, stompClient?.connected)
     if (stompClient?.connected) {
       stompClient.publish({ destination: `/app/chat.${id}`, headers: {}, body: JSON.stringify(payload) })
     }
@@ -65,7 +85,8 @@ export const SocketProvider = ({ children }) => {
     <SocketContext.Provider
       value={{
         subscribeToChat,
-        subscribeToTaskUpdates,
+        subscribeToOrganization,
+        subscribeToProject,
         sendMessageInChat
       }}
     >
