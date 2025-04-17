@@ -20,15 +20,16 @@ const ProfileForm = ({ profileForm }) => {
       const values = {
         firstname: selectedUser.name.split(' ')[0],
         lastname: selectedUser.name.split(' ')[1],
-        gender: selectedUser.gender ? selectedUser.gender : '',
-        dob: selectedUser.dob ? selectedUser.dob : '',
-        phoneNumber: selectedUser.phoneNumber ? selectedUser.phoneNumber : '',
-        addressLine1: selectedUser.addressLine1 ? selectedUser.addressLine1 : '',
-        addressLine2: selectedUser.addressLine2 ? selectedUser.addressLine2 : '',
-        city: selectedUser.city ? selectedUser.city : '',
-        code: selectedUser.code ? selectedUser.code : '',
-        state: selectedUser.state ? selectedUser.state : '',
-        country: selectedUser.country ? selectedUser.country : ''
+        gender: selectedUser.gender || '',
+        dob: selectedUser.dob || '',
+        phoneNumber: selectedUser.phoneNumber || '1234567890',
+        addressLine1: selectedUser.addressLine1 || '',
+        addressLine2: selectedUser.addressLine2 || '',
+        city: selectedUser.city || '',
+        code: selectedUser.code || '',
+        state: selectedUser.state || '',
+        country: selectedUser.country || '',
+        skills: selectedUser.skills || []
       }
       profileForm.setValues(values)
       initialFormValues.current = values
@@ -37,11 +38,11 @@ const ProfileForm = ({ profileForm }) => {
   }, [selectedUser])
 
   useEffect(() => {
-    if (selectedUser?.dob) setDobType('datetime-local')
+    if (selectedUser?.dob) setDobType('date')
   }, [selectedUser])
 
   useEffect(() => {
-    if (dataInitialized && profileForm.values.dob === '' && dobType === 'datetime-local' && dobRef.current) {
+    if (dataInitialized && profileForm.values.dob === '' && dobType === 'date' && dobRef.current) {
       dobRef.current.showPicker?.()
     }
   }, [dobType, profileForm.values.dob, dataInitialized])
@@ -122,12 +123,12 @@ const ProfileForm = ({ profileForm }) => {
             required
             placeholder='Enter date of birth'
             value={profileForm.values.dob}
-            onChange={(e) => profileForm.setFieldValue('dob', addSeconds(e.target.value))}
+            onChange={(e) => profileForm.setFieldValue('dob', e.target.value)}
             onBlur={(e) => {
               profileForm.handleBlur(e)
               if (!profileForm.values.dob) setDobType('text')
             }}
-            onFocus={() => setDobType('datetime-local')}
+            onFocus={() => setDobType('date')}
           />
           <p className="helper-text opacity-5">
             {profileForm.touched.dob && profileForm.errors.dob ? profileForm.errors.dob : ''}
