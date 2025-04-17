@@ -29,7 +29,7 @@ const ProjectDetails = () => {
   const { membersMap } = useSelector((state) => state.organization)
   const { teams, teamsMap } = useSelector((state) => state.teams)
 
-  const { selectedProject } = useSelection()
+  const { setSelectedUser, selectedProject } = useSelection()
 
   const { collapsed } = useSelector((state) => state.menu)
   const [options, setOptions] = useState([])
@@ -52,6 +52,11 @@ const ProjectDetails = () => {
     }
     if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     setAddTeamsRequested(false)
+  }
+
+  const viewProfile = () => {
+    setSelectedUser(membersMap[selectedProject.projectManager])
+    navigate(`/profile/${membersMap[selectedProject.projectManager].username}`)
   }
 
   useEffect(() => {
@@ -104,7 +109,7 @@ const ProjectDetails = () => {
                 <p className='opacity-7'>Project Manager</p>
                 <div className="project-manager-details">
                   <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
-                  <h4>{membersMap[selectedProject.projectManager].name}</h4>
+                  <h4 className='pointer' onClick={viewProfile}>{membersMap[selectedProject.projectManager].name}</h4>
                   <a href={`mailto:${membersMap[selectedProject.projectManager].emails[0]}`} className="opacity-7" >
                     {membersMap[selectedProject.projectManager].emails[0]}
                   </a>

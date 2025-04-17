@@ -12,11 +12,16 @@ const Project = ({ project }) => {
 
   const { membersMap } = useSelector((state) => state.organization)
 
-  const { setSelectedProject } = useSelection()
+  const { setSelectedUser, setSelectedProject } = useSelection()
 
   const handleGoToDetails = () => {
     setSelectedProject(project)
     navigate(`/projects/${project.title}`)
+  }
+
+  const viewProfile = () => {
+    setSelectedUser(membersMap[project.projectManager])
+    navigate(`/profile/${membersMap[project.projectManager].username}`)
   }
 
   return (
@@ -34,7 +39,7 @@ const Project = ({ project }) => {
       <div className="project-manager">
         <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
         <div className="project-manager-details">
-          <p>{membersMap[project.projectManager].name} &nbsp;&nbsp;</p>
+          <p className='pointer' onClick={viewProfile}>{membersMap[project.projectManager].name} &nbsp;&nbsp;</p>
           <a href={`mailto:${membersMap[project.projectManager].emails[0]}`} className="opacity-5" >
             {membersMap[project.projectManager].emails[0]}
           </a>

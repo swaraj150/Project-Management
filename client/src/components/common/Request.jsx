@@ -34,11 +34,7 @@ const Request = ({ request }) => {
     <li>
       <div className="request-info">
         <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
-        <p>{request.username} &nbsp;&nbsp;
-          {/* <a href={`mailto:${request.emails[0]}`} className="opacity-5" >
-            {request.emails[0]}
-          </a> */}
-        </p>
+        <p>{request.username}</p>
       </div>
       <div className="cta">
         <p className="role">{request.projectRole}</p>

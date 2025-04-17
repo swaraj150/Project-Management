@@ -18,10 +18,15 @@ const TeamDetails = () => {
   const { collapsed } = useSelector((state) => state.menu)
   const { membersMap } = useSelector((state) => state.organization)
 
-  const { selectedTeam } = useSelection()
+  const { setSelectedUser, selectedTeam } = useSelection()
 
   const handleGoBack = () => {
     navigate(-1)
+  }
+
+  const viewProfile = (id) => {
+    setSelectedUser(membersMap[id])
+    navigate(`/profile/${membersMap[id].username}`)
   }
 
   useEffect(() => {
@@ -48,7 +53,7 @@ const TeamDetails = () => {
                 <p className="opacity-7">Team Lead</p>
                 <div className="team-lead-details">
                   <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
-                  <h3>{membersMap[selectedTeam.teamLead].name}</h3>
+                  <h3 className='pointer' onClick={() => viewProfile(selectedTeam.teamLead)}>{membersMap[selectedTeam.teamLead].name}</h3>
                   <a href={`mailto:${membersMap[selectedTeam.teamLead].emails[0]}`} className="opacity-5" >
                     {membersMap[selectedTeam.teamLead].emails[0]}
                   </a>
@@ -61,7 +66,7 @@ const TeamDetails = () => {
                     selectedTeam.developers.map((developer, index) => (
                       <li key={index} >
                         <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
-                        <h3>{membersMap[developer].name}</h3>
+                        <h3 className='pointer' onClick={() => viewProfile(developer)}>{membersMap[developer].name}</h3>
                         <a href={`mailto:${membersMap[developer].emails[0]}`} className="opacity-5" >
                           {membersMap[developer].emails[0]}
                         </a>
@@ -77,7 +82,7 @@ const TeamDetails = () => {
                     selectedTeam.testers.map((tester, index) => (
                       <li key={index} >
                         <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
-                        <h3>{membersMap[tester].name}</h3>
+                        <h3 className='pointer' onClick={() => viewProfile(tester)}>{membersMap[tester].name}</h3>
                         <a href={`mailto:${membersMap[tester].emails[0]}`} className="opacity-5" >
                           {membersMap[tester].emails[0]}
                         </a>
