@@ -11,7 +11,7 @@ import tasksApi from '../../api/modules/tasks.api'
 import chatsApi from '../../api/modules/chats.api'
 
 import { useSocket } from '../../contexts/SocketContext'
-import { ProjectProvider } from '../../contexts/ProjectContext'
+import { SelectionProvider } from '../../contexts/SelectionContext'
 
 import { setUser } from '../../redux/features/userSlice'
 import { setOrganization, setRequests } from '../../redux/features/organizationSlice'
@@ -155,9 +155,9 @@ const MainLayout = () => {
 
   return (
     <main>
-      <ProjectProvider>
+      <SelectionProvider>
         {loading ? <p>Loading...</p> : user && <Outlet />}
-      </ProjectProvider>
+      </SelectionProvider>
     </main>
   )
 }

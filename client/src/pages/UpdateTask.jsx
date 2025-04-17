@@ -14,7 +14,7 @@ import tasksApi from '../api/modules/tasks.api'
 
 import Menu from '../components/common/Menu'
 
-import { useProject } from '../contexts/ProjectContext'
+import { useSelection } from '../contexts/SelectionContext'
 
 import { setActive } from '../redux/features/menuSlice'
 import { deleteTaskFromProject } from '../redux/features/projectsSlice'
@@ -32,7 +32,7 @@ const UpdateTask = () => {
   const { teamsMap } = useSelector((state) => state.teams)
   const { projectsMap } = useSelector((state) => state.projects)
 
-  const { selectedTask, selectedProject, handleUpdateTask } = useProject()
+  const { selectedTask, selectedProject, handleUpdateTask } = useSelection()
 
   const startDateRef = useRef(null)
   const initialFormValues = useRef(null)
@@ -218,7 +218,6 @@ const UpdateTask = () => {
       startDateRef.current.showPicker?.()
     }
   }, [startDateType, updateTaskForm.values.startDate, dataInitialized])
-
 
   return (
     <section id='update-task'>

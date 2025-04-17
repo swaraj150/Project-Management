@@ -5,7 +5,7 @@ import Select from 'react-select'
 import Menu from '../components/common/Menu'
 import ChatBoard from '../components/common/ChatBoard'
 
-import { useProject } from '../contexts/ProjectContext'
+import { useSelection } from '../contexts/SelectionContext'
 
 import { setActive } from '../redux/features/menuSlice'
 
@@ -21,7 +21,7 @@ const Chats = () => {
   const { tasks, tasksMap } = useSelector((state) => state.tasks)
   const { projects, projectsMap } = useSelector((state) => state.projects)
 
-  const { selectedProject, selectedTask, setSelectedProject, setSelectedTask } = useProject()
+  const { selectedProject, selectedTask, setSelectedProject, setSelectedTask } = useSelection()
 
   const [chatOption, setChatOption] = useState(0)
 

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useDrag } from 'react-dnd'
 
-import { useProject } from '../../contexts/ProjectContext'
+import { useSelection } from '../../contexts/SelectionContext'
 
 import { roles } from '../../utils/organization.utils'
 import { taskLevelLabels, taskPriorities, taskPriorityLabels } from '../../utils/task.utils'
@@ -21,7 +21,7 @@ const KanbanTask = ({ task }) => {
 
   const { user } = useSelector((state) => state.user)
 
-  const { setSelectedTask } = useProject()
+  const { setSelectedTask } = useSelection()
 
   const handleClick = () => {
     if (user.projectRole === roles.teamLead || user.projectRole === roles.developer || user.projectRole === roles.qa) return

@@ -6,7 +6,7 @@ import { IoMdAdd } from 'react-icons/io'
 import Menu from '../components/common/Menu'
 import ProjectsList from '../components/common/ProjectsList'
 
-import { useProject } from '../contexts/ProjectContext'
+import { useSelection } from '../contexts/SelectionContext'
 
 import { setActive } from '../redux/features/menuSlice'
 
@@ -21,7 +21,7 @@ const Projects = () => {
   const { projects, projectsMap } = useSelector((state) => state.projects)
   const { collapsed } = useSelector((state) => state.menu)
 
-  const { setSelectedProject } = useProject()
+  const { setSelectedProject } = useSelection()
 
   useEffect(() => {
     dispatch(setActive(menuIndices.projects))

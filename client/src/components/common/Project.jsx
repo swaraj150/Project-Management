@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { FaRegCalendarAlt, FaRupeeSign } from 'react-icons/fa'
 
-import { useProject } from '../../contexts/ProjectContext'
+import { useSelection } from '../../contexts/SelectionContext'
 
 import { formatDate, formatBudget } from '../../utils/project.utils'
 
@@ -12,7 +12,7 @@ const Project = ({ project }) => {
 
   const { membersMap } = useSelector((state) => state.organization)
 
-  const { setSelectedProject } = useProject()
+  const { setSelectedProject } = useSelection()
 
   const handleGoToDetails = () => {
     setSelectedProject(project)

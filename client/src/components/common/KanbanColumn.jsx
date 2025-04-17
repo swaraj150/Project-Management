@@ -4,14 +4,14 @@ import { useDrop } from 'react-dnd'
 
 import KanbanTask from './KanbanTask'
 
-import { useProject } from '../../contexts/ProjectContext'
+import { useSelection } from '../../contexts/SelectionContext'
 
 import { taskStatuses } from '../../utils/task.utils'
 
 const KanbanColumn = ({ status }) => {
   const { tasksMap } = useSelector((state) => state.tasks)
 
-  const { selectedProject, handleUpdateTask } = useProject()
+  const { selectedProject, handleUpdateTask } = useSelection()
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'TASK',

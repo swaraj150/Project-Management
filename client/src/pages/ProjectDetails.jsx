@@ -11,7 +11,7 @@ import projectsApi from '../api/modules/projects.api'
 import Menu from '../components/common/Menu'
 import Team from '../components/common/Team'
 
-import { useProject } from '../contexts/ProjectContext'
+import { useSelection } from '../contexts/SelectionContext'
 
 import { setActive } from '../redux/features/menuSlice'
 import { addTeamsToProject } from '../redux/features/projectsSlice'
@@ -29,7 +29,7 @@ const ProjectDetails = () => {
   const { membersMap } = useSelector((state) => state.organization)
   const { teams, teamsMap } = useSelector((state) => state.teams)
 
-  const { selectedProject } = useProject()
+  const { selectedProject } = useSelection()
 
   const { collapsed } = useSelector((state) => state.menu)
   const [options, setOptions] = useState([])

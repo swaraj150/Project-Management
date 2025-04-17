@@ -6,15 +6,17 @@ import tasksApi from '../api/modules/tasks.api'
 
 import { updateTask } from '../redux/features/tasksSlice'
 
-const ProjectContext = createContext(null)
+const SelectionContext = createContext(null)
 
-export const ProjectProvider = ({ children }) => {
+export const SelectionProvider = ({ children }) => {
   const dispatch = useDispatch()
 
+  const { memebersMap } = useSelector((state) => state.organization)
   const { teamsMap } = useSelector((state) => state.teams)
   const { projectsMap } = useSelector((state) => state.projects)
   const { tasksMap } = useSelector((state) => state.tasks)
 
+  const [selectedUser, setSelectedUser] = useState(null)
   const [selectedTeam, setSelectedTeam] = useState(null)
   const [selectedProject, setSelectedProject] = useState(null)
   const [selectedTask, setSelectedTask] = useState(null)
@@ -31,6 +33,10 @@ export const ProjectProvider = ({ children }) => {
   }
 
   useEffect(() => {
+    if (selectedUser) setSelectedUser(memebersMap[selectedUser.userId])
+  }, [memebersMap])
+
+  useEffect(() => {
     if (selectedTeam) setSelectedTeam(teamsMap[selectedTeam.id])
   }, [teamsMap])
 
@@ -43,8 +49,10 @@ export const ProjectProvider = ({ children }) => {
   }, [tasksMap])
 
   return (
-    <ProjectContext.Provider
+    <SelectionContext.Provider
       value={{ 
+        selectedUser,
+        setSelectedUser,
         selectedTeam, 
         setSelectedTeam, 
         selectedProject, 
@@ -59,11 +67,11 @@ export const ProjectProvider = ({ children }) => {
       }}
     >
       {children}
-    </ProjectContext.Provider>
+    </SelectionContext.Provider>
   )
 }
 
-export const useProject = () => {
-  const context = useContext(ProjectContext)
+export const useSelection = () => {
+  const context = useContext(SelectionContext)
   return context
 }

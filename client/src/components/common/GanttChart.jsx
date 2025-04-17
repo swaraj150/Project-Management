@@ -9,7 +9,7 @@ import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
 
 import tasksApi from '../../api/modules/tasks.api'
 
-import { useProject } from '../../contexts/ProjectContext'
+import { useSelection } from '../../contexts/SelectionContext'
 
 import { addLinkToProject, deleteLinkFromProject } from '../../redux/features/projectsSlice'
 import { addLink, deleteLink, updateTask } from '../../redux/features/tasksSlice'
@@ -78,7 +78,7 @@ const GanttChart = () => {
   const { user } = useSelector((state) => state.user)
   const { tasksMap, linksMap } = useSelector((state) => state.tasks)
 
-  const { selectedProject, setParentTaskId, setSelectedTask, handleUpdateTask } = useProject()
+  const { selectedProject, setParentTaskId, setSelectedTask, handleUpdateTask } = useSelection()
 
   const [currentScale, setCurrentScale] = useState('days')
 

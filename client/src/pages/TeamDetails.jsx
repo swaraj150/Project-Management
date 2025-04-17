@@ -5,7 +5,7 @@ import { IoMdArrowBack } from 'react-icons/io'
 
 import Menu from '../components/common/Menu'
 
-import { useProject } from '../contexts/ProjectContext'
+import { useSelection } from '../contexts/SelectionContext'
 
 import { setActive } from '../redux/features/menuSlice'
 
@@ -18,7 +18,7 @@ const TeamDetails = () => {
   const { collapsed } = useSelector((state) => state.menu)
   const { membersMap } = useSelector((state) => state.organization)
 
-  const { selectedTeam } = useProject()
+  const { selectedTeam } = useSelection()
 
   const handleGoBack = () => {
     navigate(-1)

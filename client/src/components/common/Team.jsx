@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import { useProject } from '../../contexts/ProjectContext'
+import { useSelection } from '../../contexts/SelectionContext'
 
 import { membersCount, developersCount, testersCount } from '../../utils/team.utils'
 
@@ -11,7 +11,7 @@ const Team = ({ team }) => {
 
   const { membersMap } = useSelector((state) => state.organization)
 
-  const { setSelectedTeam } = useProject()
+  const { setSelectedTeam } = useSelection()
 
   const handleGoToDetails = () => {
     setSelectedTeam(team)

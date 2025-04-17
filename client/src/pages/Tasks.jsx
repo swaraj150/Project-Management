@@ -10,7 +10,7 @@ import Menu from '../components/common/Menu'
 import GanttChart from '../components/common/GanttChart'
 import KanbanBoard from '../components/common/KanbanBoard'
 
-import { useProject } from '../contexts/ProjectContext'
+import { useSelection } from '../contexts/SelectionContext'
 
 import { setActive } from '../redux/features/menuSlice'
 
@@ -25,7 +25,7 @@ const Tasks = () => {
   const { projects, projectsMap } = useSelector((state) => state.projects)
   const { collapsed } = useSelector((state) => state.menu)
 
-  const { selectedProject, setSelectedProject, setParentTaskId, taskViewMode, setTaskViewMode } = useProject()
+  const { selectedProject, setSelectedProject, setParentTaskId, taskViewMode, setTaskViewMode } = useSelection()
 
   const handleCreateTask = ({ parentTaskId }) => {
     setParentTaskId(parentTaskId)
