@@ -89,7 +89,7 @@ public class TaskService {
         TaskResponse taskResponse=loadTaskResponse(task.getId());
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+" created in your project","dataType", ResponseType.TASK.name(),"data",taskResponse)
+                Map.of("notification","Task "+task.getTitle()+" created in your project","method",ResponseMethod.CREATE.name(),"dataType", ResponseType.TASK.name(),"data",taskResponse)
         );
         return taskResponse;
     }
@@ -169,7 +169,7 @@ public class TaskService {
         var taskResponse=loadTaskResponse(task.getId());
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+" updated","dataType", ResponseType.TASK.name(),"data",taskResponse)
+                Map.of("notification","Task "+task.getTitle()+" updated","method",ResponseMethod.UPDATE.name(),"dataType", ResponseType.TASK.name(),"data",taskResponse)
         );
         return taskResponse;
 //        notificationService.createNotification(NotificationEvent.builder()
@@ -629,7 +629,7 @@ public class TaskService {
         projectRepository.save(project);
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+"deleted","dataType",ResponseType.ID.name(),"data",task.getId())
+                Map.of("notification","Task "+task.getTitle()+"deleted","method",ResponseMethod.DELETE.name(),"dataType",ResponseType.ID.name(),"data",task.getId())
         );
 
     }
@@ -648,7 +648,7 @@ public class TaskService {
         dependencyRepository.save(dependency);
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Link created","dataType", ResponseType.LINK.name(),"data",dependency)
+                Map.of("notification","Link created","method",ResponseMethod.CREATE.name(),"dataType", ResponseType.LINK.name(),"data",dependency)
         );
         return dependency;
     }
@@ -660,7 +660,7 @@ public class TaskService {
         }
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Link deleted","dataType", ResponseType.ID.name(),"data",id)
+                Map.of("notification","Link deleted","method",ResponseMethod.DELETE.name(),"dataType", ResponseType.ID.name(),"data",id)
         );
         dependencyRepository.deleteById(id);
 

@@ -3,10 +3,7 @@ package com.example.server.service;
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.OrganizationDTO;
 import com.example.server.entities.*;
-import com.example.server.enums.CompletionStatus;
-import com.example.server.enums.ProjectAuthority;
-import com.example.server.enums.ProjectRole;
-import com.example.server.enums.ResponseType;
+import com.example.server.enums.*;
 import com.example.server.exception.IllegalRoleException;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.OrganizationRepository;
@@ -73,7 +70,7 @@ public class ProjectService {
         var p=loadProjectResponse(project.getId());
         messagingTemplate.convertAndSend(
                 "/topic/organization."+user.getOrganizationId(),
-                Map.of("notification","Project "+project.getTitle()+" created in your project","dataType", ResponseType.PROJECT.name(),"data",p)
+                Map.of("notification","Project "+project.getTitle()+" created in your project","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.PROJECT.name(),"data",p)
         );
         return p;
 
@@ -124,7 +121,7 @@ public class ProjectService {
             teamRepository.save(team.get());
             messagingTemplate.convertAndSend(
                     "/topic/project."+project.getId(),
-                    Map.of("notification","Team "+team.get().getName()+" added to your project","dataType", ResponseType.PROJECT.name(),"data",project)
+                    Map.of("notification","Team "+team.get().getName()+" added to your project","method",ResponseMethod.UPDATE.name(),"dataType", ResponseType.PROJECT.name(),"data",project)
             );
         }
         projectRepository.save(project);
@@ -212,7 +209,7 @@ public class ProjectService {
         projectRepository.delete(project);
         messagingTemplate.convertAndSend(
                 "/topic/organization."+user.getOrganizationId(),
-                Map.of("notification","Project "+project.getTitle()+" deleted","dataType", ResponseType.PROJECT.name(),"data",projectId)
+                Map.of("notification","Project "+project.getTitle()+" deleted","method",ResponseMethod.DELETE.name(),"dataType", ResponseType.PROJECT.name(),"data",projectId)
         );
 
     }

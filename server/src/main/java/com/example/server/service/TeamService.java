@@ -3,10 +3,7 @@ package com.example.server.service;
 import com.example.server.component.SecurityUtils;
 import com.example.server.dto.TeamDTO;
 import com.example.server.entities.*;
-import com.example.server.enums.Level;
-import com.example.server.enums.ProjectAuthority;
-import com.example.server.enums.ProjectRole;
-import com.example.server.enums.ResponseType;
+import com.example.server.enums.*;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.*;
 import com.example.server.requests.TeamCreateRequest;
@@ -90,7 +87,7 @@ public class TeamService {
         var teamResponse= loadTeamResponse(team.getId());
         messagingTemplate.convertAndSend(
                 "/topic/organization."+organization.getId(),
-                Map.of("notification","Team "+team.getName()+" created in your organization","dataType", ResponseType.TEAM.name(),"data",teamResponse)
+                Map.of("notification","Team "+team.getName()+" created in your organization","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.TEAM.name(),"data",teamResponse)
         );
         return teamResponse;
     }
