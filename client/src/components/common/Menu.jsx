@@ -11,6 +11,8 @@ import userApi from '../../api/modules/user.api'
 
 import Logo from '../../assets/logo.png'
 
+import { useSelection } from '../../contexts/SelectionContext'
+
 import { setActive, setCollapsed } from '../../redux/features/menuSlice'
 import { setUser } from '../../redux/features/userSlice'
 
@@ -57,6 +59,9 @@ const Menu = () => {
   const navigate = useNavigate()
 
   const { active, collapsed } = useSelector((state) => state.menu)
+  const { user } = useSelector((state) => state.user)
+
+  const { setSelectedUser } = useSelection()
 
   const handleChange = (index) => {
     dispatch(setActive(index))
@@ -98,7 +103,10 @@ const Menu = () => {
       <ul className='menu-user-settings'>
         <div
           className={`profile pointer ${active === 6 ? 'active paper' : null}`}
-          onClick={() => handleChange(6)}
+          onClick={() => {
+            setSelectedUser(user)
+            handleChange(6)
+          }}
         >
           {menuItems[6].icon}
           {collapsed ? null : <p>{menuItems[6].name}</p>}
