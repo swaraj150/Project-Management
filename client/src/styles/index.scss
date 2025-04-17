@@ -598,6 +598,7 @@ main {
         }
 
         .menu-user-settings {
+
             .profile,
             .logout {
                 padding: 25% !important;
@@ -1547,6 +1548,66 @@ main {
                     border: none;
                     border-radius: 10px;
                     font-size: 1.2rem;
+                }
+            }
+        }
+
+        .chat-board {
+            height: 85vh;
+            margin: 2% 1%;
+            padding: 1% 1%;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+
+            .messages {
+                flex-grow: 1;
+                padding: 1%;
+                display: flex;
+                flex-direction: column;
+                gap: 2%;
+
+                .message {
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+
+                    .profile-img {
+                        align-self: flex-start;
+                    }
+
+                    .message-content {
+                        max-width: 70%;
+                        padding: 0.5% 1%;
+                        border-top-right-radius: 10px;
+                        border-bottom-left-radius: 10px;
+                        background-color: $primary-100;
+                    }
+                }
+
+                .by-user {
+                    justify-content: flex-end;
+
+                    .message-content {
+                        border-top-right-radius: 0;
+                        border-bottom-right-radius: 10px;
+                        border-bottom-left-radius: 0;
+                        border-top-left-radius: 10px;
+                        color: $white-500;
+                        background-color: $primary-500;
+                    }
+                }
+            }
+
+            .input-field {
+                textarea {
+                    resize: none;
+                    padding: 1%;
+                    width: 100%;
+                    outline: none;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 1rem;
                 }
             }
         }

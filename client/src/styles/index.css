@@ -1416,3 +1416,53 @@ main {
   border-radius: 10px;
   font-size: 1.2rem;
 }
+#chats .content .chat-board {
+  height: 85vh;
+  margin: 2% 1%;
+  padding: 1% 1%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+#chats .content .chat-board .messages {
+  flex-grow: 1;
+  padding: 1%;
+  display: flex;
+  flex-direction: column;
+  gap: 2%;
+}
+#chats .content .chat-board .messages .message {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+#chats .content .chat-board .messages .message .profile-img {
+  align-self: flex-start;
+}
+#chats .content .chat-board .messages .message .message-content {
+  max-width: 70%;
+  padding: 0.5% 1%;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  background-color: rgb(208, 219, 251);
+}
+#chats .content .chat-board .messages .by-user {
+  justify-content: flex-end;
+}
+#chats .content .chat-board .messages .by-user .message-content {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 10px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(10, 36, 114);
+}
+#chats .content .chat-board .input-field textarea {
+  resize: none;
+  padding: 1%;
+  width: 100%;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+}
