@@ -213,7 +213,7 @@ const GanttChart = () => {
         priority: priority,
         type: type,
         level: level,
-        status: progress === 1 ? taskStatuses.completed : status,
+        status: progress === 1 ? taskStatuses.completed : (progress === 0 ? taskStatuses.pending : taskStatuses.inProgress),
         progress: Math.round(progress * 100)
       })
     })
