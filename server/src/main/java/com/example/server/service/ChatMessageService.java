@@ -8,14 +8,17 @@ import com.example.server.requests.WsChatRequest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomService chatRoomService;
@@ -24,8 +27,11 @@ public class ChatMessageService {
     private final ProjectService projectService;
     private final TaskService taskService;
     private final SimpMessagingTemplate messagingTemplate;
-    public ChatMessage createChatMessage(WsChatRequest request,UUID roomId){
-        User user=userService.loadAuthenticatedUser();
+    public ChatMessage createChatMessage(WsChatRequest request, UUID roomId, Principal user1){
+        log.info("hello from create chat");
+        User user=userService.loadUser(user1.getName());
+
+        log.info("current user: {}",user.getUsername());
         String room;
         if(organizationService.exists(roomId)){
             room="Organization";

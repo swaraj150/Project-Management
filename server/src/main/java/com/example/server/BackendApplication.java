@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolderStrategy;
 public class BackendApplication {
 
 	public static void main(String[] args) {
-		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+//		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 		SpringApplication.run(BackendApplication.class, args);
 	}
 

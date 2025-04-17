@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
+import java.security.Principal;
 import java.util.UUID;
 
 
@@ -19,8 +20,9 @@ import java.util.UUID;
 public class ChatMessageWsController {
     private final ChatMessageService chatMessageService;
     @MessageMapping("/chat.{roomId}")
-    public void handleChats(@DestinationVariable UUID roomId, @NonNull WsChatRequest request) {
-        log.info("chat request");
-        ChatMessage chatMessage=chatMessageService.createChatMessage(request,roomId);
+    public void handleChats(@DestinationVariable UUID roomId, @NonNull WsChatRequest request, Principal principal) {
+        log.info("message sent by {}",principal.getName());
+
+        ChatMessage chatMessage=chatMessageService.createChatMessage(request,roomId,principal);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +26,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
+import java.security.Principal;
 import java.util.Objects;
 
 @Configuration
@@ -71,14 +73,31 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                     accessor.setUser(usernamePasswordAuthenticationToken);
+                    if(accessor.getUser()!=null){
+                        log.info("user connected : {}",accessor.getUser().getName());
+                    }
+                    else{
+                        log.warn("accessor user is null");
+                    }
                 }
                 else {
-                    UsernamePasswordAuthenticationToken authentication =(UsernamePasswordAuthenticationToken) accessor.getHeader("simpUser");
+                    Principal user = accessor.getUser();
 
-                    if (authentication != null) {
-                        log.info("authentication : {}",authentication.getPrincipal());
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                        accessor.setUser(authentication);
+                    if(user==null){
+                        log.warn("No valid user in accessor: {}", user);
+                        throw new RuntimeException("User is null");
+                    }else{
+                        log.info("principal user :{}",user.getName());
+                        log.info("instanceof :{}",user.getClass().getName());
+                        try {
+                            UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) user;
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                            log.info("here after setting it :{}",SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+                        } catch (Exception e) {
+                            log.error("Error setting authentication in SecurityContext: ", e);
+
+                        }
+
                     }
                 }
 

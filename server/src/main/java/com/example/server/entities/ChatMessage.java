@@ -23,7 +23,6 @@ public class ChatMessage {
     private UUID id;
     private String content;
     private UUID senderId;
-    private String sender;
     private LocalDateTime timestamp;
     private UUID roomId;
 

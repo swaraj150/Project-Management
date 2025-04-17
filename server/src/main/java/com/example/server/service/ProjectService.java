@@ -55,6 +55,7 @@ public class ProjectService {
             log.error("User with userId {} is not a project manager",projectManager.getId());
             throw new IllegalRoleException("User with userId {} is not a project manager");
         }
+
         project.setTitle(request.getTitle());
         project.setDescription(request.getDescription());
         project.setBudget(request.getBudget());
@@ -67,7 +68,10 @@ public class ProjectService {
         projectRepository.save(project);
         organization.getProjects().add(project.getId());
         organizationRepository.save(organization);
+        projectManager.setProjectId(project.getId());
+        userService.save(projectManager);
         var p=loadProjectResponse(project.getId());
+
 
         messagingTemplate.convertAndSend(
                 "/topic/user."+user.getId(),
