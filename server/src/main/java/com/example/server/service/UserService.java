@@ -175,16 +175,14 @@ public class UserService {
 
     public UserDTO updateUser(UserProfileUpdateRequest request){
         User user=loadAuthenticatedUser();
-        if (request.getName() != null) {
-            var data = request.getName().split(" ");
-            user.setFirstName(data[0]);
-            user.setLastName(data.length == 1 ? null : data[1]);
+        if (request.getFirstName() != null) {
+            user.setFirstName(request.getFirstName());
+        }if (request.getLastName() != null) {
+            user.setLastName(request.getLastName());
         }
-
         if (request.getUrl() != null) {
             user.setProfilePageUrl(request.getUrl());
         }
-
         if (request.getPhone() != null) {
             user.setPhoneNumber(request.getPhone());
         }

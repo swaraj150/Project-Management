@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserProfileUpdateRequest {
-    private String name;
+    private String firstName;
+    private String lastName;
     private String gender;
     private String dob;
     private String url;
