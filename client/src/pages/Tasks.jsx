@@ -80,7 +80,7 @@ const Tasks = () => {
               </button>
             </div>
             {
-            user.projectRole === roles.productOwner && selectedProject !== null ? (
+            [roles.productOwner, roles.projectManager].includes(user.projectRole) && selectedProject !== null ? (
               <button className="cta pointer dark-btn paper-1" onClick={() => handleCreateTask({ parentTaskId: null })}>
                 <IoMdAdd />
                 <p>Create Task</p>
