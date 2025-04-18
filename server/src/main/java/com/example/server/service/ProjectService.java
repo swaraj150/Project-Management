@@ -12,7 +12,6 @@ import com.example.server.repositories.TeamRepository;
 import com.example.server.requests.AddTeamsToProjectRequest;
 import com.example.server.requests.CreateProjectRequest;
 import com.example.server.response.ProjectResponse;
-import com.example.server.response.TeamResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -76,11 +75,11 @@ public class ProjectService {
 
         messagingTemplate.convertAndSend(
                 "/topic/user."+user.getId(),
-                Map.of("notification","Project "+project.getTitle()+" created","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.PROJECT.name(),"data",p)
+                Map.of("notification","Project "+project.getTitle()+" created","method", ResponseMethod.CREATE.name(),"dataType", LogType.PROJECT.name(),"data",p)
         );
         messagingTemplate.convertAndSend(
                 "/topic/user."+projectManager.getId(),
-                Map.of("notification","Project "+project.getTitle()+" created","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.PROJECT.name(),"data",p)
+                Map.of("notification","Project "+project.getTitle()+" created","method", ResponseMethod.CREATE.name(),"dataType", LogType.PROJECT.name(),"data",p)
         );
         return p;
 
@@ -132,7 +131,7 @@ public class ProjectService {
             teamRepository.save(team.get());
             messagingTemplate.convertAndSend(
                     "/topic/team."+teamId,
-                    Map.of("notification","Team "+team.get().getName()+" added to your project","method",ResponseMethod.UPDATE.name(),"dataType", ResponseType.PROJECT.name(),"data",project)
+                    Map.of("notification","Team "+team.get().getName()+" added to your project","method",ResponseMethod.UPDATE.name(),"dataType", LogType.PROJECT.name(),"data",project)
             );
 
         }
@@ -221,7 +220,7 @@ public class ProjectService {
         projectRepository.delete(project);
         messagingTemplate.convertAndSend(
                 "/topic/organization."+user.getOrganizationId(),
-                Map.of("notification","Project "+project.getTitle()+" deleted","method",ResponseMethod.DELETE.name(),"dataType", ResponseType.PROJECT.name(),"data",projectId)
+                Map.of("notification","Project "+project.getTitle()+" deleted","method",ResponseMethod.DELETE.name(),"dataType", LogType.PROJECT.name(),"data",projectId)
         );
 
     }

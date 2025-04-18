@@ -2,7 +2,7 @@ package com.example.server.service;
 
 import com.example.server.entities.*;
 import com.example.server.enums.ResponseMethod;
-import com.example.server.enums.ResponseType;
+import com.example.server.enums.LogType;
 import com.example.server.repositories.ChatMessageRepository;
 import com.example.server.requests.WsChatRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -55,7 +55,7 @@ public class ChatMessageService {
         chatMessageRepository.save(chatMessage);
         messagingTemplate.convertAndSend(
                 "/topic/chat."+roomId,
-                Map.of("notification","New message in your "+room+" group","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.CHAT.name(),"data",chatMessage)
+                Map.of("notification","New message in your "+room+" group","method", ResponseMethod.CREATE.name(),"dataType", LogType.CHAT.name(),"data",chatMessage)
         );
 //        notificationService.createNotification(NotificationEvent.builder()
 //                .message(content)

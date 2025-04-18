@@ -88,17 +88,17 @@ public class TeamService {
         for(UUID memberId:team.getMemberIds()){
             messagingTemplate.convertAndSend(
                     "/topic/user."+memberId,
-                    Map.of("notification","Team "+team.getName()+" created","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.TEAM.name(),"data",teamResponse)
+                    Map.of("notification","Team "+team.getName()+" created","method", ResponseMethod.CREATE.name(),"dataType", LogType.TEAM.name(),"data",teamResponse)
             );
         }
         messagingTemplate.convertAndSend(
                 "/topic/user."+organization.getProductOwnerId(),
-                Map.of("notification","Team "+team.getName()+" created","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.TEAM.name(),"data",teamResponse)
+                Map.of("notification","Team "+team.getName()+" created","method", ResponseMethod.CREATE.name(),"dataType", LogType.TEAM.name(),"data",teamResponse)
         );
         if(organization.getProductOwnerId()!= user1.getId()){
             messagingTemplate.convertAndSend(
                     "/topic/user."+user1.getId(),
-                    Map.of("notification","Team "+team.getName()+" created","method", ResponseMethod.CREATE.name(),"dataType", ResponseType.TEAM.name(),"data",teamResponse)
+                    Map.of("notification","Team "+team.getName()+" created","method", ResponseMethod.CREATE.name(),"dataType", LogType.TEAM.name(),"data",teamResponse)
             );
         }
         return teamResponse;

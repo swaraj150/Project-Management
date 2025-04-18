@@ -187,7 +187,7 @@ public class OrganizationService {
             UserDTO userDTO=UserDTO.mapToUserDTO(user);
             messagingTemplate.convertAndSend(
                     "/topic/organization."+organization.getId(),
-                    Map.of("notification","Member "+userDTO.getUsername()+" added in your organization","method",ResponseMethod.UPDATE.name(),"dataType", ResponseType.USER.name(),"data",userDTO)
+                    Map.of("notification","Member "+userDTO.getUsername()+" added in your organization","method",ResponseMethod.UPDATE.name(),"dataType", LogType.USER.name(),"data",userDTO)
             );
             return UserDTO.mapToUserDTO(user);
         }

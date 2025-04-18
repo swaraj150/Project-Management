@@ -36,7 +36,6 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserService userService;
     private final SecurityUtils securityUtils;
-    private final NotificationService notificationService;
     private final DependencyRepository dependencyRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -89,7 +88,7 @@ public class TaskService {
         TaskResponse taskResponse=loadTaskResponse(task.getId());
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+" created in your project","method",ResponseMethod.CREATE.name(),"dataType", ResponseType.TASK.name(),"data",taskResponse)
+                Map.of("notification","Task "+task.getTitle()+" created in your project","method",ResponseMethod.CREATE.name(),"dataType", LogType.TASK.name(),"data",taskResponse)
         );
         return taskResponse;
     }
@@ -169,16 +168,10 @@ public class TaskService {
         var taskResponse=loadTaskResponse(task.getId());
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+" updated","method",ResponseMethod.UPDATE.name(),"dataType", ResponseType.TASK.name(),"data",taskResponse)
+                Map.of("notification","Task "+task.getTitle()+" updated","method",ResponseMethod.UPDATE.name(),"dataType", LogType.TASK.name(),"data",taskResponse)
         );
         return taskResponse;
-//        notificationService.createNotification(NotificationEvent.builder()
-//                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
-//                        .actorId(user.getId())
-//                        .userId(new ArrayList<>(task.getAssignedTo()))
-//                        .type(NotificationType.TASK_ASSIGNED)
-//                        .build());
-//        return loadTaskResponse(task.getId());
+
     }
     public Task createTask(WsTaskRequest request){
         User user= userService.loadUser(securityUtils.getCurrentUsername());
@@ -252,13 +245,7 @@ public class TaskService {
         taskRepository.save(task);
         project.getTasks().add(task.getId());
         projectRepository.save(project);
-//        notificationService.createNotification(NotificationEvent.builder()
-//                        .message("Task created by "+ userService.loadUser(user.getId()).getUsername()+" at "+task.getCreatedAt())
-//                        .actorId(user.getId())
-//                        .userId(new ArrayList<>(task.getAssignedTo()))
-//                        .type(NotificationType.TASK_ASSIGNED)
-//                        .build());
-//        return loadTaskResponse(task.getId());
+
         return task;
     }
 
@@ -629,7 +616,7 @@ public class TaskService {
         projectRepository.save(project);
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+"deleted","method",ResponseMethod.DELETE.name(),"dataType",ResponseType.ID.name(),"data",task.getId())
+                Map.of("notification","Task "+task.getTitle()+"deleted","method",ResponseMethod.DELETE.name(),"dataType", LogType.ID.name(),"data",task.getId())
         );
 
     }
@@ -648,7 +635,7 @@ public class TaskService {
         dependencyRepository.save(dependency);
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Link created","method",ResponseMethod.CREATE.name(),"dataType", ResponseType.LINK.name(),"data",dependency)
+                Map.of("notification","Link created","method",ResponseMethod.CREATE.name(),"dataType", LogType.LINK.name(),"data",dependency)
         );
         return dependency;
     }
@@ -660,7 +647,7 @@ public class TaskService {
         }
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Link deleted","method",ResponseMethod.DELETE.name(),"dataType", ResponseType.ID.name(),"data",id)
+                Map.of("notification","Link deleted","method",ResponseMethod.DELETE.name(),"dataType", LogType.ID.name(),"data",id)
         );
         dependencyRepository.deleteById(id);
 

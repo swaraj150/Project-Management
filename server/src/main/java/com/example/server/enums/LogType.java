@@ -1,6 +1,6 @@
 package com.example.server.enums;
 
-public enum ResponseType {
+public enum LogType {
     USER,
     USERS,
     TEAM,
@@ -10,4 +10,5 @@ public enum ResponseType {
     TASK,
     TASKS, CHAT,
     LINK, ID,
+
 }
