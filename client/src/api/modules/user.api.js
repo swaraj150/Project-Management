@@ -75,26 +75,11 @@ const userApi = {
       return { err }
     }
   },
-  updateProfile: async ({firstname,lastname,gender,dob,phoneNumber,addressLine1,addressLine2,city,code,state,country,skills})=>{
+  updateProfile: async (user)=>{
     try {
-      
       const res = await privateClient.patch(
         userEndpoints.updateProfile,
-        {
-          // ...user,
-          firstname,
-          lastname,
-          gender,
-          dob,
-          phoneNumber,
-          addressLine1,
-          addressLine2,
-          city,
-          code,
-          state,
-          country,
-          skills
-        }
+        { ...user }
       )
       return { res }
     } catch (err) {

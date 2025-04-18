@@ -71,6 +71,10 @@ export const organizationSlice = createSlice({
       
       delete state.membersMap[userId]
     },
+    updateMember: (state, action) => {
+      const { userId } = action.payload
+      state.membersMap[userId] = action.payload
+    },
     changeMemberRole: (state, action) => {
       const { memberId, newRole } = action.payload
       const oldRole = state.membersMap[memberId].projectRole
@@ -124,6 +128,7 @@ export const {
   setOrganization,
   addMember,
   removeMember,
+  updateMember,
   changeMemberRole,
   setRequests,
   addRequest,

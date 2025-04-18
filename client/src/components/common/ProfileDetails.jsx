@@ -36,7 +36,7 @@ const ProfileDetails = () => {
           <p className="paper-1">{selectedUser.addressLine2 || 'Address Line 2 missing'}</p>
         </div>
       </div>
-      <div className="group">
+      <div className="group group-4">
         <div className="field">
           <p className="label opacity-7">City</p>
           <p className="paper-1">{selectedUser.city || 'City not provided'}</p>
@@ -45,8 +45,6 @@ const ProfileDetails = () => {
           <p className="label opacity-7">Postal/ZIP Code</p>
           <p className="paper-1">{selectedUser.code || 'Postal/ZIP code not available'}</p>
         </div>
-      </div>
-      <div className="group">
         <div className="field">
           <p className="label opacity-7">State</p>
           <p className="paper-1">{selectedUser.state || 'State not provided'}</p>
@@ -55,6 +53,10 @@ const ProfileDetails = () => {
           <p className="label opacity-7">Country</p>
           <p className="paper-1">{selectedUser.country || 'Country not provided'}</p>
         </div>
+      </div>
+      <div className="field">
+        <p className="label opacity-7">Phone number</p>
+        <p className="paper-1">{selectedUser.phoneNumber || 'Phone number not provided'}</p>
       </div>
       <div className="field">
         <p className="label opacity-7">Skills</p>

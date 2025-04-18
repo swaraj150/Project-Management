@@ -17,6 +17,7 @@ import { useSelection } from '../contexts/SelectionContext'
 
 import { setActive } from '../redux/features/menuSlice'
 import { setUser } from '../redux/features/userSlice'
+import { updateMember } from '../redux/features/organizationSlice'
 
 import { menuIndices } from '../utils/menu.utils'
 
@@ -90,20 +91,19 @@ const Profile = () => {
       skills: Yup.array()
         .of(
           Yup.object({
-            name: Yup.string().required('Skill name is required'),
-            proficiency: Yup.string().required('Proficiency is required')
+            label: Yup.string().required('Skill name is required'),
+            value: Yup.string().required('Proficiency is required')
           })
         )
     }),
     onSubmit: async ({ firstname, lastname, gender, dob, phoneNumber, addressLine1, addressLine2, city, code, state, country, skills }) => {
-      console.log('hello')
       const { res, err } = await userApi.updateProfile({
-        // ...user,
+        ...user,
         firstname,
         lastname,
         gender,
         dob,
-        phoneNumber,
+        phone: phoneNumber,
         addressLine1,
         addressLine2,
         city,
@@ -112,8 +112,10 @@ const Profile = () => {
         country,
         skills: skills.map((skill) => skill.value)
       })
-      if (res.user) {
+      if (res?.user) {
         dispatch(setUser(res.user))
+        dispatch(updateMember(res.user))
+        setSelectedUser(res.user)
         toast.success('Profile updated successfully!')
         setIsEditing(false)
       }
@@ -154,7 +156,9 @@ const Profile = () => {
               <img className='profile-img' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' alt='' />
               <div className="profile-heading">
                 <p className='name' >{selectedUser.name}</p>
-                <p className="opacity-5">{selectedUser.emails[0]}</p>
+                <a href={`mailto:${selectedUser.emails[0]}`} className="opacity-5" >
+                  {selectedUser.emails[0]}
+                </a>
               </div>
               {selectedUser.userId === user.userId ? (
                 isEditing ? (

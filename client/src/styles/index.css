@@ -603,14 +603,19 @@ main {
   display: flex;
   flex-direction: column;
 }
-#dashboard .content .select-options {
-  margin: 1% 2%;
+#dashboard .content .chart-options {
+  width: 100%;
   display: flex;
   gap: 2%;
   align-items: center;
+  justify-content: flex-end;
 }
-#dashboard .content .select-options .select {
-  flex-grow: 1;
+#dashboard .content .chart-options button {
+  width: 15%;
+  padding: 0.5% 0;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
 }
 #dashboard .content .charts {
   flex-grow: 1;
@@ -620,7 +625,8 @@ main {
   display: flex;
   flex-wrap: wrap;
 }
-#dashboard .content .charts .organization-workload {
+#dashboard .content .charts .organization-workload,
+#dashboard .content .charts .organization-expertise {
   height: 100%;
   width: 100%;
   display: flex;
@@ -1520,6 +1526,10 @@ main {
   font-size: 1.2rem;
   font-weight: 700;
 }
+#profile .content .profile-info .hero-section .profile-heading a {
+  text-decoration: none;
+  color: inherit;
+}
 #profile .content .profile-info .hero-section .cta {
   margin-left: auto;
   width: 20%;
@@ -1564,6 +1574,9 @@ main {
 #profile .content .profile-info .profile-details .group .field .label {
   padding: 0;
 }
+#profile .content .profile-info .profile-details .group-4 .field p {
+  padding: 2% 4%;
+}
 #profile .content .profile-info .profile-details .field {
   width: 100%;
 }
@@ -1597,6 +1610,9 @@ main {
 #profile .content .profile-info .profile-form .group .radio {
   flex-grow: 1;
   padding: 2%;
+}
+#profile .content .profile-info .profile-form .group-4 .input-field input {
+  padding: 4%;
 }
 #profile .content .profile-info .profile-form .input-field input {
   width: 100%;

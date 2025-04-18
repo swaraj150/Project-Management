@@ -620,14 +620,19 @@ main {
         display: flex;
         flex-direction: column;
 
-        .select-options {
-            margin: 1% 2%;
+        .chart-options {
+            width: 100%;
             display: flex;
             gap: 2%;
             align-items: center;
+            justify-content: flex-end;
 
-            .select {
-                flex-grow: 1;
+            button {
+                width: 15%;
+                padding: 0.5% 0;
+                border: none;
+                border-radius: 10px;
+                font-size: 1.2rem;
             }
         }
 
@@ -639,7 +644,8 @@ main {
             display: flex;
             flex-wrap: wrap;
 
-            .organization-workload {
+            .organization-workload,
+            .organization-expertise {
                 height: 100%;
                 width: 100%;
                 display: flex;
@@ -1673,6 +1679,11 @@ main {
                         font-size: 1.2rem;
                         font-weight: 700;
                     }
+
+                    a {
+                        text-decoration: none;
+                        color: inherit;
+                    }
                 }
 
                 .cta {
@@ -1727,6 +1738,14 @@ main {
                     }
                 }
 
+                .group-4 {
+                    .field {
+                        p {
+                            padding: 2% 4%;
+                        }
+                    }
+                }
+
                 .field {
                     width: 100%;
 
@@ -1766,6 +1785,14 @@ main {
                     .radio {
                         flex-grow: 1;
                         padding: 2%;
+                    }
+                }
+
+                .group-4 {
+                    .input-field {
+                        input {
+                            padding: 4%;
+                        }
                     }
                 }
 

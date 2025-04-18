@@ -1,21 +1,81 @@
 import privateClient from "../clients/private.client"
 
 const metricsEndPoints = {
-  loadMetrics: 'metric/'
+  projectWorkload: 'projects/workload',
+  projectExpertise: 'projects/expertise',
+  projectStatus: 'projects/status',
+  projectSummary: 'projects/summary',
+  userPerformance: 'users/performance',
+  teamExpertise: 'teams/expertise'
 }
 
 const metricApi = {
-  load: async ({ projectId }) => {
-    try {
-      const res = privateClient.get(
-        metricsEndPoints.loadMetrics,
-        { params: { projectId } }
-      )
-      return { res }
-    } catch (err) {
-      return { err }
-    }
+ projectWorkload: async ({ projectId }) => {
+  try {
+    const res = await privateClient.get(
+      metricsEndPoints.projectWorkload,
+      { params: { projectId } }
+    )
+    return { res }
+  } catch (err) {
+    return { err }
   }
+ },
+ projectExpertise: async ({ projectId }) => {
+  try {
+    const res = await privateClient.get(
+      metricsEndPoints.projectExpertise,
+      { params: { projectId } }
+    )
+    return { res }
+  } catch (err) {
+    return { err }
+  }
+ },
+ projectStatus: async ({ projectId }) => {
+  try {
+    const res = await privateClient.get(
+      metricsEndPoints.projectStatus,
+      { params: { projectId } }
+    )
+    return { res }
+  } catch (err) {
+    return { err }
+  }
+ },
+ projectSummary: async ({ projectId }) => {
+  try {
+    const res = await privateClient.get(
+      metricsEndPoints.projectSummary,
+      { params: { projectId } }
+    )
+    return { res }
+  } catch (err) {
+    return { err }
+  }
+ },
+ userPerformance: async ({ projectId, userId }) => {
+  try {
+    const res = await privateClient.get(
+      metricsEndPoints.userPerformance,
+      { params: { projectId, userId } }
+    )
+    return { res }
+  } catch (err) {
+    return { err }
+  }
+ },
+ teamExpertise: async ({ projectId, teamId }) => {
+  try {
+    const res = await privateClient.get(
+      metricsEndPoints.teamExpertise,
+      { params: { projectId, teamId } }
+    )
+    return { res }
+  } catch (err) {
+    return { err }
+  }
+ }
 }
 
 export default metricApi
