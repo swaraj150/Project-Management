@@ -1,6 +1,7 @@
 package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
+import com.example.server.entities.Project;
 import com.example.server.entities.Technology;
 import com.example.server.entities.User;
 import com.example.server.entities.UserExpertise;
@@ -21,21 +22,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserExpertiseService {
     private final UserExpertiseRepository userExpertiseRepository;
-    private final TechnologyService technologyService;
-    private final UserService userService;
     private final SecurityUtils securityUtils;
+
     private static final double TECH_WEIGHT = 0.6;
     private static final double DOMAIN_WEIGHT = 0.4;
-
-
-    public void create(){
-        User user=userService.loadUser(securityUtils.getCurrentUsername());
+    public void create(User user,Project project){
         UUID projectId=user.getProjectId();
         Optional<Level> userExpertiseOptional=userExpertiseRepository.findExpertise(user.getId(),projectId);
         if(userExpertiseOptional.isPresent()){
             return;
         }
-        double score=calculateSimilarityScore(projectId,user.getSkills(),user.getDomain());
+
+        double score=calculateSetSimilarity(user.getSkills(), (Set<String>) project.getTechnologies());
         Level level=Level.BEGINNER;
         if(score>0.8){
             level=Level.EXPERT;
@@ -55,14 +53,14 @@ public class UserExpertiseService {
 
         return userExpertiseRepository.findExpertise(userId,projectId).orElseThrow(()->new EntityNotFoundException("expertise level not found"));
     }
-    public double calculateSimilarityScore(@NonNull UUID projectId, @NonNull Set<String> tech,  Set<String> domain){
-        Technology technology=technologyService.findByProject(projectId);
-        double techSimilarity = calculateSetSimilarity(tech, technology.getTechName());
-        if(domain==null || domain.isEmpty()) return techSimilarity;
-        double domainSimilarity = calculateSetSimilarity(domain, technology.getDomain());
-        return (techSimilarity * TECH_WEIGHT) + (domainSimilarity * DOMAIN_WEIGHT);
-
-    }
+//    public double calculateSimilarityScore(@NonNull Project project, @NonNull Set<String> tech1, Set<String> domain){
+//
+//        return calculateSetSimilarity(tech, (Set<String>) project.getTechnologies());
+////        if(domain==null || domain.isEmpty()) return techSimilarity;
+////        double domainSimilarity = calculateSetSimilarity(domain, technology.getDomain());
+////        return (techSimilarity * TECH_WEIGHT) + (domainSimilarity * DOMAIN_WEIGHT);
+//
+//    }
     private double calculateSetSimilarity(@NotNull Set<String> set1, @NotNull Set<String> set2) {
         if (set1.isEmpty() && set2.isEmpty()) {
             return 1.0;
@@ -93,4 +91,6 @@ public class UserExpertiseService {
         }
         return count;
     }
+
+
 }

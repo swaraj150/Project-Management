@@ -39,7 +39,7 @@ public class UserController {
     private final TokenBlacklistService tokenBlacklistService;
     private final RestTemplate restTemplate;
     private final CustomOAuth2UserService oAuth2UserService;
-    private final UserExpertiseService userExpertiseService;
+//    private final UserExpertiseService userExpertiseService;
     private static final Logger logger= LoggerFactory.getLogger(UserController.class);
 
 
@@ -153,16 +153,8 @@ public class UserController {
         return ResponseEntity.ok(h);
     }
 
-    @PostMapping("/add-expertise")
-    public ResponseEntity<?> addExpertise(){
-        userExpertiseService.create();
-        return ResponseEntity.ok("user expertise added");
-    }
-    @GetMapping("/getExpertise")
-    public ResponseEntity<?> getExpertise(@RequestParam @NonNull UUID projectID){
-        User user=userService.loadUser(securityUtils.getCurrentUsername());
-        return ResponseEntity.ok(userExpertiseService.findExpertise(user.getId(),projectID));
-    }
+
+
 
 
     @GetMapping("/{id}")
