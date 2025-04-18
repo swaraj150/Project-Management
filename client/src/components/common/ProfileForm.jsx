@@ -16,21 +16,27 @@ const ProfileForm = ({ profileForm }) => {
   const [dobType, setDobType] = useState('text')
 
   useEffect(() => {
+    const allOptions = technologyLabels.flatMap(group => group.options)
+    const formattedSkills = selectedUser.skills
+      .map(skill => allOptions.find(option => option.value === skill))
+      .filter(Boolean)
+
     if (selectedUser) {
       const values = {
         firstname: selectedUser.name.split(' ')[0],
         lastname: selectedUser.name.split(' ')[1],
         gender: selectedUser.gender || '',
         dob: selectedUser.dob || '',
-        phoneNumber: selectedUser.phoneNumber || '1234567890',
+        phoneNumber: selectedUser.phoneNumber || '',
         addressLine1: selectedUser.addressLine1 || '',
         addressLine2: selectedUser.addressLine2 || '',
         city: selectedUser.city || '',
         code: selectedUser.code || '',
         state: selectedUser.state || '',
         country: selectedUser.country || '',
-        skills: selectedUser.skills || []
+        skills: formattedSkills
       }
+
       profileForm.setValues(values)
       initialFormValues.current = values
       setDataInitialized(true)
@@ -184,7 +190,7 @@ const ProfileForm = ({ profileForm }) => {
           </p>
         </div>
       </div>
-      <div className="group">
+      <div className="group group-4">
         <div className="input-field">
           <input
             className='paper-1'
@@ -215,8 +221,6 @@ const ProfileForm = ({ profileForm }) => {
             {profileForm.touched.code && profileForm.errors.code ? profileForm.errors.code : ''}
           </p>
         </div>
-      </div>
-      <div className="group">
         <div className="input-field">
           <input
             className='paper-1'
@@ -247,6 +251,21 @@ const ProfileForm = ({ profileForm }) => {
             {profileForm.touched.country && profileForm.errors.country ? profileForm.errors.country : ''}
           </p>
         </div>
+      </div>
+      <div className="input-field">
+        <input
+          className='paper-1'
+          type='text'
+          name='phoneNumber'
+          required
+          placeholder='Phone number'
+          value={profileForm.values.phoneNumber}
+          onChange={profileForm.handleChange}
+          onBlur={profileForm.handleBlur}
+        />
+        <p className="helper-text opacity-5">
+          {profileForm.touched.phoneNumber && profileForm.errors.phoneNumber ? profileForm.errors.phoneNumber : ''}
+        </p>
       </div>
     </form>
   )
