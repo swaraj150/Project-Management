@@ -2,10 +2,14 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Client } from '@stomp/stompjs'
 
+import { addTask, updateTask } from '../redux/features/tasksSlice'
 import { addChat } from '../redux/features/chatsSlice'
 
 const dataTypes = {
-  chat: 'CHAT'
+  chat: 'CHAT',
+  task: 'TASK',
+  link: 'LINK',
+  team: 'TEAM'
 }
 
 const SOCKET_URL = import.meta.env.VITE_WEBSOCKET_URL
@@ -16,6 +20,7 @@ export const SocketProvider = ({ children }) => {
   const dispatch = useDispatch()
 
   const { user } = useSelector((state) => state.user)
+  const { tasks } = useSelector((state) => state.tasks) 
 
   const [stompClient, setStompClient] = useState(null)
 
@@ -69,8 +74,18 @@ export const SocketProvider = ({ children }) => {
 
   const subscribeToProject = ({ projectId }) => {
     if (stompClient?.connected) {
-      return stompClient.subscribe(`/topic/project.${projectId}`, (task) => {
-        console.log(task)
+      return stompClient.subscribe(`/topic/project.${projectId}`, (message) => {
+        // const { dataType, notification, data } = JSON.parse(message.body)
+        // switch (dataType) {
+        //   case dataTypes.team:
+        //     break
+        //   case dataTypes.task:
+        //     if (tasks.includes(data.id)) dispatch(updateTask(data))
+        //     else dispatch(addTask(data))
+        //     break
+        //   case dataTypes.link:
+        //     break
+        // }
       })
     }
   }
