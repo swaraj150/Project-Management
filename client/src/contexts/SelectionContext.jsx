@@ -33,20 +33,20 @@ export const SelectionProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    if (selectedUser) setSelectedUser(memebersMap[selectedUser.userId])
-  }, [memebersMap])
+    if (memebersMap && selectedUser) setSelectedUser(memebersMap[selectedUser.userId])
+  }, [memebersMap, selectedUser])
 
   useEffect(() => {
-    if (selectedTeam) setSelectedTeam(teamsMap[selectedTeam.id])
-  }, [teamsMap])
+    if (teamsMap && selectedTeam) setSelectedTeam(teamsMap[selectedTeam.id])
+  }, [teamsMap, selectedTeam])
 
   useEffect(() => {
-    if (selectedProject) setSelectedProject(projectsMap[selectedProject.id])
-  }, [projectsMap])
+    if (projectsMap && selectedProject) setSelectedProject(projectsMap[selectedProject.id])
+  }, [projectsMap, selectedProject])
 
   useEffect(() => {
-    if (selectedTask) setSelectedTask(tasksMap[selectedTask.id])
-  }, [tasksMap])
+    if (tasksMap && selectedTask) setSelectedTask(tasksMap[selectedTask.id])
+  }, [tasksMap, selectedTask])
 
   return (
     <SelectionContext.Provider
