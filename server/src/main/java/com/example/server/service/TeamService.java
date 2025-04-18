@@ -26,7 +26,7 @@ public class TeamService {
     private final OrganizationService organizationService;
     private final SecurityUtils securityUtils;
     private final TaskService taskService;
-    private final UserExpertiseService userExpertiseService;
+//    private final UserExpertiseService userExpertiseService;
     private final UserExpertiseRepository userExpertiseRepository;
     private final OrganizationRepository organizationRepository;
     private final SimpMessagingTemplate messagingTemplate;

@@ -35,6 +35,7 @@ public class ProjectService {
     private final UserService userService;
     private final TeamService teamService;
     private final TaskService taskService;
+    private final UserExpertiseService userExpertiseService;
     private final SimpMessagingTemplate messagingTemplate;
     public boolean exists(@NonNull UUID projectId){
         return projectRepository.existsById(projectId);
@@ -125,6 +126,7 @@ public class ProjectService {
             for(UUID userId:team.get().getMemberIds()){
                User member= userService.loadUser(userId);
                member.setProjectId(project.getId());
+               userExpertiseService.create(member,project);
                userService.save(user);
             }
             teamRepository.save(team.get());

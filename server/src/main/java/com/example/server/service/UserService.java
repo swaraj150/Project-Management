@@ -9,6 +9,7 @@ import com.example.server.enums.Role;
 import com.example.server.entities.User;
 import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.pojo.GitHubUserInfo;
+import com.example.server.repositories.UserExpertiseRepository;
 import com.example.server.repositories.UserRepository;
 import com.example.server.requests.*;
 import com.example.server.response.AuthResponse;
@@ -37,6 +38,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserExpertiseRepository userExpertiseRepository;
+
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
     private final UserValidator userValidator;
@@ -218,9 +221,15 @@ public class UserService {
         if (request.getState() != null) {
             user.setState(request.getState());
         }
+
+        if(request.getSkills()!=null){
+            user.setSkills((Set<String>)request.getSkills());
+
+        }
         userRepository.save(user);
         return UserDTO.mapToUserDTO(user);
     }
+
 
 
 
