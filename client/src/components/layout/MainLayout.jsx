@@ -16,7 +16,7 @@ import { SelectionProvider } from '../../contexts/SelectionContext'
 import { setUser } from '../../redux/features/userSlice'
 import { setOrganization, setRequests } from '../../redux/features/organizationSlice'
 import { setTeams } from '../../redux/features/teamsSlice'
-import { addProject, setProjects } from '../../redux/features/projectsSlice'
+import { setProjects } from '../../redux/features/projectsSlice'
 import { setTasks } from '../../redux/features/tasksSlice'
 import { setChats } from '../../redux/features/chatsSlice'
 
@@ -97,7 +97,7 @@ const MainLayout = () => {
       const { res, err } = await projectsApi.getAll()
       if (res?.projects) {
         if (user.projectRole === roles.productOwner) dispatch(setProjects(res.projects))
-        else dispatch(addProject(res.projects))
+        else dispatch(setProjects([res.projects]))
       }
       if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
     }
