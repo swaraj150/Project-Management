@@ -140,10 +140,6 @@ const CreateTask = () => {
     }
   }, [startDateType])
 
-  useEffect(() => {
-    console.log(createTaskForm.values.startDate)
-  }, [createTaskForm.values.startDate])
-
   return (
     <section id='create-task'>
       <Menu />
