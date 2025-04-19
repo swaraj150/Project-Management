@@ -59,7 +59,6 @@ export const taskLevelLabels = [
 ]
 
 export const extendTask = (task) => {
-  console.log(task)
   return {
     ...task,
     text: task.title,
