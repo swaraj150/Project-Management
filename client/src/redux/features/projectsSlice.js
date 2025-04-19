@@ -17,7 +17,6 @@ export const projectsSlice = createSlice({
     addProject: (state, action) => {
       const { id } = action.payload
       state.projects.push(id)
-      state.projectsMap = {}
       state.projectsMap[id] = action.payload
     },
     addTeamsToProject: (state, action) => {
