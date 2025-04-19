@@ -43,12 +43,9 @@ const metricApi = {
     return { err }
   }
  },
- projectSummary: async ({ projectId }) => {
+ projectSummary: async () => {
   try {
-    const res = await privateClient.get(
-      metricsEndPoints.projectSummary,
-      { params: { projectId } }
-    )
+    const res = await privateClient.get(metricsEndPoints.projectSummary)
     return { res }
   } catch (err) {
     return { err }
