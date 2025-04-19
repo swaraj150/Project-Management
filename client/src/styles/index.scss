@@ -619,20 +619,62 @@ main {
     .content {
         display: flex;
         flex-direction: column;
+        gap: 5%;
 
-        .chart-options {
-            width: 100%;
+        .chart-context {
             display: flex;
-            gap: 2%;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
 
-            button {
-                width: 15%;
-                padding: 0.5% 0;
-                border: none;
-                border-radius: 10px;
-                font-size: 1.2rem;
+            .select-entities {
+                width: 30%;
+                
+                .select {
+                    width: 100%;
+
+                    &:first-child {
+                        margin-bottom: 2%;
+                    }
+                }
+            }
+
+            .options {
+                width: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+    
+                .level-options {
+                    margin-bottom: 2%;
+                    width: 100%;
+                    display: flex;
+                    gap: 2%;
+                    align-items: center;
+    
+                    button {
+                        width: 30%;
+                        flex-grow: 1;
+                        padding: 1% 0;
+                        border: none;
+                        border-radius: 10px;
+                        font-size: 1.2rem;
+                    }
+                }
+
+                .chart-options {
+                    width: 100%;
+                    display: flex;
+                    gap: 2%;
+                    align-items: center;
+    
+                    button {
+                        width: 50%;
+                        padding: 1% 0;
+                        border: none;
+                        border-radius: 10px;
+                        font-size: 1.2rem;
+                    }
+                }
             }
         }
 
@@ -641,33 +683,14 @@ main {
             padding: 1%;
             width: 100%;
             row-gap: 10%;
-            display: flex;
-            flex-wrap: wrap;
 
-            .organization-workload,
-            .organization-expertise {
-                height: 100%;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
+            h2 {
+                margin-bottom: 2%;
             }
 
-            .priority-distribution {
+            .chart {
                 height: 100%;
                 width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .status-distribution,
-            .project-workload,
-            .team-expertise {
-                height: 100%;
-                width: 50%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -1239,7 +1262,7 @@ main {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            
+
             h2 {
                 color: $primary-500;
             }
@@ -1704,7 +1727,7 @@ main {
                         gap: 5px;
                         align-items: center;
                         justify-content: center;
-    
+
                         svg {
                             font-size: 1.2rem;
                         }
