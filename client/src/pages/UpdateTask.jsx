@@ -181,7 +181,7 @@ const UpdateTask = () => {
         type: taskTypeLabels.find((t) => t.value === selectedTask.type),
         level: taskLevelLabels.find((l) => l.value === selectedTask.level),
         status: taskStatusLabels.find((s) => s.value === selectedTask.status),
-        progress: selectedTask.progress
+        progress: +(selectedTask.progress / 100).toFixed(2)
       }
       updateTaskForm.setValues(values)
       initialFormValues.current = values
