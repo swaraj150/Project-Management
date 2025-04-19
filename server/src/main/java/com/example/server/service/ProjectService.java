@@ -12,6 +12,7 @@ import com.example.server.repositories.TeamRepository;
 import com.example.server.requests.AddTeamsToProjectRequest;
 import com.example.server.requests.CreateProjectRequest;
 import com.example.server.response.ProjectResponse;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +56,9 @@ public class ProjectService {
             log.error("User with userId {} is not a project manager",projectManager.getId());
             throw new IllegalRoleException("User with userId {} is not a project manager");
         }
-
+        if(projectManager.getProjectId()!=null){
+            throw new EntityExistsException("Project Manager is already a part of another project");
+        }
         project.setTitle(request.getTitle());
         project.setDescription(request.getDescription());
         project.setBudget(request.getBudget());
@@ -71,8 +74,6 @@ public class ProjectService {
         projectManager.setProjectId(project.getId());
         userService.save(projectManager);
         var p=loadProjectResponse(project.getId());
-
-
         messagingTemplate.convertAndSend(
                 "/topic/user."+user.getId(),
                 Map.of("notification","Project "+project.getTitle()+" created","method", ResponseMethod.CREATE.name(),"dataType", LogType.PROJECT.name(),"data",p)

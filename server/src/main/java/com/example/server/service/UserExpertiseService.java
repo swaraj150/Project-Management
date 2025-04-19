@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -32,9 +33,18 @@ public class UserExpertiseService {
         if(userExpertiseOptional.isPresent()){
             return;
         }
-
-        double score=calculateSetSimilarity(user.getSkills(), (Set<String>) project.getTechnologies());
         Level level=Level.BEGINNER;
+        if(project.getTechnologies()==null){
+            UserExpertise userExpertise=UserExpertise.builder()
+                    .userId(user.getId())
+                    .projectId(projectId)
+                    .level(level)
+                    .build();
+            userExpertiseRepository.save(userExpertise);
+            return;
+
+        }
+        double score=calculateSetSimilarity(user.getSkills(),new HashSet<>(project.getTechnologies()));
         if(score>0.8){
             level=Level.EXPERT;
         }
