@@ -23,6 +23,9 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     @Query("SELECT t FROM Task t WHERE t.projectId=:projectId AND t.completionStatus = :status AND :userId MEMBER OF t.assignedTo")
     List<Task> findTasksByStatusAndAssignedTo(@Param("status") CompletionStatus status, @Param("userId") UUID userId,@Param("projectId") UUID projectId);
 
+    @Query("SELECT t FROM Task t WHERE t.projectId=:projectId AND t.completionStatus = PENDING OR t.completionStatus=IN_PROGRESS AND :userId MEMBER OF t.assignedTo")
+    List<Task> findCurrentTasksByAssignedTo(@Param("userId") UUID userId,@Param("projectId") UUID projectId);
+
     @Query("SELECT t.id FROM Task t WHERE t.projectId=:projectId AND t.completionStatus = :status AND :userId MEMBER OF t.assignedTo")
     List<UUID> findTaskIdsByStatusAndAssignedTo(@Param("status") CompletionStatus status, @Param("userId") UUID userId,@Param("projectId") UUID projectId);
 

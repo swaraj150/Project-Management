@@ -186,7 +186,9 @@ public class TeamService {
         Team team=teamRepository.findById(teamId).orElseThrow(()->new EntityNotFoundException("Team not found"));
         long res=0;
         for(UUID id:team.getMemberIds()){
-            List<Task> taskList=taskService.getActiveTasksByUser(id,projectId);
+            User user=userService.loadUser(id);
+            if(user.getProjectRole()==ProjectRole.PRODUCT_OWNER || user.getProjectRole()==ProjectRole.PROJECT_MANAGER) continue;
+            List<Task> taskList=taskService.getCurrentTasksByUser(id,projectId);
             for(Task t:taskList){
                 res+=t.getEstimatedDays();
             }
@@ -201,7 +203,7 @@ public class TeamService {
         for(UUID id:team.getMemberIds()){
             User user=userService.loadUser(id);
             if(user.getProjectRole()==ProjectRole.PROJECT_MANAGER ||
-                    user.getProjectRole()==ProjectRole.PRODUCT_OWNER || user.getProjectRole()==ProjectRole.TEAM_LEAD
+                    user.getProjectRole()==ProjectRole.PRODUCT_OWNER
             ) continue;
             Optional<Level> optionalLevel=userExpertiseRepository.findExpertise(id,projectId);
             if(optionalLevel.isEmpty()) continue;
@@ -228,16 +230,16 @@ public class TeamService {
         for(UUID id:team.getMemberIds()){
             User user=userService.loadUser(id);
             if(user.getProjectRole()==ProjectRole.PROJECT_MANAGER ||
-                    user.getProjectRole()==ProjectRole.PRODUCT_OWNER || user.getProjectRole()==ProjectRole.TEAM_LEAD
+                    user.getProjectRole()==ProjectRole.PRODUCT_OWNERadd
             ) continue;
             Optional<Level> optionalLevel=userExpertiseRepository.findExpertise(id,projectId);
+            total++;
             if(optionalLevel.isEmpty()) continue;
             Level level=optionalLevel.get();
 //            userExpertiseService.findExpertise(id,projectId);
             beginners+=level==Level.BEGINNER?1:0;
             intermediates+=level==Level.INTERMEDIATE?1:0;
             experts+=level==Level.EXPERT?1:0;
-            total++;
         }
         return Map.of("Beginner",((double)beginners/total)*100,"Intermediate",((double)intermediates/total)*100,"Expert",((double)experts/total)*100);
     }

@@ -361,6 +361,9 @@ public class TaskService {
     public List<UUID> getActiveTaskIdsByUser(@NonNull UUID userId,@NonNull UUID projectId){
         return taskRepository.findTaskIdsByStatusAndAssignedTo(CompletionStatus.IN_PROGRESS,userId,projectId);
     }
+    public List<Task> getCurrentTasksByUser(@NonNull UUID userId,@NonNull UUID projectId){
+        return taskRepository.findCurrentTasksByAssignedTo(userId,projectId);
+    }
 
     public List<UUID> getAllTaskIdsByUser(@NonNull UUID userId,@NonNull UUID projectId){
         return taskRepository.findTaskIdsByStatusAndAssignedTo(CompletionStatus.IN_PROGRESS,userId,projectId);
