@@ -4,35 +4,35 @@ import { toast } from 'react-toastify'
 
 import metricApi from '../../api/modules/metrics.api'
 
-const EXPERTISE_COLORS = {
-  Beginner: 'rgba(56, 189, 248, 1)',
-  Intermediate: 'rgba(59, 130, 246, 1)',
-  Expert: 'rgba(126, 34, 206, 1)'
+const STATUS_COLORS = {
+  'Pending Tasks': 'rgba(253, 224, 71, 1)',
+  'In Progress Tasks': 'rgba(96, 165, 250, 1)',
+  'Completed Tasks': 'rgba(74, 222, 128, 1)'
 }
 
-const TeamExpertise = ({ projectId, teamId }) => {
+const ProjectStatus = ({ projectId }) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const fetchExpertise = async () => {
+    const fetchWorkload = async () => {
       setLoading(true)
-      const { res, err } = await metricApi.teamExpertise({ projectId, teamId })
-      if (res?.expertise) {
+      const { res, err } = await metricApi.projectStatus({ projectId })
+      if (res?.status) {
         const formatted = [
-          { name: 'Beginner', value: res.expertise.Beginner },
-          { name: 'Intermediate', value: res.expertise.Intermediate },
-          { name: 'Expert', value: res.expertise.Expert }
+          { name: 'Pending Tasks', value: res.status["pending tasks"] },
+          { name: 'In Progress Tasks', value: res.status["in progress tasks"] },
+          { name: 'Completed Tasks', value: res.status["completed tasks"] }
         ].filter(item => item.value > 0)
-        
         setData(formatted)
       }
       if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
       setLoading(false)
     }
 
-    fetchExpertise()
-  }, [teamId])
+
+    fetchWorkload()
+  }, [projectId])
 
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
@@ -48,7 +48,7 @@ const TeamExpertise = ({ projectId, teamId }) => {
 
   return (
     <div className="chart">
-      <h2>Team Expertise</h2>
+      <h2>Project Status</h2>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -65,7 +65,7 @@ const TeamExpertise = ({ projectId, teamId }) => {
               dataKey="value"
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={EXPERTISE_COLORS[entry.name]} />
+                <Cell key={`cell-${index}`} fill={STATUS_COLORS[entry.name]} />
               ))}
             </Pie>
             <Tooltip formatter={(value) => `${value.toFixed(1)}%`} />
@@ -77,4 +77,4 @@ const TeamExpertise = ({ projectId, teamId }) => {
   )
 }
 
-export default TeamExpertise
+export default ProjectStatus
