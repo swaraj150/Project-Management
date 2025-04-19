@@ -223,7 +223,7 @@ public class UserService {
         }
 
         if(request.getSkills()!=null){
-            user.setSkills((Set<String>)request.getSkills());
+            user.setSkills(new HashSet<>(request.getSkills()));
 
         }
         userRepository.save(user);
