@@ -230,7 +230,7 @@ public class TeamService {
         for(UUID id:team.getMemberIds()){
             User user=userService.loadUser(id);
             if(user.getProjectRole()==ProjectRole.PROJECT_MANAGER ||
-                    user.getProjectRole()==ProjectRole.PRODUCT_OWNERadd
+                    user.getProjectRole()==ProjectRole.PRODUCT_OWNER
             ) continue;
             Optional<Level> optionalLevel=userExpertiseRepository.findExpertise(id,projectId);
             total++;
