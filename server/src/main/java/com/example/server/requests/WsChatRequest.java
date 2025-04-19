@@ -13,5 +13,6 @@ import java.util.UUID;
 @Builder
 public class WsChatRequest {
     private String content;
-
+    private String type;
+    private String fileUrl;
 }

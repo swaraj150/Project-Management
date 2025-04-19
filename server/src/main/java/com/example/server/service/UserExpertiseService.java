@@ -2,12 +2,10 @@ package com.example.server.service;
 
 import com.example.server.component.SecurityUtils;
 import com.example.server.entities.Project;
-import com.example.server.entities.Technology;
 import com.example.server.entities.User;
 import com.example.server.entities.UserExpertise;
 import com.example.server.enums.Level;
 import com.example.server.repositories.UserExpertiseRepository;
-import com.example.server.requests.CreateUserExpertiseRequest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

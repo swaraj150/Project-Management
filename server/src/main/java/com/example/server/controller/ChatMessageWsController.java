@@ -20,8 +20,8 @@ import java.util.UUID;
 public class ChatMessageWsController {
     private final ChatMessageService chatMessageService;
     @MessageMapping("/chat.{roomId}")
-    public void handleChats(@DestinationVariable UUID roomId, @NonNull WsChatRequest request, Principal principal) {
-        log.info("message sent by {}",principal.getName());
+    public void handleChats(@DestinationVariable UUID roomId,  WsChatRequest request, Principal principal) {
+//        log.info("message sent by {}",principal.getName());
 
         ChatMessage chatMessage=chatMessageService.createChatMessage(request,roomId,principal);
     }

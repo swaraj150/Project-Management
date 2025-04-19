@@ -24,12 +24,12 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtService {
-//    @Value("${SECRET_KEY}")
-
+    @Value("${SECRET_KEY}")
+    private String SECRET_KEY;
     Logger logger= LoggerFactory.getLogger(JwtService.class);
 
     private SecretKey getSigningKey(){
-        String SECRET_KEY="RHWcIbU0TsuQce5Tvx6wI8aim8kFgQM3l1C2wmEH99BGpEB7fsYXNClms3dD8q9OVUinEmAjypJXLkJJxJnq8/DtdbaaFHN/50WMTp9O1s0FyFYDuUQwatuKRvHwAoO9PYElKmFJkSZYacijS9CB/oIpwB+o3KcMqn7y1tU9J9uGMRcaGzGD4ZGmj0FyobNaEllblmgmqb5Vaxm3AyjZIHbbg6euPaSG3pVroo7SZM6mghuPYemOh7h/tMDqMi8xtIM3/znZjpvmSe+M7hDx1gA4v/bPUFdErcEk++N0j6j4VBxg3QYdSkqXOzOG6ObZNNGigxY8fd2Y0/cjpt8cWlnjTjricJcZNBPsRn99Fbk=";
+//        String SECRET_KEY="RHWcIbU0TsuQce5Tvx6wI8aim8kFgQM3l1C2wmEH99BGpEB7fsYXNClms3dD8q9OVUinEmAjypJXLkJJxJnq8/DtdbaaFHN/50WMTp9O1s0FyFYDuUQwatuKRvHwAoO9PYElKmFJkSZYacijS9CB/oIpwB+o3KcMqn7y1tU9J9uGMRcaGzGD4ZGmj0FyobNaEllblmgmqb5Vaxm3AyjZIHbbg6euPaSG3pVroo7SZM6mghuPYemOh7h/tMDqMi8xtIM3/znZjpvmSe+M7hDx1gA4v/bPUFdErcEk++N0j6j4VBxg3QYdSkqXOzOG6ObZNNGigxY8fd2Y0/cjpt8cWlnjTjricJcZNBPsRn99Fbk=";
         try {
             logger.debug("Decoding the secret key for signing.");
             byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);

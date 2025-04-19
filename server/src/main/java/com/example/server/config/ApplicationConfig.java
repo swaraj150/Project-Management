@@ -45,7 +45,6 @@ public class ApplicationConfig {
                     user=userRepository.findByUsername(cred).orElseThrow(()->new UsernameNotFoundException("user not found"));
                 }
 //                Optional<User> optionalUserByUsername=userRepository.findByUsername(cred);
-
 //                if(optionalUserByUsername.isEmpty() && optionalUserByEmail.isEmpty()){
 //                    logger.warn("User not found: {}",cred);
 //                    throw new UsernameNotFoundException("User not found");

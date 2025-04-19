@@ -13,7 +13,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Documents {
+public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="document_id")

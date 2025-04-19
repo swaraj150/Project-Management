@@ -117,8 +117,10 @@ public class ProjectService {
         for(UUID teamId:request.getTeams()){
             Optional<Team> team=teamRepository.findById(teamId);
             if(team.isEmpty()){
-                log.warn("Team with id: {} does not exist",teamId);
-                continue;
+                throw new EntityNotFoundException("Team does not exist");
+            }
+            if(project.getTeams().contains(teamId)){
+                throw new EntityExistsException("Team already exists within project");
             }
             project.getTeams().add(teamId);
             team.get().setProjectId(project.getId());
