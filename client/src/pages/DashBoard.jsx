@@ -2,21 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector, useStore } from 'react-redux'
 import Select from 'react-select'
 
-import metricApi from '../api/modules/metrics.api'
-
 import Menu from '../components/common/Menu'
-import ProjectExpertise from '../components/common/TeamExpertise'
-import ProjectWorkload from '../components/common/ProjectWorkload'
-import StatusDistribution from '../components/common/StatusDistribution'
-import PriorityDistribution from '../components/common/PriorityDistribution'
+import OrganizationStatus from '../components/common/OrganizationStatus'
+import OrganizationSummary from '../components/common/OrganizationSummary'
 import OrganizationWorkload from '../components/common/OrganizationWorkload'
+import OrganizationExpertise from '../components/common/OrganizationExpertise'
+import ProjectStatus from '../components/common/ProjectStatus'
+import ProjectWorkload from '../components/common/ProjectWorkload'
+import ProjectExpertise from '../components/common/ProjectExpertise'
+import TeamExpertise from '../components/common/TeamExpertise'
 
 import { useSelection } from '../contexts/SelectionContext'
 
 import { setActive } from '../redux/features/menuSlice'
 
 import { menuIndices } from '../utils/menu.utils'
-import OrganizationExpertise from '../components/common/OrganizationExpertise'
 
 import { roles } from '../utils/organization.utils'
 
@@ -30,108 +30,157 @@ const Dashboard = () => {
 
   const { selectedTeam, setSelectedTeam, selectedProject, setSelectedProject } = useSelection()
 
-  const [view, setview] = useState(0)
+  const [levelOption, setlevelOption] = useState(0)
+  const [chartOption, setChartOption] = useState(0)
 
   useEffect(() => {
     dispatch(setActive(menuIndices.dashboard))
   }, [])
 
   useEffect(() => {
-
-  }, [user])
+    if (user.projectRole !== roles.productOwner) {
+      setlevelOption(1)
+      if (projectsMap) setSelectedProject(projectsMap[projects[0]])
+      console.log(projectsMap)
+    }
+  }, [user, projectsMap])
 
   useEffect(() => {
-    const loadedMetrics = {}
+    setChartOption(0)
+  }, [levelOption])
 
-    const fetchProjectWorkload = async () => {
-      const { res, err } = await metricApi.projectWorkload({ projectId: selectedProject.id })
-      if (res) loadedMetrics['projectWorkload'] = res.workload
-      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+  const chartOptions = () => {
+    if (levelOption === 0) {
+      return (
+        <div className="chart-options">
+          <button
+            className={`pointer paper-1 ${chartOption === 0 ? 'dark-btn' : null}`}
+            onClick={() => setChartOption(0)}
+          >
+            Status
+          </button>
+          <button
+            className={`pointer paper-1 ${chartOption === 1 ? 'dark-btn' : null}`}
+            onClick={() => setChartOption(1)}
+          >
+            Summary
+          </button>
+          <button
+            className={`pointer paper-1 ${chartOption === 2 ? 'dark-btn' : null}`}
+            onClick={() => setChartOption(2)}
+          >
+            Workload
+          </button >
+          <button
+            className={`pointer paper-1 ${chartOption === 3 ? 'dark-btn' : null}`}
+            onClick={() => setChartOption(3)}
+          >
+            Expertise
+          </button>
+        </div>
+      )
+    } else if (levelOption === 1) {
+      return (
+        <div className="chart-options">
+          <button
+            className={`pointer paper-1 ${chartOption === 0 ? 'dark-btn' : null}`}
+            onClick={() => setChartOption(0)}
+          >
+            Status
+          </button>
+          <button
+            className={`pointer paper-1 ${chartOption === 1 ? 'dark-btn' : null}`}
+            onClick={() => setChartOption(1)}
+          >
+            Workload
+          </button >
+          <button
+            className={`pointer paper-1 ${chartOption === 2 ? 'dark-btn' : null}`}
+            onClick={() => setChartOption(2)}
+          >
+            Expertise
+          </button>
+        </div>
+      )
     }
+  }
 
-    const fetchProjectExpertise = async () => {
-      const { res, err } = await metricApi.projectExpertise({ projectId: selectedProject.id })
-      if (res) loadedMetrics['projectExpertise'] = res.expertise
-      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
-    }
-
-    const fetchProjectStatus = async () => {
-      const { res, err } = await metricApi.projectStatus({ projectId: selectedProject.id })
-      if (res) loadedMetrics['projectStatus'] = res.status
-      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
-    }
-
-    const fetchProjectSummary = async () => {
-      const { res, err } = await metricApi.projectSummary({ projectId: selectedProject.id })
-      if (res) loadedMetrics['projectSummary'] = res.priority
-      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
-    }
-
-    const fetchProjectMetrics = async () => {
-      await Promise.all([fetchProjectWorkload, fetchProjectExpertise, fetchProjectStatus, fetchProjectSummary])
-    }
-
-    const fetchTeamExpertise = async () => {
-      const { res, err } = await metricApi.teamExpertise({ projectId: selectedProject.id, teamId: selectedTeam.id })
-      if (res) loadedMetrics['teamExpertise'] = res.expertise
-      if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
-    }
-  }, [])
+  const levelOptions = () => {
+    return (
+      <div className='level-options'>
+        {
+          user.projectRole === roles.productOwner ? (
+            <button
+              className={`pointer paper-1 ${levelOption === 0 ? 'dark-btn' : null}`}
+              onClick={() => setlevelOption(0)}
+            >
+              Organization
+            </button>
+          ) : null
+        }
+        <button
+          className={`pointer paper-1 ${levelOption === 1 ? 'dark-btn' : null}`}
+          onClick={() => setlevelOption(1)}
+        >
+          Project
+        </button >
+        <button
+          className={`pointer paper-1 ${levelOption === 2 ? 'dark-btn' : null}`}
+          onClick={() => setlevelOption(2)}
+        >
+          Team
+        </button>
+      </div >
+    )
+  }
 
   return (
     <section id="dashboard">
       <Menu />
       <section className={`content ${collapsed ? "expanded" : null}`} >
-        {/* <div className="select-options">
-          <Select
-            className="paper-1 select"
-            isSearchable
-            isClearable
-            options={projects.map((project) => ({ value: project, label: projectsMap[project].title }))}
-            name='project'
-            placeholder="Select project"
-            value={selectedProject}
-            onChange={setSelectedProject}
-          />
-          {
-            selectedProject &&
-            <Select
-              className="paper-1 select"
-              isSearchable
-              isClearable
-              options={projectTeams[selectedProject.value].map((team) => ({ value: team, label: teamsMap[team].name }))}
-              team
-              placeholder="Select team"
-              value={selectedTeam}
-              onChange={setSelectedTeam}
-            />
-          }
-        </div> */}
-        <div className="chart-options">
-          {user.projectRole === roles.productOwner ? (
-            <button
-              className={`pointer paper-1 ${view === 0 ? 'dark-btn' : null}`}
-              onClick={() => setview(0)}
-            >
-              Organization
-            </button>
-          ) : null}
-          <button
-            className={`pointer paper-1 ${view === 1 ? 'dark-btn' : null}`}
-            onClick={() => setview(1)}
-          >
-            Project
-          </button>
-          <button
-            className={`pointer paper-1 ${view === 2 ? 'dark-btn' : null}`}
-            onClick={() => setview(2)}
-          >
-            Team
-          </button>
+        <div className="chart-context">
+          <div className="select-entities">
+            {user.projectRole === roles.productOwner && (levelOption === 1 || levelOption === 2) && (
+              <Select
+                className="paper-1 select"
+                isSearchable
+                isClearable
+                options={projects.map((project) => ({ value: project, label: projectsMap[project].title }))}
+                name='project'
+                placeholder="Select project"
+                value={selectedProject ? { value: selectedProject.id, label: selectedProject.title } : null}
+                onChange={(option) => setSelectedProject(option ? projectsMap[option.value] : null)}
+              />
+            )}
+            {selectedProject && levelOption === 2 && (
+              <Select
+                className="paper-1 select"
+                isSearchable
+                isClearable
+                options={selectedProject.teams.map((team) => ({ value: team, label: teamsMap[team].name }))}
+                name='project'
+                placeholder="Select team"
+                value={selectedTeam ? { value: selectedTeam.id, label: selectedTeam.name } : null}
+                onChange={(option) => setSelectedTeam(option ? teamsMap[option.value] : null)}
+              />
+            )}
+          </div>
+          <div className="options">
+            {levelOptions()}
+            {chartOptions()}
+          </div>
         </div>
         <div className="charts no-scrollbar">
-          <OrganizationWorkload />
-          <OrganizationExpertise />
+          {levelOption === 0 && chartOption === 0 && <OrganizationStatus />}
+          {levelOption === 0 && chartOption === 1 && <OrganizationSummary />}
+          {levelOption === 0 && chartOption === 2 && <OrganizationWorkload />}
+          {levelOption === 0 && chartOption === 3 && <OrganizationExpertise />}
+          {selectedProject && levelOption === 1 && chartOption === 0 && <ProjectStatus projectId={selectedProject.id} />}
+          {selectedProject && levelOption === 1 && chartOption === 1 && <ProjectWorkload projectId={selectedProject.id} />}
+          {selectedProject && levelOption === 1 && chartOption === 2 && <ProjectExpertise projectId={selectedProject.id} />}
+          {selectedProject && selectedTeam && levelOption === 2 && <TeamExpertise projectId={selectedProject.id} teamId={selectedTeam.id} />}
+          {!selectedProject && [1,2].includes(levelOption) && <p>Select project to view charts</p>}
+          {selectedProject && !selectedTeam && levelOption === 2 && <p>Select team to view charts</p>}
         </div>
       </section>
     </section>

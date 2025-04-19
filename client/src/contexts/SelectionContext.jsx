@@ -42,6 +42,7 @@ export const SelectionProvider = ({ children }) => {
 
   useEffect(() => {
     if (projectsMap && selectedProject) setSelectedProject(projectsMap[selectedProject.id])
+    setSelectedTeam(null)
   }, [projectsMap, selectedProject])
 
   useEffect(() => {

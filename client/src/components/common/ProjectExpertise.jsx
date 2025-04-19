@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { toast } from 'react-toastify'
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
-} from 'recharts'
 
 import metricApi from '../../api/modules/metrics.api'
 
@@ -13,61 +11,40 @@ const EXPERTISE_COLORS = {
   Expert: 'rgba(126, 34, 206, 1)'
 }
 
-const OrganizationExpertise = () => {
+const ProjectExpertise = ({ projectId }) => {
   const { teamsMap } = useSelector((state) => state.teams)
-  const { projects } = useSelector((state) => state.projects)
 
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!projects || projects.length === 0) return
-
-    const fetchAllExpertise = async () => {
+    const fetchExpertise = async () => {
       setLoading(true)
-
-      const results = await Promise.all(
-        projects.map(async (projectId) => {
-          const { res, err } = await metricApi.projectExpertise({ projectId })
-          if (err) {
-            toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
-            return null
+      const { res, err } = await metricApi.projectExpertise({ projectId })
+      if (res?.expertise) {
+        const formatted = Object.entries(res.expertise).map(([teamId, levels]) => {
+          return {
+            team: teamsMap[teamId]?.name || teamId,
+            Beginner: levels.Beginner || 0,
+            Intermediate: levels.Intermediate || 0,
+            Expert: levels.Expert || 0,
           }
-          return res.expertise || {}
         })
-      )
-
-      const combined = results.reduce((acc, curr) => {
-        if (curr) {
-          Object.entries(curr).forEach(([teamId, levels]) => {
-            if (!acc[teamId]) acc[teamId] = { beginner: 0, intermediate: 0, expert: 0 }
-            acc[teamId].beginner += levels.Beginner || 0
-            acc[teamId].intermediate += levels.Intermediate || 0
-            acc[teamId].expert += levels.Expert || 0
-          })
-        }
-        return acc
-      }, {})
-
-      const formattedData = Object.entries(combined).map(([teamId, levels]) => {
-        return {
-          team: teamsMap[teamId]?.name || teamId,
-          Beginner: (levels.beginner).toFixed(2),
-          Intermediate: (levels.intermediate).toFixed(2),
-          Expert: (levels.expert).toFixed(2)
-        }
-      })
-
-      setData(formattedData)
+        setData(formatted)
+        console.log(formatted)
+      }
+      if (err) {
+        toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
+      }
       setLoading(false)
     }
 
-    fetchAllExpertise()
-  }, [projects, teamsMap])
+    fetchExpertise()
+  }, [projectId, teamsMap])
 
   return (
     <div className='chart'>
-      <h2>Organization Expertise</h2>
+      <h2>Project Expertise</h2>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -103,4 +80,4 @@ const OrganizationExpertise = () => {
   )
 }
 
-export default OrganizationExpertise
+export default ProjectExpertise

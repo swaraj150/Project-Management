@@ -117,7 +117,7 @@ const CreateTask = () => {
   }, [selectedProject])
 
   useEffect(() => {
-    if (!projectsMap || !teamsMap) return
+    if (!projectsMap || !teamsMap || !selectedProject) return
     const projectMembersSet = new Set()
     selectedProject.teams.forEach((teamId) => {
       const team = teamsMap[teamId]
