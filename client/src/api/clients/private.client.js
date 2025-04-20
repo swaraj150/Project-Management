@@ -16,11 +16,17 @@ const privateClient = axios.create({
 })
 
 privateClient.interceptors.request.use(async (config) => {
+  const isFormData = config.data instanceof FormData
+
   return {
     ...config,
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      ...(isFormData
+        ? { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        : {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          })
     }
   }
 })
