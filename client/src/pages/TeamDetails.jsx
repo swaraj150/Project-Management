@@ -10,6 +10,7 @@ import { useSelection } from '../contexts/SelectionContext'
 import { setActive } from '../redux/features/menuSlice'
 
 import { menuIndices } from '../utils/menu.utils'
+import { defaultProfileImage } from '../utils/profile.utils'
 
 const TeamDetails = () => {
   const navigate = useNavigate()
@@ -52,7 +53,7 @@ const TeamDetails = () => {
               <div className="team-lead">
                 <p className="opacity-7">Team Lead</p>
                 <div className="team-lead-details">
-                  <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
+                  <img className='profile-img' src={membersMap[selectedTeam.teamLead].profilePageUrl || defaultProfileImage} alt="" />
                   <h3 className='pointer' onClick={() => viewProfile(selectedTeam.teamLead)}>{membersMap[selectedTeam.teamLead].name}</h3>
                   <a href={`mailto:${membersMap[selectedTeam.teamLead].emails[0]}`} className="opacity-5" >
                     {membersMap[selectedTeam.teamLead].emails[0]}
@@ -65,7 +66,7 @@ const TeamDetails = () => {
                   {
                     selectedTeam.developers.map((developer, index) => (
                       <li key={index} >
-                        <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
+                        <img className='profile-img' src={membersMap[developer].profilePageUrl || defaultProfileImage} alt="" />
                         <h3 className='pointer' onClick={() => viewProfile(developer)}>{membersMap[developer].name}</h3>
                         <a href={`mailto:${membersMap[developer].emails[0]}`} className="opacity-5" >
                           {membersMap[developer].emails[0]}
@@ -81,7 +82,7 @@ const TeamDetails = () => {
                   {
                     selectedTeam.testers.map((tester, index) => (
                       <li key={index} >
-                        <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
+                        <img className='profile-img' src={membersMap[tester].profilePageUrl || defaultProfileImage} alt="" />
                         <h3 className='pointer' onClick={() => viewProfile(tester)}>{membersMap[tester].name}</h3>
                         <a href={`mailto:${membersMap[tester].emails[0]}`} className="opacity-5" >
                           {membersMap[tester].emails[0]}

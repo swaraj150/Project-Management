@@ -16,43 +16,7 @@ import { useSelection } from '../../contexts/SelectionContext'
 import { setActive, setCollapsed } from '../../redux/features/menuSlice'
 import { setUser } from '../../redux/features/userSlice'
 
-const menuItems = [
-  {
-    name: 'DashBoard',
-    icon: <MdDashboard />,
-    path: '/dashboard'
-  },
-  {
-    name: 'Organization',
-    icon: <FaBuilding />,
-    path: '/organization'
-  },
-  {
-    name: 'Teams',
-    icon: <MdGroups />,
-    path: '/teams'
-  },
-  {
-    name: 'Projects',
-    icon: <FaProjectDiagram />,
-    path: '/projects'
-  },
-  {
-    name: 'Tasks',
-    icon: <FaTasks />,
-    path: '/tasks'
-  },
-  {
-    name: 'Chats',
-    icon: <IoMdChatboxes />,
-    path: '/chats'
-  },
-  {
-    name: 'Your Profile',
-    icon: <img className='profile-img' src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' alt='' />,
-    path: '/profile/me'
-  }
-]
+import { defaultProfileImage } from '../../utils/profile.utils'
 
 const Menu = () => {
   const dispatch = useDispatch()
@@ -62,6 +26,44 @@ const Menu = () => {
   const { user } = useSelector((state) => state.user)
 
   const { setSelectedUser } = useSelection()
+
+  const menuItems = [
+    {
+      name: 'DashBoard',
+      icon: <MdDashboard />,
+      path: '/dashboard'
+    },
+    {
+      name: 'Organization',
+      icon: <FaBuilding />,
+      path: '/organization'
+    },
+    {
+      name: 'Teams',
+      icon: <MdGroups />,
+      path: '/teams'
+    },
+    {
+      name: 'Projects',
+      icon: <FaProjectDiagram />,
+      path: '/projects'
+    },
+    {
+      name: 'Tasks',
+      icon: <FaTasks />,
+      path: '/tasks'
+    },
+    {
+      name: 'Chats',
+      icon: <IoMdChatboxes />,
+      path: '/chats'
+    },
+    {
+      name: 'Your Profile',
+      icon: <img className='profile-img' src={user.profilePageUrl || defaultProfileImage } alt='' />,
+      path: '/profile/me'
+    }
+  ]
 
   const handleChange = (index) => {
     dispatch(setActive(index))

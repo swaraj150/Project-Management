@@ -6,6 +6,7 @@ import { FaRegCalendarAlt, FaRupeeSign } from 'react-icons/fa'
 import { useSelection } from '../../contexts/SelectionContext'
 
 import { formatDate, formatBudget } from '../../utils/project.utils'
+import { defaultProfileImage } from '../../utils/profile.utils'
 
 const Project = ({ project }) => {
   const navigate = useNavigate()
@@ -37,7 +38,7 @@ const Project = ({ project }) => {
         {formatBudget(project.budget)}
       </div>
       <div className="project-manager">
-        <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
+        <img className='profile-img' src={membersMap[project.projectManager].profilePageUrl || defaultProfileImage } alt="" />
         <div className="project-manager-details">
           <p className='pointer' onClick={viewProfile}>{membersMap[project.projectManager].name} &nbsp;&nbsp;</p>
           <a href={`mailto:${membersMap[project.projectManager].emails[0]}`} className="opacity-5" >

@@ -8,12 +8,14 @@ import organizationApi from '../../api/modules/organization.api'
 
 import { addMember, removeRequest } from '../../redux/features/organizationSlice'
 
+import { defaultProfileImage } from '../../utils/profile.utils'
+
 const Request = ({ request }) => {
   const dispatch = useDispatch()
 
   const handleReject = async () => {
     const { res, err } = await organizationApi.reject({ requestId: request.id })
-    if (res){
+    if (res) {
       dispatch(removeRequest({ requestId: request.id }))
       toast.success(`${request.username} has been successfully rejected!`)
     }
@@ -33,8 +35,14 @@ const Request = ({ request }) => {
   return (
     <li>
       <div className="request-info">
-        <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
-        <p>{request.username}</p>
+        <img className='profile-img' src={request.profilePageUrl || defaultProfileImage} alt="" />
+        <p>
+          {request.username}
+          &nbsp;&nbsp;
+          <a href={`mailto:${request.emails[0]}`} className="opacity-5" >
+            {request.emails[0]}
+          </a>
+        </p>
       </div>
       <div className="cta">
         <p className="role">{request.projectRole}</p>

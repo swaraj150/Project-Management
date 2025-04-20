@@ -20,6 +20,7 @@ import { menuIndices } from '../utils/menu.utils'
 import { roles } from '../utils/organization.utils'
 import { formatBudget, formatDate } from '../utils/project.utils'
 import { headings, membersCount } from '../utils/team.utils'
+import { defaultProfileImage } from '../utils/profile.utils'
 
 const ProjectDetails = () => {
   const navigate = useNavigate()
@@ -108,7 +109,7 @@ const ProjectDetails = () => {
               <div className="project-manager">
                 <p className='opacity-7'>Project Manager</p>
                 <div className="project-manager-details">
-                  <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
+                  <img className='profile-img' src={membersMap[selectedProject.projectManager].profilePageUrl || defaultProfileImage} alt="" />
                   <h4 className='pointer' onClick={viewProfile}>{membersMap[selectedProject.projectManager].name}</h4>
                   <a href={`mailto:${membersMap[selectedProject.projectManager].emails[0]}`} className="opacity-7" >
                     {membersMap[selectedProject.projectManager].emails[0]}

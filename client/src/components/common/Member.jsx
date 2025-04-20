@@ -11,6 +11,7 @@ import { useSelection } from '../../contexts/SelectionContext'
 import { removeMember } from '../../redux/features/organizationSlice'
 
 import { roles, rolesMap } from '../../utils/organization.utils'
+import { defaultProfileImage } from '../../utils/profile.utils'
 
 const Member = ({ member }) => {
   const dispatch = useDispatch()
@@ -37,7 +38,7 @@ const Member = ({ member }) => {
   return (
     <li>
       <div className="member-info">
-        <img className='profile-img' src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" />
+        <img className='profile-img' src={member.profilePageUrl || defaultProfileImage} alt="" />
         <p>
           <span className='pointer' onClick={viewProfile}>{member.username}</span> 
           &nbsp;&nbsp;
