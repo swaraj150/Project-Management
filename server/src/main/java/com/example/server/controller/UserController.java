@@ -58,7 +58,7 @@ public class UserController {
         h.put("user",authResponse.getUser());
         return ResponseEntity.ok(h);
     }
-    @CrossOrigin("http://localhost:5173")
+//    @CrossOrigin("http://localhost:5173")
     @PostMapping("/signin")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         logger.info("Received login request for: {}", loginRequest.getUsername());
@@ -84,16 +84,17 @@ public class UserController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<ApiResponse<?>> requestForForgotPassword(@RequestBody @NonNull EmailForForgotPasswordRequest request){
+    public ResponseEntity<?> requestForForgotPassword(@RequestBody @NonNull EmailForForgotPasswordRequest request){
         passwordResetService.requestPasswordReset(request.getEmail());
-        return ResponseEntity.ok(ApiResponse.success("Reset Password Link sent"));
+        return ResponseEntity.ok(Map.of("message","Password reset link sent"));
     }
 
-    @PostMapping("/reset-password")
-    public ResponseEntity<ApiResponse<?>> resetPassword(@RequestParam String token,ResetPasswordRequest request) {
-        passwordResetService.resetPassword(token, request.getPassword());
-        return ResponseEntity.ok(ApiResponse.success("Password Reset Successful"));
+    @PatchMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(ResetPasswordRequest request) {
+        passwordResetService.resetPassword(request);
+        return ResponseEntity.ok(Map.of("message","Password updated successfully"));
     }
+
 
     @PutMapping("/project-role")
     public ResponseEntity<?> updateProjectRole(@RequestBody @NonNull ChangeUserRoleRequest request) {

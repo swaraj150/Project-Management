@@ -57,7 +57,7 @@ public class SecurityConfig{
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth)-> auth
-                            .requestMatchers("/task","/ws","/chat","/api/v1/users/signin","/api/v1/users/google","/api/v1/users/github","/api/v1/users/signup","/oauth2/**", "/login/**","/login").permitAll().anyRequest().authenticated()
+                            .requestMatchers("/task","/ws","/chat","/api/v1/users/signin","/api/v1/users/forgot-password","/api/v1/users/reset-password","/api/v1/users/google","/api/v1/users/github","/api/v1/users/signup","/oauth2/**", "/login/**","/login").permitAll().anyRequest().authenticated()
                 )
                 .sessionManagement((session)->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
