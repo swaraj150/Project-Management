@@ -38,7 +38,7 @@ public class TaskService {
     private final SecurityUtils securityUtils;
     private final DependencyRepository dependencyRepository;
     private final SimpMessagingTemplate messagingTemplate;
-
+    private final OrganizationService organizationService;
     public boolean exists(UUID id){
         return taskRepository.existsById(id);
     }
@@ -47,7 +47,7 @@ public class TaskService {
         if(!user.getProjectRole().hasAuthority(ProjectAuthority.CREATE_TASKS)){
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
-        Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        Project project=projectRepository.findById(request.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
 //        Team team=teamRepository.findById(teamRepository.findTeamIdByUserId(user.getId())).orElseThrow(()->new EntityNotFoundException("Team not found"));
         Task task=new Task();
         task.setTitle(request.getTitle());
@@ -87,7 +87,7 @@ public class TaskService {
         projectRepository.save(project);
         TaskResponse taskResponse=loadTaskResponse(task.getId());
         messagingTemplate.convertAndSend(
-                "/topic/project."+user.getProjectId(),
+                "/topic/project."+request.getProjectId(),
                 Map.of("notification","Task "+task.getTitle()+" created in your project","method",ResponseMethod.CREATE.name(),"dataType", LogType.TASK.name(),"data",taskResponse)
         );
         return taskResponse;
@@ -408,10 +408,7 @@ public class TaskService {
         Project project=projectRepository.findById(projectId).orElseThrow(()->new EntityNotFoundException("Project not found"));
         List<TaskResponse> taskResponses=new ArrayList<>();
         for(UUID taskId:project.getTasks()){
-            Task task=loadTask(taskId);
-            if(task.getParentTaskId()!=null) continue;
-            TaskResponse taskResponse=loadNestedTasks(taskId);
-            taskResponses.add(taskResponse);
+            taskResponses.add(loadTaskResponse(taskId));
         }
         return taskResponses;
     }
@@ -421,6 +418,13 @@ public class TaskService {
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
         List<TaskResponse> taskResponses=new ArrayList<>();
+        Organization organization=organizationService.loadOrganization(user.getOrganizationId());
+        if(user.getProjectRole()==ProjectRole.PRODUCT_OWNER){
+            for(UUID id:organization.getProjects()){
+                taskResponses.addAll(getTasksByProject(id));
+            }
+            return taskResponses;
+        }
         if(user.getProjectId()==null){
             return taskResponses;
         }
@@ -436,10 +440,37 @@ public class TaskService {
             throw new UnauthorizedAccessException("User does not have the required authority");
         }
         List<Dependency> dependencies=new ArrayList<>();
+        Organization organization=organizationService.loadOrganization(user.getOrganizationId());
+        if(user.getProjectRole()==ProjectRole.PRODUCT_OWNER){
+            for(UUID id:organization.getProjects()){
+                dependencies.addAll(getDependenciesByProject(id));
+            }
+            return dependencies;
+        }
         if(user.getProjectId()==null){
             return dependencies;
         }
         Project project=projectRepository.findById(user.getProjectId()).orElseThrow(()->new EntityNotFoundException("Project not found"));
+        for(UUID taskId:project.getTasks()){
+            List<Dependency> dependencyList=dependencyRepository.findByFromTaskId(taskId);
+            if(!dependencyList.isEmpty()){
+                dependencies.addAll(dependencyList);
+            }
+        }
+        return dependencies;
+    }
+
+    public List<Dependency> getDependenciesByProject(UUID projectId){
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getProjectRole().hasAuthority(ProjectAuthority.VIEW_PROJECT)){
+            throw new UnauthorizedAccessException("User does not have the required authority");
+        }
+        List<Dependency> dependencies=new ArrayList<>();
+
+        if(user.getProjectId()==null){
+            return dependencies;
+        }
+        Project project=projectRepository.findById(projectId).orElseThrow(()->new EntityNotFoundException("Project not found"));
         for(UUID taskId:project.getTasks()){
             List<Dependency> dependencyList=dependencyRepository.findByFromTaskId(taskId);
             if(!dependencyList.isEmpty()){

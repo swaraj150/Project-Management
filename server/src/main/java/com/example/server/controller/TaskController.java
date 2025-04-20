@@ -2,12 +2,15 @@ package com.example.server.controller;
 
 import com.example.server.entities.Dependency;
 import com.example.server.entities.Task;
+import com.example.server.entities.User;
+import com.example.server.enums.ProjectRole;
 import com.example.server.requests.CreateDependencyRequest;
 import com.example.server.requests.CreateTaskRequest;
 import com.example.server.response.TaskResponse;
 //import com.example.server.service.MilestoneService;
 import com.example.server.service.ChatMessageService;
 import com.example.server.service.TaskService;
+import com.example.server.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import java.util.UUID;
 public class TaskController {
     private final TaskService taskService;
     private final ChatMessageService chatMessageService;
+//    private final UserService userService;
 //    private final MilestoneService milestoneService;
 
 //    @GetMapping("/")
@@ -63,6 +67,7 @@ public class TaskController {
     public ResponseEntity<?> fetch(){
         HashMap<String,Object> h=new HashMap<>();
         HashMap<String,Object> data=new HashMap<>();
+
         data.put("data",taskService.getTasksByProject());
         data.put("links",taskService.getDependenciesByProject());
         h.put("tasks",data);
