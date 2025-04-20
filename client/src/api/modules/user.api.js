@@ -106,13 +106,13 @@ const userApi = {
       return { err }
     }
   },
-  resetPassword: async ({ password, newPassword, code, isAuthenticated }) => {
+  resetPassword: async ({ currentPassword, newPassword, code, isAuthenticated }) => {
     try {
       const payload = isAuthenticated
-        ? { password, newPassword }
+        ? { currentPassword, newPassword }
         : { code, newPassword }
       const client = isAuthenticated ? privateClient : publicClient
-      const res = await client.post(userEndpoints.resetPassword, payload)
+      const res = await client.patch(userEndpoints.resetPassword, payload)
       return { res }
     } catch (err) {
       return { err }

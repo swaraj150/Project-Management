@@ -59,7 +59,7 @@ const ResetPassword = () => {
     }),
     onSubmit: async ({ password, newPassword }) => {
       if (user) {
-        const { res, err } = await userApi.resetPassword({ password, newPassword, isAuthenticated: true })
+        const { res, err } = await userApi.resetPassword({ currentPassword: password, newPassword, isAuthenticated: true })
         if (res) {
           toast.success('Password updated successfully!')
           handleGoBack()
