@@ -10,7 +10,8 @@ const userEndpoints = {
   getInfoById: (userId) => `users/${userId}`,
   updateProjectRole: 'users/project-role',
   updateProfile: 'users',
-  logout: 'users/logout'
+  logout: 'users/logout',
+  resetPassword: 'users/reset-password'
 }
 
 const userApi = {
@@ -75,7 +76,7 @@ const userApi = {
       return { err }
     }
   },
-  updateProfile: async (user)=>{
+  updateProfile: async (user) => {
     try {
       const res = await privateClient.patch(
         userEndpoints.updateProfile,
@@ -100,6 +101,18 @@ const userApi = {
   logout: async () => {
     try {
       const res = await privateClient.post(userEndpoints.logout)
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  resetPassword: async ({ password, newPassword, code, isAuthenticated }) => {
+    try {
+      const payload = isAuthenticated
+        ? { password, newPassword }
+        : { code, newPassword }
+      const client = isAuthenticated ? privateClient : publicClient
+      const res = await client.post(userEndpoints.resetPassword, payload)
       return { res }
     } catch (err) {
       return { err }
