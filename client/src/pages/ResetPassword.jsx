@@ -4,7 +4,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { toast } from 'react-toastify'
+import { IoMdArrowBack } from 'react-icons/io'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
+import { MdLockReset, MdOutlineCancel } from 'react-icons/md'
 
 import userApi from '../api/modules/user.api'
 
@@ -60,7 +62,7 @@ const ResetPassword = () => {
         const { res, err } = await userApi.resetPassword({ password, newPassword, isAuthenticated: true })
         if (res) {
           toast.success('Password updated successfully!')
-          navigate(-1)
+          handleGoBack()
         }
         if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
       } else {
@@ -74,6 +76,10 @@ const ResetPassword = () => {
     }
   })
 
+  const handleGoBack = () => {
+    navigate(-1)
+  }
+
   useEffect(() => {
     if (selectedUser?.userId === user.userId) dispatch(setActive(menuIndices.profile))
   }, [selectedUser])
@@ -83,6 +89,10 @@ const ResetPassword = () => {
       <section id="reset-password">
         <Menu />
         <section className={`content ${collapsed ? 'expanded' : null}`} >
+          <button className='go-back pointer paper-1' onClick={handleGoBack}>
+            <IoMdArrowBack />
+            <p>Go Back</p>
+          </button>
           <form onSubmit={passwordResetForm.handleSubmit}>
             <div className="input-field">
               <div className='password-field'>
@@ -108,13 +118,68 @@ const ResetPassword = () => {
                 {passwordResetForm.touched.password && passwordResetForm.errors.password ? passwordResetForm.errors.password : ''}
               </p>
             </div>
-            <button
-              className='paper pointer'
-              type='submit'
-              disabled={passwordResetForm.isSubmitting || !passwordResetForm.isValid}
-            >
-              Sign In
-            </button>
+            <div className="input-field">
+              <div className='password-field'>
+                <input
+                  className='paper'
+                  type={hideNewPassword ? 'password' : 'text'}
+                  name='newPassword'
+                  required
+                  placeholder='newPassword'
+                  value={passwordResetForm.values.newPassword}
+                  onChange={passwordResetForm.handleChange}
+                  onBlur={passwordResetForm.handleBlur} newPassword
+                  onPaste={preventDefaultBehaviour}
+                  onCopy={preventDefaultBehaviour}
+                />
+                {
+                  hideNewPassword
+                    ? <FaEye className='pointer' onClick={() => setHideNewPassword(false)} />
+                    : <FaEyeSlash className='pointer' onClick={() => setHideNewPassword(true)} />
+                }
+              </div>
+              <p className="helper-text opacity-5">
+                {passwordResetForm.touched.newPassword && passwordResetForm.errors.newPassword ? passwordResetForm.errors.newPassword : ''}
+              </p>
+            </div>
+            <div className="input-field">
+              <div className='password-field'>
+                <input
+                  className='paper'
+                  type={hideConfirmNewPassword ? 'password' : 'text'}
+                  name='confirmNewPassword'
+                  required
+                  placeholder='confirmNewPassword'
+                  value={passwordResetForm.values.confirmNewPassword}
+                  onChange={passwordResetForm.handleChange}
+                  onBlur={passwordResetForm.handleBlur}
+                  onPaste={preventDefaultBehaviour}
+                  onCopy={preventDefaultBehaviour}
+                />
+                {
+                  hideConfirmNewPassword
+                    ? <FaEye className='pointer' onClick={() => setHideConfirmNewPassword(false)} />
+                    : <FaEyeSlash className='pointer' onClick={() => setHideConfirmNewPassword(true)} />
+                }
+              </div>
+              <p className="helper-text opacity-5">
+                {passwordResetForm.touched.confirmNewPassword && passwordResetForm.errors.confirmNewPassword ? passwordResetForm.errors.confirmNewPassword : ''}
+              </p>
+            </div>
+            <div className="cta">
+              <button className="pointer paper-1" type='button' onClick={handleGoBack}>
+                <MdOutlineCancel />
+                Cancel
+              </button>
+              <button
+                className="pointer paper-1 dark-btn"
+                type='submit'
+                disabled={passwordResetForm.isSubmitting || !passwordResetForm.isValid}
+              >
+                <MdLockReset />
+                Reset Password
+              </button>
+            </div>
           </form>
         </section>
       </section>
