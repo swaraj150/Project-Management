@@ -22,6 +22,8 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String content;
+    private String fileUrl;
+    private String fileName;
     private UUID senderId;
     private LocalDateTime timestamp;
     private UUID roomId;
