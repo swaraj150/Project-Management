@@ -88,18 +88,22 @@ const Dashboard = () => {
           >
             Status
           </button>
-          <button
-            className={`pointer paper-1 ${chartOption === 1 ? 'dark-btn' : null}`}
-            onClick={() => setChartOption(1)}
-          >
-            Workload
-          </button >
-          <button
-            className={`pointer paper-1 ${chartOption === 2 ? 'dark-btn' : null}`}
-            onClick={() => setChartOption(2)}
-          >
-            Expertise
-          </button>
+          {user.projectRole !== roles.stakeholder && (
+            <button
+              className={`pointer paper-1 ${chartOption === 1 ? 'dark-btn' : null}`}
+              onClick={() => setChartOption(1)}
+            >
+              Workload
+            </button >
+          )}
+          {[roles.projectManager, roles.stakeholder].includes(user.projectRole) && (
+            <button
+              className={`pointer paper-1 ${chartOption === 2 ? 'dark-btn' : null}`}
+              onClick={() => setChartOption(2)}
+            >
+              Expertise
+            </button>
+          )}
         </div>
       )
     }
@@ -179,7 +183,7 @@ const Dashboard = () => {
           {selectedProject && levelOption === 1 && chartOption === 1 && <ProjectWorkload projectId={selectedProject.id} />}
           {selectedProject && levelOption === 1 && chartOption === 2 && <ProjectExpertise projectId={selectedProject.id} />}
           {selectedProject && selectedTeam && levelOption === 2 && <TeamExpertise projectId={selectedProject.id} teamId={selectedTeam.id} />}
-          {!selectedProject && [1,2].includes(levelOption) && <p>Select project to view charts</p>}
+          {!selectedProject && [1, 2].includes(levelOption) && <p>Select project to view charts</p>}
           {selectedProject && !selectedTeam && levelOption === 2 && <p>Select team to view charts</p>}
         </div>
       </section>
