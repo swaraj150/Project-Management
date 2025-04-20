@@ -1,6 +1,8 @@
 import LandingPage from '../pages/LandingPage'
 import SigninPage from '../pages/SigninPage'
 import SignupPage from '../pages/SignupPage'
+import ForgotPassword from '../pages/ForgotPassword'
+import ResetPassword from '../pages/ResetPassword'
 import Profile from '../pages/Profile'
 import Discover from '../pages/Discover'
 import Dashboard from '../pages/DashBoard'
@@ -28,6 +30,14 @@ export const publicRoutes = [
   {
     path: 'sign-up',
     element: <SignupPage />
+  },
+  {
+    path: 'forgot-password',
+    element: <ForgotPassword />
+  },
+  {
+    path: 'reset-password',
+    element: <ResetPassword />
   }
 ]
 
@@ -35,6 +45,10 @@ export const privateRoutes = [
   {
     path: 'profile/:profileName',
     element: <Profile />
+  },
+  {
+    path: 'profile/:profileName/reset-password',
+    element: <ResetPassword />
   },
   {
     path: 'discover',
