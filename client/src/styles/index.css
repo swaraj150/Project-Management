@@ -440,6 +440,7 @@ main {
 #menu .menu-user-settings {
   display: flex;
   flex-direction: column;
+  gap: 10px;
   align-items: center;
 }
 #menu .menu-user-settings .profile {
@@ -494,7 +495,8 @@ main {
 #create-task,
 #update-task,
 #chats,
-#profile {
+#profile,
+#reset-password {
   height: 100vh;
   display: flex;
   align-items: center;
@@ -512,7 +514,8 @@ main {
 #create-task .content,
 #update-task .content,
 #chats .content,
-#profile .content {
+#profile .content,
+#reset-password .content {
   width: 85%;
   padding: 1%;
   height: 100vh;
@@ -529,7 +532,8 @@ main {
 #create-task .collapsed,
 #update-task .collapsed,
 #chats .collapsed,
-#profile .collapsed {
+#profile .collapsed,
+#reset-password .collapsed {
   width: 5% !important;
 }
 #dashboard .collapsed .menu-items li,
@@ -544,7 +548,8 @@ main {
 #create-task .collapsed .menu-items li,
 #update-task .collapsed .menu-items li,
 #chats .collapsed .menu-items li,
-#profile .collapsed .menu-items li {
+#profile .collapsed .menu-items li,
+#reset-password .collapsed .menu-items li {
   padding: 25% !important;
   display: flex;
   align-items: center;
@@ -576,7 +581,9 @@ main {
 #chats .collapsed .menu-user-settings .profile,
 #chats .collapsed .menu-user-settings .logout,
 #profile .collapsed .menu-user-settings .profile,
-#profile .collapsed .menu-user-settings .logout {
+#profile .collapsed .menu-user-settings .logout,
+#reset-password .collapsed .menu-user-settings .profile,
+#reset-password .collapsed .menu-user-settings .logout {
   padding: 25% !important;
   display: flex;
   align-items: center;
@@ -595,7 +602,8 @@ main {
 #create-task .expanded,
 #update-task .expanded,
 #chats .expanded,
-#profile .expanded {
+#profile .expanded,
+#reset-password .expanded {
   width: 95% !important;
 }
 
@@ -1470,9 +1478,11 @@ main {
   gap: 2%;
 }
 #chats .content .chat-board .messages .message {
+  padding-bottom: 1%;
   display: flex;
   gap: 10px;
   align-items: center;
+  position: relative;
 }
 #chats .content .chat-board .messages .message .profile-img {
   align-self: flex-start;
@@ -1483,6 +1493,11 @@ main {
   border-top-right-radius: 10px;
   border-bottom-left-radius: 10px;
   background-color: rgb(208, 219, 251);
+}
+#chats .content .chat-board .messages .message .time {
+  position: absolute;
+  bottom: -15%;
+  left: 4%;
 }
 #chats .content .chat-board .messages .by-user {
   justify-content: flex-end;
@@ -1495,14 +1510,58 @@ main {
   color: rgb(255, 255, 255);
   background-color: rgb(10, 36, 114);
 }
-#chats .content .chat-board .input-field textarea {
+#chats .content .chat-board .message-toolbar {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+#chats .content .chat-board .message-toolbar .choose-file {
+  position: absolute;
+  padding: 1%;
+  border-radius: 10px;
+}
+#chats .content .chat-board .message-toolbar .choose-file label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 1rem;
+}
+#chats .content .chat-board .message-toolbar .choose-file label svg {
+  font-size: 1.2rem;
+}
+#chats .content .chat-board .message-toolbar .chip {
+  position: absolute;
+  margin-left: 4%;
+  padding: 0.5%;
+  width: 10%;
+  border-radius: 10px;
+  background-color: rgb(204, 204, 204);
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+#chats .content .chat-board .message-toolbar .chip p {
+  width: 90%;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#chats .content .chat-board .message-toolbar .chip svg {
+  font-size: 1.5rem;
+}
+#chats .content .chat-board .message-toolbar textarea {
   resize: none;
   padding: 1%;
+  padding-left: 4%;
   width: 100%;
   outline: none;
   border: none;
   border-radius: 10px;
   font-size: 1rem;
+}
+#chats .content .chat-board .message-toolbar .file-selected {
+  padding-left: 15%;
 }
 
 #profile .content {
@@ -1549,15 +1608,15 @@ main {
 }
 #profile .content .profile-info .hero-section .cta {
   margin-left: auto;
-  width: 20%;
+  width: 30%;
   display: flex;
-  gap: 6%;
+  gap: 5%;
   align-items: center;
   justify-content: flex-end;
 }
 #profile .content .profile-info .hero-section .cta button {
-  width: 47%;
-  padding: 5% 0;
+  width: max-content;
+  padding: 3% 5%;
   border: none;
   border-radius: 10px;
   font-size: 1.1rem;
@@ -1568,6 +1627,35 @@ main {
 }
 #profile .content .profile-info .hero-section .cta button svg {
   font-size: 1.2rem;
+}
+#profile .content .profile-info .hero-section .choose-file {
+  padding: 0.7% 2%;
+  border-radius: 10px;
+}
+#profile .content .profile-info .hero-section .choose-file label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 1rem;
+}
+#profile .content .profile-info .hero-section .choose-file label svg {
+  font-size: 1.2rem;
+}
+#profile .content .profile-info .hero-section .chip {
+  padding: 0.6% 1%;
+  border-radius: 10px;
+  background-color: rgb(204, 204, 204);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+#profile .content .profile-info .hero-section .chip svg {
+  font-size: 1.5rem;
+}
+#profile .content .profile-info .hero-section .choose-file,
+#profile .content .profile-info .hero-section .chip,
+#profile .content .profile-info .hero-section .upload {
+  margin-left: 2%;
 }
 #profile .content .profile-info .profile-details {
   flex-grow: 1;

@@ -233,3 +233,17 @@ textarea,
 .slider-label {
     font-size: 1rem;
 }
+
+.upload {
+    padding: 1% 2%;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 1rem;
+
+    svg {
+        font-size: 1rem;
+    }
+}
