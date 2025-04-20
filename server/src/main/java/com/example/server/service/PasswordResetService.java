@@ -3,7 +3,11 @@ package com.example.server.service;
 
 import com.example.server.entities.User;
 import com.example.server.exception.InvalidTokenException;
+import com.example.server.exception.UnauthorizedAccessException;
 import com.example.server.repositories.UserRepository;
+import com.example.server.requests.ResetPasswordRequest;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PasswordResetService {
     private final UserRepository userRepository;
+    private final UserService userService;
     @Value("${reset-password-url}")
     private String resetPasswordUrl;
     private final PasswordEncoder passwordEncoder;
@@ -42,21 +47,27 @@ public class PasswordResetService {
 
 
 
-    public void resetPassword(String token,String password){
-        if(token==null || password==null){
-            throw new IllegalArgumentException("password and token cannot be null");
-        }
-        Optional<User> optionalUser = userRepository.findByResetPasswordToken(token);
-        if(optionalUser.isEmpty()){
-            throw new UsernameNotFoundException("User not found");
-        }
-        User user=optionalUser.get();
+    public void resetPassword(@NonNull String token,@NonNull String password){
+
+        User user = userRepository.findByResetPasswordToken(token).orElseThrow(()->new EntityNotFoundException("User not found"));
+
         if(!user.getResetPasswordTokenExpiry().isAfter(LocalDateTime.now())){
             throw new InvalidTokenException("The provided token is invalid or has expired");
         }
         user.setPassword(passwordEncoder.encode(password));
         user.setResetPasswordToken(null);
         user.setResetPasswordTokenExpiry(null);
+        userRepository.save(user);
+    }
+    public void resetPassword(@NonNull ResetPasswordRequest request){
+        if(request.getToken()!=null){
+            resetPassword(request.getToken(),request.getNewPassword());
+        }
+        User user=userService.loadAuthenticatedUser();
+        if(!user.getPassword().equals(passwordEncoder.encode(request.getCurrentPassword()))){
+            throw new UnauthorizedAccessException("Current and Provided passwords don't match");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
 

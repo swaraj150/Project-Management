@@ -98,12 +98,12 @@ public class TeamController {
         return ResponseEntity.ok(h);
     }
 
-//    @GetMapping("/suggestions") // suggest teams based on project workload
-//    public ResponseEntity<?> suggest(@RequestParam @NonNull UUID projectId){
-//        HashMap<String,Object> h=new HashMap<>();
-//        h.put("suggestedMembers",projectService.suggestTeams(projectId));
-//        return ResponseEntity.ok(h);
-//    }
+    @GetMapping("/suggestions") // suggest teams based on project workload
+    public ResponseEntity<?> suggest(@PathVariable @NonNull UUID projectId){
+        HashMap<String,Object> h=new HashMap<>();
+        h.put("teams",projectService.suggestTeams(projectId));
+        return ResponseEntity.ok(h);
+    }
 
     @DeleteMapping("")
     public ResponseEntity<?> delete(@PathVariable @NonNull UUID teamId){

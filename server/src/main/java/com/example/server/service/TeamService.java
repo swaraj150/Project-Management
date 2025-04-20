@@ -262,11 +262,17 @@ public class TeamService {
     public List<Map<String,Object>> suggestTeams(@NonNull UUID projectId, @NonNull Set<UUID> teams){
         User user=userService.loadUser(securityUtils.getCurrentUsername());
         Organization organization=organizationService.loadOrganization(user.getOrganizationId());
+        int limit;
+        if(organization.getWorkloadLimit()==null || organization.getWorkloadLimit().getLimit()==null){
+            limit=10;
+        }else{
+            limit=organization.getWorkloadLimit().getLimit();
+        }
         List<Map<String,Object>> teamScores=new ArrayList<>();
         for(UUID teamId:teams){
             Map<String,Object> m=new HashMap<>();
-            m.put("team", loadTeamResponse(teamId));
-            m.put("score",calculateTeamScore(teamId,projectId,organization.getWorkloadLimit().getLimit()));
+            m.put("team", teamId);
+            m.put("score",calculateTeamScore(teamId,projectId,limit));
             teamScores.add(m);
         }
         return teamScores;

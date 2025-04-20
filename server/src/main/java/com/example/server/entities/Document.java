@@ -19,9 +19,9 @@ public class Document {
     @Column(name="document_id")
     private UUID id;
     private String fileName;
-    private String path;
-    @Enumerated(EnumType.STRING)
-    private FileType fileType;
+    private String url;
+    private LocalDateTime expiresAt;
+
 
     @Column(updatable = false)
     private LocalDateTime uploadedAt;
