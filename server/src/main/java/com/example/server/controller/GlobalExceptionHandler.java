@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e) {
         HashMap<String,Object> h=new HashMap<>();
-        h.put("message",e.getMessage());
+        h.put("message","Something went wrong!!");
         return ResponseEntity.status(500).body(h);
     }
     @ExceptionHandler(EntityNotFoundException.class)
