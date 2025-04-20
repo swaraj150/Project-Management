@@ -220,7 +220,7 @@ public class OrganizationService {
             if(request.getStatus()==RequestStatus.APPROVED || request.getStatus()==RequestStatus.REJECTED) continue;
             User user=userRepository.findById(request.getUserId()).orElseThrow(()->new EntityNotFoundException("user not found"));
             Organization organization=loadOrganization(request.getOrganizationId());
-            set.add(JoinRequestDTO.builder().id(request.getId()).username(user.getUsername()).organization(organization.getName()).projectRole(request.getProjectRole()).build());
+            set.add(JoinRequestDTO.builder().id(request.getId()).username(user.getUsername()).profileImageUrl(user.getProfilePageUrl()).emails(user.getEmails()).organization(organization.getName()).projectRole(request.getProjectRole()).build());
         }
 
 

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,13 +19,6 @@ public class JoinRequestDTO {
     private String username;
     private String organization;
     private String projectRole;
-
-    public static JoinRequestDTO fromJoinRequest(JoinRequest request){
-        return JoinRequestDTO.builder()
-                .id(request.getId())
-                .projectRole(request.getProjectRole())
-//                .username(request.getUser().getUsername())
-//                .organization(request.getUser().getOrganization().getName())
-                .build();
-    }
+    private String profileImageUrl;
+    private Set<String> emails;
 }
