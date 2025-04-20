@@ -19,6 +19,6 @@ public class JoinRequestDTO {
     private String username;
     private String organization;
     private String projectRole;
-    private String profileImageUrl;
+    private String profilePageUrl;
     private Set<String> emails;
 }
