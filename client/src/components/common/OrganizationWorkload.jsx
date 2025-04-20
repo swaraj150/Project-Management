@@ -64,7 +64,7 @@ const OrganizationWorkload = () => {
             <CartesianGrid strokeDasharray='3 3' />
             <XAxis
               dataKey="team"
-              label={{ value: 'Teams', position: 'insideBottom', offset: -30 }}
+              label={{ value: 'Teams', position: 'insideBottom', offset: -40 }}
               height={30}
               tick={{ angle: -45, textAnchor: 'end' }}
             />
@@ -72,7 +72,7 @@ const OrganizationWorkload = () => {
               label={{ value: 'Workload (Days)', angle: -90, position: 'insideLeft', offset: -30 }}
               width={30}
             />
-            <Tooltip />
+            <Tooltip formatter={(value) => `${value} days`}  />
             <Bar dataKey='workload' fill='rgba(114, 146, 243, 1)' />
           </BarChart>
         </ResponsiveContainer>

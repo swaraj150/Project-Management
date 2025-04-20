@@ -22,7 +22,7 @@ const OrganizationSummary = () => {
       setLoading(true)
       const { res, err } = await metricApi.projectSummary()
       if (res?.priority) {
-        const formatted = Object.entries(res.priority).map(([projectId, { Low, Normal, High}]) => {
+        const formatted = Object.entries(res.priority).map(([projectId, { Low, Normal, High }]) => {
           return {
             project: projectsMap[projectId]?.title || projectId,
             Low: Low || 0,
@@ -55,15 +55,15 @@ const OrganizationSummary = () => {
             <CartesianGrid strokeDasharray='3 3' />
             <XAxis
               dataKey="project"
-              label={{ value: 'Projects', position: 'insideBottom', offset: -30 }}
+              label={{ value: 'Projects', position: 'insideBottom', offset: -40 }}
               height={30}
               tick={{ angle: -45, textAnchor: 'end' }}
             />
             <YAxis
-              label={{ value: 'Priority Distribution (%)', angle: -90, position: 'insideLeft', offset: -30 }}
+              label={{ value: 'Priority Distribution (tasks)', angle: -90, position: 'insideLeft', offset: -30 }}
               width={30}
             />
-            <Tooltip />
+            <Tooltip formatter={(value) => `${value === 1 ? value + ' task' : value + ' tasks'}`} />
             <Legend
               verticalAlign="top"
               align="center"

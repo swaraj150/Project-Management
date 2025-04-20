@@ -64,7 +64,7 @@ const ProjectExpertise = ({ projectId }) => {
               label={{ value: 'Expertise (%)', angle: -90, position: 'insideLeft', offset: -30 }}
               width={30}
             />
-            <Tooltip />
+            <Tooltip formatter={(value) => `${value.toFixed(2)} %`}  />
             <Legend
               verticalAlign="top"
               align="center"

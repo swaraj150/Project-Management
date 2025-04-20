@@ -41,7 +41,7 @@ const TeamExpertise = ({ projectId, teamId }) => {
 
     return (
       <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central">
-        {`${(percent * 100).toFixed(0)}%`}
+        {`${(percent * 100).toFixed(2)}%`}
       </text>
     )
   }
@@ -68,7 +68,7 @@ const TeamExpertise = ({ projectId, teamId }) => {
                 <Cell key={`cell-${index}`} fill={EXPERTISE_COLORS[entry.name]} />
               ))}
             </Pie>
-            <Tooltip formatter={(value) => `${value.toFixed(1)}%`} />
+            <Tooltip formatter={(value) => `${value.toFixed(2)}%`} />
             <Legend />
           </PieChart>
         </ResponsiveContainer>

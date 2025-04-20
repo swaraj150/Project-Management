@@ -52,9 +52,9 @@ const OrganizationExpertise = () => {
       const formattedData = Object.entries(combined).map(([teamId, levels]) => {
         return {
           team: teamsMap[teamId]?.name || teamId,
-          Beginner: (levels.beginner).toFixed(2),
-          Intermediate: (levels.intermediate).toFixed(2),
-          Expert: (levels.expert).toFixed(2)
+          Beginner: (levels.beginner),
+          Intermediate: (levels.intermediate),
+          Expert: (levels.expert)
         }
       })
 
@@ -87,7 +87,7 @@ const OrganizationExpertise = () => {
               label={{ value: 'Expertise (%)', angle: -90, position: 'insideLeft', offset: -30 }}
               width={30}
             />
-            <Tooltip />
+            <Tooltip formatter={(value) => `${value.toFixed(2)} %`}  />
             <Legend
               verticalAlign="top"
               align="center"
