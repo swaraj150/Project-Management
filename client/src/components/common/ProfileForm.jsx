@@ -5,43 +5,13 @@ import { useSelection } from '../../contexts/SelectionContext'
 
 import { technologyLabels } from '../../utils/project.utils'
 
-const ProfileForm = ({ profileForm }) => {
+const ProfileForm = ({ profileForm, dataInitialized }) => {
 
   const { selectedUser } = useSelection()
 
   const dobRef = useRef(null)
-  const initialFormValues = useRef(null)
 
-  const [dataInitialized, setDataInitialized] = useState(false)
   const [dobType, setDobType] = useState('text')
-
-  useEffect(() => {
-    const allOptions = technologyLabels.flatMap(group => group.options)
-    const formattedSkills = selectedUser.skills
-      .map(skill => allOptions.find(option => option.value === skill))
-      .filter(Boolean)
-
-    if (selectedUser) {
-      const values = {
-        firstname: selectedUser.name.split(' ')[0],
-        lastname: selectedUser.name.split(' ')[1],
-        gender: selectedUser.gender || '',
-        dob: selectedUser.dob || '',
-        phoneNumber: selectedUser.phoneNumber || '',
-        addressLine1: selectedUser.addressLine1 || '',
-        addressLine2: selectedUser.addressLine2 || '',
-        city: selectedUser.city || '',
-        code: selectedUser.code || '',
-        state: selectedUser.state || '',
-        country: selectedUser.country || '',
-        skills: formattedSkills
-      }
-
-      profileForm.setValues(values)
-      initialFormValues.current = values
-      setDataInitialized(true)
-    }
-  }, [selectedUser])
 
   useEffect(() => {
     if (selectedUser?.dob) setDobType('date')
@@ -96,8 +66,8 @@ const ProfileForm = ({ profileForm }) => {
                 <input
                   type="radio"
                   name="gender"
-                  value="male"
-                  checked={profileForm.values.gender === 'male'}
+                  value="Male"
+                  checked={profileForm.values.gender === 'Male'}
                   onChange={profileForm.handleChange}
                   onBlur={profileForm.handleBlur}
                 />
@@ -107,8 +77,8 @@ const ProfileForm = ({ profileForm }) => {
                 <input
                   type="radio"
                   name="gender"
-                  value="female"
-                  checked={profileForm.values.gender === 'female'}
+                  value="Female"
+                  checked={profileForm.values.gender === 'Female'}
                   onChange={profileForm.handleChange}
                   onBlur={profileForm.handleBlur}
                 />
