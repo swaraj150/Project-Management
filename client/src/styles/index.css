@@ -1315,7 +1315,8 @@ main {
 #create-team .content,
 #create-project .content,
 #create-task .content,
-#update-task .content {
+#update-task .content,
+#reset-password .content {
   position: relative;
   display: flex;
   align-items: center;
@@ -1324,7 +1325,8 @@ main {
 #create-team .content form,
 #create-project .content form,
 #create-task .content form,
-#update-task .content form {
+#update-task .content form,
+#reset-password .content form {
   height: 100%;
   width: 80%;
   margin-top: 2%;
@@ -1338,7 +1340,8 @@ main {
 #create-team .content form h1,
 #create-project .content form h1,
 #create-task .content form h1,
-#update-task .content form h1 {
+#update-task .content form h1,
+#reset-password .content form h1 {
   font-size: 2rem;
 }
 #create-team .content form .input-field input,
@@ -1348,7 +1351,9 @@ main {
 #create-task .content form .input-field input,
 #create-task .content form .input-field textarea,
 #update-task .content form .input-field input,
-#update-task .content form .input-field textarea {
+#update-task .content form .input-field textarea,
+#reset-password .content form .input-field input,
+#reset-password .content form .input-field textarea {
   padding: 1%;
   width: 100%;
   outline: none;
@@ -1359,7 +1364,8 @@ main {
 #create-team .content form .input-field .select,
 #create-project .content form .input-field .select,
 #create-task .content form .input-field .select,
-#update-task .content form .input-field .select {
+#update-task .content form .input-field .select,
+#reset-password .content form .input-field .select {
   width: 100%;
 }
 #create-team .content form .date-duration-group,
@@ -1369,7 +1375,9 @@ main {
 #create-task .content form .date-duration-group,
 #create-task .content form .task-meta-group,
 #update-task .content form .date-duration-group,
-#update-task .content form .task-meta-group {
+#update-task .content form .task-meta-group,
+#reset-password .content form .date-duration-group,
+#reset-password .content form .task-meta-group {
   width: 100%;
   display: flex;
   gap: 2%;
@@ -1382,7 +1390,9 @@ main {
 #create-task .content form .date-duration-group .input-field,
 #create-task .content form .task-meta-group .input-field,
 #update-task .content form .date-duration-group .input-field,
-#update-task .content form .task-meta-group .input-field {
+#update-task .content form .task-meta-group .input-field,
+#reset-password .content form .date-duration-group .input-field,
+#reset-password .content form .task-meta-group .input-field {
   flex-grow: 1;
 }
 #create-team .content form .date-duration-group .input-field input,
@@ -1392,7 +1402,9 @@ main {
 #create-task .content form .date-duration-group .input-field input,
 #create-task .content form .task-meta-group .input-field input,
 #update-task .content form .date-duration-group .input-field input,
-#update-task .content form .task-meta-group .input-field input {
+#update-task .content form .task-meta-group .input-field input,
+#reset-password .content form .date-duration-group .input-field input,
+#reset-password .content form .task-meta-group .input-field input {
   padding: 2%;
 }
 #create-team .content form .date-duration-group .input-field .select,
@@ -1402,13 +1414,16 @@ main {
 #create-task .content form .date-duration-group .input-field .select,
 #create-task .content form .task-meta-group .input-field .select,
 #update-task .content form .date-duration-group .input-field .select,
-#update-task .content form .task-meta-group .input-field .select {
+#update-task .content form .task-meta-group .input-field .select,
+#reset-password .content form .date-duration-group .input-field .select,
+#reset-password .content form .task-meta-group .input-field .select {
   padding: 1.5%;
 }
 #create-team .content form .cta,
 #create-project .content form .cta,
 #create-task .content form .cta,
-#update-task .content form .cta {
+#update-task .content form .cta,
+#reset-password .content form .cta {
   margin-top: 2%;
   width: 100%;
   display: flex;
@@ -1418,7 +1433,8 @@ main {
 #create-team .content form .cta button,
 #create-project .content form .cta button,
 #create-task .content form .cta button,
-#update-task .content form .cta button {
+#update-task .content form .cta button,
+#reset-password .content form .cta button {
   flex-grow: 1;
   padding: 1%;
   border: none;
@@ -1434,7 +1450,8 @@ main {
 #create-team .content form .cta button:nth-child(2),
 #create-project .content form .cta button:nth-child(2),
 #create-task .content form .cta button:nth-child(2),
-#update-task .content form .cta button:nth-child(2) {
+#update-task .content form .cta button:nth-child(2),
+#reset-password .content form .cta button:nth-child(2) {
   color: rgb(255, 255, 255);
   background-color: red;
 }
