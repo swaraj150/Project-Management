@@ -2,14 +2,26 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Client } from '@stomp/stompjs'
 
-import { addTask, updateTask } from '../redux/features/tasksSlice'
+import { addMember } from '../redux/features/organizationSlice'
+import { addTeam } from '../redux/features/teamsSlice'
+import { addLinkToProject, addProject, addTaskToProject, deleteLinkFromProject, deleteTaskFromProject } from '../redux/features/projectsSlice'
+import { addLink, addTask, deleteLink, deleteTask, updateTask } from '../redux/features/tasksSlice'
 import { addChat } from '../redux/features/chatsSlice'
 
 const dataTypes = {
   chat: 'CHAT',
   task: 'TASK',
   link: 'LINK',
-  team: 'TEAM'
+  team: 'TEAM',
+  user: 'USER',
+  project: 'PROJECT',
+  id: 'ID'
+}
+
+const methods = {
+  create: 'CREATE',
+  update: 'UPDATE',
+  delete: 'DELETE'
 }
 
 const SOCKET_URL = import.meta.env.VITE_WEBSOCKET_URL
@@ -20,7 +32,7 @@ export const SocketProvider = ({ children }) => {
   const dispatch = useDispatch()
 
   const { user } = useSelector((state) => state.user)
-  const { tasks } = useSelector((state) => state.tasks) 
+  const { tasks } = useSelector((state) => state.tasks)
 
   const [stompClient, setStompClient] = useState(null)
 
@@ -54,7 +66,7 @@ export const SocketProvider = ({ children }) => {
   const subscribeToChat = ({ id }) => {
     if (stompClient?.connected) {
       return stompClient.subscribe(`/topic/chat.${id}`, (message) => {
-        const { dataType, notification, data } = JSON.parse(message.body)
+        const { dataType, notification, data, method } = JSON.parse(message.body)
         switch (dataType) {
           case dataTypes.chat:
             dispatch(addChat({ id, chat: data }))
@@ -66,8 +78,13 @@ export const SocketProvider = ({ children }) => {
 
   const subscribeToOrganization = ({ organizationId }) => {
     if (stompClient?.connected) {
-      return stompClient.subscribe(`/topic/organization.${organizationId}`, (task) => {
-        console.log(task)
+      return stompClient.subscribe(`/topic/organization.${organizationId}`, (message) => {
+        const { dataType, notification, data, method } = JSON.parse(message.body)
+        switch (dataType) {
+          case dataTypes.user:
+            dispatch(addMember(data))
+            break
+        }
       })
     }
   }
@@ -75,17 +92,62 @@ export const SocketProvider = ({ children }) => {
   const subscribeToProject = ({ projectId }) => {
     if (stompClient?.connected) {
       return stompClient.subscribe(`/topic/project.${projectId}`, (message) => {
-        // const { dataType, notification, data } = JSON.parse(message.body)
-        // switch (dataType) {
-        //   case dataTypes.team:
-        //     break
-        //   case dataTypes.task:
-        //     if (tasks.includes(data.id)) dispatch(updateTask(data))
-        //     else dispatch(addTask(data))
-        //     break
-        //   case dataTypes.link:
-        //     break
-        // }
+        const { dataType, notification, data, method } = JSON.parse(message.body)
+        switch (dataType) {
+          case dataTypes.task:
+            switch (method) {
+              case methods.create:
+                dispatch(addTask(data))
+                dispatch(addTaskToProject({ projectId, taskId: data.id }))
+                break
+              case methods.update:
+                dispatch(updateTask(data))
+                break;
+              case methods.delete:
+                dispatch(deleteTask({ id: data }))
+                dispatch(deleteTaskFromProject({ projectId, taskId: data }))
+                break
+            }
+            break
+          case dataTypes.link:
+            switch (method) {
+              case methods.create:
+                dispatch(addLink(data))
+                dispatch(addLinkToProject({ projectId, taskId: data.id }))
+                break
+              case methods.delete:
+                dispatch(deleteLink({ id: data }))
+                dispatch(deleteLinkFromProject({ projectId, taskId: data }))
+                break
+            }
+            break
+        }
+      })
+    }
+  }
+
+  const subsribeToTeam = ({ teamId }) => {
+    if (stompClient?.connected) {
+      return stompClient.subscribe(`/topic/team.${teamId}`, (message) => {
+        const { dataType, notification, data, method } = JSON.parse(message.body)
+        switch (dataType) {
+          case dataTypes.project:
+            dispatch(addProject(data))
+            break
+        }
+      })
+    }
+  }
+
+  const subsribeToUser = ({ userId }) => {
+    if (stompClient?.connected) {
+      return stompClient.subscribe(`/topic/user.${userId}`, (message) => {
+        const { dataType, notification, data, method } = JSON.parse(message.body)
+        switch (dataType) {
+          case dataTypes.team:
+            dispatch(addTeam(data))
+            break
+        }
       })
     }
   }
@@ -102,6 +164,8 @@ export const SocketProvider = ({ children }) => {
         subscribeToChat,
         subscribeToOrganization,
         subscribeToProject,
+        subsribeToTeam,
+        subsribeToUser,
         sendMessageInChat
       }}
     >
