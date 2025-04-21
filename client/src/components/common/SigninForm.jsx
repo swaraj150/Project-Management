@@ -127,7 +127,7 @@ const SigninForm = () => {
               </div>
               <p className='opacity-5 pointer' onClick={() => setRememberMe((prev) => !prev)}>Remember me</p>
             </div>
-            <a onClick={() => navigate('/forgot-password')}>Forgot password?</a>
+            <a className='pointer' onClick={() => navigate('/forgot-password')}>Forgot password?</a>
           </div>
           <button
             className='paper pointer'
