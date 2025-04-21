@@ -28,15 +28,22 @@ const MainLayout = () => {
 
   const { user } = useSelector((state) => state.user)
   const { organization } = useSelector((state) => state.organization)
+  const { teams } = useSelector((state) => state.teams)
   const { projects } = useSelector((state) => state.projects)
   const { tasks } = useSelector((state) => state.tasks)
 
-  const { subscribeToChat, subscribeToOrganization, subscribeToProject, sendMessageInChat } = useSocket()
+  const { subscribeToChat, subscribeToOrganization, subscribeToProject, subscribeToTeam, subscribeToUser } = useSocket()
 
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (user) return
+    if (user) {
+      const userSubscription = subscribeToUser({ userId: user.userId })
+
+      return () => {
+        userSubscription.unsubscribe()
+      }
+    }
 
     const fetchUserDetails = async () => {
       const token = localStorage.getItem('token')
@@ -131,6 +138,16 @@ const MainLayout = () => {
       if (organizationSubscriptions) organizationSubscriptions.map((subscription) => subscription.unsubscribe())
     }
   }, [organization, dispatch])
+
+  useEffect(() => {
+    if (teams) {
+      const teamSubscriptions = teams.map((teamId) => subscribeToTeam({ teamId }))
+
+      return () => {
+        if (teamSubscriptions) teamSubscriptions.forEach((subscription) => subscription.unsubscribe())
+      }
+    }
+  }, [teams])
 
   useEffect(() => {
     if (projects) {
