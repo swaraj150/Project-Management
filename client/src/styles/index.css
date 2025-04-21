@@ -1510,6 +1510,8 @@ main {
   border-top-right-radius: 10px;
   border-bottom-left-radius: 10px;
   background-color: rgb(208, 219, 251);
+  display: flex;
+  flex-direction: column;
 }
 #chats .content .chat-board .messages .message .time {
   position: absolute;
