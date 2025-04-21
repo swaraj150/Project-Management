@@ -18,6 +18,7 @@ import { setActive } from '../redux/features/menuSlice'
 
 import { menuIndices } from '../utils/menu.utils'
 import { preventDefaultBehaviour } from '../utils/event.utils'
+import Welcome from '../components/common/Welcome'
 
 const ResetPassword = () => {
   const dispatch = useDispatch()
@@ -27,7 +28,7 @@ const ResetPassword = () => {
   const { collapsed } = useSelector((state) => state.menu)
   const { user } = useSelector((state) => state.user)
 
-  const { selectedUser } = useSelection()
+  const selectedUser = useSelection()?.selectedUser
 
   const [hidePassword, setHidePassword] = useState(true)
   const [hideNewPassword, setHideNewPassword] = useState(true)
@@ -35,15 +36,18 @@ const ResetPassword = () => {
 
   const code = searchParams.get('code')
 
-  const passwordResetForm = useFormik({
+  const resetPasswordForm = useFormik({
     initialValues: {
       password: '',
       newPassword: '',
       confirmNewPassword: ''
     },
     validationSchema: Yup.object({
-      password: Yup.string()
-        .required('Password is required'),
+      password: Yup.string().when([], {
+        is: () => !!user,
+        then: (schema) => schema.required('Password is required'),
+        otherwise: (schema) => schema.notRequired()
+      }),
       newPassword: Yup.string()
         .min(8, 'New password must be at least 8 characters')
         .max(20, 'New password must be at most 20 characters')
@@ -66,6 +70,7 @@ const ResetPassword = () => {
         }
         if (err) toast.error(typeof err === 'string' ? err : 'An error occurred. Please try again.')
       } else {
+        console.log(code, newPassword)
         const { res, err } = await userApi.resetPassword({ code, newPassword, isAuthenticated: false })
         if (res) {
           toast.success('Password updated successfully!')
@@ -80,9 +85,15 @@ const ResetPassword = () => {
     navigate(-1)
   }
 
+  useEffect(() => {  
+    if (selectedUser?.userId === user?.userId) {
+      dispatch(setActive(menuIndices.profile))
+    }
+  }, [user])  
+
   useEffect(() => {
-    if (selectedUser?.userId === user.userId) dispatch(setActive(menuIndices.profile))
-  }, [selectedUser])
+    console.log(resetPasswordForm.errors)
+  }, [resetPasswordForm])
 
   return (
     user ? (
@@ -93,7 +104,7 @@ const ResetPassword = () => {
             <IoMdArrowBack />
             <p>Go Back</p>
           </button>
-          <form onSubmit={passwordResetForm.handleSubmit}>
+          <form onSubmit={resetPasswordForm.handleSubmit}>
             <div className="input-field">
               <div className='password-field'>
                 <input
@@ -102,9 +113,9 @@ const ResetPassword = () => {
                   name='password'
                   required
                   placeholder='Password'
-                  value={passwordResetForm.values.password}
-                  onChange={passwordResetForm.handleChange}
-                  onBlur={passwordResetForm.handleBlur}
+                  value={resetPasswordForm.values.password}
+                  onChange={resetPasswordForm.handleChange}
+                  onBlur={resetPasswordForm.handleBlur}
                   onPaste={preventDefaultBehaviour}
                   onCopy={preventDefaultBehaviour}
                 />
@@ -115,7 +126,7 @@ const ResetPassword = () => {
                 }
               </div>
               <p className="helper-text opacity-5">
-                {passwordResetForm.touched.password && passwordResetForm.errors.password ? passwordResetForm.errors.password : ''}
+                {resetPasswordForm.touched.password && resetPasswordForm.errors.password ? resetPasswordForm.errors.password : ''}
               </p>
             </div>
             <div className="input-field">
@@ -126,9 +137,9 @@ const ResetPassword = () => {
                   name='newPassword'
                   required
                   placeholder='New password'
-                  value={passwordResetForm.values.newPassword}
-                  onChange={passwordResetForm.handleChange}
-                  onBlur={passwordResetForm.handleBlur} newPassword
+                  value={resetPasswordForm.values.newPassword}
+                  onChange={resetPasswordForm.handleChange}
+                  onBlur={resetPasswordForm.handleBlur} newPassword
                   onPaste={preventDefaultBehaviour}
                   onCopy={preventDefaultBehaviour}
                 />
@@ -139,7 +150,7 @@ const ResetPassword = () => {
                 }
               </div>
               <p className="helper-text opacity-5">
-                {passwordResetForm.touched.newPassword && passwordResetForm.errors.newPassword ? passwordResetForm.errors.newPassword : ''}
+                {resetPasswordForm.touched.newPassword && resetPasswordForm.errors.newPassword ? resetPasswordForm.errors.newPassword : ''}
               </p>
             </div>
             <div className="input-field">
@@ -150,9 +161,9 @@ const ResetPassword = () => {
                   name='confirmNewPassword'
                   required
                   placeholder='Confirm new password'
-                  value={passwordResetForm.values.confirmNewPassword}
-                  onChange={passwordResetForm.handleChange}
-                  onBlur={passwordResetForm.handleBlur}
+                  value={resetPasswordForm.values.confirmNewPassword}
+                  onChange={resetPasswordForm.handleChange}
+                  onBlur={resetPasswordForm.handleBlur}
                   onPaste={preventDefaultBehaviour}
                   onCopy={preventDefaultBehaviour}
                 />
@@ -163,7 +174,7 @@ const ResetPassword = () => {
                 }
               </div>
               <p className="helper-text opacity-5">
-                {passwordResetForm.touched.confirmNewPassword && passwordResetForm.errors.confirmNewPassword ? passwordResetForm.errors.confirmNewPassword : ''}
+                {resetPasswordForm.touched.confirmNewPassword && resetPasswordForm.errors.confirmNewPassword ? resetPasswordForm.errors.confirmNewPassword : ''}
               </p>
             </div>
             <div className="cta">
@@ -174,7 +185,7 @@ const ResetPassword = () => {
               <button
                 className="pointer paper-1 dark-btn"
                 type='submit'
-                disabled={passwordResetForm.isSubmitting || !passwordResetForm.isValid}
+                disabled={resetPasswordForm.isSubmitting || !resetPasswordForm.isValid}
               >
                 <MdLockReset />
                 Reset Password
@@ -184,7 +195,72 @@ const ResetPassword = () => {
         </section>
       </section>
     ) : (
-      null
+      <section className='auth-container'>
+        <Welcome />
+        <section className='auth-form'>
+          <div className='auth-card paper'>
+            <h1>Forgot Password</h1>
+            <p className='prompt opacity-5'>Enter email to get reset password email</p>
+            <form onSubmit={resetPasswordForm.handleSubmit}>
+              <div className="input-field">
+                <div className='password-field'>
+                  <input
+                    className='paper'
+                    type={hideNewPassword ? 'password' : 'text'}
+                    name='newPassword'
+                    required
+                    placeholder='New password'
+                    value={resetPasswordForm.values.newPassword}
+                    onChange={resetPasswordForm.handleChange}
+                    onBlur={resetPasswordForm.handleBlur}
+                    onPaste={preventDefaultBehaviour}
+                    onCopy={preventDefaultBehaviour}
+                  />
+                  {
+                    hideNewPassword
+                      ? <FaEye className='pointer' onClick={() => setHideNewPassword(false)} />
+                      : <FaEyeSlash className='pointer' onClick={() => setHideNewPassword(true)} />
+                  }
+                </div>
+                <p className="helper-text opacity-5">
+                  {resetPasswordForm.touched.newPassword && resetPasswordForm.errors.newPassword ? resetPasswordForm.errors.newPassword : ''}
+                </p>
+              </div>
+              <div className="input-field">
+                <div className='password-field'>
+                  <input
+                    className='paper'
+                    type={hideConfirmNewPassword ? 'password' : 'text'}
+                    name='confirmNewPassword'
+                    required
+                    placeholder='Confirm new password'
+                    value={resetPasswordForm.values.confirmNewPassword}
+                    onChange={resetPasswordForm.handleChange}
+                    onBlur={resetPasswordForm.handleBlur}
+                    onPaste={preventDefaultBehaviour}
+                    onCopy={preventDefaultBehaviour}
+                  />
+                  {
+                    hideConfirmNewPassword
+                      ? <FaEye className='pointer' onClick={() => setHideConfirmNewPassword(false)} />
+                      : <FaEyeSlash className='pointer' onClick={() => setHideConfirmNewPassword(true)} />
+                  }
+                </div>
+                <p className="helper-text opacity-5">
+                  {resetPasswordForm.touched.confirmNewPassword && resetPasswordForm.errors.confirmNewPassword ? resetPasswordForm.errors.confirmNewPassword : ''}
+                </p>
+              </div>
+              <button
+                className='paper pointer'
+                type='submit'
+                disabled={resetPasswordForm.isSubmitting || !resetPasswordForm.isValid}
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+        </section>
+      </section>
     )
   )
 }

@@ -11,6 +11,7 @@ const userEndpoints = {
   updateProjectRole: 'users/project-role',
   updateProfile: 'users',
   logout: 'users/logout',
+  forgotPassword: 'users/forgot-password',
   resetPassword: 'users/reset-password'
 }
 
@@ -101,6 +102,17 @@ const userApi = {
   logout: async () => {
     try {
       const res = await privateClient.post(userEndpoints.logout)
+      return { res }
+    } catch (err) {
+      return { err }
+    }
+  },
+  forgotPassword: async ({ email }) => {
+    try {
+      const res = await publicClient.post(
+        userEndpoints.forgotPassword,
+        { email }
+      )
       return { res }
     } catch (err) {
       return { err }
