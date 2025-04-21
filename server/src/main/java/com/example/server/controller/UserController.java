@@ -90,7 +90,7 @@ public class UserController {
     }
 
     @PatchMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(ResetPasswordRequest request) {
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
         passwordResetService.resetPassword(request);
         return ResponseEntity.ok(Map.of("message","Password updated successfully"));
     }
