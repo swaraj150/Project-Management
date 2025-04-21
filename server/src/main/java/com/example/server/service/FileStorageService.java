@@ -49,7 +49,8 @@ public class FileStorageService {
             String fileName = UUID.randomUUID() + "_" + StringUtils.cleanPath((file.getOriginalFilename()==null)?"temp":file.getOriginalFilename());
             String bucket = getBucketFromS3Url(fileUploadDir);
             String prefix = getPrefixFromS3Url(fileUploadDir);
-            String key = prefix + fileName;
+            String folder=prefix+user.getOrganizationId()+"/";
+            String key = folder + fileName;
             PutObjectRequest request = PutObjectRequest.builder()
                     .bucket(bucket)
                     .key(key)
