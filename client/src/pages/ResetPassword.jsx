@@ -125,7 +125,7 @@ const ResetPassword = () => {
                   type={hideNewPassword ? 'password' : 'text'}
                   name='newPassword'
                   required
-                  placeholder='newPassword'
+                  placeholder='New password'
                   value={passwordResetForm.values.newPassword}
                   onChange={passwordResetForm.handleChange}
                   onBlur={passwordResetForm.handleBlur} newPassword
@@ -149,7 +149,7 @@ const ResetPassword = () => {
                   type={hideConfirmNewPassword ? 'password' : 'text'}
                   name='confirmNewPassword'
                   required
-                  placeholder='confirmNewPassword'
+                  placeholder='Confirm new password'
                   value={passwordResetForm.values.confirmNewPassword}
                   onChange={passwordResetForm.handleChange}
                   onBlur={passwordResetForm.handleBlur}
