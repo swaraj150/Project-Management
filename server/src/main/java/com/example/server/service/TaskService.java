@@ -650,7 +650,7 @@ public class TaskService {
         projectRepository.save(project);
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Task "+task.getTitle()+"deleted","method",ResponseMethod.DELETE.name(),"dataType", LogType.ID.name(),"data",task.getId())
+                Map.of("notification","Task "+task.getTitle()+"deleted","method",ResponseMethod.DELETE.name(),"dataType", LogType.TASK.name(),"data",Map.of("id",task))
         );
 
     }
@@ -681,7 +681,7 @@ public class TaskService {
         }
         messagingTemplate.convertAndSend(
                 "/topic/project."+user.getProjectId(),
-                Map.of("notification","Link deleted","method",ResponseMethod.DELETE.name(),"dataType", LogType.ID.name(),"data",id)
+                Map.of("notification","Link deleted","method",ResponseMethod.DELETE.name(),"dataType", LogType.LINK.name(),"data",Map.of("id",id))
         );
         dependencyRepository.deleteById(id);
 
