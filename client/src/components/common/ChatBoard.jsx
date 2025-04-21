@@ -19,6 +19,7 @@ const ChatBoard = ({ id }) => {
 
   const [message, setMessage] = useState('')
   const [file, setFile] = useState(null)
+  const [isUploading, setIsUploading] = useState(false)
 
   const handleChoose = async (e) => {
     e.preventDefault()
@@ -39,8 +40,13 @@ const ChatBoard = ({ id }) => {
   }
 
   const handleAddMessage = async () => {
-    if (message && message.trim() !== '') {
-      if (file) sendMessageInChat({ id, payload: { content: message.trim(), fileName: file.name, fileUrl: file.url } })
+    if ((message && message.trim() !== '') || file) {
+      if (file) {
+        setIsUploading(true)
+        sendMessageInChat({ id, payload: { content: message.trim(), fileName: file.name, fileUrl: file.url } })
+        setFile(null)
+        setIsUploading(false)
+      }
       else sendMessageInChat({ id, payload: { content: message.trim() } })
       setMessage('')
     }
@@ -71,7 +77,7 @@ const ChatBoard = ({ id }) => {
             hidden
             type="file"
             onChange={handleChoose}
-            disabled={file !== null}
+            disabled={file !== null || isUploading}
           />
         </div>
         {file && (
