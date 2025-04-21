@@ -187,7 +187,7 @@ const Profile = () => {
     if (selectedUser) {
       const allOptions = technologyLabels.flatMap(group => group.options)
       const formattedSkills = selectedUser.skills
-        .map(skill => allOptions.find(option => option.value === skill))
+        ?.map(skill => allOptions.find(option => option.value === skill))
         .filter(Boolean)
 
       const values = {
