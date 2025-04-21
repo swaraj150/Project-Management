@@ -32,7 +32,7 @@ const MainLayout = () => {
   const { projects } = useSelector((state) => state.projects)
   const { tasks } = useSelector((state) => state.tasks)
 
-  const { subscribeToChat, subscribeToOrganization, subscribeToProject, subscribeToTeam, subscribeToUser } = useSocket()
+  const { subscribeToChat, subscribeToOrganization, subscribeToProject, subscribeToTeam,subscribeToUser  } = useSocket()
 
   const [loading, setLoading] = useState(true)
 
@@ -41,7 +41,7 @@ const MainLayout = () => {
       const userSubscription = subscribeToUser({ userId: user.userId })
 
       return () => {
-        userSubscription.unsubscribe()
+        userSubscription?.unsubscribe()
       }
     }
 

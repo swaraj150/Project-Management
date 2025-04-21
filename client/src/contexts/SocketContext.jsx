@@ -126,7 +126,7 @@ export const SocketProvider = ({ children }) => {
     }
   }
 
-  const subsribeToTeam = ({ teamId }) => {
+  const subscribeToTeam = ({ teamId }) => {
     if (stompClient?.connected) {
       return stompClient.subscribe(`/topic/team.${teamId}`, (message) => {
         const { dataType, notification, data, method } = JSON.parse(message.body)
@@ -139,7 +139,7 @@ export const SocketProvider = ({ children }) => {
     }
   }
 
-  const subsribeToUser = ({ userId }) => {
+  const subscribeToUser = ({ userId }) => {
     if (stompClient?.connected) {
       return stompClient.subscribe(`/topic/user.${userId}`, (message) => {
         const { dataType, notification, data, method } = JSON.parse(message.body)
@@ -164,8 +164,8 @@ export const SocketProvider = ({ children }) => {
         subscribeToChat,
         subscribeToOrganization,
         subscribeToProject,
-        subsribeToTeam,
-        subsribeToUser,
+        subscribeToTeam,
+        subscribeToUser,
         sendMessageInChat
       }}
     >
